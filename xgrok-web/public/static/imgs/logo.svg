@@ -1,0 +1,15 @@
+<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg t="1708394662261" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6186" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200">
+<linearGradient id="IconifyId1813088fe1fbc01fb466" x1="-.828%" x2="57.636%" y1="7.652%" y2="78.411%">
+    <stop offset="0%" stop-color="#41D1FF"></stop>
+    <stop offset="100%" stop-color="#BD34FE"></stop>
+</linearGradient>
+<linearGradient id="IconifyId1813088fe1fbc01fb467" x1="43.376%" x2="50.316%" y1="2.242%" y2="89.03%">
+    <stop offset="0%" stop-color="#FFEA83"></stop>
+    <stop offset="8.333%" stop-color="#FFDD35"></stop>
+    <stop offset="100%" stop-color="#FFA800"></stop>
+</linearGradient>
+<path d="M276.48 215.48544L517.12 51.2v675.39456L276.48 890.88V215.48544z m40.96 597.8368l158.72-108.35968V128.75776L317.44 237.11744v576.2048z" fill="url(#IconifyId1813088fe1fbc01fb466)" p-id="6187"></path>
+<path d="M517.12 414.32064L966.9632 506.88l-281.79456 152.58624-581.64736-125.5424L276.48 440.32l38.92224 11.31008v93.30688m643.30752 2.06336l-11.24864-76.1344-98.79552 53.49376 110.04416 22.64064z" fill="url(#IconifyId1813088fe1fbc01fb467)" p-id="6188"></path>
+<path d="M97.55136 658.22208l670.72-302.08a25.6 25.6 0 0 0-21.02272-46.68416l-670.72 302.08a25.6 25.6 0 1 0 21.02272 46.68416z" fill="url(#IconifyId1813088fe1fbc01fb466)" p-id="6189"></path>
+</svg>

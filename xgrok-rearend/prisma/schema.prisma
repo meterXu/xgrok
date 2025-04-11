@@ -1,0 +1,292 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("database_url")
+}
+
+model PortRange {
+  id            String    @id @db.VarChar(32)
+  server_id     String    @db.VarChar(32)
+  min_port      Int
+  max_port      Int
+  sort          Int?
+  creator       String?   @db.VarChar(50)
+  editor        String?   @db.VarChar(50)
+  created_time  DateTime? @default(dbgenerated("(now())")) @map("created_time") @db.DateTime(0)
+  modified_time DateTime? @db.DateTime(0)
+  status        Int?      @default(1)
+  is_delete     Int?      @default(0)
+  ng_server     Server    @relation(fields: [server_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ng_port_range_ng_server_id_fk")
+
+  @@index([server_id], map: "ng_port_range_ng_server_id_fk")
+  @@map("ng_port_range")
+}
+
+model Server {
+  id                String          @id @db.VarChar(32)
+  name              String          @db.VarChar(100)
+  domain            String          @db.VarChar(50)
+  port              Int
+  http_port         Int?
+  https_port        Int?
+  has_ssl           Int
+  ssl_expired_time  DateTime        @db.DateTime(0)
+  up_speed          String          @db.VarChar(50)
+  down_speed        String          @db.VarChar(50)
+  sort              Int?
+  is_vip            Int
+  creator           String?         @db.VarChar(50)
+  editor            String?         @db.VarChar(50)
+  created_time      DateTime?       @default(dbgenerated("(now())")) @map("created_time") @db.DateTime(0)
+  modified_time     DateTime?       @db.DateTime(0)
+  status            Int?            @default(1)
+  is_delete         Int?            @default(0)
+  is_online         Int             @default(1)
+  ng_port_range     PortRange[]
+  ng_tunnel_service TunnelService[]
+  ng_tunnel_web     TunnelWeb[]
+
+  @@index([domain, port], map: "ng_server_domain_port_index")
+  @@map("ng_server")
+}
+
+model SysDict {
+  id            String    @id @db.VarChar(32)
+  key           String    @db.VarChar(50)
+  code          String    @db.VarChar(50)
+  chn_value     String?   @db.VarChar(100)
+  eng_value     String?   @db.VarChar(100)
+  sort          Int?
+  creator       String?   @db.VarChar(50)
+  editor        String?   @db.VarChar(50)
+  created_time  DateTime? @default(dbgenerated("(now())")) @map("created_time") @db.DateTime(0)
+  modified_time DateTime? @db.DateTime(0)
+  status        Int?      @default(1)
+  is_delete     Int?      @default(0)
+
+  @@index([key, code], map: "ng_sys_dict_key_code_index")
+  @@map("ng_sys_dict")
+}
+
+model TunnelService {
+  id            String    @id @db.VarChar(32)
+  server_id     String    @db.VarChar(32)
+  client_id     String    @db.VarChar(32)
+  name          String    @db.VarChar(50)
+  host          String    @db.VarChar(200)
+  type          Int
+  port          Int
+  remote_port   Int
+  remark        String?   @db.VarChar(100)
+  sort          Int?
+  creator       String?   @db.VarChar(50)
+  editor        String?   @db.VarChar(50)
+  created_time  DateTime? @default(dbgenerated("(now())")) @map("created_time") @db.DateTime(0)
+  modified_time DateTime? @db.DateTime(0)
+  status        Int?      @default(1)
+  is_delete     Int?      @default(0)
+  is_remote     Int?      @default(0)
+  ng_client     ng_client @relation(fields: [client_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ng_tunnel_service_ng_client_id_fk")
+  ng_server     Server    @relation(fields: [server_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ng_tunnel_service_ng_server_id_fk")
+
+  @@index([client_id], map: "ng_tunnel_service_ng_client_id_fk")
+  @@index([server_id], map: "ng_tunnel_service_ng_server_id_fk")
+  @@map("ng_tunnel_service")
+}
+
+model TunnelWeb {
+  id            String    @id @db.VarChar(32)
+  server_id     String    @db.VarChar(32)
+  client_id     String    @db.VarChar(32)
+  name          String?   @db.VarChar(50)
+  host          String    @db.VarChar(200)
+  type          Int
+  port          Int
+  remark        String?   @db.VarChar(100)
+  sort          Int?
+  creator       String?   @db.VarChar(50)
+  editor        String?   @db.VarChar(50)
+  created_time  DateTime? @default(dbgenerated("(now())")) @map("created_time") @db.DateTime(0)
+  modified_time DateTime? @db.DateTime(0)
+  status        Int?      @default(1)
+  is_delete     Int?      @default(0)
+  is_remote     Int?      @default(0)
+  ng_client     ng_client @relation(fields: [client_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ng_tunnel_web_ng_client_id_fk")
+  ng_server     Server    @relation(fields: [server_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ng_tunnel_web_ng_server_id_fk")
+
+  @@index([client_id], map: "ng_tunnel_web_ng_client_id_fk")
+  @@index([server_id], map: "ng_tunnel_web_ng_server_id_fk")
+  @@map("ng_tunnel_web")
+}
+
+model OAuthClients {
+  id            String        @id @db.VarChar(32)
+  client_id     String        @db.VarChar(50)
+  client_secret String        @db.VarChar(200)
+  redirect_uri  String        @db.VarChar(200)
+  created_time  DateTime?     @default(dbgenerated("(now())")) @map("created_time") @db.DateTime(0)
+  status        Int?          @default(1)
+  is_delete     Int?          @default(0)
+  oauth_tokens  OAuthTokens[]
+
+  @@index([client_id, client_secret], map: "oauth_clients_client_id_client_secret_index")
+  @@map("oauth_clients")
+}
+
+model OAuthTokens {
+  id                       String       @id @db.VarChar(32)
+  access_token             String       @db.VarChar(300)
+  access_token_expires_at  DateTime     @db.DateTime(0)
+  client_id                String       @db.VarChar(50)
+  refresh_token            String       @db.VarChar(300)
+  refresh_token_expires_at DateTime     @db.DateTime(0)
+  user_id                  String       @db.VarChar(32)
+  created_time             DateTime?    @default(dbgenerated("(now())")) @map("created_time") @db.DateTime(0)
+  modified_time            DateTime?    @db.DateTime(0)
+  oauth_clients            OAuthClients @relation(fields: [client_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "oauth_tokens_oauth_clients_id_fk")
+
+  @@index([access_token], map: "oauth_tokens_access_token_index")
+  @@index([client_id, user_id], map: "oauth_tokens_client_id_user_id_index")
+  @@map("oauth_tokens")
+}
+
+model OAuthUsers {
+  id              String     @id @db.VarChar(32)
+  username        String     @unique(map: "oauth_users_pk") @db.VarChar(100)
+  password        String     @db.VarChar(100)
+  created_time    DateTime?  @default(dbgenerated("(now())")) @map("created_time") @db.DateTime(0)
+  nickName        String?    @db.VarChar(50)
+  creator         String?    @db.VarChar(50)
+  editor          String?    @db.VarChar(50)
+  modified_time   DateTime?  @db.DateTime(0)
+  sort            Int?
+  status          Int?       @default(1)
+  is_delete       Int?       @default(0)
+  oauth_user_role UserRole[]
+
+  @@index([username, password], map: "users_username_password")
+  @@map("oauth_users")
+}
+
+model UserRole {
+  id            String     @id @db.VarChar(32)
+  user_id       String     @db.VarChar(32)
+  role_id       String     @db.VarChar(32)
+  created_time  DateTime?  @default(dbgenerated("(now())")) @map("created_time") @db.DateTime(0)
+  creator       String?    @db.VarChar(50)
+  editor        String?    @db.VarChar(50)
+  modified_time DateTime?  @db.DateTime(0)
+  sort          Int?
+  status        Int?       @default(1)
+  is_delete     Int?       @default(0)
+  oauth_role    Role       @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "oauth_user_role_oauth_role_id_fk")
+  oauth_users   OAuthUsers @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "oauth_user_role_oauth_users_id_fk")
+
+  @@index([user_id], map: "oauth_user_role_user_id_index")
+  @@index([role_id], map: "oauth_user_role_oauth_role_id_fk")
+  @@map("oauth_user_role")
+}
+
+model Role {
+  id              String     @id @db.VarChar(32)
+  name            String     @db.VarChar(50)
+  type            Int
+  created_time    DateTime?  @default(dbgenerated("(now())")) @map("created_time") @db.DateTime(0)
+  modified_time   DateTime?  @db.DateTime(0)
+  creator         String?    @db.VarChar(50)
+  editor          String?    @db.VarChar(50)
+  status          Int?       @default(1)
+  is_delete       Int?       @default(0)
+  sort            Int?
+  oauth_user_role UserRole[]
+
+  @@map("oauth_role")
+}
+
+model ng_client {
+  id                String          @id @db.VarChar(32)
+  hostname          String          @db.VarChar(100)
+  osVersion         String          @db.VarChar(200)
+  sort              Int?
+  creator           String?         @db.VarChar(50)
+  editor            String?         @db.VarChar(50)
+  created_time      DateTime?       @default(dbgenerated("(now())")) @db.DateTime(0)
+  modified_time     DateTime?       @db.DateTime(0)
+  status            Int?            @default(1)
+  is_delete         Int?            @default(0)
+  ng_tunnel_service TunnelService[]
+  ng_tunnel_web     TunnelWeb[]
+
+  @@index([hostname], map: "ng_client_hostname_index")
+}
+
+model ng_email {
+  id            String    @id @db.VarChar(32)
+  email         String?   @db.VarChar(100)
+  code          String?   @db.VarChar(20)
+  sort          Int?
+  creator       String?   @db.VarChar(50)
+  editor        String?   @db.VarChar(50)
+  expire_time   DateTime  @db.DateTime(0)
+  created_time  DateTime? @default(dbgenerated("(now())")) @db.DateTime(0)
+  modified_time DateTime? @db.DateTime(0)
+  status        Int?      @default(1)
+  is_delete     Int?      @default(0)
+
+  @@index([email, code], map: "ng_email_email_code_index")
+}
+
+model ng_order {
+  id                      String     @id @db.VarChar(32)
+  trade_no                String     @db.VarChar(100)
+  product_id              String     @db.VarChar(32)
+  remark                  String?    @db.VarChar(100)
+  pay_total_amount        String     @db.VarChar(20)
+  pay_price               String     @db.VarChar(20)
+  pay_num                 Int        @default(1)
+  payed_time              DateTime?  @db.DateTime(0)
+  pay_status              Int?       @default(0)
+  refund_amount           String?    @db.VarChar(20)
+  refund_reason           String?    @db.VarChar(100)
+  out_request_no          String?    @db.VarChar(100)
+  refund_time             DateTime?  @db.DateTime(0)
+  is_notify               Int?       @default(0)
+  is_will_expire_notify   Int?       @default(0)
+  is_expired_notify       Int?       @default(0)
+  notify_time             DateTime?  @db.DateTime(0)
+  will_expire_notify_time DateTime?  @db.DateTime(0)
+  expired_notify_time     DateTime?  @db.DateTime(0)
+  alipay_qrCode           String?    @db.VarChar(100)
+  alipay_traceId          String?    @db.VarChar(100)
+  sort                    Int?
+  creator                 String?    @db.VarChar(50)
+  editor                  String?    @db.VarChar(50)
+  created_time            DateTime?  @default(dbgenerated("(now())")) @db.DateTime(0)
+  modified_time           DateTime?  @db.DateTime(0)
+  expired_time            DateTime   @db.DateTime(0)
+  status                  Int?       @default(1)
+  is_delete               Int?       @default(0)
+  ng_product              ng_product @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ng_order_ng_product_id_fk")
+
+  @@index([trade_no, alipay_traceId], map: "ng_order_trade_no_alipay_traceId_index")
+  @@index([product_id], map: "ng_order_ng_product_id_fk")
+}
+
+model ng_product {
+  id            String     @id @db.VarChar(32)
+  name          String     @db.VarChar(100)
+  type          Int?
+  price         String     @db.VarChar(20)
+  remark        String?    @db.VarChar(100)
+  sort          Int?
+  creator       String?    @db.VarChar(50)
+  editor        String?    @db.VarChar(50)
+  created_time  DateTime?  @default(dbgenerated("(now())")) @db.DateTime(0)
+  modified_time DateTime?  @db.DateTime(0)
+  status        Int?       @default(1)
+  is_delete     Int?       @default(0)
+  ng_order      ng_order[]
+}

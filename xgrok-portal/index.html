@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>xgrok-您的应用代理访问工具</title>
+    <link rel="icon" type="image/svg+xml" href="./icon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <style>
+        html,body{
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+        body{
+            background: url("./assets/bg-02.webp") no-repeat center;
+            background-size: cover;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+            /*backdrop-filter: blur(1px);*/
+            background-color: rgba(0,0,0,0.45);
+        }
+        .con-container{
+            margin: 0 auto;
+            text-align: center;
+        }
+        .con-container a,.con-container a:active{
+            text-decoration: none;
+            color: #f0f0f0;
+            opacity: 0.5;
+            font-size: 14px;
+            font-weight: normal;
+        }
+        .header{
+            height: 64px;
+            line-height: 64px;
+        }
+        .logo-container{
+            display: inline-flex;
+            align-items: center;
+            justify-content: flex-start;
+            grid-gap: 12px;
+            margin-left: 24px;
+        }
+        .logo-icon{
+            background: url("./assets/icon.png") no-repeat center;
+            width: 32px;
+            height: 32px;
+            background-size: cover;
+        }
+        .logo-title{
+            color: #fff;
+            opacity: 0.5;
+        }
+        .title-1,.title-2{
+            font-size: 14px;
+            text-align: center;
+            color: #fff;
+            font-weight: 400;
+            letter-spacing: 20px;
+            line-height: 24px;
+        }
+        .title-1{
+            margin-bottom: 10px;
+        }
+        .title-2{
+            font-size: 74px;
+            line-height: 1.25;
+        }
+        .important{
+            color: #d11141;
+        }
+        .title-container{
+            position: absolute;
+            top: 42%;
+            width: 100%;
+            transform: translateY(-50%);
+        }
+        .download-ul{
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: inline-flex;
+            align-items: center;
+            flex-flow: row;
+            list-style: none;
+            justify-content: space-between;
+            grid-gap: 48px;
+            padding: 0;
+        }
+        .download_ul_li{
+            width: 104px;
+            height: 104px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            flex-flow: column;
+            justify-content: center;
+            grid-gap: 12px;
+            position:relative;
+        }
+        .download-item-icon{
+            height: 32px;
+            width: 32px;
+            color: #fff;
+        }
+        .download-item-label{
+            color: #fff;
+            font-size: 14px;
+        }
+        .download-item-label:hover{
+
+        }
+        .footer-copyright{
+            padding: 35px 0;
+            background-color: #1d2124;
+        }
+        .download_ul_li{
+            filter: blur(0px) opacity(1);
+            transition: filter 200ms linear, transform 200ms linear;
+        }
+        .download-ul:hover>.download_ul_li:not(:hover){
+            filter: blur(3px) opacity(0.8) brightness(0.8);
+        }
+        .download_ul_li:hover{
+            background-color: rgba(0,0,0,0.4);
+            filter: saturate(1.2);
+            transform: scale(1.05);
+        }
+        @media screen and (max-width:1024px) {
+            .container{
+                padding: 0 12px;
+                width: unset;
+                overflow-x: hidden;
+            }
+            .title-container{
+                left: 12px;
+                width: unset;
+            }
+            .title-2{
+                font-size: 44px;
+            }
+            .download-ul{
+                grid-gap: 24px;
+            }
+            .download_ul_li{
+                width: 96px;
+                height: 96px;
+            }
+        }
+    </style>
+    <script>
+        function downloadFile(type){
+            const urls = {
+                windows:{text:'xgrok Setup 1.0.0.exe',url:'./release/1.0.0/xgrok Setup 1.0.0.exe'},
+                mac:{text:'xgrok-1.0.0-arm64.zip',url:'./release/1.0.0/xgrok-1.0.0-arm64.zip'},
+                mac2:{text:'xgrok-1.0.0.zip',url:'./release/1.0.0/xgrok-1.0.0.zip'}
+            }
+            // 创建一个a元素
+            let a = document.createElement('a');
+            // 设置文件的URL
+            a.href = urls[type].url;
+            // 设置下载的文件名
+            a.download = urls[type].text;
+            // 模拟点击
+            document.body.appendChild(a);
+            a.click();
+            // 移除元素
+            document.body.removeChild(a);
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="logo-container">
+            <div class="logo-icon"></div>
+            <div class="logo-title">xgrok</div>
+        </div>
+    </div>
+    <div class="title-container">
+        <div class="title-1">简单/自由/安全</div>
+        <div class="title-2">你的应用，访问<span class="important">无界限</span></div>
+    </div>
+    <ul class="download-ul">
+        <li class="download_ul_li" onclick="downloadFile('windows')">
+            <div class="download-item-icon">
+                <?xml version="1.0" standalone="no"?><!DOCTYPE PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg t="1726110158546" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="11224" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"><path d="M96 96h396.16v396.16H96V96z m435.84 0h396.16v396.16H531.84V96zM96 531.84h396.16v396.16H96V531.84z m435.84 0h396.16v396.16H531.84V531.84z" p-id="11225" fill="currentColor"></path></svg>
+            </div>
+            <div class="download-item-label">Windows版</div>
+        </li>
+        <li class="download_ul_li" onclick="downloadFile('mac')">
+            <div class="download-item-icon">
+                <?xml version="1.0" standalone="no"?><!DOCTYPE PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg t="1726110168974" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="12291" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"><path d="M849.124134 704.896288c-1.040702 3.157923-17.300015 59.872622-57.250912 118.190843-34.577516 50.305733-70.331835 101.018741-126.801964 101.909018-55.532781 0.976234-73.303516-33.134655-136.707568-33.134655-63.323211 0-83.23061 32.244378-135.712915 34.110889-54.254671 2.220574-96.003518-54.951543-130.712017-105.011682-70.934562-102.549607-125.552507-290.600541-52.30118-416.625816 36.040844-63.055105 100.821243-103.135962 171.364903-104.230899 53.160757-1.004887 103.739712 36.012192 136.028093 36.012192 33.171494 0 94.357018-44.791136 158.90615-38.089503 27.02654 1.151219 102.622262 11.298324 151.328567 81.891102-3.832282 2.607384-90.452081 53.724599-89.487104 157.76107C739.079832 663.275355 847.952448 704.467523 849.124134 704.896288M633.69669 230.749408c29.107945-35.506678 48.235584-84.314291 43.202964-132.785236-41.560558 1.630127-92.196819 27.600615-122.291231 62.896492-26.609031 30.794353-50.062186 80.362282-43.521213 128.270409C557.264926 291.935955 604.745311 264.949324 633.69669 230.749408" p-id="12292" fill="currentColor"></path></svg>
+            </div>
+            <div class="download-item-label">mac Apple版</div>
+        </li>
+        <li class="download_ul_li" onclick="downloadFile('mac2')">
+            <div class="download-item-icon">
+                <?xml version="1.0" standalone="no"?><!DOCTYPE PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg t="1726110168974" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="12291" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32"><path d="M849.124134 704.896288c-1.040702 3.157923-17.300015 59.872622-57.250912 118.190843-34.577516 50.305733-70.331835 101.018741-126.801964 101.909018-55.532781 0.976234-73.303516-33.134655-136.707568-33.134655-63.323211 0-83.23061 32.244378-135.712915 34.110889-54.254671 2.220574-96.003518-54.951543-130.712017-105.011682-70.934562-102.549607-125.552507-290.600541-52.30118-416.625816 36.040844-63.055105 100.821243-103.135962 171.364903-104.230899 53.160757-1.004887 103.739712 36.012192 136.028093 36.012192 33.171494 0 94.357018-44.791136 158.90615-38.089503 27.02654 1.151219 102.622262 11.298324 151.328567 81.891102-3.832282 2.607384-90.452081 53.724599-89.487104 157.76107C739.079832 663.275355 847.952448 704.467523 849.124134 704.896288M633.69669 230.749408c29.107945-35.506678 48.235584-84.314291 43.202964-132.785236-41.560558 1.630127-92.196819 27.600615-122.291231 62.896492-26.609031 30.794353-50.062186 80.362282-43.521213 128.270409C557.264926 291.935955 604.745311 264.949324 633.69669 230.749408" p-id="12292" fill="currentColor"></path></svg>
+            </div>
+            <div class="download-item-label">mac Intel版</div>
+        </li>
+    </ul>
+</div>
+<div class="footer-copyright">
+    <div class="con-container">
+        <a href="https://beian.miit.gov.cn/#/Integrated/index">ICP备案号：苏ICP备20001603号-2</a>
+    </div>
+</div>
+</body>
+</html>

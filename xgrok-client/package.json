@@ -1,0 +1,100 @@
+{
+  "name": "xgrok",
+  "version": "1.0.0",
+  "description": "使用Electron来开发",
+  "main": "frame/main.js",
+  "scripts": {
+    "dev:brower": "vite --mode=browser",
+    "dev:web": "vite --mode=development",
+    "build:web": "vite build --mode=production",
+    "dev:electron": "dotenv -e .env.development electron src/main.js",
+    "start:electron": "npm-run-all -n -p dev:web dev:electron",
+    "obfuscate": "node obfuscate.js",
+    "build": "npm run build:web && npm run obfuscate && electron-builder"
+  },
+  "build": {
+    "appId": "icu.xdo.xgrok",
+    "productName": "xgrok",
+    "asarUnpack": [
+      "execute/**/*"
+    ],
+    "files": [
+      "dist/**/*",
+      "execute/**/*",
+      "frame/**/*",
+      "public/**/*"
+    ],
+    "directories": {
+      "output": "out"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "public/assets/icon.ico",
+      "uninstallerIcon": "public/assets/icon.ico",
+      "installerHeaderIcon": "public/assets/icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "win": {
+      "icon": "public/assets/icon.ico",
+      "target": "nsis"
+    },
+    "mac": {
+      "icon": "public/assets/icon.icns",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64","arm64"]
+        }
+      ]
+    },
+    "linux": {
+      "icon": "public/assets/icon.png",
+      "target": "AppImage"
+    }
+  },
+  "author": "isaac",
+  "license": "ISC",
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "axios": "^1.6.7",
+    "electron-log": "^5.2.0",
+    "electron-squirrel-startup": "^1.0.1",
+    "electron-sudo": "^4.0.12",
+    "element-plus": "^2.5.5",
+    "http-proxy": "^1.18.1",
+    "js-md5": "^0.8.3",
+    "less": "^3.11.1",
+    "pinia": "^2.1.7",
+    "qrious": "^4.0.2",
+    "qs": "^6.11.2",
+    "vue": "^3.4.15",
+    "vue-router": "^4.2.5",
+    "xxweb-box": "^0.3.1",
+    "yaml": "^2.4.1"
+  },
+  "devDependencies": {
+    "@electron/fuses": "^1.8.0",
+    "@vitejs/plugin-vue": "^5.0.3",
+    "@vitejs/plugin-vue-jsx": "^3.1.0",
+    "@vue/test-utils": "^2.4.4",
+    "dotenv-cli": "^6.0.0",
+    "electron": "^31.3.1",
+    "electron-builder": "^26.0.12",
+    "electron-packager": "^17.1.2",
+    "javascript-obfuscator": "^4.1.1",
+    "jsdom": "^24.0.0",
+    "less-loader": "^5.0.0",
+    "nodemon": "^2.0.20",
+    "npm-run-all": "^4.1.5",
+    "vconsole": "^3.15.1",
+    "vite": "^5.1.0",
+    "vite-copy-plugin": "^0.4.0",
+    "vite-plugin-compression2": "^0.12.0",
+    "vite-plugin-html": "^3.2.2",
+    "webpack": "^5.95.0",
+    "webpack-cli": "^5.1.4"
+  }
+}

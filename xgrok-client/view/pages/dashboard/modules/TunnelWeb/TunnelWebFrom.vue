@@ -1,0 +1,251 @@
+<script setup>
+import {reactive, defineEmits, ref, watch} from "vue";
+import {tunnelType} from "@/libs/enums";
+import {getUrlSchema} from "@/libs/common";
+import {checkLocalPort, checkName, createTunnelWeb, queryRange, updateTunnelWeb} from "@/api";
+import {useAppStore} from "@/store";
+import {ElMessage} from "element-plus";
+import {tipText} from "@/libs/infoText";
+import InfoTip from "@/components/infoTip.vue";
+import {confirm, testName, isLocalHost} from "@/libs/common";
+import {onFormValidate, useGetDisabled, useGetErrorMsg} from "@/libs/useAction";
+import {useRouter} from "vue-router";
+
+const store = useAppStore()
+const {selectedServer,clientId,tunnelForm} = store
+const emits = defineEmits(['updateSuccess','cancel','createSuccess'])
+const ruleFormRef = ref('ruleFormRef')
+const portRange = ref('')
+const saveLoading = ref(false)
+const validateNameLoading = ref(false)
+const validatePortLoading = ref(false)
+const router = new useRouter()
+const formData = reactive({
+  id:tunnelForm.value?.id,
+  name:tunnelForm.value?.name,
+  remark:tunnelForm.value?.remark,
+  type:tunnelForm.value?.type||0,
+  host:tunnelForm.value?.host||'http://localhost',
+  is_remote:tunnelForm.value?.is_remote||0,
+  server_id:tunnelForm.value?.server_id||selectedServer.value.id,
+  client_id:tunnelForm.value?.client_id||clientId.value,
+  port:tunnelForm.value?.port||80
+})
+const validateRes = reactive({name:{value:null,valid:true},host:{value:null,valid:true},remark:{value:null,valid:true},port:{value:null,valid:true}})
+const rules = {
+  name:[
+    { required: true, message: '请输入名称', trigger: 'change' },
+    { validator: validateName, trigger: 'change'}
+  ],
+  host:[
+    { required: true, message: '请输入正确的网址',type:'url',trigger: 'change' },
+    { max: 200, message: '最多200个字', trigger: 'change' }
+  ],
+  remark:[
+    { max: 50, message: '最多50个字', trigger: 'change' }
+  ],
+  port:[
+    { type: 'integer',required: true, message: '请输入本地端口', trigger: 'change' }
+  ]
+}
+const errorMsg = useGetErrorMsg(validateRes)
+const addBtnDisabled = useGetDisabled(validateRes)
+
+watch(()=>formData.host,(nv)=>{
+  let urlSchema = getUrlSchema(nv)
+  if(urlSchema){
+    formData.port = urlSchema.port
+    formData.type = urlSchema.protocol
+  }
+  formData.is_remote = isLocalHost(nv)?0:1
+})
+
+function onSave(){
+  saveLoading.value=true
+  ruleFormRef.value.validate(valid=>{
+    if(valid){
+      formData.id?updateTunnelWeb(formData).then(res=>{
+        ElMessage({
+          message: res.success?'更新成功':'更新失败',
+          type: res.success?'success':'error',
+          plain: true,
+        })
+        if(res.success){
+          emits('cancel')
+          emits('updateSuccess')
+        }
+      }).finally(()=>{
+        saveLoading.value=false
+      }) : createTunnelWeb(formData).then(res=>{
+        if(res.success){
+          ElMessage({
+            message: '创建成功',
+            type: 'success',
+            plain: true,
+          })
+          emits('cancel')
+          emits('createSuccess')
+        }else{
+          confirm(res.message||'创建失败', '创建失败',{
+            confirmButtonText:'去订阅',
+            cancelButtonText:'知道了',
+            confirmButtonClass:'my-info-btn-warning'
+          }).then(()=>{
+            router.push({name:'Plan'})
+          })
+        }
+      }).finally(()=>{
+        saveLoading.value=false
+      })
+    }else{
+      saveLoading.value=false
+    }
+  })
+}
+function onCancel(){
+  ruleFormRef.value.resetFields()
+  emits('cancel')
+}
+function created(){
+  queryRange(selectedServer.value.id).then(res=>{
+    if(res.success){
+      portRange.value = res.data.records.map(c=>{
+        return `${c.min_port}-${c.max_port}`
+      }).join(',')
+    }
+  })
+}
+function validateName(rule, value, callback){
+  if (!value) {
+    callback(new Error('请输入名称'))
+  } else if(!testName(value)){
+    callback(new Error('名称不符合格式'))
+  }
+  else{
+    validateNameLoading.value = true
+    checkName.debounce()(selectedServer.value.domain,tunnelType.web,selectedServer.value.http_port,value,selectedServer.value.id,clientId.value,formData.id||'').then(res=>{
+      if(res.success){
+        callback(res.data?undefined:new Error(res.message))
+      }
+    }).finally(()=>{
+      validateNameLoading.value = false
+    })
+  }
+}
+function validatePort(rule,value,callback){
+  if(value){
+    validatePortLoading.value = true
+    return Promise.all([
+      window.electronAPI.checkPort(value),
+      checkLocalPort(formData.server_id,formData.client_id,value)
+    ]).then(resArray=>{
+      let _res = resArray.find(c=>c.data===false)
+      if(_res){
+        callback(_res.message)
+      }else {
+        callback()
+      }
+    }).finally(()=>{
+      validatePortLoading.value = false
+    })
+  }
+}
+
+created()
+
+</script>
+
+<template>
+  <TransitionGroup tag="ul" v-show="errorMsg.length>0" name="fade" class="error-msg">
+    <li v-for="item in errorMsg" :key="item">
+      {{item}}
+    </li>
+  </TransitionGroup>
+  <el-form ref="ruleFormRef" class="ruleFormRef"
+           :model="formData" label-width="auto"
+           :rules="rules" size="default"
+           :hide-required-asterisk="true"
+           :show-message="false"
+           @validate="(prop,valid,value)=>{onFormValidate(validateRes,{prop,valid,value})}">
+    <el-form-item label="名称" prop="name">
+      <el-input v-model="formData.name">
+        <template #suffix>
+          <InfoTip :text="tipText.zh.name" :loading="validateNameLoading"></InfoTip>
+        </template>
+      </el-input>
+    </el-form-item>
+    <el-form-item label="代理网址" prop="host">
+      <el-input v-model="formData.host">
+        <template #suffix>
+          <InfoTip :text="tipText.zh.url"></InfoTip>
+        </template>
+      </el-input>
+    </el-form-item>
+    <el-form-item label="描述" prop="remark">
+      <el-input type="textarea" v-model="formData.remark"></el-input>
+    </el-form-item>
+  </el-form>
+  <div class="form-btns">
+    <el-button size="default" type="info" plain class="no-border my-info-btn-success" :loading="saveLoading" :disabled="addBtnDisabled" @click="onSave">确定</el-button>
+    <el-button size="default" type="info" plain class="my-info-btn no-border" @click="onCancel">取消</el-button>
+  </div>
+</template>
+
+<style scoped lang="less">
+@import url('../../../../assets/mixin.less');
+.form-btns{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 60px;
+}
+.port-wrap{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  grid-gap: 12px;
+}
+.port-content{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  .pxToVW(210,width);
+}
+.error-msg{
+  white-space: pre-line;
+  margin: 12px 0;
+  padding: 12px 0;
+  background: var(--el-color-warning-light-9);
+  border-radius: 4px;
+  color: var(--el-color-warning);
+  list-style: disc inside;
+  position: relative;
+  li{
+    padding: 0 12px;
+  }
+  li+li{
+    margin-top: 4px;
+  }
+
+  .fade-move,
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+  }
+  .fade-enter-from,
+  .fade-leave-to {
+    opacity: 0;
+    transform: scaleY(0.01) translate(30px, 0);
+  }
+  .fade-leave-active {
+    position: absolute;
+  }
+}
+</style>
+<style lang="less">
+.ruleFormRef{
+  .el-form-item.is-error .el-input__wrapper{
+    box-shadow: 0 0 0 1px var(--el-input-border-color, var(--el-border-color)) inset;;
+  }
+}
+</style>
