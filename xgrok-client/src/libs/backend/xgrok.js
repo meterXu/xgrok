@@ -10,8 +10,10 @@ const http = require('http');
 const httpProxy = require('http-proxy');
 const net = require('net')
 const {checkPort} = require("./system");
+const {Worker} = require("worker_threads");
 
 const localhost = '127.0.0.1'
+initBeat()
 async function turnOn(xgrokConf){
     try{
         global.webServers = global.webServers||[]
@@ -31,19 +33,21 @@ async function turnOn(xgrokConf){
             }
             const pid = await startXgrok(serviceNames)
             global.logger.info(`xgrok pid is [${pid}]`)
+            startBeat(pid,global.webServers,global.tcpServers)
             return Promise.resolve(pid)
         }
     }catch (err){
         return Promise.reject({message:err.message})
     }
 }
-
 async function turnOff(pid){
     fs.existsSync(userXgrokCfgFilePath())&&fs.unlinkSync(userXgrokCfgFilePath())
     global.logger.info(`kill xgrok,pid is ${pid}`)
+    global.worker.postMessage({
+        type:'stop'
+    })
     return await killPid(pid)
 }
-
 function startXgrok(names){
     return new Promise(async (resolve, reject) => {
         global.logger.info(`os arch: ${arch()}`)
@@ -65,7 +69,6 @@ function startXgrok(names){
     })
 
 }
-
 function saveYamlConf(serverDetail,webDetails,serviceDetails){
     const yamlConf = generateYamlConf(serverDetail,webDetails,serviceDetails)
     fs.writeFileSync(userXgrokCfgFilePath(), yamlConf);
@@ -138,12 +141,10 @@ function closeWindow(data){
 function hiddenWindow(data){
     global.win.hide();
 }
-
 async function openExternal(data){
     // 在外部浏览器中打开链接
     shell.openExternal(data);
 }
-
 async function startWebProxy(proxyWebs){
     let webProxyArray = []
     for(let proxyWeb of proxyWebs){
@@ -242,6 +243,28 @@ async function startTcpServer(tcpServer){
             global.logger.error(`Error starting tcp proxy[${localhost}:${tcpServer.host}] server:`, error);
             resolve(null)
         }
+    })
+}
+function initBeat(){
+    global.worker =  new Worker(path.resolve(__dirname, '../../works/heartBeat.js'))
+    global.worker.on('message',(result)=>{
+        switch (result.type){
+            case 'pidIsNull':{
+                // xgrok进程死了
+                break;
+            }
+        }
+    })
+}
+function startBeat(pid,webServers,tcpServers){
+    global.worker.postMessage({
+        type:'start',
+        data:{pid, webServers,tcpServers}
+    })
+}
+function stopBeat(){
+    global.worker.postMessage({
+        type:'stop'
     })
 }
 

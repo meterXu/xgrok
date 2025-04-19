@@ -155,11 +155,14 @@ function findProcessId(processName) {
     });
 }
 
+
+
 module.exports = {
     randomNumber,
     randomString,
     randomUUID,
     isNullOrUndefined,
+    checkProcess,
     killPid,
     platform,
     arch,
