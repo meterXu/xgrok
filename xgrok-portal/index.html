@@ -5,6 +5,7 @@
     <title>xgrok-您的应用代理访问工具</title>
     <link rel="icon" type="image/svg+xml" href="./icon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
     <style>
         html,body{
             margin: 0;
@@ -132,6 +133,9 @@
             filter: saturate(1.2);
             transform: scale(1.05);
         }
+        .github-fork-ribbon:before {
+            background-color: #175abd;
+        }
         @media screen and (max-width:1024px) {
             .container{
                 padding: 0 12px;
@@ -177,6 +181,7 @@
 </head>
 <body>
 <div class="container">
+    <a class="github-fork-ribbon" href="https://github.com/meterXu/xgrok" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
     <div class="header">
         <div class="logo-container">
             <div class="logo-icon"></div>
