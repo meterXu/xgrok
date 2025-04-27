@@ -16,7 +16,7 @@ const props = defineProps(['serverConfig','statusClass'])
     </div>
     <div class="server-info-footer">
       <div class="server-info-speed">
-        <span>上行 {{props.serverConfig.up_speed}}</span> <span>下行 {{props.serverConfig.down_speed}}</span>
+        <span>带宽 {{props.serverConfig.up_speed}}</span>，<span>{{props.serverConfig.region}}/{{props.serverConfig.operator||'-'}}</span>
       </div>
       <div class="server-status">
         <span class="server-status-icon" :class="statusClass"></span>
