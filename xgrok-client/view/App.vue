@@ -1,6 +1,20 @@
 <script setup>
 import HeaderToolBar from "@/components/HeaderToolBar.vue";
 import {deviceType} from "@/libs/common";
+let timer=null;
+const BaseFontSize = 1000/14; //设计稿尺寸/根字体大小
+window.onresize = windowResize;
+windowResize();
+function windowResize() {
+  timer&&clearTimeout(timer);
+  timer = setTimeout(() => {
+    let width = document.body.clientWidth;
+    width=width<800?800:width
+    width=width>1000?1000:width
+    const widthNum = width / BaseFontSize;
+    document.documentElement.style.fontSize = widthNum + 'px';
+  }, 100);
+}
 </script>
 
 <template>

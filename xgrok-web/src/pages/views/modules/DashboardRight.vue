@@ -1,6 +1,7 @@
 <script setup>
 import {ref} from 'vue'
 import {coverEnum} from "@/utils";
+import {Select} from '@element-plus/icons-vue'
 const serverInfo = ref(null)
 serverInfo.value = {
   ipAddress:'ngrok.xdo.icu',

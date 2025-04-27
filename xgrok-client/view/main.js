@@ -6,7 +6,6 @@ import elementUI from 'element-plus'
 import 'element-plus/dist/index.css'
 import '@/assets/main.less'
 import pinia from '@/store/index.js'
-import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import VConsole from 'vconsole'
 
@@ -15,12 +14,8 @@ window.app = app
 app.config.productionTip = false
 app.config.globalProperties.$project = window.project
 app.config.globalProperties.$ls = new util.ls(window.project)
-app.use(elementUI,{ size: 'small',locale:zhCn})
 app.use(pinia)
 app.use(router)
-for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-    app.component(key, component)
-}
 filter(router, window.project)
 app.mount('#app')
 

@@ -1,6 +1,5 @@
 <script setup>
-import {Close, FullScreen, Minus,Plus} from "@element-plus/icons-vue";
-
+import {Close, FullScreen, Minus} from "@element-plus/icons-vue";
 const appName = window.project.variable.appName
 function onMinus(){
   window.electronAPI.minWindow()

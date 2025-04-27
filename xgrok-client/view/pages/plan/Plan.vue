@@ -136,8 +136,8 @@ function onWillPlanExpiredTime(item){
     position: absolute;
     top: 0;
     right: 0;
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     background-color: var(--el-color-success);
     border-bottom-left-radius: 4px;
     background-image: url(../../assets/check-white.svg);
@@ -150,10 +150,10 @@ function onWillPlanExpiredTime(item){
   font-weight: bold;
 }
 .price{
-  font-size: 36px;
+  font-size: 24px;
   font-weight: 600;
   background-color: #e9ecef;
-  padding: 12px 20px;
+  padding: 8px 20px;
   span{
     position:relative;
   }
@@ -187,8 +187,11 @@ function onWillPlanExpiredTime(item){
 </style>
 <style lang="less">
 .product-card{
+  .el-card__header{
+    --el-card-padding:12px;
+  }
   .el-card__footer{
-    padding: 12px;
+    padding: 6px;
   }
   .el-card__body{
     padding: 0;

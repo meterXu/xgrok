@@ -3,7 +3,10 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import {compression} from 'vite-plugin-compression2';
 import vueJsx from '@vitejs/plugin-vue-jsx'
-import { createHtmlPlugin } from 'vite-plugin-html'
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import ElementPlus from 'unplugin-element-plus/vite'
 const project = require("./view/project")
 import copyPlugin from 'vite-copy-plugin'
 const path = require('path')
@@ -12,12 +15,6 @@ const path = require('path')
 export default defineConfig(({command,mode})=>{
   let base = command==="build"?"./" :"/"
   const _project = project(mode)
-  // command==="build"?setTimeout(()=>{
-  //   if(!fs.existsSync("./dist")){
-  //     fs.mkdirSync('./dist')
-  //   }
-  //   fs.writeFileSync("./dist/project.js","window.project="+JSON.stringify(_project,null,2),{"flag":"w"})
-  // },3000):
   fs.writeFileSync("./project.js","window.project="+JSON.stringify(_project,null,2),{"flag":"w"})
   return {
     base,
@@ -32,7 +29,14 @@ export default defineConfig(({command,mode})=>{
       vueJsx(),
       copyPlugin([
         {from:'project.js',to:''}
-      ])
+      ]),
+      AutoImport({
+        resolvers: [ElementPlusResolver()],
+      }),
+      Components({
+        resolvers: [ElementPlusResolver()],
+      }),
+      ElementPlus({})
     ],
     define: { 'process.env': {} },
     server:{
