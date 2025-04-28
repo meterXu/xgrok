@@ -11,8 +11,8 @@ const httpProxy = require('http-proxy');
 const net = require('net')
 const {checkPort} = require("./system");
 const {Worker} = require("worker_threads");
-
-const localhost = '127.0.0.1'
+let serviceNames = null
+let pid = null
 initBeat()
 async function turnOn(xgrokConf){
     try{
@@ -22,7 +22,7 @@ async function turnOn(xgrokConf){
             return Promise.reject({message:'配置为空'})
         }else{
             saveYamlConf(xgrokConf.server,xgrokConf.tunnelWebs,xgrokConf.tunnelServices)
-            const serviceNames = xgrokConf.tunnelWebs.map(c=>c.name).concat(xgrokConf.tunnelServices.map(c=>c.name))
+            serviceNames = xgrokConf.tunnelWebs.map(c=>c.name).concat(xgrokConf.tunnelServices.map(c=>c.name))
             let proxyWebs = xgrokConf.tunnelWebs.filter(c=>c.is_remote===hostType.remote)
             let proxyServices = xgrokConf.tunnelServices.filter(c=>c.is_remote===hostType.remote)
             if(proxyWebs.length>0){
@@ -31,9 +31,9 @@ async function turnOn(xgrokConf){
             if(proxyServices.length>0){
                 global.tcpServers.push(...await startTcpProxy(proxyServices))
             }
-            const pid = await startXgrok(serviceNames)
+            pid = await startXgrok(serviceNames)
             global.logger.info(`xgrok pid is [${pid}]`)
-            startBeat(pid,global.webServers,global.tcpServers)
+            startBeat(pid,proxyWebs.map(c=>c.port),proxyServices.map(c=>c.port))
             return Promise.resolve(pid)
         }
     }catch (err){
@@ -46,6 +46,7 @@ async function turnOff(pid){
     global.worker.postMessage({
         type:'stop'
     })
+    stopBeat()
     return await killPid(pid)
 }
 function startXgrok(names){
@@ -176,21 +177,21 @@ async function startWebServer(webServer,proxyWeb){
         try{
             let checkRes = await checkPort(proxyWeb.port)
             if(checkRes.data){
-                webServer.listen(proxyWeb.port,localhost,(error)=>{
+                webServer.listen(proxyWeb.port,global.proxyLocalhost,(error)=>{
                     if(error){
-                        global.logger.error(`Error starting web proxy[${localhost}:${proxyWeb.host}] server:`, error);
+                        global.logger.error(`Error starting web proxy[${global.proxyLocalhost}:${proxyWeb.host}] server:`, error);
                         resolve(null)
                     }else{
-                        global.logger.info(`web proxy[${proxyWeb.host}] server is running at http://${localhost}:${proxyWeb.port}`);
+                        global.logger.info(`web proxy[${proxyWeb.host}] server is running at http://${global.proxyLocalhost}:${proxyWeb.port}`);
                         resolve(webServer)
                     }
                 })
             }else{
-                global.logger.error(`${localhost}端口${proxyWeb.port}已被其他服务占用，代理无法启动`);
+                global.logger.error(`${global.proxyLocalhost}端口${proxyWeb.port}已被其他服务占用，代理无法启动`);
                 resolve(null)
             }
         }catch (error){
-            global.logger.error(`Error starting web proxy[${localhost}:${proxyWeb.host}] server:`, error);
+            global.logger.error(`Error starting web proxy[${global.proxyLocalhost}:${proxyWeb.host}] server:`, error);
             resolve(null)
         }
     })
@@ -231,35 +232,37 @@ async function startTcpServer(tcpServer){
                         sourceSocket.end()
                     })
                 })
-                serverSocket.listen(tcpServer.port,localhost,()=>{
-                    global.logger.info(`tcp proxy[${tcpServer.host}:${tcpServer.target_port}] server is running on port [${localhost}:${tcpServer.port}]`);
+                serverSocket.listen(tcpServer.port,global.proxyLocalhost,()=>{
+                    global.logger.info(`tcp proxy[${tcpServer.host}:${tcpServer.target_port}] server is running on port [${global.proxyLocalhost}:${tcpServer.port}]`);
                     resolve(serverSocket)
                 })
             }else{
-                global.logger.error(`${localhost}端口${tcpServer.port}已被其他服务占用，代理无法启动`);
+                global.logger.error(`${global.proxyLocalhost}端口${tcpServer.port}已被其他服务占用，代理无法启动`);
                 resolve(null)
             }
         }catch (error){
-            global.logger.error(`Error starting tcp proxy[${localhost}:${tcpServer.host}] server:`, error);
+            global.logger.error(`Error starting tcp proxy[${global.proxyLocalhost}:${tcpServer.host}] server:`, error);
             resolve(null)
         }
     })
 }
 function initBeat(){
     global.worker =  new Worker(path.resolve(__dirname, '../../works/heartBeat.js'))
-    global.worker.on('message',(result)=>{
+    global.worker.on('message',async (result)=>{
         switch (result.type){
             case 'pidIsNull':{
-                // xgrok进程死了
+                // xgrok进程死了,重启进程
+                pid = await startXgrok(serviceNames)
+                global.win.webContents.send('refreshPid',pid)
                 break;
             }
         }
     })
 }
-function startBeat(pid,webServers,tcpServers){
+function startBeat(pid,webPorts,tcpPorts){
     global.worker.postMessage({
         type:'start',
-        data:{pid, webServers,tcpServers}
+        data:{pid, webPorts,tcpPorts}
     })
 }
 function stopBeat(){

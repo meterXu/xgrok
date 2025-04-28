@@ -36,6 +36,9 @@ if(window.project.variable.mode!=='browser'){
     closeWebSocket()
     store.setPid(null)
   })
+  window.electronAPI.onRefreshPid((pid) => {
+    store.setPid(pid)
+  })
 }
 
 onMounted(async () => {

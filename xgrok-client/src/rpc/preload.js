@@ -41,5 +41,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
         type:'checkPort',
         data:data
     }),
-    onAppQuit:(callback)=>ipcRenderer.on('appQuit',(_event, value) => callback(value))
+    onAppQuit:(callback)=>ipcRenderer.on('appQuit',(_event, value) => callback(value)),
+    onRefreshPid:(callback)=>ipcRenderer.on('refreshPid',(_event, value) => callback(value))
 })

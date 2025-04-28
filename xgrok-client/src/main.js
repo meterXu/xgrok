@@ -11,6 +11,7 @@ require('./rpc/backend')
 const {killPid, findProcessId} = require("./libs/util");
 const appName = project.appName
 global.logger.info(`程序启动`)
+global.proxyLocalhost = '127.0.0.1'
 
 let requireClose = false
 const createWindow = () => {

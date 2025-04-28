@@ -53,13 +53,13 @@ async function killPid(pid){
 function checkProcess(pid){
     try {
         process.kill(pid, 0); // 发送信号 0，不会终止进程，但可以用来检查进程是否存在
-        console.log(`进程 ${pid} 存在。`);
+        console.log(`${new Date()} 进程 ${pid} 存在。`);
         return true
     } catch (e) {
         if (e.code === 'ESRCH') {
-            console.log(`进程 ${pid} 不存在。`);
+            console.log(`${new Date()} 进程 ${pid} 不存在。`);
         } else {
-            console.log(`无法检查进程 ${pid}，错误代码：${e.code}`);
+            console.log(`${new Date()} 无法检查进程 ${pid}，错误代码：${e.code}`);
         }
         return false
     }

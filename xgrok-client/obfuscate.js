@@ -18,5 +18,4 @@ copyFolder(sourceDir,outputDir,(oldPath,newPath)=>{
     const obfuscatedCode = JavaScriptObfuscator.obfuscate(code).getObfuscatedCode();
     // 写入混淆后的代码
     fs.writeFileSync(newPath, obfuscatedCode, 'utf8');
-    console.log(`Obfuscated: ${oldPath}`);
 })
