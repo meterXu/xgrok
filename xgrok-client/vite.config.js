@@ -11,7 +11,6 @@ const project = require("./view/project")
 import copyPlugin from 'vite-copy-plugin'
 const path = require('path')
 
-
 export default defineConfig(({command,mode})=>{
   let base = command==="build"?"./" :"/"
   const _project = project(mode)

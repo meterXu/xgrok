@@ -1,5 +1,6 @@
 module.exports = {
     plugins: {
+        "@tailwindcss/postcss": {},
         autoprefixer: {},
         'postcss-pxtorem':{
             rootValue: 14,

@@ -1,6 +1,7 @@
 <script setup>
 import HeaderToolBar from "@/components/HeaderToolBar.vue";
 import {deviceType} from "@/libs/common";
+import bus from "@/libs/bus";
 let timer=null;
 const BaseFontSize = 1000/14; //设计稿尺寸/根字体大小
 window.onresize = windowResize;
@@ -13,6 +14,7 @@ function windowResize() {
     width=width>1000?1000:width
     const widthNum = width / BaseFontSize;
     document.documentElement.style.fontSize = widthNum + 'px';
+    bus.$emit('processWidth',widthNum/14)
   }, 100);
 }
 </script>
@@ -22,7 +24,11 @@ function windowResize() {
     <div class="main">
       <HeaderToolBar v-if="deviceType()==='win32'"></HeaderToolBar>
       <div class="main-container">
-        <router-view/>
+        <router-view v-slot="{ Component }">
+          <keep-alive>
+            <component :is="Component" />
+          </keep-alive>
+        </router-view>
       </div>
     </div>
   </el-config-provider>

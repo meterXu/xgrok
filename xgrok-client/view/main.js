@@ -2,11 +2,9 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router';
 import {filter,util} from 'xxweb-box'
-import elementUI from 'element-plus'
 import 'element-plus/dist/index.css'
 import '@/assets/main.less'
 import pinia from '@/store/index.js'
-import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import VConsole from 'vconsole'
 
 const app = createApp(App)

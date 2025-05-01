@@ -91,7 +91,7 @@ function onPlanBtnClick(){
 
 <template>
   <div class="common-layout">
-    <el-container class="container">
+    <el-container class="my-container">
       <el-header class="header">
         <div class="header-content-wrap" v-if="userInfo">
           <el-button v-if="btnVisible" :type="usePayPlanColor(plan.value)" plain class="no-border" @click="onPlanBtnClick">{{btnText}}</el-button>
@@ -114,7 +114,7 @@ function onPlanBtnClick(){
 .common-layout{
   height: 100%;
 }
-.container{
+.my-container{
   height: 100%;
 }
 .header{
