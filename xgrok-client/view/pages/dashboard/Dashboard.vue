@@ -198,7 +198,7 @@ onUnmounted(() => {
       <div class="flex items-center justify-center">
         <el-progress :width="progressWidth" :stroke-width="8" type="dashboard" :percentage="0" color="#67c23a">
           <template #default="{ percentage }">
-            <span class="text-[14px] font-bold">{{ percentage }}%</span>
+            <span class="text-[16px] font-bold">{{ percentage }}%</span>
           </template>
         </el-progress>
       </div>

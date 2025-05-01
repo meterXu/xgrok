@@ -21,18 +21,15 @@ const props=defineProps(['value'])
   .systemInfo-item{
     text-align: left;
     font-size: 14px;
-    height: 34.5px;
-    line-height: 34.5px;
-    padding-left: 8px;
+    padding: 8px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
   }
   .systemInfo-item-hostname{
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
-    height: 40px;
-    line-height: 40px;
+    padding: 12px 8px;
   }
 }
 </style>
