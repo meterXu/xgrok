@@ -1,9 +1,9 @@
 import {useAppStore} from "@/store";
 
-if(!window.worker){
-    window.worker = new Worker(new URL('./app.worker.js', import.meta.url));
+if(!window.heartBeatWorker){
+    window.heartBeatWorker = new Worker(new URL('./app.worker.js', import.meta.url));
 }
-worker.onmessage=function (e){
+heartBeatWorker.onmessage=function (e){
     switch (e.data.type){
         case 'checkServer':{
             updateServer(e.data)
@@ -15,12 +15,13 @@ function updateServer(data){
     const store = useAppStore()
     const {selectedServer} = store
     if(selectedServer?.value){
-        selectedServer.value.is_online = data.is_online
-        selectedServer.value.statusClass = data.statusClass
-        store.setSelectedServer(selectedServer.value)
+        let _data = {...selectedServer?.value}
+        _data.is_online = data.is_online
+        _data.statusClass = data.statusClass
+        store.setSelectedServer(_data)
     }
 }
 
 export function sendMessage(msgObj){
-    worker.postMessage(msgObj)
+    heartBeatWorker.postMessage(msgObj)
 }

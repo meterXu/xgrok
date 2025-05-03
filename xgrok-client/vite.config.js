@@ -9,6 +9,8 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import ElementPlus from 'unplugin-element-plus/vite'
 const project = require("./view/project")
 import copyPlugin from 'vite-copy-plugin'
+import Icons from 'unplugin-icons/vite'
+import IconsResolver from 'unplugin-icons/resolver'
 const path = require('path')
 
 export default defineConfig(({command,mode})=>{
@@ -30,11 +32,24 @@ export default defineConfig(({command,mode})=>{
         {from:'project.js',to:''}
       ]),
       AutoImport({
-        resolvers: [ElementPlusResolver()],
+        imports: [
+          'vue',
+          'vue-router',
+        ],
+        resolvers: [
+            ElementPlusResolver(),
+            IconsResolver({
+              enabledCollections: ['icon-park-outline','ep']
+            })
+        ],
       }),
       Components({
-        resolvers: [ElementPlusResolver()],
+        resolvers: [ElementPlusResolver(),
+          IconsResolver({
+            enabledCollections:['icon-park-outline','ep']
+          })],
       }),
+      Icons({ autoInstall: true }),
       ElementPlus({})
     ],
     define: { 'process.env': {} },

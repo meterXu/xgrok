@@ -1,5 +1,5 @@
 import {createPinia,defineStore} from "pinia";
-import {ref, computed, reactive} from 'vue'
+import {ref, computed, shallowReactive,shallowRef} from 'vue'
 import * as types from "xxweb-box/utils/mutation-types";
 import {getStoreValue,getLsValue} from "../../src/libs/common"
 import {payPlan} from "@/libs/enums";
@@ -8,12 +8,12 @@ import moment from 'moment'
 
 export const useAppStore = defineStore('app', ()=>{
     const $ls = window.app.config.globalProperties.$ls
-    const _userInfo = ref(null)
+    const _userInfo = shallowRef(null)
     const _token = ref(null)
     const _pid = ref(null)
-    const _selectedServer = ref(null)
+    const _selectedServer = shallowRef(null)
     const _clientId = ref(null)
-    const _isDelete = reactive({
+    const _isDelete = shallowReactive({
         web:false,
         service:false
     })
@@ -21,12 +21,12 @@ export const useAppStore = defineStore('app', ()=>{
         web:ref([]),
         service:ref([])
     }
-    const _dialogVisible = reactive({
+    const _dialogVisible = shallowReactive({
         web:false,
         service:false
     })
-    const _plan = reactive({})
-    const _orderStatus = reactive({orderId:null,isPaySuccess:null})
+    const _plan = shallowReactive({})
+    const _orderStatus = shallowReactive({orderId:null,isPaySuccess:null})
     const _tunnelForm = ref(null)
     const _userName=ref(null)
 
@@ -111,7 +111,7 @@ export const useAppStore = defineStore('app', ()=>{
         $ss.set("pid",getLsValue(data))
     }
     function setSelectedServer(data){
-        _selectedServer.value=data
+        _selectedServer.value = data
         $ls.set("selectedServer",JSON.stringify(getLsValue(data)))
     }
     function setIsDelete(type,value){

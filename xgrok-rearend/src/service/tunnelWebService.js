@@ -1,5 +1,5 @@
 import ResultModel from "../model/sys/resultModel.js";
-import {randomUUID} from "../utils/index.js";
+import {checkUrl, randomUUID} from "../utils/index.js";
 import {isDelete, status, tunnelType} from "../utils/enum.js";
 import {Prisma} from "@prisma/client";
 const {PrismaClient} = require("@prisma/client");
@@ -110,20 +110,8 @@ export default class TunnelWebService {
             if(existRes.length>0&&parseInt(existRes[0]['num'])>0){
                 resolve(false)
             }else{
-                //todo 备案之后再说
-                resolve(true)
-                // const timeoutPromise = new Promise((resolve, reject) => {
-                //     const timer = setTimeout(() => {
-                //         clearTimeout(timer);
-                //         resolve(new Error('请求超时'));
-                //     }, 3000);
-                // });
-                // Promise.race([axios.get(`http://${name}.${domain}:${port}/`), timeoutPromise])
-                //     .then(response=>{
-                //         resolve(false)
-                //     }).catch(err=>{
-                //     resolve(true)
-                // })
+                let res = await checkUrl(name,domain,port,3000)
+                resolve(!res)
             }
         })
 

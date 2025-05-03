@@ -5,6 +5,7 @@ import config from "../config";
 import fs from "fs";
 import path from "path";
 import net from "net";
+import http from "http";
 const os = require('os');
 export function randomNumber() {
     const random = (min, max) => {
@@ -140,23 +141,41 @@ export function checkServerOnline(domain,port){
         socket.once('connect', () => {
             socket.destroy();
             console.log(`端口 ${port} 在 ${domain} 上被占用。`);
-            resolve(false)
+            resolve(true)
         });
         socket.once('timeout', () => {
             console.log(`连接到 ${domain}:${port} 超时。`);
-            resolve(true)
+            resolve(false)
             socket.destroy();
         });
         socket.once('error', (err) => {
             if (err.code === 'ECONNREFUSED') {
-                resolve(true)
-            } else {
                 resolve(false)
+            } else {
+                resolve(true)
                 console.log(`在检查端口时发生错误: ${err.message}`);
             }
         });
         socket.connect(port, domain);
     })
+}
+
+export function checkUrl(name, domain, port, timeout=3000) {
+    const url = `http://${name}.${domain}:${port}/`
+    new Promise((resolve) => {
+        setTimeout(() =>  resolve(false), timeout);
+    });
+    return new Promise((resolve) => {
+        http.get(url, (res) => {
+            if (res.statusCode === 200) {
+                resolve(true); // 可访问
+            } else {
+                resolve(false); // 不可访问
+            }
+        }).on('error', () => {
+            resolve(false); // 请求错误
+        });
+    });
 }
 
 export function getPaySuccessEmail(alipayNotifyModel){

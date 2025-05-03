@@ -20,7 +20,7 @@ function windowResize() {
 </script>
 
 <template>
-  <el-config-provider :autoInsertSpace="true">
+  <el-config-provider>
     <div class="main">
       <HeaderToolBar v-if="deviceType()==='win32'"></HeaderToolBar>
       <div class="main-container">

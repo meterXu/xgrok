@@ -5,7 +5,6 @@ const tag = tags(['Server'])
 import ServerService from '../service/serverService.js'
 import ResultModel from "../model/sys/resultModel.js";
 import OrderByModel from "../model/sys/orderByModel.js";
-import {checkServerOnline} from "../utils";
 import {isOnline} from "../utils/enum";
 
 export default class ServerController {

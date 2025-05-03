@@ -14,7 +14,7 @@ export default class MainThreadWorker{
         if(!this.orderService)
             this.orderService = new OrderService()
         if(isMainThread){
-            global.worker.on("message",async result=>{
+            global.heartBeatWorker.on("message",async result=>{
                 switch(result.type){
                     case 'order':{
                         this.sendWebSocketMsg(result)

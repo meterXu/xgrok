@@ -4,13 +4,12 @@ import {useRouter,useRoute,onBeforeRouteUpdate} from 'vue-router'
 import {ElMessage, ElMessageBox} from "element-plus";
 import {closeWebSocket, queryPayPlan} from "@/api";
 import {usePayPlanColor} from '@/libs/common'
-import {onBeforeMount, ref} from 'vue'
-
 const store = useAppStore()
 const {userInfo,pid,plan} = store
 const router = useRouter()
 const route = useRoute()
 const btnText = ref(null)
+const btnIcon = ref(IIconParkOutlineHandRight)
 const btnVisible = ref(true)
 
 queryPayPlan().then(res=>{
@@ -67,8 +66,10 @@ onBeforeMount(()=>{
 onBeforeRouteUpdate((to, from, next)=>{
   if(to.name==='Plan'){
     btnText.value='返回'
+    btnIcon.value = IEpBack
   }else{
     btnText.value= getBtnText(plan)
+    btnIcon.value = IIconParkOutlineHandRight
   }
   btnVisible.value = to.name==='Plan'||to.name==='Dashboard'
   next()
@@ -94,7 +95,11 @@ function onPlanBtnClick(){
     <el-container class="my-container">
       <el-header class="header">
         <div class="header-content-wrap" v-if="userInfo">
-          <el-button v-if="btnVisible" :type="usePayPlanColor(plan.value)" plain class="no-border" @click="onPlanBtnClick">{{btnText}}</el-button>
+          <el-button v-if="btnVisible" :type="usePayPlanColor(plan.value)" plain class="no-border"
+                     @click="onPlanBtnClick">
+            <component :is="btnIcon"></component>
+            &nbsp;{{btnText}}
+          </el-button>
           <div v-else></div>
           <div>
             {{userInfo.user.username}}

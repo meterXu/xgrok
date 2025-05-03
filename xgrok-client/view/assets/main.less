@@ -17,17 +17,19 @@
   --scrollbar-thumb-active-color:rgb(68, 68, 68);
   --edit-icon-color: #979797;
   --light-border-color:rgba(220, 223, 230, 0.8);
+  --el-color-primary:#30a44b;
+  --el-color-success:#30a44b;
   .el-input,.el-textarea{
-    --el-input-focus-border-color:var(--el-color-success);
+    --el-input-focus-border-color:var(--el-color-primary);
   }
   .el-checkbox{
-    --el-checkbox-input-border-color-hover:var(--el-color-success);
-    --el-checkbox-checked-bg-color:var(--el-color-success);
-    --el-checkbox-checked-input-border-color:var(--el-color-success);
-    --el-checkbox-checked-text-color:var(--el-color-success);
+    --el-checkbox-input-border-color-hover:var(--el-color-primary);
+    --el-checkbox-checked-bg-color:var(--el-color-primary);
+    --el-checkbox-checked-input-border-color:var(--el-color-primary);
+    --el-checkbox-checked-text-color:var(--el-color-primary);
   }
   .el-dialog__headerbtn:hover .el-dialog__close,.el-message-box__headerbtn:hover .el-message-box__close {
-    color: var(--el-color-success);
+    color: var(--el-color-primary);
   }
 }
 .my-info-btn{
@@ -46,10 +48,10 @@
   }
 }
 .my-info-btn-success{
-  color:var(--el-color-success);
+  color:var(--el-color-primary);
   &:hover{
-    border-color: var(--el-color-success);
-    background-color:var(--el-color-success);
+    border-color: var(--el-color-primary);
+    background-color:var(--el-color-primary);
     color:var(--primary-btn-bg);
   }
 }

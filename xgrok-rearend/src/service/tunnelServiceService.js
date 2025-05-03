@@ -116,7 +116,7 @@ export default class TunnelServiceService {
                 resolve(false)
             }else{
                 let res = await checkServerOnline(domain,port)
-                resolve(res)
+                resolve(!res)
             }
         })
     }

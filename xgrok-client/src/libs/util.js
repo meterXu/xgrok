@@ -1,3 +1,5 @@
+const http  = require('node:http');
+const net = require('node:net')
 const os  = require('node:os')
 const fs = require("fs");
 const path = require("path");
@@ -17,7 +19,6 @@ function randomNumber() {
         return Number.NaN
     }
 }
-
 function randomString(length = 1, chats = '0123456789qwertyuioplkjhgfdsazxcvbnm') {
     let str = ''
     for (let i = 0; i < length; i++) {
@@ -26,18 +27,15 @@ function randomString(length = 1, chats = '0123456789qwertyuioplkjhgfdsazxcvbnm'
     }
     return str
 }
-
 function randomUUID(isFull=false) {
     const chats= isFull?undefined:'0123456789abcdef'
     return randomString(32, chats)
 }
-
 function isNullOrUndefined(value){
     return value===undefined||value===null
 }
-
 // 删除进程
-async function killPid(pid){
+function killPid(pid){
     return new Promise((resolve, reject) => {
         if(checkProcess(pid)){
             process.kill(pid, 'SIGTERM');
@@ -49,7 +47,6 @@ async function killPid(pid){
         closeAllTcpServer(global.tcpServers)
     })
 }
-
 function checkProcess(pid){
     try {
         process.kill(pid, 0); // 发送信号 0，不会终止进程，但可以用来检查进程是否存在
@@ -64,7 +61,6 @@ function checkProcess(pid){
         return false
     }
 }
-
 // 获取操作系统类型、
 // "darwin" - darwin
 // "linux" - Linux
@@ -127,7 +123,51 @@ function closeAllTcpServer(tcpServers){
         })
     })
 }
-
+function checkServerOnline(domain,port){
+    return new Promise((resolve, reject) => {
+        const socket = new net.Socket();
+        socket.setTimeout(3000); // 设置超时时间，根据需要调整
+        socket.once('connect', () => {
+            socket.destroy();
+            console.log(`${new Date()} 端口 ${port} 在 ${domain} 上被占用。`);
+            resolve(true)
+        });
+        socket.once('timeout', () => {
+            console.log(`${new Date()} 连接到 ${domain}:${port} 超时。`);
+            resolve(false)
+            socket.destroy();
+        });
+        socket.once('error', (err) => {
+            if (err.code === 'ECONNREFUSED') {
+                resolve(false)
+            } else {
+                resolve(true)
+                console.log(`${new Date()} 在检查端口时发生错误: ${err.message}`);
+            }
+        });
+        socket.connect(port, domain);
+    })
+}
+function checkUrl(name, domain, port, timeout=500) {
+    const url = `http://${name}.${domain}:${port}/`
+    new Promise((resolve) => {
+        setTimeout(() =>  resolve(false), timeout);
+    });
+    return new Promise((resolve) => {
+        http.get(url, (res) => {
+            if (res.statusCode === 200) {
+                console.log(`${new Date()} ${url} 可访问`);
+                resolve(true);
+            } else {
+                console.log(`${new Date()} ${url} 不可访问`);
+                resolve(false);
+            }
+        }).on('error', () => {
+            console.log(`${new Date()} ${url} 请求错误`);
+            resolve(false);
+        });
+    });
+}
 function findProcessId(processName) {
     return new Promise((resolve, reject) => {
         let command;
@@ -155,8 +195,6 @@ function findProcessId(processName) {
     });
 }
 
-
-
 module.exports = {
     randomNumber,
     randomString,
@@ -169,5 +207,7 @@ module.exports = {
     hostname,
     version,
     copyFolder,
-    findProcessId
+    findProcessId,
+    checkServerOnline,
+    checkUrl
 }

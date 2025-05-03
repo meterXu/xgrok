@@ -2,7 +2,7 @@ const path = require("node:path");
 const {execFile} = require("node:child_process");
 const fs = require("node:fs");
 const {stringify} = require('yaml')
-const {killPid} = require("../util");
+const {killPid,findProcessId} = require("../util");
 const {serviceType, hostType} = require('../enum')
 const {platform,arch} = require("../util");
 const { shell } = require('electron');
@@ -16,6 +16,7 @@ let pid = null
 initBeat()
 async function turnOn(xgrokConf){
     try{
+        global.win.webContents.send('process',1)
         global.webServers = global.webServers||[]
         global.tcpServers = global.tcpServers||[]
         if(xgrokConf.tunnelWebs.length===0&&xgrokConf.tunnelServices.length===0){
@@ -33,7 +34,8 @@ async function turnOn(xgrokConf){
             }
             pid = await startXgrok(serviceNames)
             global.logger.info(`xgrok pid is [${pid}]`)
-            startBeat(pid,proxyWebs.map(c=>c.port),proxyServices.map(c=>c.port))
+            startBeat(pid,proxyWebs.map(c=>({isOnline:false,params:[c.name,xgrokConf.server.domain,80]})),
+                proxyServices.map(c=>({isOnline:false,params:[xgrokConf.server.domain,c.remote_port]})))
             return Promise.resolve(pid)
         }
     }catch (err){
@@ -41,13 +43,20 @@ async function turnOn(xgrokConf){
     }
 }
 async function turnOff(pid){
-    fs.existsSync(userXgrokCfgFilePath())&&fs.unlinkSync(userXgrokCfgFilePath())
+    global.win.webContents.send('process',99)
     global.logger.info(`kill xgrok,pid is ${pid}`)
-    global.worker.postMessage({
-        type:'stop'
-    })
+    fs.existsSync(userXgrokCfgFilePath())&&fs.unlinkSync(userXgrokCfgFilePath())
     stopBeat()
-    return await killPid(pid)
+    let res = null
+    if(pid){
+        res = await killPid(pid)
+    }else{
+        let pids = await findProcessId('compile')
+        let ress = await Promise.all(pids.map(c=>killPid(c)))
+        res = !ress.some(c=>c.false)
+    }
+    global.win.webContents.send('process',0)
+    return res
 }
 function startXgrok(names){
     return new Promise(async (resolve, reject) => {
@@ -247,8 +256,8 @@ async function startTcpServer(tcpServer){
     })
 }
 function initBeat(){
-    global.worker =  new Worker(path.resolve(__dirname, '../../works/heartBeat.js'))
-    global.worker.on('message',async (result)=>{
+    global.heartBeatWorker =  new Worker(path.resolve(__dirname, '../../works/heartBeat.js'))
+    global.heartBeatWorker.on('message',async (result)=>{
         switch (result.type){
             case 'pidIsNull':{
                 // xgrok进程死了,重启进程
@@ -256,17 +265,20 @@ function initBeat(){
                 global.win.webContents.send('refreshPid',pid)
                 break;
             }
+            case 'process':{
+                global.win.webContents.send('process',result.data)
+            }
         }
     })
 }
-function startBeat(pid,webPorts,tcpPorts){
-    global.worker.postMessage({
+function startBeat(pid,webSource,tcpSource){
+    global.heartBeatWorker.postMessage({
         type:'start',
-        data:{pid, webPorts,tcpPorts}
+        data:{pid, webSource,tcpSource}
     })
 }
 function stopBeat(){
-    global.worker.postMessage({
+    global.heartBeatWorker.postMessage({
         type:'stop'
     })
 }

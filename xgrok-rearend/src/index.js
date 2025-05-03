@@ -62,5 +62,5 @@ else{
 
 global.webSocket = new webSocket()
 server&&global.webSocket.init(server)
-global.worker =  new Worker(path.resolve(__dirname, 'works/childThread.js'))
+global.heartBeatWorker =  new Worker(path.resolve(__dirname, 'works/childThread.js'))
 new MainThreadWorker()

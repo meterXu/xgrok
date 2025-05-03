@@ -8,7 +8,7 @@ import {
   queryClient,
   createClient, updateClient, closeWebSocket
 } from '@/api'
-import {onMounted, onUnmounted, ref, watch} from 'vue'
+import {onMounted, onUnmounted, ref, watch,computed} from 'vue'
 import {ElMessage} from 'element-plus'
 import {useAppStore} from '@/store';
 import ServerConfigs from '@/pages/dashboard/modules/ServerConfig/ServerConfigs.vue'
@@ -21,17 +21,16 @@ import TunnelServiceConfigItem from "@/pages/dashboard/modules/TunnelService/Tun
 import SystemInfo from "@/components/SystemInfo.vue"
 import {sendMessage} from '@/worker/mainThread'
 import {isOnline} from "@/libs/enums";
-import {Refresh, Lock, Unlock,Check} from "@element-plus/icons-vue";
-import {$off, $on} from 'xxweb-box/utils/gogocodeTransfer'
+import {Refresh, Close,Lock, Unlock, Check, Loading} from "@element-plus/icons-vue";
 import bus from "@/libs/bus";
 const store = useAppStore()
 const serverConfigs = ref(null)
 const tunnelWebConfigs = ref(null)
 const tunnelServiceConfigs = ref(null)
 const tunnelLoading = ref(true)
-const switchLoading = ref(false)
 const systemInfo = ref(null)
 const progressWidth = ref(85)
+const percentage = ref(0)
 const {pid, selectedServer, dialogVisible, clientId} = store
 
 if (window.project.variable.mode !== 'browser') {
@@ -42,12 +41,25 @@ if (window.project.variable.mode !== 'browser') {
   window.electronAPI.onRefreshPid((pid) => {
     store.setPid(pid)
   })
+  window.electronAPI.onProcess((_percentage)=>{
+    percentage.value = _percentage
+  })
 }
-
+const colors = [
+  { color: '#f56c6c', percentage: 20 },
+  { color: '#e6a23c', percentage: 40 },
+  { color: '#6f7ad3', percentage: 60 },
+  { color: '#1989fa', percentage: 80 },
+  { color: '#30a44b', percentage: 100 },
+]
 onMounted(async () => {
   await initServerConfigData()
   await initClient()
   loadTunnelData()
+})
+
+const switchLoading = computed(()=>{
+  return percentage.value<100
 })
 
 async function initServerConfigData() {
@@ -88,21 +100,22 @@ function onTurnOn() {
   store.setIsDeleteAll(false)
   store.setDeleteIdsAll([])
   if (selectedServer.value && (tunnelWebConfigs.value?.length > 0 || tunnelServiceConfigs.value?.length > 0)) {
-    switchLoading.value = true
     let data = {
       server: selectedServer.value,
       tunnelWebs: tunnelWebConfigs.value,
       tunnelServices: tunnelServiceConfigs.value
     }
-    window.electronAPI.turnOn(JSON.parse(JSON.stringify(data))).then(res => {
-      if (res.success) {
-        store.setPid(res.data.pid)
-      } else {
-        alert('打开失败，' + res.message)
-      }
-    }).finally(() => {
-      switchLoading.value = false
-    })
+    if(window.project.variable.mode==='browser'){
+      store.setPid(1)
+    }else {
+      window.electronAPI.turnOn(JSON.parse(JSON.stringify(data))).then(res => {
+        if (res.success) {
+          store.setPid(res.data.pid)
+        } else {
+          alert('打开失败，' + res.message)
+        }
+      })
+    }
   } else {
     ElMessage.warning('没有任何配置，请先添加')
   }
@@ -111,16 +124,17 @@ function onTurnOn() {
 function onTurnOff() {
   store.setIsDeleteAll(false)
   store.setDeleteIdsAll([])
-  switchLoading.value = true
-  window.electronAPI.turnOff(pid.value).then(res => {
-    if (res.success) {
-      store.setPid(null)
-    } else {
-      alert('关闭失败')
-    }
-  }).finally(() => {
-    switchLoading.value = false
-  })
+  if(window.project.variable.mode==='browser'){
+    store.setPid(null)
+  }else{
+    window.electronAPI.turnOff(pid.value).then(res => {
+      if (res.success) {
+        store.setPid(null)
+      } else {
+        alert('关闭失败')
+      }
+    })
+  }
 }
 
 function onSwitchChange(value) {
@@ -183,7 +197,7 @@ onMounted(()=>{
 })
 onUnmounted(() => {
   sendMessage({type: 'closeCheckServer', server_id: selectedServer?.value?.id})
-  $off('processWidth')
+  bus.$off('processWidth')
 })
 </script>
 <template>
@@ -196,7 +210,7 @@ onUnmounted(() => {
         <SystemInfo :value="systemInfo"></SystemInfo>
       </div>
       <div class="flex items-center justify-center">
-        <el-progress :width="progressWidth" :stroke-width="8" type="dashboard" :percentage="0" color="#67c23a">
+        <el-progress :width="progressWidth" :stroke-width="8" type="dashboard" :percentage="percentage" :color="colors">
           <template #default="{ percentage }">
             <span class="text-[16px] font-bold">{{ percentage }}%</span>
           </template>
@@ -207,7 +221,7 @@ onUnmounted(() => {
       <template #add-icon>
         <div class="flex flex-row items-center justify-between gap-2">
           <div>
-            <el-button plain size="small" circle :icon="Lock"></el-button>
+            <el-button plain size="small" circle :icon="Unlock"></el-button>
           </div>
           <div>
             <el-button plain size="small" circle :icon="Refresh"></el-button>
@@ -216,11 +230,17 @@ onUnmounted(() => {
                       :disabled="selectedServer.is_online===isOnline.online" effect="light" content="服务不可用"
                       placement="top">
             <el-switch size="large" :model-value="Boolean(pid)"
-                       :loading="switchLoading"
                        :disabled="selectedServer.is_online===isOnline.offline"
                        :style="['--el-switch-on-color: var(--el-color-success)',selectedServer.is_online===isOnline.offline&&'--el-switch-off-color: var(--el-color-danger)']"
-                       @change="onSwitchChange"
-            ></el-switch>
+                       @change="onSwitchChange">
+              <template #active-action>
+                <el-icon v-if="switchLoading" :class="{'is-loading':switchLoading }"><Loading/></el-icon>
+                <el-icon v-else><Check/></el-icon>
+              </template>
+              <template #inactive-action>
+                <el-icon><Close/></el-icon>
+              </template>
+            </el-switch>
           </el-tooltip>
         </div>
       </template>
