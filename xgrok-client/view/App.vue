@@ -4,7 +4,7 @@ import {deviceType} from "@/libs/common";
 import bus from "@/libs/bus";
 let timer=null;
 const BaseFontSize = 1000/14; //设计稿尺寸/根字体大小
-window.onresize = windowResize;
+// window.onresize = windowResize;
 windowResize();
 function windowResize() {
   timer&&clearTimeout(timer);

@@ -56,8 +56,8 @@ watch(()=>formData.host,(nv)=>{
   if(urlSchema){
     formData.port = urlSchema.port
     formData.type = urlSchema.protocol
+    formData.is_remote = isLocalHost(nv)?0:1
   }
-  formData.is_remote = isLocalHost(nv)?0:1
 })
 
 function onSave(){
@@ -168,26 +168,28 @@ created()
            :show-message="false"
            @validate="(prop,valid,value)=>{onFormValidate(validateRes,{prop,valid,value})}">
     <el-form-item label="名称" prop="name">
-      <el-input v-model="formData.name">
+      <el-input v-model="formData.name" placeholder="请输入网页名称">
         <template #suffix>
           <InfoTip :text="tipText.zh.name" :loading="validateNameLoading"></InfoTip>
         </template>
       </el-input>
     </el-form-item>
     <el-form-item label="代理网址" prop="host">
-      <el-input v-model="formData.host">
+      <el-input v-model="formData.host" placeholder="请输入网页地址">
         <template #suffix>
           <InfoTip :text="tipText.zh.url"></InfoTip>
         </template>
       </el-input>
     </el-form-item>
     <el-form-item label="描述" prop="remark">
-      <el-input type="textarea" v-model="formData.remark"></el-input>
+      <el-input type="textarea" v-model="formData.remark" placeholder="请输入描述"></el-input>
     </el-form-item>
   </el-form>
   <div class="form-btns">
-    <el-button size="default" type="info" plain class="no-border my-info-btn-success" :loading="saveLoading" :disabled="addBtnDisabled" @click="onSave">确定</el-button>
-    <el-button size="default" type="info" plain class="my-info-btn no-border" @click="onCancel">取消</el-button>
+    <el-button size="default" type="info" plain class="no-border my-info-btn-success" :loading="saveLoading" :disabled="addBtnDisabled" @click="onSave">
+      <i-ep-check/>&nbsp;确定</el-button>
+    <el-button size="default" type="info" plain class="my-info-btn no-border" @click="onCancel">
+      <i-ep-close/>&nbsp;取消</el-button>
   </div>
 </template>
 

@@ -16,7 +16,6 @@ let pid = null
 initBeat()
 async function turnOn(xgrokConf){
     try{
-        global.win.webContents.send('process',1)
         global.webServers = global.webServers||[]
         global.tcpServers = global.tcpServers||[]
         if(xgrokConf.tunnelWebs.length===0&&xgrokConf.tunnelServices.length===0){
@@ -43,7 +42,6 @@ async function turnOn(xgrokConf){
     }
 }
 async function turnOff(pid){
-    global.win.webContents.send('process',99)
     global.logger.info(`kill xgrok,pid is ${pid}`)
     fs.existsSync(userXgrokCfgFilePath())&&fs.unlinkSync(userXgrokCfgFilePath())
     stopBeat()

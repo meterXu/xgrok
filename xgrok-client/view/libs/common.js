@@ -61,14 +61,18 @@ export function alert(msg,title,options){
 }
 
 export function getUrlSchema(urlString){
-    if(testUrl(urlString)){
-        const url = new URL(urlString);
-        let protocol = url.protocol === 'http:'?httpType.http:httpType.https
-        return {
-            protocol:protocol,
-            port:url.port||(protocol===httpType.http?defaultPort.http:defaultPort.https)
+    try{
+        if(testUrl(urlString)){
+            const url = new URL(urlString);
+            let protocol = url.protocol === 'http:'?httpType.http:httpType.https
+            return {
+                protocol:protocol,
+                port:url.port||(protocol===httpType.http?defaultPort.http:defaultPort.https)
+            }
+        }else{
+            return null
         }
-    }else{
+    }catch (err){
         return null
     }
 }

@@ -7,7 +7,7 @@ const props = defineProps(['tunnelList','isDelete','deleteIds'])
 const emits = defineEmits(['delSelectChange','editTunnel'])
 const ids = ref([])
 const store = useAppStore()
-const {pid} = store
+const {pid,isCloseEdit} = store
 
 watch(()=>props.isDelete,()=>{
   ids.value=[]
@@ -24,7 +24,7 @@ function onDelSelectChange(flag,id){
 }
 
 function onEditTunnel(id){
-  !Boolean(pid.value)&&emits('editTunnel',id)
+  !isCloseEdit.value&&emits('editTunnel',id)
 }
 </script>
 
@@ -34,7 +34,7 @@ function onEditTunnel(id){
     <li v-for="item in tunnelList" :key="item.id">
       <div class="icon-control">
         <el-icon @click="onEditTunnel(item.id)" class="edit-icon"
-                 :disabled="Boolean(pid)"><Edit/></el-icon>
+                 :disabled="isCloseEdit"><Edit/></el-icon>
         <el-checkbox v-if="isDelete"
                      size="large"
                      class="del-checkbox"

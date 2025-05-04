@@ -1,6 +1,6 @@
 <script setup>
 import {defineModel,watch,ref} from "vue";
-import {checkServerOnline, queryServersConfig} from "@/api";
+import {queryServersConfig} from "@/api";
 
 const props=defineProps(['title','width'])
 const model=defineModel()

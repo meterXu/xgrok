@@ -28,7 +28,8 @@ export const useAppStore = defineStore('app', ()=>{
     const _plan = shallowReactive({})
     const _orderStatus = shallowReactive({orderId:null,isPaySuccess:null})
     const _tunnelForm = ref(null)
-    const _userName=ref(null)
+    const _userName= ref(null)
+    const _configIsLock = ref(false)
 
     //computed
     const userInfo = computed(()=>{
@@ -88,6 +89,12 @@ export const useAppStore = defineStore('app', ()=>{
             _userName.value = $ls.get("username")
         }
         return _userName
+    })
+    const configIsLock = computed(()=>{
+        return _configIsLock
+    })
+    const isCloseEdit = computed(()=>{
+        return Boolean(pid.value)&&configIsLock.value
     })
 
     //action
@@ -150,6 +157,9 @@ export const useAppStore = defineStore('app', ()=>{
         _userName.value = getStoreValue(data)
         $ls.set('username',getLsValue(data))
     }
+    function setConfigIsLock(data){
+        _configIsLock.value=data
+    }
 
     return {
         token,
@@ -164,6 +174,8 @@ export const useAppStore = defineStore('app', ()=>{
         orderStatus,
         tunnelForm,
         userName,
+        configIsLock,
+        isCloseEdit,
         setUserInfo,
         setToken,
         setPid,
@@ -177,9 +189,8 @@ export const useAppStore = defineStore('app', ()=>{
         setPlan,
         setOrderStatus,
         setTunnelForm,
-        setUserName
+        setUserName,
+        setConfigIsLock
     }
 })
-
-const pinia = createPinia()
-export default pinia
+export default createPinia()

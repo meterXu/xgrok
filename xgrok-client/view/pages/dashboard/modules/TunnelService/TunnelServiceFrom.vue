@@ -171,14 +171,14 @@ created()
            :show-message="false"
            @validate="(prop,valid,value)=>{onFormValidate(validateRes,{prop,valid,value})}">
     <el-form-item label="名称" prop="name">
-      <el-input v-model="formData.name">
+      <el-input v-model="formData.name" placeholder="请输入名称">
         <template #suffix>
           <InfoTip :text="tipText.zh.name" :loading="validateNameLoading"></InfoTip>
         </template>
       </el-input>
     </el-form-item>
     <el-form-item label="代理地址" prop="host">
-      <el-input v-model="formData.host">
+      <el-input v-model="formData.host" placeholder="请输入代理地址">
         <template #suffix>
           <InfoTip :text="tipText.zh.host"></InfoTip>
         </template>
@@ -186,7 +186,7 @@ created()
     </el-form-item>
     <el-form-item label="代理端口" prop="port">
       <div class="port-wrap">
-        <el-input-number v-model="formData.port"></el-input-number>
+        <el-input-number v-model="formData.port" placeholder="端口号"></el-input-number>
         <div class="port-content">
           <InfoTip :text="tipText.zh.port" :loading="validateLocalPortLoading"></InfoTip>
         </div>
@@ -194,7 +194,7 @@ created()
     </el-form-item>
     <el-form-item label="映射端口" prop="remote_port">
       <div class="port-wrap">
-        <el-input-number v-model="formData.remote_port"></el-input-number>
+        <el-input-number v-model="formData.remote_port" placeholder="端口号"></el-input-number>
         <div class="port-content">
           <div class="port-rang-content">端口范围：{{portRange||'-'}}</div>
           <InfoTip :text="tipText.zh.remote_port" :loading="validateRemotePortLoading"></InfoTip>
@@ -202,12 +202,14 @@ created()
       </div>
     </el-form-item>
     <el-form-item label="描述" prop="remark">
-      <el-input type="textarea" v-model="formData.remark"></el-input>
+      <el-input type="textarea" v-model="formData.remark" placeholder="请输入描述"></el-input>
     </el-form-item>
   </el-form>
   <div class="form-btns">
-    <el-button size="default" type="info" plain class="no-border my-info-btn-success" :disabled="addBtnDisabled" :loading="saveLoading" @click="onSave">确定</el-button>
-    <el-button size="default" type="info" plain class="my-info-btn no-border" @click="onCancel">取消</el-button>
+    <el-button size="default" type="info" plain class="no-border my-info-btn-success" :disabled="addBtnDisabled" :loading="saveLoading" @click="onSave">
+      <i-ep-check/>&nbsp;确定</el-button>
+    <el-button size="default" type="info" plain class="my-info-btn no-border" @click="onCancel">
+      <i-ep-close/>&nbsp;取消</el-button>
   </div>
 </template>
 

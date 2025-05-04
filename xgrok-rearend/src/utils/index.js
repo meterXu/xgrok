@@ -162,9 +162,6 @@ export function checkServerOnline(domain,port){
 
 export function checkUrl(name, domain, port, timeout=3000) {
     const url = `http://${name}.${domain}:${port}/`
-    new Promise((resolve) => {
-        setTimeout(() =>  resolve(false), timeout);
-    });
     return new Promise((resolve) => {
         http.get(url, (res) => {
             if (res.statusCode === 200) {
@@ -175,6 +172,7 @@ export function checkUrl(name, domain, port, timeout=3000) {
         }).on('error', () => {
             resolve(false); // 请求错误
         });
+        setTimeout(() => {resolve(false)}, timeout);
     });
 }
 

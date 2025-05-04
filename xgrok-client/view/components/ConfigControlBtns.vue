@@ -4,7 +4,7 @@ import {useAppStore} from "@/store";
 
 const emits = defineEmits(['addTunnel','delTunnels','selectAll','cleanAll','confirmDelTunnels'])
 const props = defineProps(['isDelete','deleteIds','allCount'])
-const {pid}  = useAppStore()
+const {pid,isCloseEdit}  = useAppStore()
 
 const indeterminate = computed(()=>{
   return props.deleteIds.value.length>0&&props.deleteIds.value.length!==props.allCount
@@ -33,12 +33,13 @@ function onCheckChange(flag){
 <template>
   <div class="config-control-btns">
     <el-button-group class="my-info-btn-group">
-      <el-button type="info" plain class="my-info-btn no-border" @click="onAddTunnel" :disabled="Boolean(pid)">添加</el-button>
-      <el-button type="info" plain class="my-info-btn no-border"
+      <el-button size="small" type="info" plain class="my-info-btn no-border" @click="onAddTunnel" :disabled="isCloseEdit">
+        <i-ep-plus class="w-3"/>&nbsp;添加</el-button>
+      <el-button size="small" type="info" plain class="my-info-btn no-border"
                  :class="{'ready-delete':isDelete,'selected-delete':deleteIds.value.length>0}"
-                 :disabled="Boolean(pid)"
+                 :disabled="isCloseEdit"
                  @click="onDelTunnels">
-        删除{{props.deleteIds.value.length>0?'('+props.deleteIds.value.length+')':''}}
+        <i-ep-minus class="w-3"/>&nbsp;删除{{props.deleteIds.value.length>0?'('+props.deleteIds.value.length+')':''}}
       </el-button>
     </el-button-group>
     <el-checkbox v-if="isDelete" size="large" class="all-checkbox" :model-value="checked" :indeterminate="indeterminate" @change="onCheckChange"></el-checkbox>

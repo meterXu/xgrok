@@ -9,7 +9,7 @@ const {userInfo,pid,plan} = store
 const router = useRouter()
 const route = useRoute()
 const btnText = ref(null)
-const btnIcon = ref(IIconParkOutlineHandRight)
+const btnIcon = shallowRef(IIconParkOutlineHandRight)
 const btnVisible = ref(true)
 
 queryPayPlan().then(res=>{
