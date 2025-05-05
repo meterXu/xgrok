@@ -159,11 +159,12 @@
         }
     </style>
     <script>
+        let version = '1.1.0'
         function downloadFile(type){
             const urls = {
-                windows:{text:'xgrok Setup 1.0.1.exe',url:'./release/1.0.1/xgrok Setup 1.0.1.exe'},
-                mac:{text:'xgrok-1.0.1-arm64.dmg',url:'./release/1.0.1/xgrok-1.0.1-arm64.dmg'},
-                mac2:{text:'xgrok-1.0.1.dmg',url:'./release/1.0.1/xgrok-1.0.1.dmg'}
+                windows:{text:`xgrok Setup ${version}.exe`,url:`./release/${version}/xgrok Setup ${version}.exe`},
+                mac:{text:`xgrok-${version}-arm64.dmg`,url:`./release/${version}/xgrok-${version}-arm64.dmg`},
+                mac2:{text:`xgrok-${version}.dmg`,url:`./release/${version}/xgrok-${version}.dmg`}
             }
             // 创建一个a元素
             let a = document.createElement('a');

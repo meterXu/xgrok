@@ -82,7 +82,6 @@ function created(){
     }
   })
 }
-
 function finishOrder(){
   if(payRes.value===null){
     checkOrder(orderId.value).then(res=>{
@@ -91,6 +90,7 @@ function finishOrder(){
         if(payRes.value===null){
           ElMessage.info('未进行支付，请支付后再点击检查')
         }else {
+          store.setOrderStatus(orderId.value,payRes.value)
           queryPayPlan().then(res=>{
             if(res.success){
               store.setPlan(res.data)
@@ -102,7 +102,6 @@ function finishOrder(){
       }
     })
   }
-
 }
 function closeOrder(){
   if(payRes.value===true){
@@ -319,6 +318,10 @@ onUnmounted(()=>{
   }
 }
 .pay-result{
+  .el-result__icon{
+    display: flex;
+    justify-content: center;
+  }
   .el-result__title,.el-result__subtitle{
     p{
       font-weight: bold;

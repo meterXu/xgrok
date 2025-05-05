@@ -68,6 +68,6 @@ function onCheckChange(flag){
 }
 .all-checkbox{
   height: 24px;
-  margin-right: 8px;
+  margin-right: 8px !important;
 }
 </style>

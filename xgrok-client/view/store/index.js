@@ -25,7 +25,7 @@ export const useAppStore = defineStore('app', ()=>{
         web:false,
         service:false
     })
-    const _plan = shallowReactive({})
+    const _plan = reactive({})
     const _orderStatus = shallowReactive({orderId:null,isPaySuccess:null})
     const _tunnelForm = ref(null)
     const _userName= ref(null)

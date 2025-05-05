@@ -67,7 +67,7 @@ function onOpenLink(link){
       <div class="main">
         <h1 class="title">
           <img src="../../public/assets/icon.png" alt="logo" class="logo"/>
-          xgrok
+          <span class="text-[28px] font-bold">xgrok</span>
         </h1>
         <el-form :model="form" ref="ruleForm" label-position="top" label-width="auto"
                  :hide-required-asterisk="true"
