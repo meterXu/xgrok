@@ -1,11 +1,11 @@
--- 20250427 待更新
+-- 20250427 已更新
 alter table ng_server
     add region varchar(50) null;
 
 alter table ng_server
     add operator varchar(50) null;
 
--- 20250501 待更新
+-- 20250501 已更新
 alter table ng_server
     add month_total_traffic int default 0 null comment '月总流量(MB)';
 

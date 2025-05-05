@@ -13,8 +13,6 @@
     "db-studio:dev": "dotenv -e .env.development -- npx prisma studio",
     "generateClient": "npx prisma generate",
     "build": "rm -rf dist && babel src -d dist && cp -rp src/keys dist && npm run generateClient",
-    "deploy": "rm -rf static/web && cd ../xgrok-web && npm run deploy && cd ../xgrok-web && npm run build",
-    "start": "rm -rf dist && babel src -d dist && cp -rp src/keys dist && node dist/index.js",
     "dev": "export NODE_ENV=development&&nodemon --watch './src/**/*.js' --exec npm run start",
     "prod": "export NODE_ENV=production&&node dist/index.js"
   },
