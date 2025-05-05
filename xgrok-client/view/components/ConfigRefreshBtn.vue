@@ -3,12 +3,13 @@ import {Refresh} from "@element-plus/icons-vue";
 import {defineEmits} from 'vue'
 import {useAppStore} from '@/store'
 const emits = defineEmits(['refresh'])
+const props = defineProps(['loading'])
 const {pid} = useAppStore()
 </script>
 
 <template>
   <el-tooltip effect="light" content="刷新服务" placement="bottom">
-    <el-button :disabled="!Boolean(pid)" plain size="small" circle :icon="Refresh" @click="emits('refresh')"></el-button>
+    <el-button :disabled="!Boolean(pid)||loading" plain size="small" circle :icon="Refresh" @click="emits('refresh')"></el-button>
   </el-tooltip>
 </template>
 

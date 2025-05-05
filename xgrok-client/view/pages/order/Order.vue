@@ -3,7 +3,7 @@ import {computed, defineProps, onUnmounted, ref, watchEffect} from 'vue'
 import {detailProduct, createOrder, checkOrder, queryPayPlan} from '@/api'
 import QRious from 'qrious'
 import {useRouter} from "vue-router";
-import {ElMessage, ElMessageBox} from 'element-plus'
+import {ElMessage} from 'element-plus'
 import {useAppStore} from "@/store";
 import {useSysPayStatusToPayRes} from "@/libs/enums";
 import {confirm} from "@/libs/common";

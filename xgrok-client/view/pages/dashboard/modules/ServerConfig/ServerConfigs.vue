@@ -37,7 +37,10 @@ function onSelectServerConfig(_serverConfig){
 <template>
   <ServerConfigItem :serverConfig="selectedServer" :statusClass="selectedServer.statusClass">
     <el-button class="switch-btn no-border" @click="showServerConfigDialog" type="success" plain :disabled="Boolean(pid)">
-      <i-ep-switch class="w-3.5"/>&nbsp;切换</el-button>
+      <template #icon>
+        <i-ep-switch class="w-3.5"/>
+      </template>
+      切换</el-button>
   </ServerConfigItem>
   <ConfigDialog v-model="serverConfigDialogVisible" title="服务器选择" width="80%">
     <template #default="{serverConfigs}">

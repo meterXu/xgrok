@@ -33,8 +33,8 @@ async function turnOn(xgrokConf){
             }
             pid = await startXgrok(serviceNames)
             global.logger.info(`xgrok pid is [${pid}]`)
-            startBeat(pid,proxyWebs.map(c=>({isOnline:false,params:[c.name,xgrokConf.server.domain,80]})),
-                proxyServices.map(c=>({isOnline:false,params:[xgrokConf.server.domain,c.remote_port]})))
+            startBeat(pid,xgrokConf.tunnelWebs.map(c=>({isOnline:false,params:[c.name,xgrokConf.server.domain,80]})),
+                xgrokConf.tunnelServices.map(c=>({isOnline:false,params:[xgrokConf.server.domain,c.remote_port]})))
             return Promise.resolve(pid)
         }
     }catch (err){

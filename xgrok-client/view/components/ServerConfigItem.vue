@@ -9,8 +9,11 @@ const props = defineProps(['serverConfig','statusClass'])
     <div class="server-info-name">
       <span class="info-name">
         {{props.serverConfig.name}}
-        <span class="vip-icon" v-if="serverConfig.is_vip"><el-icon :size="20"><StarFilled /></el-icon></span>
-        <span class="free-icon" v-else><el-icon><Star /></el-icon></span>
+        <span class="vip-icon" v-if="serverConfig.is_vip">
+          <el-icon>
+            <i-icon-park-outline-lightning/>
+          </el-icon>
+        </span>
       </span>
       <slot></slot>
     </div>

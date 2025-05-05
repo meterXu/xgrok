@@ -109,9 +109,14 @@ export default class TunnelWebService {
             let existRes = await prisma.$queryRaw(Prisma.raw(existSql))
             if(existRes.length>0&&parseInt(existRes[0]['num'])>0){
                 resolve(false)
-            }else{
-                let res = await checkUrl(name,domain,port,3000)
-                resolve(!res)
+            }else {
+                let tunnelWeb = await this.detailTunnelWeb({id:tunnel_id})
+                if(tunnelWeb?.name !== name){
+                    let res = await checkUrl(name,domain,port,3000)
+                    resolve(!res)
+                }else{
+                    resolve(true)
+                }
             }
         })
 

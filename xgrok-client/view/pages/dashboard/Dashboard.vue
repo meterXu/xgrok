@@ -23,6 +23,7 @@ import ServerProgress from "@/components/ServerProgress.vue";
 import ServerSwitch from "@/components/ServerSwitch.vue";
 import ConfigLockBtn from "@/components/ConfigLockBtn.vue";
 import ConfigRefreshBtn from "@/components/ConfigRefreshBtn.vue";
+import {sleep} from "@/libs/common";
 const store = useAppStore()
 const serverConfigs = ref(null)
 const tunnelWebConfigs = ref(null)
@@ -31,6 +32,7 @@ const tunnelLoading = ref(true)
 const systemInfo = ref(null)
 const percentage = ref(0)
 const serverSwitch = shallowRef()
+const serverLoading = shallowRef(false)
 const {pid, selectedServer, dialogVisible, clientId} = store
 
 if (window.project.variable.mode !== 'browser') {
@@ -42,6 +44,7 @@ if (window.project.variable.mode !== 'browser') {
     store.setPid(pid)
   })
   window.electronAPI.onProcess((_percentage)=>{
+    console.log(_percentage)
     percentage.value = _percentage
   })
 }
@@ -111,8 +114,9 @@ async function initClient() {
 }
 async function onRefresh(){
   let _refresh=async ()=>{
-    await serverSwitch.value.onTurnOff()
-    await serverSwitch.value.onTurnOn()
+    await serverSwitch.value.onSwitchChange(false)
+    await sleep(500)
+    await serverSwitch.value.onSwitchChange(true)
   }
   await _refresh.debounce()()
 }
@@ -152,11 +156,13 @@ onUnmounted(() => {
       <template #add-icon>
         <div class="flex flex-row items-center justify-between gap-2">
           <ConfigLockBtn/>
-          <ConfigRefreshBtn @refresh="onRefresh"/>
+          <ConfigRefreshBtn :loading="serverLoading" @refresh="onRefresh"/>
           <ServerSwitch ref="serverSwitch"
                         :tunnel-service-configs="tunnelServiceConfigs"
                         :tunnel-web-configs="tunnelWebConfigs"
-                        :percentage="percentage">
+                        :percentage="percentage"
+                        @serverLoading="(val)=>{serverLoading=val}"
+          >
           </ServerSwitch>
         </div>
       </template>

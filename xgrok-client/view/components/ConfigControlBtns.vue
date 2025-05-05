@@ -34,12 +34,18 @@ function onCheckChange(flag){
   <div class="config-control-btns">
     <el-button-group class="my-info-btn-group">
       <el-button size="small" type="info" plain class="my-info-btn no-border" @click="onAddTunnel" :disabled="isCloseEdit">
-        <i-ep-plus class="w-3"/>&nbsp;添加</el-button>
+        <template #icon>
+          <i-ep-plus/>
+        </template>
+        添加</el-button>
       <el-button size="small" type="info" plain class="my-info-btn no-border"
                  :class="{'ready-delete':isDelete,'selected-delete':deleteIds.value.length>0}"
                  :disabled="isCloseEdit"
                  @click="onDelTunnels">
-        <i-ep-minus class="w-3"/>&nbsp;删除{{props.deleteIds.value.length>0?'('+props.deleteIds.value.length+')':''}}
+        <template #icon>
+          <i-ep-minus/>
+        </template>
+        删除{{props.deleteIds.value.length>0?'('+props.deleteIds.value.length+')':''}}
       </el-button>
     </el-button-group>
     <el-checkbox v-if="isDelete" size="large" class="all-checkbox" :model-value="checked" :indeterminate="indeterminate" @change="onCheckChange"></el-checkbox>

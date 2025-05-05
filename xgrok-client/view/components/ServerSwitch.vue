@@ -4,23 +4,23 @@ import {Check, Close, Loading} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import {useAppStore} from '@/store'
 import {watch} from 'vue'
-
+const emits = defineEmits(['serverLoading'])
 const store = useAppStore()
 const {pid, selectedServer} = store
 const props = defineProps(['tunnelWebConfigs','tunnelServiceConfigs','percentage'])
 const switchLoading = ref(false)
 watch(()=>props.percentage,(nv)=>{
-  if(nv===100){
-    switchLoading.value = false
-  }
+  switchLoading.value = nv !== 100;
+  emits('serverLoading',switchLoading.value )
 })
-function onSwitchChange(value) {
+async function onSwitchChange(value) {
   switchLoading.value = true
+  emits('serverLoading',switchLoading.value)
   if (value) {
     if (selectedServer?.value.is_online === isOnline.online)
-      onTurnOn()
+      await onTurnOn()
   } else {
-    onTurnOff()
+    await onTurnOff()
   }
 }
 async function onTurnOn() {
@@ -65,8 +65,7 @@ async function onTurnOff() {
   }
 }
 defineExpose({
-  onTurnOff,
-  onTurnOn
+  onSwitchChange
 })
 </script>
 

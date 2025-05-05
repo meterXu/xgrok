@@ -4,8 +4,8 @@
   "description": "使用Electron来开发",
   "main": "frame/main.js",
   "scripts": {
-    "dev:brower": "vite --mode=browser",
-    "dev:web": "vite --mode=development",
+    "dev:brower": "vite --mode=browser --force",
+    "dev:web": "vite --mode=development --force",
     "build:web": "vite build --mode=production",
     "dev:electron": "dotenv -e .env.development electron src/main.js",
     "start:electron": "npm-run-all -n -p dev:web dev:electron",

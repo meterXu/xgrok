@@ -88,13 +88,19 @@ function onWillPlanExpiredTime(item){
             <div class="remark">
               <ul class="remark-content-ul">
                 <li v-for="remark in item.remark.split('\n')">
-                  <el-icon class="line-icon" size="18"><SuccessFilled/></el-icon>
+                  <el-icon class="line-icon" size="18">
+                    <SuccessFilled v-if="item.type===0"/>
+                    <i-icon-park-outline-lightning v-else/>
+                  </el-icon>
                   <span>{{remark}}</span>
                 </li>
               </ul>
             </div>
             <template v-if="item.type!==0" #footer>
               <el-button type="success" plain @click="subscribe(item.id)" @mouseenter="onWillPlanEnter(item)" @mouseleave="onWillPlanLeave">
+                <template #icon>
+                  <i-icon-park-outline-hand-right/>
+                </template>
                 {{plan.value===0?'立即订阅':'延长订阅'}}
               </el-button>
             </template>
@@ -170,6 +176,9 @@ function onWillPlanExpiredTime(item){
   margin-top: 24px;
   .line-icon{
     color: var(--el-color-success);
+  }
+  .line-icon.vip{
+    color: var(--el-color-warning);
   }
   display: flex;
   align-items: flex-start;

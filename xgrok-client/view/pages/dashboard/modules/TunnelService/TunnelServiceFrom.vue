@@ -130,9 +130,12 @@ function validatePort(rule, value, callback){
     validateRemotePortLoading.value = true
     checkPort.debounce()(selectedServer.value.domain,value,selectedServer.value.id,formData.id||'').then(res=>{
       if(res.success){
-        validateRemotePortLoading.value = false
         callback(res.data?undefined:new Error(res.message))
       }
+    }).catch(err=>{
+      callback(err)
+    }).finally(()=>{
+      validateRemotePortLoading.value = false
     })
   }
 }
@@ -207,9 +210,15 @@ created()
   </el-form>
   <div class="form-btns">
     <el-button size="default" type="info" plain class="no-border my-info-btn-success" :disabled="addBtnDisabled" :loading="saveLoading" @click="onSave">
-      <i-ep-check/>&nbsp;确定</el-button>
+      <template #icon>
+        <i-ep-check/>
+      </template>
+      确定</el-button>
     <el-button size="default" type="info" plain class="my-info-btn no-border" @click="onCancel">
-      <i-ep-close/>&nbsp;取消</el-button>
+      <template #icon>
+        <i-ep-close/>
+      </template>
+      取消</el-button>
   </div>
 </template>
 

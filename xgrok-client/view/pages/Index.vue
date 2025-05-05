@@ -97,8 +97,9 @@ function onPlanBtnClick(){
         <div class="header-content-wrap" v-if="userInfo">
           <el-button v-if="btnVisible" :type="usePayPlanColor(plan.value)" plain class="no-border"
                      @click="onPlanBtnClick">
-            <component :is="btnIcon"></component>
-            &nbsp;{{btnText}}
+            <template #icon>
+              <component :is="btnIcon"></component>
+            </template>{{btnText}}
           </el-button>
           <div v-else></div>
           <div>

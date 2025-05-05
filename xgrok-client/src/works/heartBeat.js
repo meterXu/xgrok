@@ -1,6 +1,5 @@
 const {parentPort}= require("worker_threads");
 const {checkProcess,checkUrl,checkServerOnline} = require("../libs/util");
-
 global.parentPort = parentPort
 parentPort.timerId=null
 parentPort.isAllOnLine = false
@@ -14,14 +13,26 @@ async function checkThread(pid,webSource,tcpSource){
         parentPort.timerId = null
         parentPort.isAllOnLine = false
     }else{
+        let total = webSource.length+tcpSource.length
+        let step = 0
         for(let web of webSource){
-            web.isOnline = await checkUrl(web.params[0],web.params[1],web.params[2])
+            const isOnline = await checkUrl(web.params[0],web.params[1],web.params[2])
+            if(web.isOnline!==isOnline){
+                web.isOnline = isOnline
+                step = webSource.filter(c=>c.isOnline).length+tcpSource.filter(c=>c.isOnline).length
+                sendProcess(total,step)
+            }
+            await sleep(100)
         }
         for(let tcp of tcpSource){
-            tcp.isOnline = await checkServerOnline(tcp.params[0],tcp.params[1])
+            const isOnline = await checkServerOnline(tcp.params[0],tcp.params[1])
+            if(tcp.isOnline!==isOnline){
+                tcp.isOnline = isOnline
+                step = webSource.filter(c=>c.isOnline).length+tcpSource.filter(c=>c.isOnline).length
+                sendProcess(total,step)
+            }
+            await sleep(200)
         }
-        let total = webSource.length+tcpSource.length
-        let step = webSource.filter(c=>c.isOnline).length+tcpSource.filter(c=>c.isOnline).length
         if(parentPort.isAllOnLine && step!==total){
             parentPort.postMessage({
                 type: 'pidIsNull'
@@ -30,14 +41,25 @@ async function checkThread(pid,webSource,tcpSource){
             parentPort.timerId = null
         }else{
             parentPort.isAllOnLine = step===total
-            let percentage = step/total*100
-            parentPort.postMessage({
-                type: 'process',
-                data:percentage===0?1:percentage
-            })
             parentPort.timerId = setTimeout(()=>checkThread(pid,webSource,tcpSource),parentPort.isAllOnLine?3000:1000)
         }
     }
+}
+
+function sendProcess(total,step){
+    let percentage = Math.floor(step/total*100)
+    parentPort.postMessage({
+        type: 'process',
+        data:percentage
+    })
+}
+
+function sleep(time=100){
+    return new Promise(resolve => {
+        setTimeout(()=>{
+            resolve(time)
+        },time)
+    })
 }
 
 parentPort.on('message',(result)=>{
