@@ -1,7 +1,7 @@
 {
   "name": "xgrok",
-  "version": "1.0.0",
-  "description": "使用Electron来开发",
+  "version": "1.0.1",
+  "description": "xgrok客户端",
   "main": "frame/main.js",
   "scripts": {
     "dev:brower": "vite --mode=browser --force",
