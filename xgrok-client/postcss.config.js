@@ -3,7 +3,7 @@ module.exports = {
         "@tailwindcss/postcss": {},
         autoprefixer: {},
         // 'postcss-pxtorem':{
-        //     rootValue: 14,
+        //     rootValue: 4,
         //     unitPrecision: 5,
         //     propList: ['*'],
         //     selectorBlackList: [],

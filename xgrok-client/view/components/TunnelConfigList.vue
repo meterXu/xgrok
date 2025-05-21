@@ -30,9 +30,9 @@ function onEditTunnel(id){
 
 <template>
   <el-empty v-if="tunnelList===null||tunnelList.length===0" description="请添加配置" />
-  <ul v-else class="tunnel-list">
-    <li v-for="item in tunnelList" :key="item.id">
-      <div class="icon-control">
+  <ul v-else class="grid grid-cols-2 gap-12 mt-12!">
+    <li class="relative" v-for="item in tunnelList" :key="item.id">
+      <div class="icon-control text-[14px]">
         <el-icon @click="onEditTunnel(item.id)" class="edit-icon"
                  :disabled="isCloseEdit"><Edit/></el-icon>
         <el-checkbox v-if="isDelete"
@@ -47,15 +47,6 @@ function onEditTunnel(id){
 </template>
 
 <style lang="less" scoped>
-.tunnel-list{
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
-  gap: 12px;
-  margin-top: 12px;
-  li{
-    position: relative;
-  }
-}
 .icon-control{
   position: absolute;
   right: 8px;

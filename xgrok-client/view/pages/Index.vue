@@ -129,6 +129,7 @@ function onPlanBtnClick(){
   border-bottom: 1px solid var(--el-border-color);
 }
 .header-content-wrap{
+  font-size: 14px;
   height: 56px;
   padding: 0 16px;
   display: flex;

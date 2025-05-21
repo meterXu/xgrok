@@ -30,16 +30,18 @@ function onOpenLink(type){
   <el-card class="tunnel-view">
     <table class="view-table">
       <tr class="title-wrap">
-        <th colspan="4" class="title">{{useMyTitle(tunnelConfig)}} </th>
+        <th colspan="2" class="title">{{useMyTitle(tunnelConfig)}} </th>
       </tr>
       <tr class="content-wrap">
-        <th>代理网址</th><td colspan="3">{{tunnelConfig.host}}</td>
+        <th>代理网址</th><td>{{tunnelConfig.host}}</td>
       </tr>
       <tr class="content-wrap">
         <th>HTTP链接</th>
         <td class="td-auto-width">
           <el-link class="tunnel-view-url" type="success" href="javascript:;" @click="onOpenLink(httpType.http)">{{httpUrl(selectedServer,tunnelConfig,httpType.http)}}</el-link>
         </td>
+      </tr>
+      <tr class="content-wrap">
         <th>HTTPS链接</th>
         <td class="td-auto-width">
           <el-link class="tunnel-view-url" type="success" href="javascript:;" @click="onOpenLink(httpType.https)">{{httpUrl(selectedServer,tunnelConfig,httpType.https)}}</el-link>
@@ -50,4 +52,5 @@ function onOpenLink(type){
 </template>
 
 <style lang="less">
+
 </style>

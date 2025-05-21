@@ -32,22 +32,18 @@ function onCheckChange(flag){
 
 <template>
   <div class="config-control-btns">
-    <el-button-group class="my-info-btn-group">
-      <el-button size="small" type="info" plain class="my-info-btn no-border" @click="onAddTunnel" :disabled="isCloseEdit">
-        <template #icon>
-          <i-ep-plus/>
-        </template>
-        添加</el-button>
-      <el-button size="small" type="info" plain class="my-info-btn no-border"
+    <div class="my-info-btn-group">
+      <el-button size="small" type="success" plain class="my-info-btn" @click="onAddTunnel" :disabled="isCloseEdit">
+        <i-ep-plus/>
+      </el-button>
+      <el-button size="small" type="danger" plain class="my-info-btn"
                  :class="{'ready-delete':isDelete,'selected-delete':deleteIds.value.length>0}"
                  :disabled="isCloseEdit"
                  @click="onDelTunnels">
-        <template #icon>
-          <i-ep-minus/>
-        </template>
-        删除{{props.deleteIds.value.length>0?'('+props.deleteIds.value.length+')':''}}
+        <i-ep-delete/>
+        {{props.deleteIds.value.length>0?'('+props.deleteIds.value.length+')':''}}
       </el-button>
-    </el-button-group>
+    </div>
     <el-checkbox v-if="isDelete" size="large" class="all-checkbox" :model-value="checked" :indeterminate="indeterminate" @change="onCheckChange"></el-checkbox>
   </div>
 </template>

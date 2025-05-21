@@ -32,9 +32,9 @@
     color: var(--el-color-primary);
   }
 }
-.my-info-btn{
-  background-color: var(--primary-btn-bg);
-}
+//.my-info-btn{
+//  background-color: var(--primary-btn-bg);
+//}
 .my-btn-disabled{
   pointer-events: none;
   cursor: not-allowed;
@@ -85,7 +85,7 @@
   display: none;
 }
 body{
-  font-size: 14px;
+  font-size: 4px;
 }
 ul{
   padding: 0;
@@ -201,66 +201,27 @@ ul{
   }
 }
 .tunnel-view{
+  font-size: 14px;
   box-shadow: none !important;
   .el-card__body{
     padding: 8px;
+    border-left: 2px solid var(--el-color-primary);
   }
   .view-table{
     width: 100%;
     border-collapse: collapse;
     th{
-      width: 100px;
+      width: 85px;
     }
     th,td{
       font-weight: normal;
-      height: 24px;
-      line-height: 24px;
+      height: 32px;
+      line-height: 32px;
     }
     .title{
-      font-weight: 600;
-    }
-  }
-  .td-auto-width{
-    .pxToVW(280,width);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    .el-link__inner{
-      display: inline-block;
-      .pxToVW(280,max-width);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
-  @media screen and (min-width:1200px) {
-    .td-auto-width{
-      .pxToVW(120,width);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      .el-link__inner{
-        display: inline-block;
-        .pxToVW(120,max-width);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-    }
-  }
-  @media screen and (min-width:1800px) {
-    .td-auto-width{
-      .pxToVW(90,width);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      .el-link__inner{
-        display: inline-block;
-        .pxToVW(90,max-width);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
+      font-size: 14px;
+      color: var(--el-color-primary);
+      font-weight: 500;
     }
   }
 }

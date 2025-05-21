@@ -3,7 +3,7 @@ import HeaderToolBar from "@/components/HeaderToolBar.vue";
 import {deviceType} from "@/libs/common";
 import bus from "@/libs/bus";
 let timer=null;
-const BaseFontSize = 1000/14; //设计稿尺寸/根字体大小
+const BaseFontSize = 1000/4; //设计稿尺寸/根字体大小
 // window.onresize = windowResize;
 windowResize();
 function windowResize() {
