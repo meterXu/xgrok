@@ -58,37 +58,38 @@ function onWillPlanExpiredTime(item){
 </script>
 
 <template>
-  <div style="text-align: center">
-    <div style="display: inline-block">
-      <div class="product-ul">
-        <template v-for="(item) in productList" :key="item.id">
-          <el-card v-if="item.isInfoCard" class="product-card product-card-info">
+  <div class="text-center">
+    <div class="inline-block">
+      <div class="mt-8 grid grid-cols-6 gap-18 p-12">
+        <template v-for="(item,index) in productList" :key="item.id">
+          <el-card v-if="item.isInfoCard" class="col-start-4 col-span-3 cursor-pointer m-[-1px] box-content border hover:border-(--el-color-success)! product-card product-card-info">
             <template #header>
-              <div class="card-header" :class="`card-header-0`">
+              <div class="text-[14px] font-bold">
                 <span>订阅信息</span>
               </div>
             </template>
-            <template #footer>
-              <el-descriptions class="my-descriptions" :column="1">
-                <el-descriptions-item labelClassName="my-label" contentClassName="my-content" label="当前订阅：">{{plan?.plan.name}}</el-descriptions-item>
-                <el-descriptions-item labelClassName="my-label" contentClassName="my-content" label="到期日期：">{{plan?.plan.expired_time_str||'-'}}</el-descriptions-item>
-                <el-descriptions-item v-if="showWillPlan" labelClassName="my-label" contentClassName="my-content" label="将延长至：">{{willPlanExpiredTime}}</el-descriptions-item>
+            <div class="p-[0_20px_0px_20px]">
+              <el-descriptions class="mt-24 my-descriptions" :column="1">
+                <el-descriptions-item label="当前订阅：">{{plan?.plan.name}}</el-descriptions-item>
+                <el-descriptions-item label="到期日期：">{{plan?.plan.expired_time_str||'-'}}</el-descriptions-item>
+                <el-descriptions-item v-if="showWillPlan" label="将延长至：">{{willPlanExpiredTime}}</el-descriptions-item>
               </el-descriptions>
-            </template>
+            </div>
           </el-card>
-          <el-card v-else class="product-card" :class="{'product-card-active':item.type===plan?.plan?.type}">
+          <el-card v-else class="cursor-pointer min-w-240 m-[-1px] box-content border hover:border-(--el-color-success)! product-card"
+                   :class="{'product-card-active':item.type===plan?.plan?.type,'col-start-1 col-span-3':index===0,'col-span-2':index!==0}">
             <template #header>
-              <div class="card-header" :class="`card-header-${item.type}`">
+              <div class="font-bold text-[14px]">
                 <span>{{item.name}}</span>
               </div>
             </template>
-            <div class="price" v-if="item.type!==0">
-              <span>{{item.price}}</span>
+            <div class="text-[24px] font-600 bg-[#e9ecef] px-20 py-8" v-if="item.type!==0">
+              <span class="relative">{{item.price}}</span>
             </div>
-            <div class="remark">
-              <ul class="remark-content-ul">
-                <li v-for="remark in item.remark.split('\n')">
-                  <el-icon class="line-icon" size="18">
+            <div class="p-[0_20px_20px_20px]">
+              <ul class="mt-24! flex flex-col items-start justify-start gap-8">
+                <li class="flex flex-row items-center justify-start gap-4 text-[14px]" v-for="remark in item.remark.split('\n')">
+                  <el-icon class="text-(--el-color-success)!" size="18">
                     <SuccessFilled v-if="item.type===0"/>
                     <i-icon-park-outline-lightning v-else/>
                   </el-icon>
@@ -112,27 +113,6 @@ function onWillPlanExpiredTime(item){
 </template>
 
 <style scoped lang="less">
-.product-ul{
-  margin-top: 8px;
-  display: grid;
-  grid-template-columns: repeat(3,  240px);
-  grid-template-rows: auto 1fr;
-  grid-gap: 18px 24px;
-  padding: 12px;
-  .product-card{
-    width: 240px;
-    cursor: pointer;
-    margin: -1px;
-    box-sizing: content-box;
-    &:hover{
-      border-color: var(--el-color-success);
-    }
-  }
-  .product-card:nth-child(2){
-    width: 100%;
-    grid-column: 2 / span 2;
-  }
-}
 .product-card-active{
   position: relative;
   margin: -4px !important;
@@ -152,45 +132,11 @@ function onWillPlanExpiredTime(item){
     background-position: center center;
   }
 }
-.card-header-1,.card-header-2,.card-header-3{
-  font-weight: bold;
-}
 .price{
-  font-size: 24px;
-  font-weight: 600;
-  background-color: #e9ecef;
-  padding: 8px 20px;
-  span{
-    position:relative;
-  }
   span::before{
     position: absolute;
     content: '¥';
     left: -24px;
-  }
-}
-.remark{
-  padding: 0 20px 20px 20px;
-}
-.remark-content-ul{
-  margin-top: 24px;
-  .line-icon{
-    color: var(--el-color-success);
-  }
-  .line-icon.vip{
-    color: var(--el-color-warning);
-  }
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex-flow: column;
-  grid-gap: 8px;
-  li{
-    display: flex;
-    flex-flow: row;
-    justify-content: flex-start;
-    align-items: center;
-    grid-gap: 4px;
   }
 }
 </style>
@@ -215,11 +161,15 @@ function onWillPlanExpiredTime(item){
   }
 }
 .my-descriptions{
-  .el-descriptions__cell{
-    font-size: 18px !important;
-    padding-bottom: 0!important;
-    height: 32px;
-    line-height: 32px;
+  .el-descriptions__table{
+    width: fit-content;
+    margin: 0 auto;
+    .el-descriptions__cell{
+      padding-bottom: 8px!important;
+    }
+    .el-descriptions__label,.el-descriptions__content{
+      font-size: 14px;
+    }
   }
 }
 </style>

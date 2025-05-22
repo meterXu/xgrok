@@ -65,6 +65,7 @@ const props = defineProps(['serverConfig','statusClass'])
   justify-content: space-between;
 }
 .info-name{
+  font-size: 14px;
   height: 20px;
   display: inline-flex;
   align-items: center;

@@ -154,7 +154,7 @@ onUnmounted(() => {
     </el-card>
     <el-tabs class="tunnel-config-wrap" type="border-card" editable v-loading="tunnelLoading">
       <template #add-icon>
-        <div class="flex flex-row items-center justify-between gap-2">
+        <div class="flex flex-row items-center justify-between gap-8">
           <ConfigLockBtn/>
           <ConfigRefreshBtn :loading="serverLoading" @refresh="onRefresh"/>
           <ServerSwitch ref="serverSwitch"
@@ -166,14 +166,22 @@ onUnmounted(() => {
           </ServerSwitch>
         </div>
       </template>
-      <el-tab-pane label="网页">
+      <el-tab-pane>
+        <template #label>
+          <i-icon-park-outline-earth></i-icon-park-outline-earth>
+          <span class="ml-4 text-[14px]">网页</span>
+        </template>
         <TunnelList type="web" :tunnelConfigs="tunnelWebConfigs" @deleteComplete="loadTunnelData">
           <template #default="{tunnelConfig}">
             <TunnelWebConfigItem :tunnelConfig="tunnelConfig"></TunnelWebConfigItem>
           </template>
         </TunnelList>
       </el-tab-pane>
-      <el-tab-pane label="服务">
+      <el-tab-pane>
+        <template #label>
+          <i-icon-park-outline-server></i-icon-park-outline-server>
+          <span class="ml-4 text-[14px]">服务</span>
+        </template>
         <TunnelList type="service" :tunnelConfigs="tunnelServiceConfigs" @deleteComplete="loadTunnelData">
           <template #default="{tunnelConfig}">
             <TunnelServiceConfigItem :tunnelConfig="tunnelConfig"></TunnelServiceConfigItem>

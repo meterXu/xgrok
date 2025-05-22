@@ -139,7 +139,7 @@ onUnmounted(()=>{
             </div>
           </template>
         </div>
-        <div v-if="qrcodeImg" class="qr-remark">
+        <div v-if="qrcodeImg" class="qr-remark text-[14px]">
           打开支付宝【扫一扫】
         </div>
         <el-result
@@ -271,12 +271,12 @@ onUnmounted(()=>{
 }
 .qr-title{
   margin-top: 12px;
-  font-size:24px;
+  font-size:20px;
   font-weight: 600;
   text-align: center;
 }
 .order-remark{
-  margin-top: 24px;
+  margin-top: 12px;
   text-align: center;
 }
 .remark-ul{
@@ -289,7 +289,7 @@ onUnmounted(()=>{
   align-items: center;
   flex-flow: column;
   justify-content: center;
-  grid-gap: 12px;
+  grid-gap: 8px;
 }
 .btn-item{
   height: 32px;

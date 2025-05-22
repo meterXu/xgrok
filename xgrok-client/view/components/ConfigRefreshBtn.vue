@@ -9,7 +9,9 @@ const {pid} = useAppStore()
 
 <template>
   <el-tooltip effect="light" content="刷新服务" placement="bottom">
-    <el-button :disabled="!Boolean(pid)||loading" plain size="small" circle :icon="Refresh" @click="emits('refresh')"></el-button>
+    <el-icon class="text-[16px]! text-(--edit-icon-color)! hover:text-(--el-color-primary)!">
+      <Refresh :disabled="!Boolean(pid)||loading" @click="emits('refresh')"/>
+    </el-icon>
   </el-tooltip>
 </template>
 

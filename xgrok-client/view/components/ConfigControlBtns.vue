@@ -32,15 +32,15 @@ function onCheckChange(flag){
 
 <template>
   <div class="config-control-btns">
-    <div class="my-info-btn-group">
+    <div class="flex gap-8">
       <el-button size="small" type="success" plain class="my-info-btn" @click="onAddTunnel" :disabled="isCloseEdit">
-        <i-ep-plus/>
+        <i-ep-plus class="w-12"/>
       </el-button>
-      <el-button size="small" type="danger" plain class="my-info-btn"
+      <el-button size="small" type="danger" plain class="my-info-btn ml-0!"
                  :class="{'ready-delete':isDelete,'selected-delete':deleteIds.value.length>0}"
                  :disabled="isCloseEdit"
                  @click="onDelTunnels">
-        <i-ep-delete/>
+        <i-ep-delete class="w-12"/>
         {{props.deleteIds.value.length>0?'('+props.deleteIds.value.length+')':''}}
       </el-button>
     </div>

@@ -27,9 +27,9 @@ const props=defineProps(['value'])
     overflow: hidden;
   }
   .systemInfo-item-hostname{
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
-    padding: 12px 8px;
+    padding: 9px 8px;
   }
 }
 </style>

@@ -73,16 +73,13 @@ defineExpose({
   <el-tooltip class="box-item" :popper-options="{modifiers:[{name:'offset',options:{offset:[100, 0]}}]}"
               :disabled="selectedServer?.is_online===isOnline.online" effect="light" content="服务不可用"
               placement="bottom">
-    <el-switch size="large" :model-value="Boolean(pid)"
+    <el-switch size="default" :model-value="Boolean(pid)"
                :disabled="selectedServer?.is_online===isOnline.offline"
                :style="['--el-switch-on-color: var(--el-color-success)',selectedServer?.is_online===isOnline.offline&&'--el-switch-off-color: var(--el-color-danger)']"
                @change="onSwitchChange">
       <template #active-action>
         <el-icon v-if="switchLoading" :class="{'is-loading':switchLoading }"><Loading/></el-icon>
         <el-icon v-else><Check/></el-icon>
-      </template>
-      <template #inactive-action>
-        <el-icon><Close/></el-icon>
       </template>
     </el-switch>
   </el-tooltip>

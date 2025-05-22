@@ -21,7 +21,7 @@ const emits = defineEmits(['delSelectChange'])
       </tr>
       <tr class="content-wrap">
         <th>映射地址</th><td>
-        <el-link class="tunnel-view-url" type="success" :underline="false">
+        <el-link class="text-5xl!" type="success" :underline="false">
           {{selectedServer?selectedServer.domain:''}}:{{tunnelConfig.remote_port}}
         </el-link>
       </td>

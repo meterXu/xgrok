@@ -14,13 +14,13 @@ function windowResize() {
     width=width>1000?1000:width
     const widthNum = width / BaseFontSize;
     document.documentElement.style.fontSize = widthNum + 'px';
-    bus.$emit('processWidth',widthNum/14)
+    bus.$emit('processWidth',widthNum/4)
   }, 100);
 }
 </script>
 
 <template>
-  <el-config-provider>
+  <el-config-provider size="default">
     <div class="main">
       <HeaderToolBar v-if="deviceType()==='win32'"></HeaderToolBar>
       <div class="main-container">

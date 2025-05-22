@@ -95,7 +95,9 @@ function onPlanBtnClick(){
     <el-container class="my-container">
       <el-header class="header">
         <div class="header-content-wrap" v-if="userInfo">
-          <el-button v-if="btnVisible" :type="usePayPlanColor(plan.value)" plain class="no-border"
+          <el-button v-if="btnVisible" :type="usePayPlanColor(plan.value)" plain
+                     class="text-[14px]! py-14!"
+                     size="small"
                      @click="onPlanBtnClick">
             <template #icon>
               <component :is="btnIcon"></component>
@@ -105,7 +107,7 @@ function onPlanBtnClick(){
           <div>
             {{userInfo.user.username}}
             <el-divider direction="vertical" />
-            <el-button type="info" class="my-info-btn my-info-btn-danger no-border" plain @click="logout">退出登录</el-button>
+            <el-button class="text-[14px]! py-14!" size="small" type="danger" plain @click="logout">退出登录</el-button>
           </div>
         </div>
       </el-header>

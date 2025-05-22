@@ -38,13 +38,13 @@ function onOpenLink(type){
       <tr class="content-wrap">
         <th>HTTP链接</th>
         <td class="td-auto-width">
-          <el-link class="tunnel-view-url" type="success" href="javascript:;" @click="onOpenLink(httpType.http)">{{httpUrl(selectedServer,tunnelConfig,httpType.http)}}</el-link>
+          <el-link class="text-5xl!" type="success" href="javascript:;" @click="onOpenLink(httpType.http)">{{httpUrl(selectedServer,tunnelConfig,httpType.http)}}</el-link>
         </td>
       </tr>
       <tr class="content-wrap">
         <th>HTTPS链接</th>
         <td class="td-auto-width">
-          <el-link class="tunnel-view-url" type="success" href="javascript:;" @click="onOpenLink(httpType.https)">{{httpUrl(selectedServer,tunnelConfig,httpType.https)}}</el-link>
+          <el-link class="text-5xl!" type="success" href="javascript:;" @click="onOpenLink(httpType.https)">{{httpUrl(selectedServer,tunnelConfig,httpType.https)}}</el-link>
         </td>
       </tr>
     </table>

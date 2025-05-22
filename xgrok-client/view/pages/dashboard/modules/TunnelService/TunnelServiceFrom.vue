@@ -209,12 +209,12 @@ created()
     </el-form-item>
   </el-form>
   <div class="form-btns">
-    <el-button size="default" type="info" plain class="no-border my-info-btn-success" :disabled="addBtnDisabled" :loading="saveLoading" @click="onSave">
+    <el-button type="success" plain :disabled="addBtnDisabled" :loading="saveLoading" @click="onSave">
       <template #icon>
         <i-ep-check/>
       </template>
       确定</el-button>
-    <el-button size="default" type="info" plain class="my-info-btn no-border" @click="onCancel">
+    <el-button type="info" plain @click="onCancel">
       <template #icon>
         <i-ep-close/>
       </template>
