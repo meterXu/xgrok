@@ -3,7 +3,7 @@ import {useAppStore} from "@/store";
 import {useRouter,useRoute,onBeforeRouteUpdate} from 'vue-router'
 import {ElMessage, ElMessageBox} from "element-plus";
 import {closeWebSocket, queryPayPlan} from "@/api";
-import {usePayPlanColor} from '@/libs/common'
+import {confirm, usePayPlanColor} from '@/libs/common'
 const store = useAppStore()
 const {userInfo,pid,plan} = store
 const router = useRouter()
@@ -20,16 +20,8 @@ queryPayPlan().then(res=>{
 })
 
 function logout(){
-  ElMessageBox({
-    message:'确定要退出登录吗？',
-    showCancelButton: true,
-    center:true,
-    closeOnClickModal:false,
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    customClass:'logout-confirm',
-    cancelButtonClass:'el-button--info is-plain my-info-btn no-border',
-    confirmButtonClass:'el-button--info is-plain my-info-btn my-info-btn-danger no-border',
+  confirm('确定要退出登录吗？',null,{
+    confirmButtonClass:'el-button--danger is-plain ',
     beforeClose:async function(action, instance, done){
       try{
         if (action === 'confirm') {
@@ -107,7 +99,12 @@ function onPlanBtnClick(){
           <div>
             {{userInfo.user.username}}
             <el-divider direction="vertical" />
-            <el-button class="text-[14px]! py-14!" size="small" type="danger" plain @click="logout">退出登录</el-button>
+            <el-button class="text-[14px]! py-14!" size="small" type="danger" plain @click="logout">
+              <template #icon>
+                <i-icon-park-outline-logout/>
+              </template>
+              退出登录
+            </el-button>
           </div>
         </div>
       </el-header>
@@ -141,14 +138,5 @@ function onPlanBtnClick(){
 .content-wrap{
   padding: 0;
   position: relative;
-}
-</style>
-<style lang="less">
-.logout-confirm{
-  width: 240px;
-  padding: 16px;
-  .el-message-box__btns{
-    padding-top: 24px;
-  }
 }
 </style>

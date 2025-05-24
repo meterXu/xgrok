@@ -36,16 +36,17 @@ export const usePayPlanColor=function (_payPlan){
 }
 
 export function confirm(msg,title,options){
-    return ElMessageBox.confirm(msg, title,{
+    return ElMessageBox.confirm(msg, title,Object.assign({
         customClass:'my-messageBox-confirm',
         buttonSize:'default',
         closeOnClickModal:false,
         showClose:false,
-        confirmButtonClass:`el-button--info is-plain my-info-btn no-border ${options.confirmButtonClass}`,
-        confirmButtonText:options.confirmButtonText||'确定',
-        cancelButtonClass:`el-button--info is-plain my-info-btn no-border ${options.cancelButtonClass}`,
-        cancelButtonText:options.cancelButtonText||'取消'
-    })
+        center:true,
+        confirmButtonClass:`el-button--success is-plain`,
+        confirmButtonText:'确定',
+        cancelButtonClass:`el-button--info is-plain`,
+        cancelButtonText:'取消'
+    },options))
 }
 
 export function alert(msg,title,options){
@@ -55,7 +56,7 @@ export function alert(msg,title,options){
         showClose:false,
         center:true,
         closeOnClickModal:false,
-        confirmButtonClass:'el-button--info is-plain my-info-btn no-border',
+        confirmButtonClass:'el-button--info is-plain',
         buttonSize:'default'
     },options))
 }

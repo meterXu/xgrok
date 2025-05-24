@@ -109,10 +109,10 @@ function closeOrder(){
   }else if(payRes.value===false){
     router.replace({name:'Plan'})
   }else{
-    confirm('确定要不订阅了吗？','提醒',{
+    confirm('确定要不订阅了吗？',null,{
       confirmButtonText:'不，还想订阅',
       cancelButtonText:'是的，不订阅',
-      cancelButtonClass:'my-info-btn-danger'
+      cancelButtonClass:'el-button--danger is-plain'
     }).then(()=>{}).catch(()=>{
       router.replace({name:'Plan'})
     })

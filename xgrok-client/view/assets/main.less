@@ -36,8 +36,8 @@
 //  background-color: var(--primary-btn-bg);
 //}
 .my-btn-disabled{
-  pointer-events: none;
   cursor: not-allowed;
+  pointer-events: none;
 }
 .my-info-btn-danger{
   color:var(--el-color-danger);
@@ -139,12 +139,17 @@ ul{
   }
 }
 .my-messageBox-confirm{
-  width: 280px;
+  width: 320px;
+  padding: 32px 16px 24px 16px;
+  &:has(.el-message-box__header){
+    padding:var(--el-messagebox-padding-primary);
+  }
   .el-message-box__title{
     font-size: 14px;
   }
   .el-message-box__btns{
     justify-content: center;
+    padding-top: 32px;
   }
 }
 .login-register-form{

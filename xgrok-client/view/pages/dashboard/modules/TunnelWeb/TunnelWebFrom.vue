@@ -86,10 +86,10 @@ function onSave(){
           emits('cancel')
           emits('createSuccess')
         }else{
-          confirm(res.message||'创建失败', '创建失败',{
+          confirm(res.message||'创建失败', null,{
             confirmButtonText:'去订阅',
             cancelButtonText:'知道了',
-            confirmButtonClass:'my-info-btn-warning'
+            confirmButtonClass:'el-button--warning is-plain'
           }).then(()=>{
             router.push({name:'Plan'})
           })

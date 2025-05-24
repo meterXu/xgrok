@@ -22,10 +22,10 @@ function onSelectServerConfig(_serverConfig){
     emits('changeServerConfig',_serverConfig)
     serverConfigDialogVisible.value=false
   }else{
-    confirm('免费计划无法使用收费服务器', '无法切换',{
+    confirm('免费计划无法使用收费服务器',{
       confirmButtonText:'去订阅',
       cancelButtonText:'知道了',
-      confirmButtonClass:'my-info-btn-warning'
+      confirmButtonClass:'el-button--warning is-plain'
     }).then(()=>{
       router.push({name:'Plan'})
     })

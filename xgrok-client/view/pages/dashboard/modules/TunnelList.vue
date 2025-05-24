@@ -2,7 +2,7 @@
 import {defineProps} from 'vue'
 import ConfigControlBtns from "@/components/ConfigControlBtns.vue";
 import TunnelConfigList from "@/components/TunnelConfigList.vue";
-import {ElMessage, ElMessageBox} from "element-plus";
+import {ElMessage} from "element-plus";
 import {deleteTunnelServiceBatch, deleteTunnelWebBatch} from "@/api";
 import {useAppStore} from '@/store'
 import {confirm} from "@/libs/common";
@@ -31,8 +31,8 @@ function onDelSelectChange(type,ids){
 }
 
 function onConfirmDelTunnels(type){
-  confirm('确定要删除所选的配置吗？', '警告',{
-    confirmButtonClass:'my-info-btn-danger'
+  confirm('确定要删除所选的配置吗？', null,{
+    confirmButtonClass:'el-button--danger is-plain'
   }).then(()=>{
     const deleteAction = {web:deleteTunnelWebBatch,service:deleteTunnelServiceBatch}[type]
     deleteAction(deleteIds[type].value.join(',')).then((res)=>{
