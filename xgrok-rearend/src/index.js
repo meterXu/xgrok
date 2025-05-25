@@ -11,7 +11,7 @@ import routerResponse from "./middleware/routerResponse.js";
 import path from "path";
 import { Worker} from 'worker_threads';
 import webSocket from "./middleware/webSocket.js";
-import MainThreadWorker from './works/mainThread'
+import MainThreadWorker from './works/mainThread.js'
 import {getAlipaySdk,initLog} from "./utils/index.js";
 
 BigInt.prototype.toJSON = function() {

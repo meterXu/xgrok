@@ -9,20 +9,18 @@ const apiRouter = new SwaggerRouter({
     prefix: '/api',
 })
 
-oAuthRouter.swagger({
-    title: 'xgrok Server',
-    description: 'API DOC',
-    version: '1.0.1',
-    swaggerHtmlEndpoint: '/swagger-html',
-    swaggerJsonEndpoint: '/swagger-json',
-})
+let routers = []
+routers.push(oAuthRouter)
+routers.push(apiRouter)
 
-apiRouter.swagger({
-    title: 'question-manage Server',
-    description: 'API DOC',
-    version: '1.0.1',
-    swaggerHtmlEndpoint: '/swagger-html',
-    swaggerJsonEndpoint: '/swagger-json',
+routers.forEach(_router=>{
+    _router.swagger({
+        title: 'xgrok Server',
+        description: 'API DOC',
+        version: '1.0.1',
+        swaggerHtmlEndpoint: '/swagger-html',
+        swaggerJsonEndpoint: '/swagger-json',
+    })
 })
 
 apiRouter.mapDir(path.resolve(__dirname, '../controller/'))

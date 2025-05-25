@@ -1,5 +1,5 @@
 {
-  "name": "question-manage-rearend",
+  "name": "xgrok-rearend",
   "version": "1.0.2",
   "description": "后端！",
   "main": "dist/index.js",

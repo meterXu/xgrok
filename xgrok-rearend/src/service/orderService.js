@@ -11,8 +11,8 @@ import {Prisma} from "@prisma/client";
 import ProductService from "./productService.js";
 import moment from "moment";
 import config from "../config.js";
-import EmailService from "./emailService";
-import OAuthUsersService from "./oauthUsersService";
+import EmailService from "./emailService.js";
+import OAuthUsersService from "./oauthUsersService.js";
 
 const {PrismaClient} = require("@prisma/client");
 const prisma = new PrismaClient();

@@ -1,5 +1,4 @@
 import ResultModel from "../../model/sys/resultModel.js";
-const tag = tags(['OAuth2.0'])
 import {body, query, request, summary, tags} from "koa-swagger-decorator";
 import OAuthService from "../../service/oauthService.js";
 import OauthModel from "../../model/query/oauthModel.js";
@@ -15,7 +14,7 @@ import {clientIds, roleType} from "../../utils/enum.js";
 import Model from "../password/Model.js";
 const moment = require('moment');
 
-
+const tag = tags(['OAuth2.0'])
 export default class OAuthController{
     constructor() {
         if(!this.oAuthService)
@@ -30,8 +29,8 @@ export default class OAuthController{
 
     @request('post', '/authorize')
     @summary('获取token')
-    @tag
     @body(OauthModel.swaggerDocument)
+    @tag
     async getToken(ctx) {
         let compareRes = this.oAuthService.compareSignature(ctx)
         if(!compareRes.success){

@@ -13,7 +13,6 @@ export default {
     ssl_cert:process.env.ssl_cert||null,
     authIgnores:[
         '/web'
-        ,'/oauth/authorize'
         ,'/swagger-html'
         ,'/api/swagger-html'
         ,'/api/swagger-json'
@@ -21,6 +20,7 @@ export default {
         ,'/api/gateway/notify'
         ,'/api/redirect'
         ,'/api/server/checkServerOnline'
+        ,'/oauth/authorize'
         ,'/oauth/swagger-html'
         ,'/oauth/swagger-json'
         ,'/oauth/sendValidateCode'
@@ -28,6 +28,7 @@ export default {
         ,'/oauth/validateCode'
         ,'/oauth/checkUserIsExist'
         ,'/oauth/changePwd'
+        ,'^\/hazel'
     ],
     logIgnores:['/api/server/checkServerOnline'],
     grants:['password'],
@@ -40,5 +41,5 @@ export default {
     alipay_gateway:process.env.alipay_gateway||null,
     notify_url:process.env.notify_url||null,
     resend:process.env.resend||null,
-    timestampDiff:process.env.timestampDiff||86400,
+    timestampDiff:process.env.timestampDiff||86400,//24H
 }

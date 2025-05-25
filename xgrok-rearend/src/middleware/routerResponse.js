@@ -47,7 +47,7 @@ export default function (){
                 console.log(`request.headers: ${JSON.stringify(JSON.stringify(ctx.request.headers))}`)
                 console.log(`request.query: ${JSON.stringify(ctx.request.query)}, request.body: ${JSON.stringify(ctx.request.body)}`)
             }
-            if(config.authIgnores.some(c=>c===ctx.request.path)){
+            if(config.authIgnores.some(c=>new RegExp(c).test(ctx.request.path))){
                 await next();
             }else{
                 const request = new Request(ctx.request);

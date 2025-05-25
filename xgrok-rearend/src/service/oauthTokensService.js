@@ -1,7 +1,6 @@
 import {getLocalDateTime, randomUUID} from "../utils/index.js";
 import {isDelete,status} from "../utils/enum.js";
 import OAuthTokensModel from "../model/oauthTokensModel.js";
-import ResultModel from "../model/sys/resultModel";
 const {Prisma,PrismaClient} = require("@prisma/client");
 const prisma = new PrismaClient();
 
