@@ -1,4 +1,4 @@
-const { app, BrowserWindow,Tray,Menu,nativeImage } = require('electron')
+const { app, BrowserWindow,Tray,Menu,nativeImage,autoUpdater,dialog } = require('electron')
 const getProject = require("./project");
 const path = require('node:path')
 const logger  = require('electron-log')
@@ -8,17 +8,16 @@ global.logger=logger
 const project = getProject(app,process.env.NODE_ENV)
 global.project = project
 require('./rpc/backend')
-const {killPid, findProcessId} = require("./libs/util");
-const appName = project.appName
-global.logger.info(`程序启动`)
+const {killPid, findProcessId,checkUpdate} = require("./libs/util");
+global.logger.info(`xgrok is running,version:${app.getVersion()}`)
 global.proxyLocalhost = '127.0.0.1'
 
 let requireClose = false
-const createWindow = () => {
+function createWindow () {
     const trayIcon = nativeImage.createFromPath(project.trayIcon[process.platform])
     const appIcon = nativeImage.createFromPath(project.appIcon[process.platform])
     const win = new BrowserWindow(Object.assign(Object.assign({
-        title:appName,
+        title:app.getName(),
         width: 1000,
         height: 800,
         icon: appIcon,
@@ -31,7 +30,13 @@ const createWindow = () => {
         titleBarOverlay: true,
         frame:false
     }:null )))
-    process.env.NODE_ENV==='development'?win.loadURL(project.viewUrl):win.loadFile(project.viewUrl)
+    if(process.env.NODE_ENV==='development'){
+        setTimeout(()=>{
+            win.loadURL(project.viewUrl)
+        },1000)
+    }else{
+        win.loadFile(project.viewUrl)
+    }
     // 创建系统托盘图标
     const tray = new Tray(trayIcon);
     const contextMenu = Menu.buildFromTemplate([
@@ -52,7 +57,7 @@ const createWindow = () => {
         }
     ]);
 
-    tray.setToolTip(appName);
+    tray.setToolTip(app.getName());
     tray.setContextMenu(contextMenu);
     tray.on('click', () => {
         global.logger.info(`tray click`)
@@ -70,7 +75,8 @@ const createWindow = () => {
             win.hide()
         }
     });
-
+    // 检测软件版本
+    checkUpdate(app,autoUpdater,dialog,project.checkUpdateUrl,process.platform)
 
     global.win = win
 }

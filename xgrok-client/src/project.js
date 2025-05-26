@@ -21,11 +21,12 @@ const getProject=function (app,mode){
     const _paltform = platform()
     global?.logger?.info(`mode: ${mode}`)
     global?.logger?.info(`appPath: ${appPath}`)
-    global?.logger?.info(`APPDATA: ${getAppData()}`)
+    global?.logger?.info(`appData: ${getAppData()}`)
     if(mode==='development'){
         return {
-            appName:'xgrok',
             viewUrl:"http://localhost:5173/",
+            checkUpdateUrl:'https://hazel-omega-seven.vercel.app',
+            checkInterval:60000,
             clientRootPath:path.join(appPath,'../execute/',_paltform),
             appPath:appPath,
             appData:getAppData(),
@@ -47,8 +48,9 @@ const getProject=function (app,mode){
         }
     }else{
         return {
-            appName:'xgrok',
             viewUrl:'dist/index.html',
+            checkUpdateUrl:'https://hazel-omega-seven.vercel.app',
+            checkInterval:60000,
             clientRootPath:path.join(appPath,'../app.asar.unpacked/execute/',_paltform),
             appPath:appPath,
             appData:getAppData(),
