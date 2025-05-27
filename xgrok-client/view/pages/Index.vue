@@ -87,15 +87,19 @@ function onPlanBtnClick(){
     <el-container class="my-container">
       <el-header class="header">
         <div class="header-content-wrap" v-if="userInfo">
-          <el-button v-if="btnVisible" :type="usePayPlanColor(plan.value)" plain
-                     class="text-[14px]! py-14!"
-                     size="small"
-                     @click="onPlanBtnClick">
-            <template #icon>
-              <component :is="btnIcon"></component>
-            </template>{{btnText}}
-          </el-button>
-          <div v-else></div>
+          <div class="flex justify-start items-center">
+            <img src="../../public/assets/icon.png" alt="logo" class="w-48"/>
+            <span class="text-[20px] font-bold ml-4">xgrok</span>
+            <el-divider direction="vertical" />
+            <el-button v-if="btnVisible" :type="usePayPlanColor(plan.value)" plain
+                       class="text-[14px]! py-14!"
+                       size="small"
+                       @click="onPlanBtnClick">
+              <template #icon>
+                <component :is="btnIcon"></component>
+              </template>{{btnText}}
+            </el-button>
+          </div>
           <div>
             {{userInfo.user.username}}
             <el-divider direction="vertical" />

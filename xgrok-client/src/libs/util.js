@@ -194,31 +194,39 @@ function findProcessId(processName) {
         });
     });
 }
-function checkUpdate(app,autoUpdater,dialog,checkUpdateUrl,platform){
-    global.logger.info(`start check xgrok new version,now version is ${app.getVersion()}`)
-    autoUpdater.logger = global.logger
-    autoUpdater.forceDevUpdateConfig = true
-    autoUpdater.checkForUpdates();
-    // //监听发现可用更新事件
-    // autoUpdater.on('update-available', (message) => {
-    // })
-    // //监听没有可用更新事件
-    // autoUpdater.on('update-not-available', (message) => {
-    // });
-    //监听下载完成事件
-    autoUpdater.on('update-downloaded',(releaseObj) => {
-        global.logger.info(`${JSON.stringify(releaseObj)}`)
-        global.logger.info(`a new version has been downloaded. Starta om applikationen for att verkstalla uppdateringarna`)
-        const dialogOpts = {
-            type: 'info',
-            buttons: ['重启', '稍后'],
-            title: '应用更新',
-            detail: '新版本已下载，重新启动应用程序以执行更新。'
-        }
-        dialog.showMessageBox(dialogOpts).then((returnValue) => {
-            if (returnValue.response === 0) autoUpdater.quitAndInstall()
+function checkUpdate(app,autoUpdater,dialog,shell){
+    return new Promise((resolve, reject) => {
+        global.logger.info(`start check xgrok new version,now version is ${app.getVersion()}`)
+        autoUpdater.logger = global.logger
+        autoUpdater.autoDownload = true
+        autoUpdater.checkForUpdates();
+        //监听发现可用更新事件
+        autoUpdater.on('update-available', (info) => {
+            global.logger.info(`found a new version[${info.version}]`)
+            resolve()
         })
-    });
+        //监听下载完成事件，mac下没有签名，先特殊处理
+        autoUpdater.on('update-downloaded',(info) => {
+            global.logger.info(`a new version[${info.version}] has been downloaded. Starta om applikationen for att verkstalla uppdateringarna`)
+            const dialogOpts = {
+                type: 'info',
+                buttons: process.platform==='darwin'?['去更新','稍后']:['重启', '稍后'],
+                title: '应用更新',
+                detail: process.platform==='darwin'?'新版本已下载，退出程序并手动更新。':'新版本已下载，重新启动程序以执行更新。'
+            }
+            dialog.showMessageBox(dialogOpts).then((returnValue) => {
+                if (returnValue.response === 0) {
+                    if(process.platform==='darwin'){
+                        global.logger.info(`autoUpdater exit app,app download path is ${info.downloadedFile}`)
+                        shell.openPath(path.dirname(info.downloadedFile))
+                        app.quit()
+                    }else{
+                        autoUpdater.quitAndInstall()
+                    }
+                }
+            })
+        });
+    })
 }
 
 module.exports = {

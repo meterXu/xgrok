@@ -18,7 +18,7 @@ filter(router, window.project)
 app.mount('#app')
 
 if(process.env.NODE_ENV==='development'){
-    new VConsole()
+    // new VConsole()
 }
 
 function makeDraggable(element) {

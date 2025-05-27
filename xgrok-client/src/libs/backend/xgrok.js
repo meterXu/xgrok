@@ -53,7 +53,7 @@ async function turnOff(pid){
         let ress = await Promise.all(pids.map(c=>killPid(c)))
         res = !ress.some(c=>c.false)
     }
-    global.win.webContents.send('process',0)
+    global.win.webContents.send('view/process',0)
     return res
 }
 function startXgrok(names){
@@ -260,11 +260,11 @@ function initBeat(){
             case 'pidIsNull':{
                 // xgrok进程死了,重启进程
                 pid = await startXgrok(serviceNames)
-                global.win.webContents.send('refreshPid',pid)
+                global.win.webContents.send('view/refreshPid',pid)
                 break;
             }
             case 'process':{
-                global.win.webContents.send('process',result.data)
+                global.win.webContents.send('view/process',result.data)
             }
         }
     })

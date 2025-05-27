@@ -1,4 +1,4 @@
-const { app, BrowserWindow,Tray,Menu,nativeImage,dialog } = require('electron')
+const { app, BrowserWindow,Tray,Menu,nativeImage,dialog,shell } = require('electron')
 const {autoUpdater} = require('electron-updater')
 const getProject = require("./project");
 const path = require('node:path')
@@ -8,7 +8,7 @@ logger.initialize()
 global.logger=logger
 const project = getProject(app,process.env.NODE_ENV)
 global.project = project
-require('./rpc/backend')
+require('./ipc/backend')
 const {killPid, findProcessId,checkUpdate} = require("./libs/util");
 global.logger.info(`xgrok is running,version:${app.getVersion()}`)
 global.proxyLocalhost = '127.0.0.1'
@@ -23,7 +23,7 @@ function createWindow () {
         height: 800,
         icon: appIcon,
         webPreferences: {
-            preload: path.join(__dirname,'rpc', 'preload.js'),
+            preload: path.join(__dirname,'ipc', 'preload.js'),
             nodeIntegration: false // 禁用 Node.js 集成
         }
     },process.platform!=='darwin'?{
@@ -52,7 +52,7 @@ function createWindow () {
             label: '退出',
             click: () => {
                 global.logger.info(`tray exit app`)
-                win.webContents.send('appQuit')
+                win.webContents.send('view/appQuit')
                 app.quit();
             }
         }
@@ -77,7 +77,9 @@ function createWindow () {
         }
     });
     // 检测软件版本
-    checkUpdate(app,autoUpdater,dialog,project.checkUpdateUrl,process.platform)
+    checkUpdate(app,autoUpdater,dialog,shell).then(()=>{
+        win.webContents.send('view/foundNewVersion')
+    })
 
     global.win = win
 }
@@ -113,7 +115,7 @@ if (!gotTheLock) {
     app.on('window-all-closed', () => {
         global.logger.info(`window all closed`)
         if (process.platform !== 'darwin'){
-            win.webContents.send('appQuit')
+            win.webContents.send('view/appQuit')
             app.quit()
         }
     })
@@ -122,7 +124,7 @@ if (!gotTheLock) {
         requireClose = true
         global.logger.info(`kill xgrok,pid is ${global.xgrokPid}`)
         global.xgrokPid && await killPid(global.xgrokPid)
-        global.win.webContents.send('appQuit')
+        global.win.webContents.send('view/appQuit')
     })
     app.whenReady().then(async () => {
         Menu.setApplicationMenu(null) // null值取消顶部菜单栏
