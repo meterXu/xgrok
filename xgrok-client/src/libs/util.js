@@ -196,29 +196,29 @@ function findProcessId(processName) {
 }
 function checkUpdate(app,autoUpdater,dialog,checkUpdateUrl,platform){
     global.logger.info(`start check xgrok new version,now version is ${app.getVersion()}`)
-    const url = `${checkUpdateUrl}/update/dmg_arm64/${app.getVersion()}`
-    autoUpdater.setFeedURL({ url })
-    setInterval(() => {
-        autoUpdater.checkForUpdates()
-    }, 3000)
-    autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
+    autoUpdater.logger = global.logger
+    autoUpdater.forceDevUpdateConfig = true
+    autoUpdater.checkForUpdates();
+    // //监听发现可用更新事件
+    // autoUpdater.on('update-available', (message) => {
+    // })
+    // //监听没有可用更新事件
+    // autoUpdater.on('update-not-available', (message) => {
+    // });
+    //监听下载完成事件
+    autoUpdater.on('update-downloaded',(releaseObj) => {
+        global.logger.info(`${JSON.stringify(releaseObj)}`)
         global.logger.info(`a new version has been downloaded. Starta om applikationen for att verkstalla uppdateringarna`)
         const dialogOpts = {
             type: 'info',
             buttons: ['重启', '稍后'],
             title: '应用更新',
-            message: process.platform === 'win32' ? releaseNotes : releaseName,
             detail: '新版本已下载，重新启动应用程序以执行更新。'
         }
         dialog.showMessageBox(dialogOpts).then((returnValue) => {
             if (returnValue.response === 0) autoUpdater.quitAndInstall()
         })
-    })
-    autoUpdater.on('error', (message) => {
-        console.error(`there was a problem updating the application\r\n${message}`)
-        global.logger.error(`there was a problem updating the application\r\n${message}`)
-
-    })
+    });
 }
 
 module.exports = {

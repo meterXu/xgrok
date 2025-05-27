@@ -26,30 +26,32 @@ model PortRange {
 }
 
 model Server {
-  id                String          @id @db.VarChar(32)
-  name              String          @db.VarChar(100)
-  domain            String          @db.VarChar(50)
-  port              Int
-  http_port         Int?
-  https_port        Int?
-  has_ssl           Int
-  ssl_expired_time  DateTime        @db.DateTime(0)
-  up_speed          String          @db.VarChar(50)
-  down_speed        String          @db.VarChar(50)
-  sort              Int?
-  is_vip            Int
-  creator           String?         @db.VarChar(50)
-  editor            String?         @db.VarChar(50)
-  created_time      DateTime?       @default(dbgenerated("(now())")) @map("created_time") @db.DateTime(0)
-  modified_time     DateTime?       @db.DateTime(0)
-  status            Int?            @default(1)
-  is_delete         Int?            @default(0)
-  is_online         Int             @default(1)
-  region            String?         @db.VarChar(50)
-  operator          String?         @db.VarChar(50)
-  ng_port_range     PortRange[]
-  ng_tunnel_service TunnelService[]
-  ng_tunnel_web     TunnelWeb[]
+  id                  String          @id @db.VarChar(32)
+  name                String          @db.VarChar(100)
+  domain              String          @db.VarChar(50)
+  port                Int
+  http_port           Int?
+  https_port          Int?
+  has_ssl             Int
+  ssl_expired_time    DateTime        @db.DateTime(0)
+  up_speed            String          @db.VarChar(50)
+  down_speed          String          @db.VarChar(50)
+  sort                Int?
+  is_vip              Int
+  creator             String?         @db.VarChar(50)
+  editor              String?         @db.VarChar(50)
+  created_time        DateTime?       @default(dbgenerated("(now())")) @map("created_time") @db.DateTime(0)
+  modified_time       DateTime?       @db.DateTime(0)
+  status              Int?            @default(1)
+  is_delete           Int?            @default(0)
+  is_online           Int             @default(1)
+  region              String?         @db.VarChar(50)
+  operator            String?         @db.VarChar(50)
+  month_total_traffic Int?            @default(0)
+  month_used_traffic  Int?            @default(0)
+  ng_port_range       PortRange[]
+  ng_tunnel_service   TunnelService[]
+  ng_tunnel_web       TunnelWeb[]
 
   @@index([domain, port], map: "ng_server_domain_port_index")
   @@map("ng_server")

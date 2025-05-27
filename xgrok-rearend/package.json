@@ -14,12 +14,8 @@
     "generateClient": "npx prisma generate",
     "build": "rm -rf dist && babel src -d dist && cp -rp src/keys dist && npm run generateClient",
     "start": "rm -rf dist && babel src -d dist && cp -rp src/keys dist && node dist/index.js",
-    "dev": "export NODE_ENV=development&&nodemon --watch './src/**/*.js' --exec npm run start",
+    "dev": "set NODE_ENV=development&&nodemon --watch './src/**/*.js' --exec npm run start",
     "prod": "export NODE_ENV=production&&node dist/index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:meterXu/xsCollect.git"
   },
   "author": "isaac <xhgainxq@qq.com>",
   "dependencies": {

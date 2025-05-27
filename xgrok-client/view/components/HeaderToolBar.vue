@@ -48,6 +48,7 @@ function onClose(){
   li{
     width: 48px;
     height: 24px;
+    font-size: 14px;
     cursor: pointer;
     text-align: center;
     display: inline-flex;

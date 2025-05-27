@@ -1,4 +1,5 @@
-const { app, BrowserWindow,Tray,Menu,nativeImage,autoUpdater,dialog } = require('electron')
+const { app, BrowserWindow,Tray,Menu,nativeImage,dialog } = require('electron')
+const {autoUpdater} = require('electron-updater')
 const getProject = require("./project");
 const path = require('node:path')
 const logger  = require('electron-log')
