@@ -1,6 +1,6 @@
 {
   "name": "xgrok",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "xgrok客户端",
   "main": "frame/main.js",
   "scripts": {
