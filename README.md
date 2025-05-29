@@ -10,7 +10,7 @@
 ### Windows
 直接官网下载exe文件进行安装。
 ### MacOS
-直接官网下载dmg文件进行安装，打开程序如果遇到“已损坏，无法打开”问题，则执行如下命令：
+直接官网下载dmg文件进行安装，如果打开程序遇到“已损坏，无法打开”的问题，则执行如下命令：
 ```bash
 sudo xattr -r -d com.apple.quarantine /Applications/xgrok.app
 ```
