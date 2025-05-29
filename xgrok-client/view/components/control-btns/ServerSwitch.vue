@@ -14,14 +14,18 @@ watch(()=>props.percentage,(nv)=>{
   emits('serverLoading',switchLoading.value )
 })
 async function onSwitchChange(value) {
-  switchLoading.value = true
-  emits('serverLoading',switchLoading.value)
-  if (value) {
-    if (selectedServer?.value.is_online === isOnline.online)
-      await onTurnOn()
-  } else {
-    await onTurnOff()
+  const exec =async ()=>{
+    switchLoading.value = true
+    emits('serverLoading',switchLoading.value)
+    if (value) {
+      if (selectedServer?.value.is_online === isOnline.online)
+        await onTurnOn()
+    } else {
+      await onTurnOff()
+    }
   }
+  return exec.debounce()()
+
 }
 async function onTurnOn() {
   store.setIsDeleteAll(false)

@@ -5,7 +5,6 @@ import {filter,util} from 'xxweb-box'
 import 'element-plus/dist/index.css'
 import '@/assets/main.less'
 import pinia from '@/store/index.js'
-import VConsole from 'vconsole'
 
 const app = createApp(App)
 window.app = app
@@ -16,10 +15,6 @@ app.use(pinia)
 app.use(router)
 filter(router, window.project)
 app.mount('#app')
-
-if(process.env.NODE_ENV==='development'){
-    new VConsole()
-}
 
 function makeDraggable(element) {
     element = document.querySelector(element);
@@ -49,4 +44,3 @@ function makeDraggable(element) {
 
 
 }
-// makeDraggable('body')

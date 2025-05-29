@@ -8,7 +8,7 @@ import {
   queryClient,
   createClient, updateClient, closeWebSocket
 } from '@/api'
-import {onMounted, onUnmounted, ref, watch,computed} from 'vue'
+import {onMounted, onUnmounted, ref, watch} from 'vue'
 import {useAppStore} from '@/store';
 import ServerConfigs from '@/pages/dashboard/modules/ServerConfig/ServerConfigs.vue'
 import ConfigDialog from "@/components/ConfigDialog.vue";
@@ -20,32 +20,31 @@ import TunnelServiceConfigItem from "@/pages/dashboard/modules/TunnelService/Tun
 import SystemInfo from "@/components/SystemInfo.vue"
 import {sendMessage} from '@/worker/mainThread'
 import ServerProgress from "@/components/ServerProgress.vue";
-import ServerSwitch from "@/components/ServerSwitch.vue";
-import ConfigLockBtn from "@/components/ConfigLockBtn.vue";
-import ConfigRefreshBtn from "@/components/ConfigRefreshBtn.vue";
+import ServerSwitch from "@/components/control-btns/ServerSwitch.vue";
+import ConfigLockBtn from "@/components/control-btns/ConfigLockBtn.vue";
+import ConfigRefreshBtn from "@/components/control-btns/ConfigRefreshBtn.vue";
 import {sleep} from "@/libs/common";
+import ViewLogBtn from "@/components/control-btns/ViewLogBtn.vue";
 const store = useAppStore()
 const serverConfigs = ref(null)
 const tunnelWebConfigs = ref(null)
 const tunnelServiceConfigs = ref(null)
 const tunnelLoading = ref(true)
 const systemInfo = ref(null)
-const percentage = ref(0)
 const serverSwitch = shallowRef()
 const serverLoading = shallowRef(false)
-const {pid, selectedServer, dialogVisible, clientId} = store
+const {pid, selectedServer, dialogVisible, clientId,percentage} = store
 
 if (window.project.variable.mode !== 'browser') {
   window.electronAPI.onAppQuit(() => {
     closeWebSocket()
     store.setPid(null)
   })
-  window.electronAPI.onRefreshPid((pid) => {
-    store.setPid(pid)
-  })
   window.electronAPI.onProcess((_percentage)=>{
-    console.log(_percentage)
-    percentage.value = _percentage
+    store.setPercentage(_percentage)
+  })
+  window.electronAPI.onRefreshPid((_pid)=>{
+    store.setPid(_pid)
   })
 }
 async function initServerConfigData() {
@@ -155,6 +154,7 @@ onUnmounted(() => {
     <el-tabs class="tunnel-config-wrap" type="border-card" editable v-loading="tunnelLoading">
       <template #add-icon>
         <div class="flex flex-row items-center justify-between gap-8">
+          <ViewLogBtn :loading="serverLoading"/>
           <ConfigLockBtn/>
           <ConfigRefreshBtn :loading="serverLoading" @refresh="onRefresh"/>
           <ServerSwitch ref="serverSwitch"

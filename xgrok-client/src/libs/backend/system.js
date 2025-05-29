@@ -1,5 +1,7 @@
 const {hostname, version} = require("../util");
 const net = require('net');
+const {BrowserWindow, nativeImage}  = require('electron')
+const path = require("node:path");
 
 async function getSystemInfo(data){
     return Promise.resolve({
@@ -57,8 +59,33 @@ async function randomGetPort(){
     }
 }
 
+async function openDialog(data){
+    const appIcon = nativeImage.createFromPath(global.project.appIcon[process.platform])
+    const dialogWindow = new BrowserWindow({
+        title:data.title,
+        width: 800,
+        height: 600,
+        icon: appIcon,
+        webPreferences: {
+            preload: path.join(__dirname,'../../ipc', 'preload.js'),
+            nodeIntegration: false
+        }
+    });
+    if(process.env.NODE_ENV==='development'){
+        await dialogWindow.loadURL(project.viewUrl)
+        dialogWindow.webContents.openDevTools();
+    }else{
+        dialogWindow.loadFile(project.viewUrl)
+    }
+    setTimeout(()=>{
+        dialogWindow.webContents.send('view/route',data)
+    },100)
+
+}
+
 module.exports={
     getSystemInfo,
     checkPort,
-    randomGetPort
+    randomGetPort,
+    openDialog
 }

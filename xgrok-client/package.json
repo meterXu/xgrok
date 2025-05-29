@@ -27,11 +27,13 @@
     "directories": {
       "output": "out"
     },
-    "publish": [{
-      "provider": "github",
-      "owner": "meterXu",
-      "repo": "xgrok"
-    }],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "meterXu",
+        "repo": "xgrok"
+      }
+    ],
     "nsis": {
       "oneClick": false,
       "allowElevation": true,
@@ -116,7 +118,6 @@
     "unplugin-element-plus": "^0.9.1",
     "unplugin-icons": "^0.18.5",
     "unplugin-vue-components": "^28.5.0",
-    "vconsole": "^3.15.1",
     "vite": "^5.1.0",
     "vite-copy-plugin": "^0.4.0",
     "vite-plugin-compression2": "^0.12.0",

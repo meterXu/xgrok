@@ -41,7 +41,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
         type:'checkPort',
         data:data
     }),
+    viewLog:(data)=>ipcRenderer.invoke('system',{
+        type:'viewLog',
+        data:data
+    }),
     onAppQuit:(callback)=>ipcRenderer.on('view/appQuit',(_event, value) => callback(value)),
     onRefreshPid:(callback)=>ipcRenderer.on('view/refreshPid',(_event, value) => callback(value)),
-    onProcess:(callback)=>ipcRenderer.on('view/process',(_event, value) => callback(value))
+    onProcess:(callback)=>ipcRenderer.on('view/process',(_event, value) => callback(value)),
+    onRoute:(callback)=>ipcRenderer.on('view/route',(_event, value) => callback(value)),
+    onFoundNewVersion:(callback)=>ipcRenderer.on('view/foundNewVersion',(_event, value) => callback(value))
 })

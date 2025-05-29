@@ -16,33 +16,19 @@ async function checkThread(pid,webSource,tcpSource){
         let total = webSource.length+tcpSource.length
         let step = 0
         for(let web of webSource){
-            const isOnline = await checkUrl(web.params[0],web.params[1],web.params[2])
-            if(web.isOnline!==isOnline){
-                web.isOnline = isOnline
-                step = webSource.filter(c=>c.isOnline).length+tcpSource.filter(c=>c.isOnline).length
-                sendProcess(total,step)
-            }
+            web.isOnline = await checkUrl(web.params[0],web.params[1],web.params[2])
+            step = webSource.filter(c=>c.isOnline).length+tcpSource.filter(c=>c.isOnline).length
+            sendProcess(total,step)
             await sleep(100)
         }
         for(let tcp of tcpSource){
-            const isOnline = await checkServerOnline(tcp.params[0],tcp.params[1])
-            if(tcp.isOnline!==isOnline){
-                tcp.isOnline = isOnline
-                step = webSource.filter(c=>c.isOnline).length+tcpSource.filter(c=>c.isOnline).length
-                sendProcess(total,step)
-            }
+            tcp.isOnline = await checkServerOnline(tcp.params[0],tcp.params[1])
+            step = webSource.filter(c=>c.isOnline).length+tcpSource.filter(c=>c.isOnline).length
+            sendProcess(total,step)
             await sleep(200)
         }
-        if(parentPort.isAllOnLine && step!==total){
-            parentPort.postMessage({
-                type: 'pidIsNull'
-            })
-            clearTimeout(parentPort.timerId)
-            parentPort.timerId = null
-        }else{
-            parentPort.isAllOnLine = step===total
-            parentPort.timerId = setTimeout(()=>checkThread(pid,webSource,tcpSource),parentPort.isAllOnLine?3000:1000)
-        }
+        parentPort.isAllOnLine = step===total
+        parentPort.timerId = setTimeout(()=>checkThread(pid,webSource,tcpSource),parentPort.isAllOnLine?3000:1000)
     }
 }
 

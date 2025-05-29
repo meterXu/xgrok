@@ -19,6 +19,7 @@
   --light-border-color:rgba(220, 223, 230, 0.8);
   --el-color-primary:#30a44b;
   --el-color-success:#30a44b;
+  --el-color-disabled:var(--el-text-color-disabled);
   .el-input,.el-textarea{
     --el-input-focus-border-color:var(--el-color-primary);
   }
@@ -32,9 +33,6 @@
     color: var(--el-color-primary);
   }
 }
-//.my-info-btn{
-//  background-color: var(--primary-btn-bg);
-//}
 .my-btn-disabled{
   cursor: not-allowed;
   pointer-events: none;
@@ -84,7 +82,7 @@
 #nprogress {
   display: none;
 }
-body{
+body,html{
   font-size: 4px;
 }
 ul{

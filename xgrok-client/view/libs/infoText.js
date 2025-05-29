@@ -7,6 +7,7 @@ export const tipText = {
         webPort:'代理远程网址需要用到本地端口号，不同配置端口号不能相同。',
         remote_port:'映射出来的远端服务器端口号，请填写范围内未占用的端口。',
         http:'默认开启HTTPS。',
-        configLockText:['配置可修改','配置已锁定']
+        configLockText:['配置可修改','配置已锁定'],
+        viewLook:'查看日志'
     }
 }

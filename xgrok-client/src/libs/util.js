@@ -155,7 +155,7 @@ function checkUrl(name, domain, port, timeout=500) {
     });
     return new Promise((resolve) => {
         http.get(url, (res) => {
-            if (res.statusCode === 200) {
+            if (res.statusCode !== 404&&res.statusCode !==502) {
                 console.log(`${new Date()} ${url} 可访问`);
                 resolve(true);
             } else {
@@ -194,7 +194,7 @@ function findProcessId(processName) {
         });
     });
 }
-function checkUpdate(app,autoUpdater,dialog,shell){
+function checkUpdate(app,autoUpdater,dialog,shell,manual=false){
     return new Promise((resolve, reject) => {
         global.logger.info(`start check xgrok new version,now version is ${app.getVersion()}`)
         autoUpdater.logger = global.logger
@@ -203,7 +203,11 @@ function checkUpdate(app,autoUpdater,dialog,shell){
         //监听发现可用更新事件
         autoUpdater.on('update-available', (info) => {
             global.logger.info(`found a new version[${info.version}]`)
-            resolve()
+            resolve(info)
+        })
+        //监听无可用更新事件
+        autoUpdater.on('update-not-available',(info)=>{
+            reject(info)
         })
         //监听下载完成事件，mac下没有签名，先特殊处理
         autoUpdater.on('update-downloaded',(info) => {

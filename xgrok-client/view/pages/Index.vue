@@ -1,23 +1,15 @@
 <script setup>
 import {useAppStore} from "@/store";
 import {useRouter,useRoute,onBeforeRouteUpdate} from 'vue-router'
-import {ElMessage, ElMessageBox} from "element-plus";
+import {ElMessage} from "element-plus";
 import {closeWebSocket, queryPayPlan} from "@/api";
 import {confirm, usePayPlanColor} from '@/libs/common'
+import {useGoBack, useGoTo} from "@/libs/useAction";
 const store = useAppStore()
 const {userInfo,pid,plan} = store
 const router = useRouter()
 const route = useRoute()
 const btnText = ref(null)
-const btnIcon = shallowRef(IIconParkOutlineHandRight)
-const btnVisible = ref(true)
-
-queryPayPlan().then(res=>{
-  if(res.success){
-    store.setPlan(res.data)
-    btnText.value=getBtnText(res.data)
-  }
-})
 
 function logout(){
   confirm('确定要退出登录吗？',null,{
@@ -49,36 +41,18 @@ function logout(){
     store.setUserInfo(null)
     store.setSelectedServer(null)
     closeWebSocket()
-    router.replace({name:'Login'})
+    useGoTo('Login')
   })
 }
-onBeforeMount(()=>{
-  btnVisible.value = router.currentRoute.value.name==='Plan'||router.currentRoute.value.name==='Dashboard'
-})
-onBeforeRouteUpdate((to, from, next)=>{
-  if(to.name==='Plan'){
-    btnText.value='返回'
-    btnIcon.value = IEpBack
-  }else{
-    btnText.value= getBtnText(plan)
-    btnIcon.value = IIconParkOutlineHandRight
-  }
-  btnVisible.value = to.name==='Plan'||to.name==='Dashboard'
-  next()
-})
 
 function getBtnText(plan){
   return  plan.text
 }
 
-function onPlanBtnClick(){
-  if(route.name==="Plan"){
-    router.replace({name:'Dashboard'})
-  }
-  if(route.name==="Dashboard"){
-    router.replace({name:'Plan'})
-  }
-}
+queryPayPlan().then(res=>{
+  res.success && store.setPlan(res.data)
+  btnText.value = getBtnText(res.data)
+})
 
 </script>
 
@@ -91,13 +65,22 @@ function onPlanBtnClick(){
             <img src="../../public/assets/icon.png" alt="logo" class="w-48"/>
             <span class="text-[20px] font-bold ml-4">xgrok</span>
             <el-divider direction="vertical" />
-            <el-button v-if="btnVisible" :type="usePayPlanColor(plan.value)" plain
+            <el-button :disabled="!btnText" :type="usePayPlanColor(plan.value)" plain v-if="router.currentRoute.value.name==='Dashboard'"
                        class="text-[14px]! py-14!"
                        size="small"
-                       @click="onPlanBtnClick">
+                       @click="useGoTo('Plan')">
               <template #icon>
-                <component :is="btnIcon"></component>
-              </template>{{btnText}}
+                <i-icon-park-outline-handRight/>
+              </template>
+              {{btnText}}
+            </el-button>
+            <el-button plain :type="usePayPlanColor(plan.value)" v-if="router.currentRoute.value.name==='Plan'"
+                       class="text-[14px]! py-14!"
+                       size="small" @click="useGoBack">
+              <template #icon>
+                <i-ep-back></i-ep-back>
+              </template>
+              返回
             </el-button>
           </div>
           <div>

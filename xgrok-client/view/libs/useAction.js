@@ -1,4 +1,5 @@
 import {computed, reactive} from "vue";
+import router from "@/router";
 
 export function useGetValidateRes(form){
     const obj={}
@@ -32,4 +33,13 @@ export function useGetTermsOfServiceUrl(){
 }
 export function usePrivacyAgreementUrl(){
     return window.project.variable.website+'privacyAgreement.html'
+}
+
+export async function useGoBack(){
+    router.back()
+}
+
+
+export async function useGoTo(name){
+    router.push({name})
 }

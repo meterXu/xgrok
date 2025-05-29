@@ -30,6 +30,7 @@ export const useAppStore = defineStore('app', ()=>{
     const _tunnelForm = ref(null)
     const _userName= ref(null)
     const _configIsLock = ref(false)
+    const _percentage = ref(0)
 
     //computed
     const userInfo = computed(()=>{
@@ -96,6 +97,12 @@ export const useAppStore = defineStore('app', ()=>{
     const isCloseEdit = computed(()=>{
         return Boolean(pid.value)&&configIsLock.value
     })
+    const percentage = computed(()=>{
+        if($ss.get("percentage")){
+            _percentage.value = $ss.get("percentage")
+        }
+        return _percentage
+    })
 
     //action
     function setUserInfo(data){
@@ -160,6 +167,10 @@ export const useAppStore = defineStore('app', ()=>{
     function setConfigIsLock(data){
         _configIsLock.value=data
     }
+    function setPercentage(data){
+        _percentage.value = getStoreValue(data)
+        $ss.set('percentage',getLsValue(data))
+    }
 
     return {
         token,
@@ -176,6 +187,7 @@ export const useAppStore = defineStore('app', ()=>{
         userName,
         configIsLock,
         isCloseEdit,
+        percentage,
         setUserInfo,
         setToken,
         setPid,
@@ -190,7 +202,8 @@ export const useAppStore = defineStore('app', ()=>{
         setOrderStatus,
         setTunnelForm,
         setUserName,
-        setConfigIsLock
+        setConfigIsLock,
+        setPercentage
     }
 })
 export default createPinia()

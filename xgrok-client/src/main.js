@@ -32,8 +32,9 @@ function createWindow () {
         frame:false
     }:null )))
     if(process.env.NODE_ENV==='development'){
-        setTimeout(()=>{
-            win.loadURL(project.viewUrl)
+        setTimeout(async ()=>{
+            await win.loadURL(project.viewUrl)
+            win.webContents.openDevTools();
         },1000)
     }else{
         win.loadFile(project.viewUrl)
@@ -46,6 +47,23 @@ function createWindow () {
             click: () => {
                 global.logger.info(`tray show app`)
                 win.show();
+            }
+        },
+        {
+            label: '检查更新',
+            click: () => {
+                global.logger.info(`tray check update`)
+                // 检查更新
+                checkUpdate(app,autoUpdater,dialog,shell,true).then((info)=>{
+                    win.webContents.send('view/foundNewVersion',info)
+                }).catch(()=>{
+                    dialog.showMessageBox({
+                        type: 'info',
+                        buttons: ['确定'],
+                        title: '提示',
+                        detail: '无可用更新，当前已是最新版本！'
+                    })
+                })
             }
         },
         {
@@ -76,9 +94,9 @@ function createWindow () {
             win.hide()
         }
     });
-    // 检测软件版本
-    checkUpdate(app,autoUpdater,dialog,shell).then(()=>{
-        win.webContents.send('view/foundNewVersion')
+    // 检查更新
+    checkUpdate(app,autoUpdater,dialog,shell).then((info)=>{
+        win.webContents.send('view/foundNewVersion',info)
     })
 
     global.win = win

@@ -2,10 +2,11 @@
 import HeaderToolBar from "@/components/HeaderToolBar.vue";
 import {deviceType} from "@/libs/common";
 import bus from "@/libs/bus";
+const router = useRouter()
 let timer=null;
 const BaseFontSize = 1000/4; //设计稿尺寸/根字体大小
 // window.onresize = windowResize;
-windowResize();
+// windowResize();
 function windowResize() {
   timer&&clearTimeout(timer);
   timer = setTimeout(() => {
@@ -17,6 +18,10 @@ function windowResize() {
     bus.$emit('processWidth',widthNum/4)
   }, 100);
 }
+
+window.project.variable.mode!=='browser'&&window.electronAPI.onRoute((data)=>{
+  router.push({name:data.name})
+})
 </script>
 
 <template>

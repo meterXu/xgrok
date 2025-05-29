@@ -13,9 +13,11 @@ const {checkPort} = require("./system");
 const {Worker} = require("worker_threads");
 let serviceNames = null
 let pid = null
+let _xgrokConf = null
 initBeat()
 async function turnOn(xgrokConf){
     try{
+        _xgrokConf = xgrokConf
         global.webServers = global.webServers||[]
         global.tcpServers = global.tcpServers||[]
         if(xgrokConf.tunnelWebs.length===0&&xgrokConf.tunnelServices.length===0){
@@ -259,7 +261,7 @@ function initBeat(){
         switch (result.type){
             case 'pidIsNull':{
                 // xgrok进程死了,重启进程
-                pid = await startXgrok(serviceNames)
+                pid = await turnOn(_xgrokConf)
                 global.win.webContents.send('view/refreshPid',pid)
                 break;
             }

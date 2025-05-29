@@ -25,6 +25,14 @@ const normalRoutes = [
         }
     },
     {
+        path:'/log',
+        name:'Log',
+        component:()=>import("@/pages/log/Log.vue"),
+        meta:{
+            requireAuth:false
+        }
+    },
+    {
         path: "/error/404",
         name: '404',
         component:()=>import("../pages/Error.vue"),
@@ -37,24 +45,24 @@ const normalRoutes = [
     {
         path: "/",
         name: 'Main',
-        component:()=>import("../pages/Index.vue"),
+        component:()=>import("@/pages/Index.vue"),
         redirect:"/client/dashboard",
         children: [
             {
                 path:'/client/dashboard',
                 name:'Dashboard',
-                component:()=>import("../pages/dashboard/Dashboard.vue"),
+                component:()=>import("@/pages/dashboard/Dashboard.vue"),
             },
             {
                 path:'/client/plan',
                 name:'Plan',
-                component:()=>import("../pages/plan/Plan.vue"),
+                component:()=>import("@/pages/plan/Plan.vue"),
             },
             {
                 path:'/client/order/:productId/:payNum',
                 name:'Order',
                 props:true,
-                component:()=>import("../pages/order/Order.vue"),
+                component:()=>import("@/pages/order/Order.vue"),
             }
       ]
     }
