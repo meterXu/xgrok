@@ -11,6 +11,7 @@
     "resolve:dev": "dotenv -e .env.development -- npx prisma migrate resolve --applied 0_init",
     "resolve:prod": "dotenv -e .env.production -- npx prisma migrate resolve --applied 0_init",
     "db-studio:dev": "dotenv -e .env.development -- npx prisma studio",
+    "dev:web" : "cd web && npm run dev",
     "generateClient": "npx prisma generate",
     "build": "rm -rf dist && babel src -d dist && cp -rp src/keys dist && npm run generateClient",
     "start": "rm -rf dist && babel src -d dist && cp -rp src/keys dist && node dist/index.js",
