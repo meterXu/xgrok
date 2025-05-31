@@ -3,7 +3,7 @@ const routes: Array<any> = [
     {
         path: '/',
         name: 'Home',
-        component: import('@/views/Index.vue'),
+        component: ()=>import('@/views/Index.vue'),
     }
 ];
 
