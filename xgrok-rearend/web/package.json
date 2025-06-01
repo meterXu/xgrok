@@ -12,10 +12,13 @@
     "element-plus": "^2.9.11",
     "pinia": "^3.0.2",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.1"
+    "vue-router": "^4.5.1",
+    "xxweb-box": "^0.3.6",
+    "xxweb-util": "^0.3.8"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.3",
+    "@vitejs/plugin-vue-jsx": "^4.2.0",
     "@vue/tsconfig": "^0.7.0",
     "typescript": "~5.8.3",
     "vite": "^6.3.5",

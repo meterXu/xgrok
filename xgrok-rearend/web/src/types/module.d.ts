@@ -3,3 +3,4 @@ declare global{
     }
 }
 declare module 'xxweb-box'
+declare module 'xxweb-util'
