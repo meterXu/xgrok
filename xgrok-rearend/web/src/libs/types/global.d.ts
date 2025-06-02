@@ -1,6 +1,6 @@
 declare global {
     interface Window {
-        project: Project;
+        project: ProjectType;
     }
 }
 

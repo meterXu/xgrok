@@ -1,4 +1,4 @@
-interface Project {
+interface ProjectType {
     nameSpace: string,
     variable: {
         tokenKey: string,
