@@ -8,16 +8,16 @@ cd icons.iconset
 ```
 
 ```bash
-Sips -z 16 16 icon.png -o icon_16x16.png
-Sips -z 32 32 icon.png -o icon_16x16@2x.png
-Sips -z 32 32 icon.png -o icon_32x32.png
-Sips -z 64 64 icon.png -o icon_32x32@2x.png
-Sips -z 128 128 icon.png -o icon_128x128.png
-Sips -z 256 256 icon.png -o icon_128x128@2x.png
-Sips -z 256 256 icon.png -o icon_256x256.png
-Sips -z 512 512 icon.png -o icon_256x256@2x.png
-Sips -z 512 512 icon.png -o icon_512x512.png
-Sips -z 1024 1024 icon.png -o icon_512x512@2x.png
+Sips -z 16 16 icon2.png -o icon_16x16.png
+Sips -z 32 32 icon2.png -o icon_16x16@2x.png
+Sips -z 32 32 icon2.png -o icon_32x32.png
+Sips -z 64 64 icon2.png -o icon_32x32@2x.png
+Sips -z 128 128 icon2.png -o icon_128x128.png
+Sips -z 256 256 icon2.png -o icon_128x128@2x.png
+Sips -z 256 256 icon2.png -o icon_256x256.png
+Sips -z 512 512 icon2.png -o icon_256x256@2x.png
+Sips -z 512 512 icon2.png -o icon_512x512.png
+Sips -z 1024 1024 icon2.png -o icon_512x512@2x.png
 ```
 
 ```bash

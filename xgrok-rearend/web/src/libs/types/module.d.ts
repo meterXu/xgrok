@@ -1,0 +1,7 @@
+declare module 'xxweb-box'
+declare module 'xxweb-util/lib/util.js'
+declare module 'xxweb-util/lib/types.js'
+declare module 'xxweb-util/lib/filter.js'
+declare module 'xxweb-util/lib/project.js'
+declare module 'xxweb-util/lib/request.js'
+declare module 'xxweb-util/lib/validate.js'

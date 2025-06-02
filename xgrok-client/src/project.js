@@ -33,17 +33,17 @@ const getProject=function (app,mode){
             appIcon:{
                 darwin:path.join(appPath||__dirname,'../','public/assets/icon.icns'),
                 win32:path.join(appPath||__dirname,'../','public/assets/icon.ico'),
-                linux:path.join(appPath||__dirname,'../','public/assets/icon.png'),
+                linux:path.join(appPath||__dirname,'../','public/assets/icon2.png'),
             },
             icoIcon:{
                 darwin:path.join(appPath||__dirname,'../','public/assets/icon.icns'),
                 win32:path.join(appPath||__dirname,'../','public/assets/icon.ico'),
-                linux:path.join(appPath||__dirname,'../','public/assets/icon.png'),
+                linux:path.join(appPath||__dirname,'../','public/assets/icon2.png'),
             },
             trayIcon:{
                 darwin:path.join(appPath||__dirname,'../','public/assets/trayTemplate.png'),
                 win32:path.join(appPath||__dirname,'../','public/assets/icon.ico'),
-                linux:path.join(appPath||__dirname,'../','public/assets/icon.png'),
+                linux:path.join(appPath||__dirname,'../','public/assets/icon2.png'),
             }
         }
     }else{
@@ -57,17 +57,17 @@ const getProject=function (app,mode){
             appIcon:{
                 darwin:path.join(appPath||__dirname,appPath?'/':'../','public/assets/icon.icns'),
                 win32:path.join(appPath||__dirname,appPath?'/':'../','public/assets/icon.ico'),
-                linux:path.join(appPath||__dirname,appPath?'/':'../','public/assets/icon.png'),
+                linux:path.join(appPath||__dirname,appPath?'/':'../','public/assets/icon2.png'),
             },
             icoIcon:{
                 darwin:path.join(appPath||__dirname,appPath?'/':'../','public/assets/icon.icns'),
                 win32:path.join(appPath||__dirname,appPath?'/':'../','public/assets/icon.ico'),
-                linux:path.join(appPath||__dirname,appPath?'/':'../','public/assets/icon.png'),
+                linux:path.join(appPath||__dirname,appPath?'/':'../','public/assets/icon2.png'),
             },
             trayIcon:{
                 darwin:path.join(appPath||__dirname,appPath?'/':'../','public/assets/trayTemplate.png'),
                 win32:path.join(appPath||__dirname,appPath?'/':'../','public/assets/icon.ico'),
-                linux:path.join(appPath||__dirname,appPath?'/':'../','public/assets/icon.png'),
+                linux:path.join(appPath||__dirname,appPath?'/':'../','public/assets/icon2.png'),
             }
         }
     }

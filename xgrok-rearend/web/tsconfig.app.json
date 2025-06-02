@@ -5,14 +5,9 @@
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
     "typeRoots": [
       "node_modules/@types",
-      "src/types"
+      "src/libs/types"
     ]
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
