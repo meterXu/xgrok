@@ -2,11 +2,7 @@ interface ProjectType {
     nameSpace: string,
     variable: {
         tokenKey: string,
-        appCode: string,
-        minioUrl: string,
-        baseUrl: string,
-        runLogWsUrl: string,
-        mapStyleUrl: string
+        baseApi: string
     },
     redirect: { index: string, login: string, "404": string, '403': string },
     style: { theme: string, layout: string, multiPage: boolean },
@@ -50,4 +46,11 @@ interface ProjectType {
         },
         plugins: object
     }
+}
+interface PermissionType{
+    path:string,
+    meta:{
+        title:string
+    },
+    children?:[PermissionType]
 }

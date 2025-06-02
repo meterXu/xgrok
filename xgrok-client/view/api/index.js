@@ -67,7 +67,7 @@ export function login(data){
     data = Object.assign({
         grant_type: "password",
         scope: "all",
-        client_id: "web",
+        client_id: "app",
         client_secret: "abf7162029b76303d1ed302545a56b31",
         timestamp: new Date().valueOf()
     },data)

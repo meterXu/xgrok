@@ -1,14 +1,7 @@
 <script setup lang="ts">
-import {shallowReactive} from "vue";
 import {expandFullProject,redirectSsoLogin} from 'xxweb-util/lib/util.js'
-const permission = shallowReactive([
-  {
-    path:'/',
-    meta:{
-      title:'首页'
-    }
-  }
-])
+import permission from "@/api/permission.ts";
+
 const _project = expandFullProject(window.project) as ProjectType
 function onDropdownMenuClick(command:string){
   switch(command){

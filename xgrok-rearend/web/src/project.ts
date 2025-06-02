@@ -8,7 +8,7 @@ export default function (mode:string){
             tokenKey: env.VITE_APP_tokenKey
         },
         redirect: {
-            index: "/cg/generate",
+            index: "/dashboard",
             login: "/login",
             404: "/error/404",
             403: "/error/403",
