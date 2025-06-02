@@ -99,6 +99,7 @@ export default class UserController {
         const res = new ResultModel(payPlan,'',true)
         ctx.result(res)
     }
+
     @request('get', '/user/queryTunnelCount')
     @summary('查询隧道列表')
     @tag

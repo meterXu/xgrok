@@ -7,6 +7,9 @@ const url = {
     },
     dict:{
         list:'/api/sysDict/query'
+    },
+    user:{
+        query:'/api/system/user/query'
     }
 }
 
@@ -14,7 +17,7 @@ export function getDict(key:string){
     return getAction(url.dict.list,{key})
 }
 
-export function login(data:any):Promise<any>{
+export function login(data:any):Promise<ResultType<any>>{
     data = Object.assign({
         grant_type: "password",
         scope: "all",
@@ -27,4 +30,8 @@ export function login(data:any):Promise<any>{
     const _headers= {} as any
     _headers[window.project.variable.tokenKey]=null
     return postAction(url.oauth.authorize,qs.stringify(data),_headers)
+}
+
+export function userQuery(data:any):Promise<ResultType<PaginationDataType>>{
+    return getAction(url.user.query,data,null)
 }

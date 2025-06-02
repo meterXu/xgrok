@@ -1,6 +1,7 @@
 import {swaggerClass, swaggerProperty} from "koa-swagger-decorator";
 
-@swaggerClass() export default class OrderModel {
+@swaggerClass()
+export default class OrderModel {
     constructor(body) {
         /** generate by CodeGirl */
         this.id = body.id
@@ -26,7 +27,8 @@ import {swaggerClass, swaggerProperty} from "koa-swagger-decorator";
         this.is_delete = body.is_delete === undefined ? 0 : body.is_delete
     }
 
-    /** generate by CodeGirl */ @swaggerProperty({type: "string", description: "", nullable: false}) id
+    /** generate by CodeGirl */
+    @swaggerProperty({type: "string", description: "", nullable: false}) id
     @swaggerProperty({type: "string", description: "", nullable: false}) trade_no
     @swaggerProperty({type: "string", description: "", nullable: false}) product_id
     @swaggerProperty({type: "string", description: "", nullable: false}) remark

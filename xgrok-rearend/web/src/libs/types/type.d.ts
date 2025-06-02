@@ -54,3 +54,21 @@ interface PermissionType{
     },
     children?:[PermissionType]
 }
+interface ResultType<T>{
+    data?:T,
+    message: string,
+    success: boolean,
+    code: number
+}
+interface PaginationType{
+    total?:number,
+    pageNumber: number,
+    pageSize: number,
+    pageSizes?:number[],
+    layout?:string
+}
+interface PaginationDataType{
+    total:number,
+    records: any[],
+    pagination: PaginationType
+}

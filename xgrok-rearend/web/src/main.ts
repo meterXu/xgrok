@@ -8,12 +8,14 @@ import store from "@/store";
 import ElementPlus  from 'element-plus';
 import 'element-plus/dist/index.css'
 import '@/assets/css/index.css'
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
 const app = createApp(App)
 window.app = app
-app.config.globalProperties.$ls = new Ls(window.project.nameSpace)
+window.$ls = new Ls(window.project.nameSpace);
+app.config.globalProperties.$ls = window.$ls
 app.use(router)
 app.use(XXWebBox)
 app.use(store)
 filter(router,window.project,{})
-app.use(ElementPlus,{size:"small"})
+app.use(ElementPlus,{size:"small",locale: zhCn})
 app .mount('#app')

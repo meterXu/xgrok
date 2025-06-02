@@ -31,4 +31,9 @@ export default class OAuthUsersModel {
 
     @swaggerProperty({ type: "number",description:"",nullable:true}) is_delete
 
+    // 查询条件
+    @swaggerProperty({type: "string", description: "", nullable: true}) created_time_start
+    @swaggerProperty({type: "string", description: "", nullable: true}) created_time_end
+    @swaggerProperty({type: "string", description: "", nullable: true}) role_id
+
 }

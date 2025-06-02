@@ -2,7 +2,8 @@ declare global {
     interface Window {
         project: ProjectType;
         app:Vue,
-        appStore:any
+        appStore:any,
+        $ls:any
     }
 }
 

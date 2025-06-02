@@ -114,4 +114,32 @@ export default class OAuthUsersService {
             }
         })
     }
+
+    async query(pagination, orderBy, oauthUsersModel){
+        const where = [
+            oauthUsersModel.pay_time_start && `a.created_time >= '${oauthUsersModel.created_time_start}'`,
+            oauthUsersModel.pay_time_end && `a.created_time <= '${oauthUsersModel.created_time_end}'`,
+            oauthUsersModel.username && `a.username like '%${oauthUsersModel.username}%'`,
+            `a.status=${status.enable}`,
+            `a.is_delete=${isDelete.false}`
+        ].filter(c => c).join(' and ')
+
+        const totalSql =   `
+        select count(*) _all from oauth_users a
+        left join oauth_user_role b on a.id=b.user_id
+        left join oauth_role c on c.id = b.role_id
+        ${where ? `where ${where}` : ''} `
+
+        const querySql = `
+        select a.id,c.id as role_id,a.username,a.created_time,c.name as role_name,a.is_delete,a.status from oauth_users a
+        left join oauth_user_role b on a.id=b.user_id
+        left join oauth_role c on c.id = b.role_id
+        ${where ? `where ${where}` : ''}
+        order by a.sort asc,a.created_time desc
+        limit ${(pagination.pageNumber - 1) * pagination.pageSize},${pagination.pageSize}
+        `
+        let totalRes = await prisma.$queryRaw(Prisma.raw(totalSql))
+        let recordRes = await prisma.$queryRaw(Prisma.raw(querySql))
+        return [totalRes[0]._all,recordRes]
+    }
 }
