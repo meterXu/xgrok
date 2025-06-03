@@ -28,7 +28,6 @@ export default {
         ,'/oauth/validateCode'
         ,'/oauth/checkUserIsExist'
         ,'/oauth/changePwd'
-        ,'^\/hazel'
     ],
     logIgnores:['/api/server/checkServerOnline'],
     grants:['password'],
