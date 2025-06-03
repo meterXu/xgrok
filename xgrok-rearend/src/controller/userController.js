@@ -1,10 +1,14 @@
-import {body, query, request, summary, tags} from "koa-swagger-decorator";
+import {query, request, summary, tags} from "koa-swagger-decorator";
 import ResultModel from "../model/sys/resultModel.js";
 import UserService from "../service/userService.js";
 import TunnelWebService from "../service/tunnelWebService.js";
 import TunnelServiceService from "../service/tunnelServiceService.js";
 import EmailService from "../service/emailService.js";
 import OrderService from "../service/orderService.js";
+import PaginationModel from "../model/sys/paginationModel";
+import OrderByModel from "../model/sys/orderByModel";
+import OAuthUsersModel from "../model/oauthUsersModel";
+import OAuthUsersService from "../service/oauthUsersService";
 const tag = tags(['User'])
 
 export default class UserController {
@@ -19,6 +23,9 @@ export default class UserController {
             this.emailService = new EmailService()
         if(!this.orderService)
             this.orderService = new OrderService()
+        if (!this.oAuthUsersService) {
+            this.oAuthUsersService = new OAuthUsersService()
+        }
     }
 
     @request('get', '/user/tunnelWebConfig')
@@ -110,5 +117,18 @@ export default class UserController {
         const {server_id} = ctx.validatedQuery
         const res = await this.userService.queryTunnelCount(server_id,ctx.token.user.id)
         ctx.result(res,null,true)
+    }
+
+    @request('get', '/user/query')
+    @summary('后台管理查询用户列表')
+    @tag
+    @query({...PaginationModel.swaggerDocument, ...OrderByModel.swaggerDocument, ...OAuthUsersModel.swaggerDocument})
+    async userQuery(ctx){
+        const pagination = new PaginationModel(ctx.validatedQuery)
+        const orderBy = new OrderByModel(ctx.validatedQuery)
+        const oAuthUsersQuery = new OAuthUsersModel(ctx.validatedQuery)
+        const queryRes = await this.oAuthUsersService.query(pagination, orderBy, oAuthUsersQuery)
+        const res = new ResultModel({total: queryRes[0], records: queryRes[1], pagination: pagination}, null, true)
+        ctx.result(res)
     }
 }

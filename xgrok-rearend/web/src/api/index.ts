@@ -9,7 +9,7 @@ const url = {
         list:'/api/sysDict/query'
     },
     user:{
-        query:'/api/system/user/query'
+        query:'/api/user/query'
     }
 }
 
