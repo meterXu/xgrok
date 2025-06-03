@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
-    "deploy": "npm run build && cp -rp dist ../xgrok-rearend/static/web",
+    "deploy": "npm run build && rm -rf ../xgrok-rearend/static/* && cp -rp dist ../xgrok-rearend/static/web",
     "preview": "vite preview"
   },
   "dependencies": {
