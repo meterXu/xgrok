@@ -7,10 +7,11 @@ import copyPlugin from 'vite-copy-plugin'
 import fs from "fs";
 import tailwindcss from '@tailwindcss/vite'
 
-export default defineConfig(({mode})=>{
+export default defineConfig(({mode,command})=>{
+  let base = command==="build"?"/web/" :"/"
   fs.writeFileSync("./project.js","window.project="+JSON.stringify(project(mode),null,2),{"flag":"w"})
   return {
-    base:'./',
+    base:base,
     plugins: [
       tailwindcss(),
       vue(),

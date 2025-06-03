@@ -6,11 +6,14 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
+    "deploy": "npm run build && cp -rp dist ../static/web",
     "preview": "vite preview"
   },
   "dependencies": {
     "element-plus": "^2.9.11",
+    "js-md5": "^0.8.3",
     "pinia": "^3.0.2",
+    "qs": "^6.14.0",
     "vue": "^3.5.13",
     "vue-router": "^4.5.1",
     "xxweb-box": "^0.3.6",
