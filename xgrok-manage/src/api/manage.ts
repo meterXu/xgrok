@@ -1,7 +1,20 @@
 import {createService,onResponseError} from 'xxweb-util/lib/request.js'
 import { dealWithError } from './dealwithError.js';
 import {appStore} from "@/store/index.js";
-const axios = createService(window.project.variable.baseApi,()=>{
+import {ACCESS_TOKEN} from 'xxweb-util/lib/types.js'
+import md5 from "js-md5";
+const axios = createService(window.project.variable.baseApi,(config:any)=>{
+  const token = window.$ls.get(ACCESS_TOKEN)
+  if(token){
+    const time = new Date().valueOf()
+    if(process.env.NODE_ENV==='development'){
+      config.headers[window.project.variable.tokenKey] = token
+    }else{
+      config.headers[window.project.variable.tokenKey] = token.split(' ')[0] +' '+ md5([token.split(' ')[1],time,'isaacxu'].join(' '));
+      config.headers['X-Access-Token'] = token.split(' ')[1];
+      config.headers['X-Access-Time'] = time;
+    }
+  }
   return {
     tokenKey:window.project.variable.tokenKey,
     token:appStore().token?.value

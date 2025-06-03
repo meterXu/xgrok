@@ -1814,10 +1814,10 @@ xxweb-box@^0.3.6:
     vue "^3.0.0"
     vue-router "^4.0.8"
 
-xxweb-util@^0.3.8:
-  version "0.3.8"
-  resolved "https://registry.npmjs.org/xxweb-util/-/xxweb-util-0.3.8.tgz#a39e60347c015767e7f6d2f03d89c215d16db504"
-  integrity sha512-iwzhLt01WY19fzMV45e0PyIE10lckGsj87iPXqJEPGHVQ0y56ocNXpadkA3C2penjcuzAHY+s5Q3YdwueD2zyg==
+xxweb-util@0.3.9:
+  version "0.3.9"
+  resolved "https://registry.npmjs.org/xxweb-util/-/xxweb-util-0.3.9.tgz#560b7806a35c76dbaf87fe4417f3df3ff586aa6e"
+  integrity sha512-b0msDslahFEr70COiJUBE1I7mh4voaQGgB/zs5QbmLyjUo84IOfJx/nOL00k27WOgHvz9uFII5/URiENEqYgkw==
   dependencies:
     axios "^1.9.0"
     dayjs "^1.11.3"

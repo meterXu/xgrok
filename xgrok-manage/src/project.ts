@@ -5,7 +5,8 @@ export default function (mode:string){
         nameSpace: "xgrok-rearend-manage",
         variable: {
             baseApi: env.VITE_APP_baseApi,
-            tokenKey: env.VITE_APP_tokenKey
+            tokenKey: env.VITE_APP_tokenKey,
+            base: env.VITE_APP_base,
         },
         redirect: {
             index: "/dashboard",

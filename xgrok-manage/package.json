@@ -17,7 +17,7 @@
     "vue": "^3.5.13",
     "vue-router": "^4.5.1",
     "xxweb-box": "^0.3.6",
-    "xxweb-util": "^0.3.8"
+    "xxweb-util": "0.3.9"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.3",

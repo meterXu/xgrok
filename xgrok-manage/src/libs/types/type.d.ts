@@ -2,7 +2,8 @@ interface ProjectType {
     nameSpace: string,
     variable: {
         tokenKey: string,
-        baseApi: string
+        baseApi: string,
+        base: string,
     },
     redirect: { index: string, login: string, "404": string, '403': string },
     style: { theme: string, layout: string, multiPage: boolean },

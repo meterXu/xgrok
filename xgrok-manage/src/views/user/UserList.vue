@@ -34,7 +34,7 @@ onMounted(()=>{
 <div class="w-full h-full flex flex-col gap-12">
   <!--  表格  -->
   <div class="flex-1 w-full relative">
-    <el-scrollbar class="absolute">
+    <div class="absolute w-full h-full">
       <el-table v-loading="loading" :data="tableData" border height="100%">
         <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod" width="45"></el-table-column>
         <el-table-column prop="username" label="用户名" align="left"></el-table-column>
@@ -43,7 +43,7 @@ onMounted(()=>{
         <el-table-column prop="status" label="是否启用" align="left" width="80"></el-table-column>
         <el-table-column prop="is_delete" label="是否删除" align="left" width="80"></el-table-column>
       </el-table>
-    </el-scrollbar>
+    </div>
   </div>
   <!--  分页  -->
   <div class="flex justify-end">
