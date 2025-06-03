@@ -35,6 +35,7 @@ xgrok-client/.env.browser
 xgrok-rearend/.env.development
 xgrok-rearend/.env.production
 xgrok-rearend/.env.proxy
+xgrok-rearend/static/web
 xgrok-manage/.env.development
 xgrok-manage/.env.production
 xgrok-manage/project.js
