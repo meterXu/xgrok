@@ -52,7 +52,7 @@ interface PermissionType{
     meta:{
         title:string
     },
-    children?:[PermissionType]
+    children?:PermissionType[]
 }
 interface ResultType<T>{
     data?:T,

@@ -20,7 +20,7 @@ export default function (mode:string){
             fixSideMenu: false,
         },
         config:{
-            logo: './assets/img/icon.png',
+            logo: './assets/img/icon.webp',
             sideMenu:{
                 title:'xgrok后台管理',
                 width: '300px',

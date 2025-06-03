@@ -13,7 +13,7 @@ sudo spctl  --master-disable
 
 接着打开【系统偏好设置】，选择【安全性与隐私】，选择【通用】，可以看到【任何来源】已经选定。
 
-![b2.png](..%2Fmac%E4%B8%8B%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E%2Fb2.png)
+![b2.webp](..%2Fmac%E4%B8%8B%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E%2Fb2.webp)
 
 接着打开文件进行安装。
 
@@ -33,4 +33,4 @@ sudo xattr -r -d com.apple.quarantine /Applications/xgrok.app
 ```
 回到终端窗口按回车，输入系统密码回车即可。
 
-![b3.png](..%2Fmac%E4%B8%8B%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E%2Fb3.png)
+![b3.webp](..%2Fmac%E4%B8%8B%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E%2Fb3.webp)

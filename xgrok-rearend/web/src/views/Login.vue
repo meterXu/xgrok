@@ -41,7 +41,7 @@ onMounted(()=>{
   <div class="p-12 px-20 h-full flex justify-center items-center overflow-hidden divide-y bg-slate-100 dark:bg-zinc-900">
     <div class="w-350">
       <div class="w-full h-52 rounded-t-2xl bg-[#304156] dark:bg-zinc-800">
-        <img class="mx-auto h-full w-auto" src="../assets/img/icon2.png" alt="xgrok" />
+        <img class="mx-auto h-full w-auto" src="../assets/img/icon2.webp" alt="xgrok" />
       </div>
       <div class="w-full p-28 rounded-b-2xl space-y-12 bg-white text-neutral-600 dark:bg-zinc-950 dark:text-gray-100">
         <h1 class="text-[20px] font-bold text-center">登录你的账号</h1>

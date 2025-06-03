@@ -33,5 +33,5 @@ export function login(data:any):Promise<ResultType<any>>{
 }
 
 export function userQuery(data:any):Promise<ResultType<PaginationDataType>>{
-    return getAction(url.user.query,data,null)
+    return getAction(url.user.query,data)
 }
