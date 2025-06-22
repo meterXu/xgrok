@@ -25,6 +25,7 @@ import ConfigLockBtn from "@/components/control-btns/ConfigLockBtn.vue";
 import ConfigRefreshBtn from "@/components/control-btns/ConfigRefreshBtn.vue";
 import {sleep} from "@/libs/common";
 import ViewLogBtn from "@/components/control-btns/ViewLogBtn.vue";
+import {serverEnum} from "@/libs/enums";
 const store = useAppStore()
 const serverConfigs = ref(null)
 const tunnelWebConfigs = ref(null)
@@ -54,7 +55,7 @@ async function initServerConfigData() {
       store.setSelectedServer(res.data)
     }
   } else {
-    let res = await queryServersConfig()
+    let res = await queryServersConfig(serverEnum.frp)
     if (res.success && res.data.records.length > 0) {
       store.setSelectedServer(res.data.records[0])
     }

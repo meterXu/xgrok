@@ -232,6 +232,10 @@ function checkUpdate(app,autoUpdater,dialog,shell,manual=false){
         });
     })
 }
+function getEnumKey(enumData,value){
+    let find = Object.entries(enumData).find(([key,_value])=>_value===value)
+    return find?find[0]:''
+}
 
 module.exports = {
     randomNumber,
@@ -248,5 +252,6 @@ module.exports = {
     findProcessId,
     checkServerOnline,
     checkUrl,
-    checkUpdate
+    checkUpdate,
+    getEnumKey
 }

@@ -1,10 +1,9 @@
-const serverModel = require('./serverModel')
 const tunnelWebModel = require('./tunnelWebModel')
 const tunnelServiceModel = require('./tunnelServiceModel')
 
 class xgrokConfModel {
     constructor(xgrokConf) {
-        this.server = new serverModel(xgrokConf.server)
+        this.server = xgrokConf.server
         this.tunnelWebs = xgrokConf.tunnelWebs.map(c=>{
             return new tunnelWebModel(c)
         })

@@ -187,6 +187,12 @@ created()
         </template>
       </el-input>
     </el-form-item>
+    <el-form-item label="代理类型" prop="type">
+      <el-radio-group v-model="formData.type">
+        <el-radio-button label="TCP" :value="1" />
+        <el-radio-button label="UDP" :value="2" />
+      </el-radio-group>
+    </el-form-item>
     <el-form-item label="代理端口" prop="port">
       <div class="port-wrap">
         <el-input-number v-model="formData.port" placeholder="端口号"></el-input-number>

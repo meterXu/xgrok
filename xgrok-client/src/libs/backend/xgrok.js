@@ -2,284 +2,355 @@ const path = require("node:path");
 const {execFile} = require("node:child_process");
 const fs = require("node:fs");
 const {stringify} = require('yaml')
-const {killPid,findProcessId} = require("../util");
-const {serviceType, hostType} = require('../enum')
-const {platform,arch} = require("../util");
-const { shell } = require('electron');
+const {killPid, findProcessId,getEnumKey} = require("../util");
+const {serviceType, hostType,httpType, serverType} = require('../enum')
+const {platform, arch} = require("../util");
+const {shell} = require('electron');
 const http = require('http');
 const httpProxy = require('http-proxy');
 const net = require('net')
 const {checkPort} = require("./system");
 const {Worker} = require("worker_threads");
+const serverDetails = require("../../models/xgrokConfModel");
 let serviceNames = null
 let pid = null
 let _xgrokConf = null
 initBeat()
-async function turnOn(xgrokConf){
-    try{
+
+async function turnOn(xgrokConf) {
+    try {
         _xgrokConf = xgrokConf
-        global.webServers = global.webServers||[]
-        global.tcpServers = global.tcpServers||[]
-        if(xgrokConf.tunnelWebs.length===0&&xgrokConf.tunnelServices.length===0){
-            return Promise.reject({message:'配置为空'})
-        }else{
-            saveYamlConf(xgrokConf.server,xgrokConf.tunnelWebs,xgrokConf.tunnelServices)
-            serviceNames = xgrokConf.tunnelWebs.map(c=>c.name).concat(xgrokConf.tunnelServices.map(c=>c.name))
-            let proxyWebs = xgrokConf.tunnelWebs.filter(c=>c.is_remote===hostType.remote)
-            let proxyServices = xgrokConf.tunnelServices.filter(c=>c.is_remote===hostType.remote)
-            if(proxyWebs.length>0){
+        global.webServers = global.webServers || []
+        global.tcpServers = global.tcpServers || []
+        if (xgrokConf.tunnelWebs.length === 0 && xgrokConf.tunnelServices.length === 0) {
+            return Promise.reject({message: '配置为空'})
+        } else {
+            saveYamlConf(xgrokConf.server, xgrokConf.tunnelWebs, xgrokConf.tunnelServices)
+            serviceNames = xgrokConf.tunnelWebs.map(c => c.name).concat(xgrokConf.tunnelServices.map(c => c.name))
+            let proxyWebs = xgrokConf.tunnelWebs.filter(c => c.is_remote === hostType.remote)
+            let proxyServices = xgrokConf.tunnelServices.filter(c => c.is_remote === hostType.remote)
+            if (proxyWebs.length > 0) {
                 global.webServers.push(...await startWebProxy(proxyWebs))
             }
-            if(proxyServices.length>0){
+            if (proxyServices.length > 0) {
                 global.tcpServers.push(...await startTcpProxy(proxyServices))
             }
-            pid = await startXgrok(serviceNames)
+            pid = await startXgrok(serviceNames,xgrokConf.server.type)
             global.logger.info(`xgrok pid is [${pid}]`)
-            startBeat(pid,xgrokConf.tunnelWebs.map(c=>({isOnline:false,params:[c.name,xgrokConf.server.domain,80]})),
-                xgrokConf.tunnelServices.map(c=>({isOnline:false,params:[xgrokConf.server.domain,c.remote_port]})))
+            startBeat(pid, xgrokConf.tunnelWebs.map(c => ({
+                    isOnline: false,
+                    params: [c.name, xgrokConf.server.domain, xgrokConf.server.http_port]
+                })),
+                xgrokConf.tunnelServices.map(c => ({
+                    isOnline: false,
+                    params: [xgrokConf.server.domain, c.remote_port]
+                })))
             return Promise.resolve(pid)
         }
-    }catch (err){
-        return Promise.reject({message:err.message})
+    } catch (err) {
+        return Promise.reject({message: err.message})
     }
 }
-async function turnOff(pid){
+
+async function turnOff(pid) {
     global.logger.info(`kill xgrok,pid is ${pid}`)
-    fs.existsSync(userXgrokCfgFilePath())&&fs.unlinkSync(userXgrokCfgFilePath())
+    fs.existsSync(userXgrokCfgFilePath()) && fs.unlinkSync(userXgrokCfgFilePath())
     stopBeat()
     let res = null
-    if(pid){
+    if (pid) {
         res = await killPid(pid)
-    }else{
+    } else {
         let pids = await findProcessId('compile')
-        let ress = await Promise.all(pids.map(c=>killPid(c)))
-        res = !ress.some(c=>c.false)
+        let ress = await Promise.all(pids.map(c => killPid(c)))
+        res = !ress.some(c => c.false)
     }
-    global.win.webContents.send('view/process',0)
+    global.win.webContents.send('view/process', 0)
     return res
 }
-function startXgrok(names){
+
+function startXgrok(names,type) {
     return new Promise(async (resolve, reject) => {
         global.logger.info(`os arch: ${arch()}`)
         global.logger.info(`os platform: ${platform()}`)
         global.logger.info(`start xgrok, the client root path is ${global.project.clientRootPath}`)
         global.logger.info(`config:\r\n${readXgrokCfgFile(userXgrokCfgFilePath())}`)
-        const xgrok = execFile('./compile', [`-config=${userXgrokCfgFilePath()}`,'start',...names],{
-            cwd:global.project.clientRootPath,
-            detached: true
-        },(error, stdout, stderr)=>{
-            if(error){
-                global.logger.error(error)
-            }
-        })
+        let xgrok = null
+        if(type===serverType.ngrok){
+            xgrok = execFile('./compile', [`-config=${userXgrokCfgFilePath()}`, 'start', ...names], {
+                cwd: global.project.clientRootPath,
+                detached: true
+            }, (error, stdout, stderr) => {
+                if (error) {
+                    global.logger.error(error)
+                }
+            })
+        }else{
+            xgrok = execFile('./compile2', ['-c',`${userXgrokCfgFilePath()}`], {
+                cwd: global.project.clientRootPath,
+                detached: true
+            }, (error, stdout, stderr) => {
+                if (error.signal!=='SIGTERM' && error) {
+                    global.logger.error(error)
+                }
+            })
+        }
         xgrok.on('close', (data) => {
-            return Promise.resolve({success:true,message:'关闭成功'})
+            return Promise.resolve({success: true, message: '关闭成功'})
         });
         resolve(xgrok.pid)
     })
 
 }
-function saveYamlConf(serverDetail,webDetails,serviceDetails){
-    const yamlConf = generateYamlConf(serverDetail,webDetails,serviceDetails)
+
+function saveYamlConf(serverDetail, webDetails, serviceDetails) {
+    const yamlConf = generateXgrokConf(serverDetail, webDetails, serviceDetails)
     fs.writeFileSync(userXgrokCfgFilePath(), yamlConf);
+
 }
-function userXgrokCfgFilePath(){
+
+function userXgrokCfgFilePath() {
     const userFolderPath = global.project.appData;
-    if(!fs.existsSync(userFolderPath)){
+    if (!fs.existsSync(userFolderPath)) {
         fs.mkdirSync(userFolderPath)
     }
     const fileName = '.xgrok.cfg';
     return path.join(userFolderPath, fileName);
 }
-function generateYamlConf(serverDetail,WebDetails,serviceDetails){
-    let webTunnels = WebDetails.map(web=>{return {[web.name]:{proto:{http:web.port}}}})
-    let serviceTunnels = serviceDetails.map(service=>{
-        return {
-            [service.name]:{
-                remote_port:service.remote_port,
-                proto:{
-                    [[null,'tcp','udp'][serviceType.tcp]]:service.port
+
+function generateXgrokConf(serverDetail, WebDetails, serviceDetails) {
+    if (serverDetails.type === serverType.ngrok) {
+        let webTunnels = WebDetails.map(web => {
+            return {[web.name]: {proto: {http: web.port}}}
+        })
+        let serviceTunnels = serviceDetails.map(service => {
+            return {
+                [service.name]: {
+                    remote_port: service.remote_port,
+                    proto: {
+                        [[null, 'tcp', 'udp'][serviceType.tcp]]: service.port
+                    }
                 }
             }
+        })
+        const yamlConf = {
+            server_addr: `${serverDetail.domain}:${serverDetail.port}`,
+            trust_host_root_certs: false,
+            tunnels: {}
         }
-    })
-    const yamlConf = {
-        server_addr:`${serverDetail.domain}:${serverDetail.port}`,
-        trust_host_root_certs:false,
-        tunnels:{}
+        webTunnels.forEach(web => {
+            const we = Object.entries(web)
+            yamlConf.tunnels[we[0][0]] = we[0][1]
+        })
+        serviceTunnels.forEach(service => {
+            const se = Object.entries(service)
+            yamlConf.tunnels[se[0][0]] = se[0][1]
+        })
+        return stringify(yamlConf)
+    } else {
+        const config = {
+            serverAddr: serverDetail.domain,
+            serverPort: 4446,
+            auth: {
+                method: 'token',
+                token: 'xgrok_84hG5!Jk9m'
+            },
+            proxies: [...WebDetails.map(web => {
+                return {
+                    name: web.name,
+                    type: getEnumKey(httpType,web.type),
+                    localPort:web.port,
+                    subdomain: web.name
+                }
+            }),
+                ...serviceDetails.map(service => {
+                    return {
+                        name:service.name,
+                        type:getEnumKey(serviceType,service.type),
+                        localIP:service.host,
+                        localPort:service.port,
+                        remotePort:service.remote_port
+                    }
+                })]
+        }
+        return stringify(config)
     }
-    webTunnels.forEach(web=>{
-        const we = Object.entries(web)
-        yamlConf.tunnels[we[0][0]]=we[0][1]
-    })
-    serviceTunnels.forEach(service=>{
-        const se = Object.entries(service)
-        yamlConf.tunnels[se[0][0]]=se[0][1]
-    })
-    return stringify(yamlConf)
 }
-function readXgrokCfgFile(xgrokCfgPath){
-    return fs.readFileSync(xgrokCfgPath,{encoding:'utf-8'})
+
+function readXgrokCfgFile(xgrokCfgPath) {
+    return fs.readFileSync(xgrokCfgPath, {encoding: 'utf-8'})
 }
-function setXY(data){
+
+function setXY(data) {
     const pos = win.getPosition();
     pos[0] = pos[0] + data.pageX - data.mouseX;
     pos[1] = pos[1] + data.pageY - data.mouseY;
     global.win.setPosition(pos[0], pos[1], true);
 }
-function minWindow(data){
+
+function minWindow(data) {
     global.win.minimize();
 }
-function maxWindow(data){
-    if(process.platform==='darwin'){
-        if(global.win.isFullScreen()) {
+
+function maxWindow(data) {
+    if (process.platform === 'darwin') {
+        if (global.win.isFullScreen()) {
             global.win.setFullScreen(false)
-        }else{
+        } else {
             global.win.setFullScreen(true)
         }
-    }else{
-        if(global.win.isMaximized()) {
-          global.win.restore();
-        }else{
+    } else {
+        if (global.win.isMaximized()) {
+            global.win.restore();
+        } else {
             global.win.maximize();
         }
     }
 }
-function closeWindow(data){
+
+function closeWindow(data) {
     global.win.close();
 }
-function hiddenWindow(data){
+
+function hiddenWindow(data) {
     global.win.hide();
 }
-async function openExternal(data){
+
+async function openExternal(data) {
     // 在外部浏览器中打开链接
     shell.openExternal(data);
 }
-async function startWebProxy(proxyWebs){
+
+async function startWebProxy(proxyWebs) {
     let webProxyArray = []
-    for(let proxyWeb of proxyWebs){
+    for (let proxyWeb of proxyWebs) {
         const proxy = httpProxy.createProxyServer({
-            changeOrigin:true,
-            secure:false,
+            changeOrigin: true,
+            secure: false,
         });
-        const webServer = http.createServer((req,res)=>{
-            proxy.web(req,res,{target:proxyWeb.host,ignorePath: false},(error)=>{
+        const webServer = http.createServer((req, res) => {
+            proxy.web(req, res, {target: proxyWeb.host, ignorePath: false}, (error) => {
                 global.logger.error(`web proxy[${proxyWeb.host}] error:`, error);
-                res.writeHead(500, { 'Content-Type': 'text/plain' });
-                res.end(`web proxy[${proxyWeb.host}] error:${error.message||'Internal Server Error'}`);
+                res.writeHead(500, {'Content-Type': 'text/plain'});
+                res.end(`web proxy[${proxyWeb.host}] error:${error.message || 'Internal Server Error'}`);
             })
         })
         // 处理 WebSocket 请求
         webServer.on('upgrade', (req, socket, head) => {
             const target = proxyWeb.host
-            proxy.ws(req, socket, head, { target: target });
+            proxy.ws(req, socket, head, {target: target});
         });
-        let res = await startWebServer(webServer,proxyWeb)
-        if(res){
-            webProxyArray.push({tunnelConfig:proxyWeb,proxyServer:res})
+        let res = await startWebServer(webServer, proxyWeb)
+        if (res) {
+            webProxyArray.push({tunnelConfig: proxyWeb, proxyServer: res})
         }
     }
     return webProxyArray
 }
-async function startWebServer(webServer,proxyWeb){
-    return new Promise(async(resolve, reject) => {
-        try{
+
+async function startWebServer(webServer, proxyWeb) {
+    return new Promise(async (resolve, reject) => {
+        try {
             let checkRes = await checkPort(proxyWeb.port)
-            if(checkRes.data){
-                webServer.listen(proxyWeb.port,global.proxyLocalhost,(error)=>{
-                    if(error){
+            if (checkRes.data) {
+                webServer.listen(proxyWeb.port, global.proxyLocalhost, (error) => {
+                    if (error) {
                         global.logger.error(`Error starting web proxy[${global.proxyLocalhost}:${proxyWeb.host}] server:`, error);
                         resolve(null)
-                    }else{
+                    } else {
                         global.logger.info(`web proxy[${proxyWeb.host}] server is running at http://${global.proxyLocalhost}:${proxyWeb.port}`);
                         resolve(webServer)
                     }
                 })
-            }else{
+            } else {
                 global.logger.error(`${global.proxyLocalhost}端口${proxyWeb.port}已被其他服务占用，代理无法启动`);
                 resolve(null)
             }
-        }catch (error){
+        } catch (error) {
             global.logger.error(`Error starting web proxy[${global.proxyLocalhost}:${proxyWeb.host}] server:`, error);
             resolve(null)
         }
     })
 }
-async function startTcpProxy(proxyServices){
+
+async function startTcpProxy(proxyServices) {
     let tcpProxyArray = []
-    for(let proxyService of proxyServices){
+    for (let proxyService of proxyServices) {
         let tcpServer = await startTcpServer(proxyService)
-        if(tcpServer){
-            tcpProxyArray.push({tunnelConfig:proxyService,proxyServer:tcpServer})
+        if (tcpServer) {
+            tcpProxyArray.push({tunnelConfig: proxyService, proxyServer: tcpServer})
         }
     }
     return tcpProxyArray
 }
-async function startTcpServer(tcpServer){
+
+async function startTcpServer(tcpServer) {
     return new Promise(async (resolve, reject) => {
-        try{
+        try {
             let checkRes = await checkPort(tcpServer.port)
-            if(checkRes.data){
-                const serverSocket = net.createServer((sourceSocket)=>{
-                    const targetSocket = net.createConnection(tcpServer.target_port,tcpServer.host)
-                    sourceSocket.on('data',(chunk)=>{
+            if (checkRes.data) {
+                const serverSocket = net.createServer((sourceSocket) => {
+                    const targetSocket = net.createConnection(tcpServer.target_port, tcpServer.host)
+                    sourceSocket.on('data', (chunk) => {
                         targetSocket.write(chunk)
                     })
-                    targetSocket.on('data',(chunk)=>{
+                    targetSocket.on('data', (chunk) => {
                         sourceSocket.write(chunk)
                     })
-                    sourceSocket.on('error',(chunk)=>{
+                    sourceSocket.on('error', (chunk) => {
                         targetSocket.end()
                     })
-                    targetSocket.on('error',(chunk)=>{
+                    targetSocket.on('error', (chunk) => {
                         sourceSocket.end()
                     })
-                    sourceSocket.on('end',(chunk)=>{
+                    sourceSocket.on('end', (chunk) => {
                         targetSocket.end()
                     })
-                    targetSocket.on('end',(chunk)=>{
+                    targetSocket.on('end', (chunk) => {
                         sourceSocket.end()
                     })
                 })
-                serverSocket.listen(tcpServer.port,global.proxyLocalhost,()=>{
+                serverSocket.listen(tcpServer.port, global.proxyLocalhost, () => {
                     global.logger.info(`tcp proxy[${tcpServer.host}:${tcpServer.target_port}] server is running on port [${global.proxyLocalhost}:${tcpServer.port}]`);
                     resolve(serverSocket)
                 })
-            }else{
+            } else {
                 global.logger.error(`${global.proxyLocalhost}端口${tcpServer.port}已被其他服务占用，代理无法启动`);
                 resolve(null)
             }
-        }catch (error){
+        } catch (error) {
             global.logger.error(`Error starting tcp proxy[${global.proxyLocalhost}:${tcpServer.host}] server:`, error);
             resolve(null)
         }
     })
 }
-function initBeat(){
-    global.heartBeatWorker =  new Worker(path.resolve(__dirname, '../../works/heartBeat.js'))
-    global.heartBeatWorker.on('message',async (result)=>{
-        switch (result.type){
-            case 'pidIsNull':{
+
+function initBeat() {
+    global.heartBeatWorker = new Worker(path.resolve(__dirname, '../../works/heartBeat.js'))
+    global.heartBeatWorker.on('message', async (result) => {
+        switch (result.type) {
+            case 'pidIsNull': {
                 // xgrok进程死了,重启进程
                 pid = await turnOn(_xgrokConf)
-                global.win.webContents.send('view/refreshPid',pid)
+                global.win.webContents.send('view/refreshPid', pid)
                 break;
             }
-            case 'process':{
-                global.win.webContents.send('view/process',result.data)
+            case 'process': {
+                global.win.webContents.send('view/process', result.data)
             }
         }
     })
 }
-function startBeat(pid,webSource,tcpSource){
+
+function startBeat(pid, webSource, tcpSource) {
     global.heartBeatWorker.postMessage({
-        type:'start',
-        data:{pid, webSource,tcpSource}
+        type: 'start',
+        data: {pid, webSource, tcpSource}
     })
 }
-function stopBeat(){
+
+function stopBeat() {
     global.heartBeatWorker.postMessage({
-        type:'stop'
+        type: 'stop'
     })
 }
 

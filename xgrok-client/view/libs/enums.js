@@ -93,6 +93,10 @@ export const isOnline={
     online:1,
     offline:0
 }
+export const serverEnum={
+    ngrok:1,
+    frp:2
+}
 
 export function useStatusClass(is_online){
     if(isEmpty(is_online)){

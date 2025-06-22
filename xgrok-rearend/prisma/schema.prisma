@@ -49,6 +49,7 @@ model Server {
   operator            String?         @db.VarChar(50)
   month_total_traffic Int?            @default(0)
   month_used_traffic  Int?            @default(0)
+  type                Int             @default(1)
   ng_port_range       PortRange[]
   ng_tunnel_service   TunnelService[]
   ng_tunnel_web       TunnelWeb[]

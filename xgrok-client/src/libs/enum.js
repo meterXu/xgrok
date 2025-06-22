@@ -19,4 +19,8 @@ const hostType = {
     local:0
 }
 
-module.exports={tunnelType,serviceType,httpType,hostType}
+const serverType={
+    ngrok:1,
+    frp:2
+}
+module.exports={tunnelType,serviceType,httpType,hostType,serverType}

@@ -12,6 +12,7 @@ import {
 import md5 from "js-md5"
 import qs from "qs"
 import {ACCESS_TOKEN} from "xxweb-box/utils/mutation-types";
+import {serverEnum} from "@/libs/enums";
 
 const url = {
     oauth:{
@@ -75,8 +76,8 @@ export function login(data){
     data.signature = md5(data.password+data.client_secret+data.timestamp)
     return postActionSSO(url.oauth.authorize,qs.stringify(data))
 }
-export function queryServersConfig(){
-   return getAction(url.server.query,{pageNumber:1,pageSize:99})
+export function queryServersConfig(type=serverEnum.ngrok){
+   return getAction(url.server.query,{pageNumber:1,pageSize:99,type})
 }
 export function detailServerConfig(id){
     return getAction(url.server.detail,{id})

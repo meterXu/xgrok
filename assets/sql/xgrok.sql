@@ -278,7 +278,7 @@ CREATE TABLE `ng_sys_dict` (
 
 LOCK TABLES `ng_sys_dict` WRITE;
 /*!40000 ALTER TABLE `ng_sys_dict` DISABLE KEYS */;
-INSERT INTO `ng_sys_dict` VALUES ('6d5994d2e9d451e2677f0e1e44f72a51','tunnel_type','1','服务','service',2,'admin','admin','2024-03-13 14:59:45',NULL,1,0),('851a53613775e0fc53200391bb9d1dd6','tunnel_type','0','站点','web',1,'admin','admin','2024-03-13 14:59:45',NULL,1,0),('a05b5009c0d411ee868e0242ac120002','http_type','http','http','http',1,'admin','admin','2024-02-01 15:36:52',NULL,1,0),('a7888ce8c0d411ee868e0242ac120002','http_type','https','https','https',2,'admin','admin','2024-02-01 15:36:52',NULL,1,0),('ccefcfeec0d411ee868e0242ac120002','server_type','tcp','tcp','tcp',1,'admin','admin','2024-02-01 15:38:01',NULL,1,0),('d0948f3fc0d411ee868e0242ac120002','server_type','udp','udp','udp',2,'admin','admin','2024-02-01 15:38:01',NULL,1,0);
+INSERT INTO `ng_sys_dict` VALUES ('6d5994d2e9d451e2677f0e1e44f72a51','tunnel_type','1','服务','service',2,'admin','admin','2024-03-13 14:59:45',NULL,1,0),('851a53613775e0fc53200391bb9d1dd6','tunnel_type','0','站点','web',1,'admin','admin','2024-03-13 14:59:45',NULL,1,0),('a05b5009c0d411ee868e0242ac120002','http_type','http','http','http',1,'admin','admin','2024-02-01 15:36:52',NULL,1,0),('a7888ce8c0d411ee868e0242ac120002','http_type','https','https','https',2,'admin','admin','2024-02-01 15:36:52',NULL,1,0),('ccefcfeec0d411ee868e0242ac120002','service_type','tcp','tcp','tcp',1,'admin','admin','2024-02-01 15:38:01',NULL,1,0),('d0948f3fc0d411ee868e0242ac120002','service_type','udp','udp','udp',2,'admin','admin','2024-02-01 15:38:01',NULL,1,0);
 /*!40000 ALTER TABLE `ng_sys_dict` ENABLE KEYS */;
 UNLOCK TABLES;
 
