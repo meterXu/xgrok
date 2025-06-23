@@ -8,3 +8,6 @@ INSERT INTO xgrok.ng_sys_dict (id, `key`, code, chn_value, eng_value, sort, crea
 UPDATE xgrok.ng_sys_dict SET `key` = 'service_type' WHERE id = 'ccefcfeec0d411ee868e0242ac120002';
 UPDATE xgrok.ng_sys_dict SET `key` = 'service_type' WHERE id = 'd0948f3fc0d411ee868e0242ac120002';
 
+
+alter table ng_port_range
+    add type int default 1 null comment '1:tcp,2:udp';

@@ -1,9 +1,7 @@
 import ResultModel from "../model/sys/resultModel.js";
 import {checkServerOnline, randomUUID} from "../utils/index.js";
-import {isDelete, status, VIPType} from "../utils/enum.js";
-import net from "net";
+import {isDelete, status,serviceType} from "../utils/enum.js";
 import {Prisma} from "@prisma/client";
-import UserService from "./userService";
 import OrderService from "./orderService";
 const {PrismaClient} = require("@prisma/client");
 const prisma = new PrismaClient();
@@ -99,17 +97,24 @@ export default class TunnelServiceService {
     }
 
     /**
-     * 检查端口占用情况，true未占用，false占用
+     * 检查服务端口占用情况，true未占用，false占用
+     * @param domain 域名
+     * @param port 端口号
+     * @param server_id 服务端id
+     * @param user_id 用户id
+     * @param id id
+     * @param type 服务类型
+     * @return boolean
      */
-    async checkPort(domain,port,server_id,user_id,id){
+    async checkPort(domain,port,server_id,user_id,id,type=serviceType.tcp){
         return new Promise(async (resolve, reject) => {
             let existSql = `select sum(num) num from (
             select !count(*) num from ng_port_range where server_id='${server_id}' and (min_port <= ${port} and max_port >= ${port}) 
-            and is_delete=${isDelete.false} and status=${status.enable}
+            and is_delete=${isDelete.false} and status=${status.enable} and type=${type}
             union all
             select count(*) num from ng_tunnel_service where remote_port=${port} and server_id='${server_id}' 
             ${id?` and id!='${id}' `:""}
-            and is_delete=${isDelete.false} and status=${status.enable}
+            and is_delete=${isDelete.false} and status=${status.enable} and type=${type}
             ) a`
             let existRes = await prisma.$queryRaw(Prisma.raw(existSql))
             if(existRes.length>0&&parseInt(existRes[0]['num'])>0) {

@@ -65,18 +65,4 @@ export default class UserService {
             records:queryRes
         }
     }
-
-    async checkLocalPort(server_id,client_id,port){
-        let querySql = `select count(*) total from (
-                            select port from ng_tunnel_web
-                            where is_remote=1 and client_id='${client_id}' and server_id='${server_id}'
-                            and port=${port}
-                            union
-                            select port from ng_tunnel_service
-                            where is_remote=1 and client_id='${client_id}' and server_id='${server_id}'
-                            and port=${port}
-                            ) a`
-        let queryRes = await prisma.$queryRaw(Prisma.raw(querySql))
-        return parseInt(queryRes[0]['total'])===0
-    }
 }

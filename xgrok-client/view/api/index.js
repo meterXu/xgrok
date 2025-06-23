@@ -42,8 +42,7 @@ const url = {
     compliance:{
         queryRange:'/portRange/query',
         checkName:'/user/checkName',
-        checkPort:'/user/checkPort',
-        checkLocalPort:'/user/checkLocalPort'
+        checkPort:'/user/checkPort'
     },
     client:{
         query:'/client/query',
@@ -100,20 +99,18 @@ export function updateTunnelService(model){
 export function createTunnelService(model){
     return postAction(url.tunnel.createService,model)
 }
-export function queryRange(server_id){
+export function queryRange(server_id,type){
     return getAction(url.compliance.queryRange,{
         pageNumber:1,
         pageSize:99,
-        server_id})
+        server_id,
+        type})
 }
 export function checkName(domain,type,port,name,server_id,client_id,id){
     return getAction(url.compliance.checkName,{domain,type,port,name,server_id,client_id,id})
 }
-export function checkPort(domain,port,server_id,id){
-    return getAction(url.compliance.checkPort,{domain,port,server_id,id})
-}
-export function checkLocalPort(server_id,client_id,port){
-    return getAction(url.compliance.checkLocalPort,{server_id,client_id,port})
+export function checkPort(domain,port,server_id,id,type){
+    return getAction(url.compliance.checkPort,{domain,port,server_id,id,type})
 }
 export function deleteTunnelWebBatch(ids){
     return deleteAction(url.tunnel.deleteTunnelWebBatch,{ids})

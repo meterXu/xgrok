@@ -9,6 +9,7 @@ import PaginationModel from "../model/sys/paginationModel";
 import OrderByModel from "../model/sys/orderByModel";
 import OAuthUsersModel from "../model/oauthUsersModel";
 import OAuthUsersService from "../service/oauthUsersService";
+import {serviceType} from "../utils/enum";
 const tag = tags(['User'])
 
 export default class UserController {
@@ -74,27 +75,13 @@ export default class UserController {
         domain: {type: "string", required: true, description: '域名'},
         port: {type: "number", required: true, description: '端口号'},
         server_id: {type: "string", required: true, description: '服务id'},
-        id: {type: "string", required: true, description: '隧道id'}
+        id: {type: "string", required: true, description: '隧道id'},
+        type: {type: "number", required: true, description: '服务类型',default:serviceType.tcp},
     })
     async checkPort(ctx){
-        const {domain,port,server_id,id} = ctx.validatedQuery
-        const checkRes = await this.tunnelServiceService.checkPort(domain,port,server_id,ctx.token.user.id,id)
+        const {domain,port,server_id,id,type} = ctx.validatedQuery
+        const checkRes = await this.tunnelServiceService.checkPort(domain,port,server_id,ctx.token.user.id,id,type)
         const res = new ResultModel(checkRes,checkRes?'未占用':'远程映射端口已占用，请换一个',true)
-        ctx.result(res)
-    }
-
-    @request('get', '/user/checkLocalPort')
-    @summary('本地端口占用检查')
-    @tag
-    @query({
-        server_id: {type: "string", required: true, description: '服务id'},
-        client_id: {type: "string", required: true, description: '客户端id'},
-        port: {type: "number", required: true, description: '端口号'}
-    })
-    async checkLocalPort(ctx){
-        const {server_id,client_id,port} = ctx.validatedQuery
-        const checkRes = await this.userService.checkLocalPort(server_id,client_id,port)
-        const res = new ResultModel(checkRes,checkRes?'未占用':'本地代理端口在其他隧道中已配置，请换一个',true)
         ctx.result(res)
     }
 

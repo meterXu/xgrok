@@ -2,7 +2,7 @@
 import {reactive, defineEmits, ref, watch} from "vue";
 import {tunnelType} from "@/libs/enums";
 import {getUrlSchema} from "@/libs/common";
-import {checkLocalPort, checkName, createTunnelWeb, queryRange, updateTunnelWeb} from "@/api";
+import {checkName, createTunnelWeb,updateTunnelWeb} from "@/api";
 import {useAppStore} from "@/store";
 import {ElMessage} from "element-plus";
 import {tipText} from "@/libs/infoText";
@@ -15,10 +15,8 @@ const store = useAppStore()
 const {selectedServer,clientId,tunnelForm} = store
 const emits = defineEmits(['updateSuccess','cancel','createSuccess'])
 const ruleFormRef = ref('ruleFormRef')
-const portRange = ref('')
 const saveLoading = ref(false)
 const validateNameLoading = ref(false)
-const validatePortLoading = ref(false)
 const router = new useRouter()
 const formData = reactive({
   id:tunnelForm.value?.id,
@@ -106,15 +104,6 @@ function onCancel(){
   ruleFormRef.value.resetFields()
   emits('cancel')
 }
-function created(){
-  queryRange(selectedServer.value.id).then(res=>{
-    if(res.success){
-      portRange.value = res.data.records.map(c=>{
-        return `${c.min_port}-${c.max_port}`
-      }).join(',')
-    }
-  })
-}
 function validateName(rule, value, callback){
   if (!value) {
     callback(new Error('请输入名称'))
@@ -134,27 +123,6 @@ function validateName(rule, value, callback){
     })
   }
 }
-function validatePort(rule,value,callback){
-  if(value){
-    validatePortLoading.value = true
-    return Promise.all([
-      window.electronAPI.checkPort(value),
-      checkLocalPort(formData.server_id,formData.client_id,value)
-    ]).then(resArray=>{
-      let _res = resArray.find(c=>c.data===false)
-      if(_res){
-        callback(_res.message)
-      }else {
-        callback()
-      }
-    }).finally(()=>{
-      validatePortLoading.value = false
-    })
-  }
-}
-
-created()
-
 </script>
 
 <template>
