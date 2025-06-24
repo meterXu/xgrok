@@ -11,6 +11,7 @@ const httpProxy = require('http-proxy');
 const net = require('net')
 const {checkPort} = require("./system");
 const {Worker} = require("worker_threads");
+const dgram = require('dgram');
 const serverDetails = require("../../models/xgrokConfModel");
 let serviceNames = null
 let pid = null
@@ -33,7 +34,7 @@ async function turnOn(xgrokConf) {
                 global.webServers.push(...await startWebProxy(proxyWebs))
             }
             if (proxyServices.length > 0) {
-                global.tcpServers.push(...await startTcpProxy(proxyServices))
+                global.tcpServers.push(...await startTcpUdpProxy(proxyServices))
             }
             pid = await startXgrok(serviceNames,xgrokConf.server.type)
             global.logger.info(`xgrok pid is [${pid}]`)
@@ -43,7 +44,7 @@ async function turnOn(xgrokConf) {
                 })),
                 xgrokConf.tunnelServices.map(c => ({
                     isOnline: false,
-                    params: [xgrokConf.server.domain, c.remote_port]
+                    params: [xgrokConf.server.domain, c.remote_port,c.type]
                 })))
             return Promise.resolve(pid)
         }
@@ -85,7 +86,7 @@ function startXgrok(names,type) {
                 }
             })
         }else{
-            xgrok = execFile('./compile2', ['-c',`${userXgrokCfgFilePath()}`], {
+            xgrok = execFile('./compile', ['-c',`${userXgrokCfgFilePath()}`], {
                 cwd: global.project.clientRootPath,
                 detached: true
             }, (error, stdout, stderr) => {
@@ -166,7 +167,7 @@ function generateXgrokConf(serverDetail, WebDetails, serviceDetails) {
                     return {
                         name:service.name,
                         type:getEnumKey(serviceType,service.type),
-                        localIP:service.host,
+                        localIP:service.is_remote===hostType.remote?global.proxyLocalhost:service.host,
                         localPort:service.port,
                         remotePort:service.remote_port
                     }
@@ -272,15 +273,15 @@ async function startWebServer(webServer, proxyWeb) {
     })
 }
 
-async function startTcpProxy(proxyServices) {
-    let tcpProxyArray = []
+async function startTcpUdpProxy(proxyServices) {
+    let tcpUdpProxyArray = []
     for (let proxyService of proxyServices) {
-        let tcpServer = await startTcpServer(proxyService)
-        if (tcpServer) {
-            tcpProxyArray.push({tunnelConfig: proxyService, proxyServer: tcpServer})
+        let tcpUdpServer = proxyService.type === serviceType.tcp?await startTcpServer(proxyService):await startUdpService(proxyService)
+        if (tcpUdpServer) {
+            tcpUdpProxyArray.push({tunnelConfig: proxyService, proxyServer: tcpUdpServer})
         }
     }
-    return tcpProxyArray
+    return tcpUdpProxyArray
 }
 
 async function startTcpServer(tcpServer) {
@@ -322,6 +323,38 @@ async function startTcpServer(tcpServer) {
             resolve(null)
         }
     })
+}
+
+async function startUdpService(udpServer) {
+    // 创建一个 UDP 套接字
+    const server = dgram.createSocket('udp4');
+    // 本地监听的端口和地址
+    const LOCAL_PORT = udpServer.port; // 本地监听的端口
+    const LOCAL_ADDRESS = global.proxyLocalhost; // 本地监听的地址（所有接口）
+    // 目标地址和端口
+    const TARGET_ADDRESS = udpServer.host; // 替换为目标地址
+    const TARGET_PORT = udpServer.target_port; // 替换为目标端口
+    // 监听消息事件
+    server.on('message', (msg, rinfo) => {
+        global.logger.info(`Received message from ${rinfo.address}:${rinfo.port} - ${msg}`);
+        // 将接收到的消息转发到目标地址和端口
+        server.send(msg, TARGET_PORT, TARGET_ADDRESS, (err) => {
+            if (err) {
+                global.logger.error(`Error forwarding message: ${err.message}`);
+            } else {
+                global.logger.info(`Forwarded message to ${TARGET_ADDRESS}:${TARGET_PORT}`);
+            }
+        });
+    });
+    // 监听错误事件
+    server.on('error', (err) => {
+        global.logger.error(`Server error:\n${err.stack}`);
+        server.close();
+    });
+    // 启动服务器
+    server.bind(LOCAL_PORT, LOCAL_ADDRESS, () => {
+        global.logger.info(`UDP proxy server is listening on ${LOCAL_ADDRESS}:${LOCAL_PORT}`);
+    });
 }
 
 function initBeat() {

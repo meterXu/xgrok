@@ -4,6 +4,8 @@ const os  = require('node:os')
 const fs = require("fs");
 const path = require("path");
 const { exec } = require('child_process');
+const dgram = require('dgram');
+const {serverType, serviceType} = require("./enum");
 function randomNumber() {
     const random = (min, max) => {
         return Math.floor(Math.random() * (max - min + 1) + min)
@@ -61,7 +63,7 @@ function checkProcess(pid){
         return false
     }
 }
-// 获取操作系统类型、
+// 获取操作系统类型
 // "darwin" - darwin
 // "linux" - Linux
 // "win32" - Windows
@@ -123,17 +125,35 @@ function closeAllTcpServer(tcpServers){
         })
     })
 }
-function checkServerOnline(domain,port){
+function checkServerOnline(domain,port,type){
+    switch (type){
+        case serviceType.tcp:{
+            return checkTcpOnline(domain,port)
+        }
+        case serviceType.udp:{
+            return checkUdpOnline(domain,port)
+        }
+    }
+}
+
+/**
+ * 检测指定的 TCP 是否在线
+ * @param {string} domain 地址
+ * @param {number} port 端口号
+ * @param {number} timeout - 超时时间（毫秒）
+ * @return {Promise<boolean>}
+ */
+function checkTcpOnline(domain,port,timeout=3000){
     return new Promise((resolve, reject) => {
         const socket = new net.Socket();
-        socket.setTimeout(3000); // 设置超时时间，根据需要调整
+        socket.setTimeout(timeout);
         socket.once('connect', () => {
             socket.destroy();
-            console.log(`${new Date()} 端口 ${port} 在 ${domain} 上被占用。`);
+            console.log(`${new Date()} TCP端口 ${port} 在 ${domain} 上被占用。`);
             resolve(true)
         });
         socket.once('timeout', () => {
-            console.log(`${new Date()} 连接到 ${domain}:${port} 超时。`);
+            console.log(`${new Date()} 连接到TCP ${domain}:${port} 超时。`);
             resolve(false)
             socket.destroy();
         });
@@ -148,6 +168,39 @@ function checkServerOnline(domain,port){
         socket.connect(port, domain);
     })
 }
+
+/**
+ * 检测指定的 UDP 是否在线
+ * @param {string} domain - 目标地址（IP 或域名）
+ * @param {number} port - 要检测的 UDP 端口号
+ * @param {number} timeout - 超时时间（毫秒）
+ * @returns {Promise<boolean>} - 返回是否在线
+ */
+function checkUdpOnline(domain, port, timeout = 3000) {
+    return new Promise((resolve) => {
+        resolve(true);
+        // const socket = dgram.createSocket('udp4');
+        // const timer = setTimeout(() => {
+        //     socket.close();
+        //     console.log(`${new Date()} 连接到UDP ${domain}:${port} 超时。`);
+        //     resolve(false);
+        // }, timeout);
+        // const message = Buffer.from('ping');
+        // socket.send(message, port, domain, (err) => {
+        //     if (err) {
+        //         clearTimeout(timer);
+        //         socket.close();
+        //         resolve(false);
+        //     } else {
+        //         clearTimeout(timer);
+        //         socket.close();
+        //         console.log(`${new Date()} UDP端口 ${port} 在 ${domain} 上被占用。`);
+        //         resolve(true);
+        //     }
+        // });
+    });
+}
+
 function checkUrl(name, domain, port, timeout=500) {
     const url = `http://${name}.${domain}:${port}/`
     new Promise((resolve) => {

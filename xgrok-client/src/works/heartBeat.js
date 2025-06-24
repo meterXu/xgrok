@@ -22,12 +22,13 @@ async function checkThread(pid,webSource,tcpSource){
             await sleep(100)
         }
         for(let tcp of tcpSource){
-            tcp.isOnline = await checkServerOnline(tcp.params[0],tcp.params[1])
+            tcp.isOnline = await checkServerOnline(tcp.params[0],tcp.params[1],tcp.params[2])
             step = webSource.filter(c=>c.isOnline).length+tcpSource.filter(c=>c.isOnline).length
             sendProcess(total,step)
             await sleep(200)
         }
         parentPort.isAllOnLine = step===total
+        parentPort.timerId&&clearTimeout(parentPort.timerId)
         parentPort.timerId = setTimeout(()=>checkThread(pid,webSource,tcpSource),parentPort.isAllOnLine?3000:1000)
     }
 }
