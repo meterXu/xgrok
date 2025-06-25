@@ -3,14 +3,16 @@ import {reactive, defineEmits, ref, watch} from "vue";
 import {checkName, checkPort, createTunnelService, queryRange, updateTunnelService} from "@/api";
 import {useAppStore} from "@/store";
 import {ElMessage} from "element-plus";
-import {tunnelType} from "@/libs/enums";
+import {tunnelType, serviceType, payPlan} from "@/libs/enums";
 import InfoTip from "@/components/infoTip.vue";
 import {tipText} from "@/libs/infoText";
-import {testName,isLocalHost} from "@/libs/common";
+import {testName, isLocalHost, confirm} from "@/libs/common";
 import {onFormValidate, useGetDisabled, useGetErrorMsg} from "@/libs/useAction";
+import {useRouter} from 'vue-router'
 
+const router = useRouter();
 const store = useAppStore()
-const {selectedServer,clientId,tunnelForm} = store
+const {selectedServer,clientId,tunnelForm,plan} = store
 const emits = defineEmits(['updateSuccess','cancel','createSuccess'])
 const ruleFormRef = ref('ruleFormRef')
 const portRange = ref(null)
@@ -146,9 +148,21 @@ function queryRangeByType(){
     }
   })
 }
-function onChangeType(){
-  queryRangeByType()
-  ruleFormRef.value.validateField('remote_port')
+function onChangeType(value){
+  if(value===serviceType.UDP&&store.plan.value!==payPlan.vip){
+    confirm('免费用户无法创建UDP隧道', null,{
+      confirmButtonText:'去订阅',
+      cancelButtonText:'知道了',
+      confirmButtonClass:'el-button--warning is-plain'
+    }).then(()=>{
+      router.push({name:'Plan'})
+    }).catch(()=>{
+      formData.type=serviceType.TCP
+    })
+  }else{
+    queryRangeByType()
+    ruleFormRef.value.validateField('remote_port')
+  }
 }
 created()
 </script>
@@ -181,10 +195,12 @@ created()
       </el-input>
     </el-form-item>
     <el-form-item label="代理类型" prop="type">
-      <el-radio-group v-model="formData.type" @change="onChangeType">
-        <el-radio-button label="TCP" :value="1" />
-        <el-radio-button label="UDP" :value="2" />
-      </el-radio-group>
+      <el-badge value="new" :offset="[-3, 5]">
+        <el-radio-group v-model="formData.type" @change="onChangeType">
+          <el-radio-button label="TCP" :value="1" />
+          <el-radio-button label="UDP" :value="2" />
+        </el-radio-group>
+      </el-badge>
     </el-form-item>
     <el-form-item label="代理端口" prop="port">
       <div class="port-wrap">

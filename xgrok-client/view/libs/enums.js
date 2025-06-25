@@ -15,7 +15,7 @@ export const defaultPort={
     https:443
 }
 
-export const ServiceType={
+export const serviceType={
     TCP:1,
     UDP:2
 }
@@ -53,10 +53,10 @@ export const useGetHttpText=function (_httpType){
 
 export const useServiceTypeText=function (_ServiceType){
     switch (_ServiceType){
-        case ServiceType.TCP:{
+        case serviceType.TCP:{
             return 'TCP'
         }
-        case ServiceType.UDP:{
+        case serviceType.UDP:{
             return 'UDP'
         }
     }
