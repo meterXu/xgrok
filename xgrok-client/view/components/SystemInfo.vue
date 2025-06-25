@@ -11,7 +11,7 @@ const props=defineProps(['value'])
 </template>
 
 <style scoped lang="less">
-@import "@/assets/mixin.less";
+@import "@/assets/css/mixin.less";
 .systemInfo{
   .pxToVW(200,min-width);
   .pxToVW(320,max-width);

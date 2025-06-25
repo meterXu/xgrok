@@ -26,6 +26,7 @@ import ConfigRefreshBtn from "@/components/control-btns/ConfigRefreshBtn.vue";
 import {sleep} from "@/libs/common";
 import ViewLogBtn from "@/components/control-btns/ViewLogBtn.vue";
 import {serverEnum} from "@/libs/enums";
+
 const store = useAppStore()
 const serverConfigs = ref(null)
 const tunnelWebConfigs = ref(null)
@@ -34,20 +35,21 @@ const tunnelLoading = ref(true)
 const systemInfo = ref(null)
 const serverSwitch = shallowRef()
 const serverLoading = shallowRef(false)
-const {pid, selectedServer, dialogVisible, clientId,percentage} = store
+const {pid, selectedServer, dialogVisible, clientId, percentage} = store
 
 if (window.project.variable.mode !== 'browser') {
   window.electronAPI.onAppQuit(() => {
     closeWebSocket()
     store.setPid(null)
   })
-  window.electronAPI.onProcess((_percentage)=>{
+  window.electronAPI.onProcess((_percentage) => {
     store.setPercentage(_percentage)
   })
-  window.electronAPI.onRefreshPid((_pid)=>{
+  window.electronAPI.onRefreshPid((_pid) => {
     store.setPid(_pid)
   })
 }
+
 async function initServerConfigData() {
   if (selectedServer.value) {
     let res = await detailServerConfig(selectedServer.value.id)
@@ -61,6 +63,7 @@ async function initServerConfigData() {
     }
   }
 }
+
 function loadTunnelData() {
   if (!selectedServer.value) {
     return
@@ -80,11 +83,13 @@ function loadTunnelData() {
     store.setDeleteIdsAll([])
   })
 }
+
 function onChangeServerConfig(_serverConfig) {
   _serverConfig.statusClass = 'server-status-checking'
   store.setSelectedServer(_serverConfig)
   loadTunnelData()
 }
+
 async function initClient() {
   let res = await getSystemInfo()
   if (res.success) {
@@ -112,14 +117,16 @@ async function initClient() {
     }
   }
 }
-async function onRefresh(){
-  let _refresh=async ()=>{
+
+async function onRefresh() {
+  let _refresh = async () => {
     await serverSwitch.value.onSwitchChange(false)
     await sleep(500)
     await serverSwitch.value.onSwitchChange(true)
   }
   await _refresh.debounce()()
 }
+
 watch(() => selectedServer?.value?.id, (nv, ov) => {
   sendMessage({type: 'closeCheckServer', server_id: ov})
   sendMessage({
@@ -235,17 +242,21 @@ onUnmounted(() => {
   grid-gap: 12px;
 }
 </style>
-<style>
+<style lang="less">
 .server-wrap {
   .el-card__body {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 16px;
+    grid-gap: 12px;
   }
 }
 
 .tunnel-config-wrap {
+  border-bottom: none;
+  border-left: none;
+
   .el-tabs__content {
     padding: 16px;
   }
@@ -258,18 +269,18 @@ onUnmounted(() => {
     color: var(--el-color-success) !important;
   }
 
-  border-bottom: none;
-
   .el-tabs__new-tab {
     width: fit-content;
     padding-right: 12px;
     border: none;
   }
-  .el-tabs__item:hover{
-    padding-left:20px!important;
+
+  .el-tabs__item:hover {
+    padding-left: 20px !important;
   }
-  .el-tabs__nav{
-    .is-icon-close{
+
+  .el-tabs__nav {
+    .is-icon-close {
       display: none;
     }
   }

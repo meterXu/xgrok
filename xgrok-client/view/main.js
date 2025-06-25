@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router';
 import {filter,util} from 'xxweb-box'
 import 'element-plus/dist/index.css'
-import '@/assets/main.less'
+import '@/assets/css/main.less'
 import pinia from '@/store/index.js'
 
 const app = createApp(App)

@@ -38,18 +38,3 @@ window.project.variable.mode!=='browser'&&window.electronAPI.onRoute((data)=>{
     </div>
   </el-config-provider>
 </template>
-
-<style lang="less" scoped>
-.main{
-  display: flex;
-  justify-content: flex-start;
-  flex-flow: column;
-  width: 100vw;
-  height: 100vh;
-}
-.main-container{
-  flex: 1;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-</style>

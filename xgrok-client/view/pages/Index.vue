@@ -5,6 +5,7 @@ import {ElMessage} from "element-plus";
 import {closeWebSocket, queryPayPlan} from "@/api";
 import {confirm, usePayPlanColor} from '@/libs/common'
 import {useGoBack, useGoTo} from "@/libs/useAction";
+import LeftContent from "@/components/left-aside/LeftContent.vue";
 const store = useAppStore()
 const {userInfo,pid,plan} = store
 const router = useRouter()
@@ -59,45 +60,48 @@ queryPayPlan().then(res=>{
 <template>
   <div class="common-layout">
     <el-container class="my-container">
-      <el-header class="header">
-        <div class="header-content-wrap" v-if="userInfo">
-          <div class="flex justify-start items-center">
-            <img src="../../public/assets/icon.png" alt="logo" class="w-48"/>
-            <span class="text-[20px] font-bold ml-4">xgrok</span>
-            <el-divider direction="vertical" />
-            <el-button :disabled="!btnText" :type="usePayPlanColor(plan.value)" plain v-if="router.currentRoute.value.name==='Dashboard'"
-                       class="text-[14px]! py-14!"
-                       size="small"
-                       @click="useGoTo('Plan')">
-              <template #icon>
-                <i-icon-park-outline-handRight/>
-              </template>
-              {{btnText}}
-            </el-button>
-            <el-button plain :type="usePayPlanColor(plan.value)" v-if="router.currentRoute.value.name==='Plan'"
-                       class="text-[14px]! py-14!"
-                       size="small" @click="useGoBack">
-              <template #icon>
-                <i-ep-back></i-ep-back>
-              </template>
-              返回
-            </el-button>
+      <el-aside>
+        <LeftContent></LeftContent>
+      </el-aside>
+      <el-container>
+        <el-header class="header">
+          <div class="header-content-wrap" v-if="userInfo">
+            <div class="flex justify-start items-center">
+              <el-divider direction="vertical" />
+              <el-button :disabled="!btnText" :type="usePayPlanColor(plan.value)" plain v-if="router.currentRoute.value.name==='Dashboard'"
+                         class="text-[14px]! py-14!"
+                         size="small"
+                         @click="useGoTo('Plan')">
+                <template #icon>
+                  <i-icon-park-outline-handRight/>
+                </template>
+                {{btnText}}
+              </el-button>
+              <el-button plain :type="usePayPlanColor(plan.value)" v-if="router.currentRoute.value.name==='Plan'"
+                         class="text-[14px]! py-14!"
+                         size="small" @click="useGoBack">
+                <template #icon>
+                  <i-ep-back></i-ep-back>
+                </template>
+                返回
+              </el-button>
+            </div>
+            <div>
+              {{userInfo.user.username}}
+              <el-divider direction="vertical" />
+              <el-button class="text-[14px]! py-14!" size="small" type="danger" plain @click="logout">
+                <template #icon>
+                  <i-icon-park-outline-logout/>
+                </template>
+                退出登录
+              </el-button>
+            </div>
           </div>
-          <div>
-            {{userInfo.user.username}}
-            <el-divider direction="vertical" />
-            <el-button class="text-[14px]! py-14!" size="small" type="danger" plain @click="logout">
-              <template #icon>
-                <i-icon-park-outline-logout/>
-              </template>
-              退出登录
-            </el-button>
-          </div>
-        </div>
-      </el-header>
-      <el-main class="content-wrap">
-        <router-view></router-view>
-      </el-main>
+        </el-header>
+        <el-main class="content-wrap">
+          <router-view></router-view>
+        </el-main>
+      </el-container>
     </el-container>
   </div>
 </template>

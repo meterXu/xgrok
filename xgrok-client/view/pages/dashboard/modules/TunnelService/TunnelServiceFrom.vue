@@ -238,7 +238,7 @@ created()
 </template>
 
 <style scoped lang="less">
-@import url('../../../../assets/mixin.less');
+@import url('@/assets/css/mixin.less');
 .form-btns{
   display: flex;
   align-items: center;

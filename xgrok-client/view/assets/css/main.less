@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import url('./mixin.less');
-@import url('./fonts/font.less');
+@import url('../fonts/font.less');
 :root{
   --header-bg:#EBEBEB;
   --primary-bg-0:#fff;
@@ -20,6 +20,7 @@
   --el-color-primary:#30a44b;
   --el-color-success:#30a44b;
   --el-color-disabled:var(--el-text-color-disabled);
+  --el-aside-width:52px;
   .el-input,.el-textarea{
     --el-input-focus-border-color:var(--el-color-primary);
   }
@@ -118,6 +119,18 @@ ul{
 *::-webkit-scrollbar-thumb:active {
   background: var(--scrollbar-thumb-active-color);
   border-radius: 5px;
+}
+.main{
+  display: flex;
+  justify-content: flex-start;
+  flex-flow: column;
+  width: 100vw;
+  height: 100vh;
+}
+.main-container{
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 .center-container{
   position: relative;
