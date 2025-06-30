@@ -120,8 +120,8 @@ export default class OAuthUsersService {
             oauthUsersModel.pay_time_start && `a.created_time >= '${oauthUsersModel.created_time_start}'`,
             oauthUsersModel.pay_time_end && `a.created_time <= '${oauthUsersModel.created_time_end}'`,
             oauthUsersModel.username && `a.username like '%${oauthUsersModel.username}%'`,
-            `a.status=${status.enable}`,
-            `a.is_delete=${isDelete.false}`
+            oauthUsersModel.status && `a.status='${oauthUsersModel.status}'`,
+            oauthUsersModel.is_delete && `a.is_delete='${oauthUsersModel.is_delete}'`
         ].filter(c => c).join(' and ')
 
         const totalSql =   `
@@ -141,5 +141,9 @@ export default class OAuthUsersService {
         let totalRes = await prisma.$queryRaw(Prisma.raw(totalSql))
         let recordRes = await prisma.$queryRaw(Prisma.raw(querySql))
         return [totalRes[0]._all,recordRes]
+    }
+
+    detailUser(userModel) {
+        return prisma.OAuthUsers.update({where: {id: userModel.id}, data: userModel});
     }
 }

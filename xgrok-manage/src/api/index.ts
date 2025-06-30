@@ -9,7 +9,11 @@ const url = {
         list:'/api/sysDict/query'
     },
     user:{
-        query:'/api/user/query'
+        query:'/api/user/query',
+        detail:'/api/user/detail',
+    },
+    order:{
+        query:'/api/order/query',
     }
 }
 
@@ -34,4 +38,10 @@ export function login(data:any):Promise<ResultType<any>>{
 
 export function userQuery(data:any):Promise<ResultType<PaginationDataType>>{
     return getAction(url.user.query,data)
+}
+export function detailUser(data:any):Promise<ResultType<any>>{
+    return postAction(url.user.detail,data)
+}
+export function orderQuery(data:any):Promise<ResultType<PaginationDataType>>{
+    return getAction(url.order.query,data)
 }

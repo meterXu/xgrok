@@ -1,4 +1,4 @@
-import {query, request, summary, tags} from "koa-swagger-decorator";
+import {body, query, request, summary, tags} from "koa-swagger-decorator";
 import ResultModel from "../model/sys/resultModel.js";
 import UserService from "../service/userService.js";
 import TunnelWebService from "../service/tunnelWebService.js";
@@ -10,6 +10,7 @@ import OrderByModel from "../model/sys/orderByModel";
 import OAuthUsersModel from "../model/oauthUsersModel";
 import OAuthUsersService from "../service/oauthUsersService";
 import {serviceType} from "../utils/enum";
+import UsersModel from "../model/usersModel";
 const tag = tags(['User'])
 
 export default class UserController {
@@ -117,5 +118,15 @@ export default class UserController {
         const queryRes = await this.oAuthUsersService.query(pagination, orderBy, oAuthUsersQuery)
         const res = new ResultModel({total: queryRes[0], records: queryRes[1], pagination: pagination}, null, true)
         ctx.result(res)
+    }
+
+    @request('post', '/user/detail')
+    @summary('更新用户')
+    @tag
+    @body(UsersModel.swaggerDocument)
+    async detailUser(ctx){
+        const usersModel = new UsersModel(ctx.validatedBody)
+        const res = await this.oAuthUsersService.detailUser(usersModel)
+        ctx.result(new ResultModel(res,null,!!res))
     }
 }

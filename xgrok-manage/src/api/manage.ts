@@ -25,7 +25,7 @@ axios.interceptors.response.use((response:any) => {
   return response ? response.data : {}
 })
 
-export function postAction(url:string, parameter:any,headers:any) {
+export function postAction(url:string, parameter:any,headers?:any) {
   return axios({
     url: url,
     method: "post",

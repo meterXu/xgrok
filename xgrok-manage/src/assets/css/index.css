@@ -25,6 +25,9 @@ html,body,#app{
     height: 100%;
   }
   .xxWeb-box[data-theme='vue-admin']{
+    .app-main{
+      background-color: #fafafa;
+    }
     .xx-web-tab .el-tabs__item.is-active {
       background-color: var(--el-color-primary);
       border-color: var(--el-color-primary);
@@ -32,6 +35,11 @@ html,body,#app{
     }
     .dynamic-menu .el-menu-item.is-active {
       color: var(--el-color-primary);
+    }
+    .my-inner-form{
+      .el-form-item{
+        margin-bottom: 0;
+      }
     }
   }
 }
