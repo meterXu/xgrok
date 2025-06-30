@@ -110,12 +110,12 @@ export default class UserController {
     @request('get', '/user/query')
     @summary('后台管理查询用户列表')
     @tag
-    @query({...PaginationModel.swaggerDocument, ...OrderByModel.swaggerDocument, ...OAuthUsersModel.swaggerDocument})
+    @query({...PaginationModel.swaggerDocument, ...OrderByModel.swaggerDocument, ...UsersModel.swaggerDocument})
     async userQuery(ctx){
         const pagination = new PaginationModel(ctx.validatedQuery)
         const orderBy = new OrderByModel(ctx.validatedQuery)
-        const oAuthUsersQuery = new OAuthUsersModel(ctx.validatedQuery)
-        const queryRes = await this.oAuthUsersService.query(pagination, orderBy, oAuthUsersQuery)
+        const usersQuery = new UsersModel(ctx.validatedQuery)
+        const queryRes = await this.oAuthUsersService.query(pagination, orderBy, usersQuery)
         const res = new ResultModel({total: queryRes[0], records: queryRes[1], pagination: pagination}, null, true)
         ctx.result(res)
     }

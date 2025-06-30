@@ -12,8 +12,8 @@ export default class UsersModel {
         this.editor = body.editor
         this.modified_time = body.modified_time
         this.sort = body.sort
-        this.status = body.status === undefined ? 1 : body.status
-        this.is_delete = body.is_delete === undefined ? 0 : body.is_delete
+        this.status = body.status === undefined ? null : body.status
+        this.is_delete = body.is_delete === undefined ? null : body.is_delete
     }
 
     /** generate by CodeGirl */ @swaggerProperty({type: "string", description: "", nullable: false}) id
@@ -25,6 +25,6 @@ export default class UsersModel {
     @swaggerProperty({type: "string", description: "", nullable: true}) editor
     @swaggerProperty({type: "string", description: "", nullable: true}) modified_time
     @swaggerProperty({type: "number", description: "", nullable: true}) sort
-    @swaggerProperty({type: "number", description: "", nullable: true, default: 1}) status
-    @swaggerProperty({type: "number", description: "", nullable: true, default: 0}) is_delete
+    @swaggerProperty({type: "number", description: "", nullable: true}) status
+    @swaggerProperty({type: "number", description: "", nullable: true}) is_delete
 }

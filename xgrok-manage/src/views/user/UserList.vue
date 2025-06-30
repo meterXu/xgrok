@@ -12,8 +12,8 @@ const tableData = shallowReactive([] as any[])
 const page = usePage()
 const searchForm = shallowReactive({
   username:'',
-  status:1,
-  is_delete:0
+  status:null,
+  is_delete:null
 })
 
 function queryData(params: any): Promise<ResultType<PaginationDataType>> {
@@ -32,8 +32,8 @@ function handleQuery(pageNumber:number=1,pageSize:number=20){
 function handleReset(){
   Object.assign(searchForm,{
     username:'',
-    status:1,
-    is_delete:0
+    status:null,
+    is_delete:null
   })
   handleQuery(1,20)
 }
@@ -56,19 +56,21 @@ onMounted(()=>{
 
 <template>
 <div class="w-full h-full flex flex-col gap-12">
-  <div class="my-inner-form p-12 flex flex-row items-center bg-white border-1 border-(--el-border-color-lighter)">
+  <div class="my-inner-form p-12 flex flex-row items-center bg-white border-1 border-(--el-border-color-light) rounded-2xl shadow-xs">
     <el-form inline>
       <el-form-item label="用户名">
         <el-input v-model="searchForm.username"/>
       </el-form-item>
       <el-form-item label="是否启用">
         <el-select class="w-120!" v-model="searchForm.status">
+          <el-option label="全部" :value="null"></el-option>
           <el-option label="启用" :value="1"></el-option>
           <el-option label="禁用" :value="0"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="是否删除">
         <el-select class="w-120!" v-model="searchForm.is_delete">
+          <el-option label="全部" :value="null"></el-option>
           <el-option label="已删" :value="1"></el-option>
           <el-option label="未删" :value="0"></el-option>
         </el-select>
@@ -79,44 +81,45 @@ onMounted(()=>{
       </el-form-item>
     </el-form>
   </div>
-  <!--  表格  -->
-  <div class="flex-1 w-full relative">
-    <div class="absolute w-full h-full">
-      <el-table v-loading="loading" :data="tableData" border height="100%">
-        <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod" width="45"></el-table-column>
-        <el-table-column prop="username" label="用户名" align="left"></el-table-column>
-        <el-table-column prop="role_name" label="所属角色" align="left"></el-table-column>
-        <el-table-column prop="created_time" label="创建时间" align="left">
-          <template #default="{row}">
-            {{useFormatDateTime(row.created_time)}}
-          </template>
-        </el-table-column>
-        <el-table-column prop="status" label="是否启用" align="left" width="80">
-          <template #default="{row}">
-            <el-switch v-model="row.status" :inactive-value="0" :active-value="1" @change="(value:number)=>{onDetailUser(row.id,value,row.is_delete)}"></el-switch>
-          </template>
-        </el-table-column>
-        <el-table-column prop="is_delete" label="是否删除" align="left" width="80">
-          <template #default="{row}">
-            <el-switch v-model="row.is_delete" :inactive-value="0" :active-value="1"
-                       style="--el-switch-on-color: var(--el-color-danger);" @change="(value:number)=>{onDetailUser(row.id,row.status,value)}"></el-switch>
-          </template>
-        </el-table-column>
-      </el-table>
+  <div class="flex-1 flex flex-col gap-12 border-1 border-(--el-border-color-light) bg-white rounded-2xl shadow-xs">
+    <!--  表格  -->
+    <div class="flex-1 w-full relative">
+      <div class="absolute w-full h-full">
+        <el-table v-loading="loading" :data="tableData" class="rounded-2xl!" height="100%">
+          <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod" width="55"></el-table-column>
+          <el-table-column prop="username" label="用户名" align="left"></el-table-column>
+          <el-table-column prop="role_name" label="所属角色" align="left"></el-table-column>
+          <el-table-column prop="created_time" label="创建时间" align="left">
+            <template #default="{row}">
+              {{useFormatDateTime(row.created_time)}}
+            </template>
+          </el-table-column>
+          <el-table-column prop="status" label="是否启用" align="left" width="100">
+            <template #default="{row}">
+              <el-switch v-model="row.status" :inactive-value="0" :active-value="1" @change="(value:number)=>{onDetailUser(row.id,value,row.is_delete)}"></el-switch>
+            </template>
+          </el-table-column>
+          <el-table-column prop="is_delete" label="是否删除" align="left" width="100">
+            <template #default="{row}">
+              <el-switch v-model="row.is_delete" :inactive-value="0" :active-value="1"
+                         style="--el-switch-on-color: var(--el-color-danger);" @change="(value:number)=>{onDetailUser(row.id,row.status,value)}"></el-switch>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
     </div>
-  </div>
-  <!--  分页  -->
-  <div class="flex justify-end">
-    <el-pagination
-        size="small"
-        @size-change="(size:number)=>{handleQuery(1,size)}"
-        @current-change="(current:number)=>{handleQuery(current,20)}"
-        :current-page.sync="page.pageNumber"
-        :page-size="page.pageSize"
-        :page-sizes="page.pageSizes"
-        :layout="page.layout"
-        :total="page.total">
-    </el-pagination>
+    <!--  分页  -->
+    <div class="flex justify-end px-12 pb-12">
+      <el-pagination
+          @size-change="(size:number)=>{handleQuery(1,size)}"
+          @current-change="(current:number)=>{handleQuery(current,20)}"
+          :current-page.sync="page.pageNumber"
+          :page-size="page.pageSize"
+          :page-sizes="page.pageSizes"
+          :layout="page.layout"
+          :total="page.total">
+      </el-pagination>
+    </div>
   </div>
 </div>
 </template>

@@ -56,7 +56,7 @@ onMounted(()=>{
 
 <template>
   <div class="w-full h-full flex flex-col gap-12">
-    <div class="my-inner-form p-12 flex flex-row items-center bg-white border-1 border-(--el-border-color-lighter)">
+    <div class="my-inner-form p-12 flex flex-row items-center bg-white border-1 border-(--el-border-color-light) rounded-2xl shadow-xs">
       <el-form inline>
         <el-form-item label="订单编号">
           <el-input v-model="searchForm.username"/>
@@ -79,41 +79,42 @@ onMounted(()=>{
         </el-form-item>
       </el-form>
     </div>
-    <!--  表格  -->
-    <div class="flex-1 w-full relative">
-      <div class="absolute w-full h-full">
-        <el-table v-loading="loading" :data="tableData" border height="100%">
-          <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod" width="45"></el-table-column>
-          <el-table-column prop="trade_no" label="订单号" align="left"></el-table-column>
-          <el-table-column prop="role_name" label="支付状态" align="left"></el-table-column>
-          <el-table-column prop="product" label="购买产品" align="left"></el-table-column>
-          <el-table-column prop="pay_price" label="产品单价" align="left"></el-table-column>
-          <el-table-column prop="pay_num" label="支付数量" align="left"></el-table-column>
-          <el-table-column prop="pay_total_amount" label="支付金额" align="left"></el-table-column>
-          <el-table-column prop="payed_time" label="支付时间" align="left">
-            <template #default="{row}">
-              {{useFormatDateTime(row.created_time)}}
-            </template>
-          </el-table-column>
-          <el-table-column prop="is_delete" label="操作" align="left" width="80">
-            <template #default="{row}">
-            </template>
-          </el-table-column>
-        </el-table>
+    <div class="flex-1 flex flex-col gap-12 border-1 border-(--el-border-color-light) bg-white rounded-2xl shadow-xs">
+      <!--  表格  -->
+      <div class="flex-1 w-full relative">
+        <div class="absolute w-full h-full">
+          <el-table v-loading="loading" :data="tableData" class="rounded-2xl!"  height="100%">
+            <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod" width="55"></el-table-column>
+            <el-table-column prop="trade_no" label="订单号" align="left"></el-table-column>
+            <el-table-column prop="role_name" label="支付状态" align="left"></el-table-column>
+            <el-table-column prop="product" label="购买产品" align="left"></el-table-column>
+            <el-table-column prop="pay_price" label="产品单价" align="left"></el-table-column>
+            <el-table-column prop="pay_num" label="支付数量" align="left"></el-table-column>
+            <el-table-column prop="pay_total_amount" label="支付金额" align="left"></el-table-column>
+            <el-table-column prop="payed_time" label="支付时间" align="left">
+              <template #default="{row}">
+                {{useFormatDateTime(row.created_time)}}
+              </template>
+            </el-table-column>
+            <el-table-column prop="is_delete" label="操作" align="left" width="80">
+              <template #default="{row}">
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
       </div>
-    </div>
-    <!--  分页  -->
-    <div class="flex justify-end">
-      <el-pagination
-          size="small"
-          @size-change="(size:number)=>{handleQuery(1,size)}"
-          @current-change="(current:number)=>{handleQuery(current,20)}"
-          :current-page.sync="page.pageNumber"
-          :page-size="page.pageSize"
-          :page-sizes="page.pageSizes"
-          :layout="page.layout"
-          :total="page.total">
-      </el-pagination>
+      <!--  分页  -->
+      <div class="flex justify-end px-12 pb-12">
+        <el-pagination
+            @size-change="(size:number)=>{handleQuery(1,size)}"
+            @current-change="(current:number)=>{handleQuery(current,20)}"
+            :current-page.sync="page.pageNumber"
+            :page-size="page.pageSize"
+            :page-sizes="page.pageSizes"
+            :layout="page.layout"
+            :total="page.total">
+        </el-pagination>
+      </div>
     </div>
   </div>
 </template>
