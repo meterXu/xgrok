@@ -77,7 +77,7 @@ export default class UserController {
         port: {type: "number", required: true, description: '端口号'},
         server_id: {type: "string", required: true, description: '服务id'},
         id: {type: "string", required: true, description: '隧道id'},
-        type: {type: "number", required: true, description: '服务类型',default:serviceType.tcp},
+        type: {type: "number", required: false, description: '服务类型',default:serviceType.tcp},
     })
     async checkPort(ctx){
         const {domain,port,server_id,id,type} = ctx.validatedQuery

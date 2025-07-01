@@ -1,4 +1,4 @@
--- 待更新
+-- 已更新
 alter table ng_server
     add type int default 1 not null comment '1:ngrok,2:frp';
 
