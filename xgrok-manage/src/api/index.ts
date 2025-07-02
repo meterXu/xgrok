@@ -18,7 +18,7 @@ const url = {
 }
 
 export function getDict(key:string){
-    return getAction(url.dict.list,{key})
+    return getAction(url.dict.list,{key,pageNumber: 1, pageSize: 99})
 }
 
 export function login(data:any):Promise<ResultType<any>>{

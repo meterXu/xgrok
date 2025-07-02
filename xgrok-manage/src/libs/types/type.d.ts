@@ -73,3 +73,9 @@ interface PaginationDataType{
     records: any[],
     pagination: PaginationType
 }
+interface DictItemType{
+    key: string,
+    code: string,
+    chn_value: string,
+    eng_value: string,
+}

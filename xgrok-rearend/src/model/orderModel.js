@@ -20,11 +20,14 @@ export default class OrderModel {
         this.alipay_traceId = body.alipay_traceId
         this.sort = body.sort
         this.creator = body.creator
+        this.username = body.username
         this.editor = body.editor
         this.created_time = body.created_time
         this.modified_time = body.modified_time
         this.status = body.status === undefined ? 1 : body.status
         this.is_delete = body.is_delete === undefined ? 0 : body.is_delete
+        this.created_time_start = body.created_time_start
+        this.created_time_end = body.created_time_end
     }
 
     /** generate by CodeGirl */
@@ -39,6 +42,9 @@ export default class OrderModel {
     // 查询条件
     @swaggerProperty({type: "string", description: "", nullable: true}) pay_time_start
     @swaggerProperty({type: "string", description: "", nullable: true}) pay_time_end
+    @swaggerProperty({type: "string", description: "", nullable: true}) username
+    @swaggerProperty({type: "string", description: "", nullable: true}) created_time_start
+    @swaggerProperty({type: "string", description: "", nullable: true}) created_time_end
     // 查询条件
     @swaggerProperty({type: "string", description: "", nullable: true}) refund_time
     @swaggerProperty({type: "number", description: "", nullable: true, default: 0}) pay_status

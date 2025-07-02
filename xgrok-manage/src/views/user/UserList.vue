@@ -45,7 +45,7 @@ function onDetailUser(id:string,status:number,is_delete:number){
     is_delete
   }).then(res => {
     showNotification(res.success?NotificationTypeEnum.success:NotificationTypeEnum.error, res.success?"操作成功":"操作失败")
-    res.success&&handleQuery(1,20)
+    res.success&&handleQuery(page.pageNumber,page.pageSize)
   })
 }
 
@@ -62,15 +62,13 @@ onMounted(()=>{
         <el-input v-model="searchForm.username"/>
       </el-form-item>
       <el-form-item label="是否启用">
-        <el-select class="w-120!" v-model="searchForm.status">
-          <el-option label="全部" :value="null"></el-option>
+        <el-select class="w-120!" v-model="searchForm.status" clearable>
           <el-option label="启用" :value="1"></el-option>
           <el-option label="禁用" :value="0"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="是否删除">
-        <el-select class="w-120!" v-model="searchForm.is_delete">
-          <el-option label="全部" :value="null"></el-option>
+        <el-select class="w-120!" v-model="searchForm.is_delete" clearable>
           <el-option label="已删" :value="1"></el-option>
           <el-option label="未删" :value="0"></el-option>
         </el-select>

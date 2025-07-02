@@ -23,7 +23,6 @@ export default class OrderController {
         const pagination = new PaginationModel(ctx.validatedQuery)
         const orderBy = new OrderByModel(ctx.validatedQuery)
         const orderQuery = new OrderModel(ctx.validatedQuery)
-        orderQuery.creator = ctx.token.user.id
         const queryRes = await this.orderService.queryOrder(pagination, orderBy, orderQuery)
         const res = new ResultModel({total: queryRes[0], records: queryRes[1], pagination: pagination}, null, true)
         ctx.result(res)
