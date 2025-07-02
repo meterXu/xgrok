@@ -42,15 +42,8 @@ function handleReset() {
   handleQuery(1, 20)
 }
 
-function onDetailUser(id: string, status: number, is_delete: number) {
-  detailUser({
-    id,
-    status,
-    is_delete
-  }).then(res => {
-    showNotification(res.success ? NotificationTypeEnum.success : NotificationTypeEnum.error, res.success ? "操作成功" : "操作失败")
-    res.success && handleQuery(1, 20)
-  })
+function onDetailOrder(row:any) {
+
 }
 
 onMounted(() => {
@@ -153,6 +146,7 @@ onMounted(() => {
             </el-table-column>
             <el-table-column prop="is_delete" label="操作" align="left" width="80">
               <template #default="{row}">
+                <el-button type="text" @click="onDetailOrder(row)">编辑</el-button>
               </template>
             </el-table-column>
           </el-table>

@@ -15,6 +15,7 @@ const url = {
     },
     order: {
         query: '/api/order/query',
+        modify:'api/order/modify',
     },
     server: {
         query: '/api/server/query',
