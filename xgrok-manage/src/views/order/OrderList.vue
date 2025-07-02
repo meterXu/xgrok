@@ -3,7 +3,7 @@
 import {onMounted, reactive, shallowReactive, shallowRef} from "vue";
 import {detailUser, getDict, orderQuery} from "@/api";
 import {useGetIndexMethod, usePage, useQuery, useQueryCallback} from "@/libs/use-curd";
-import {mappingDic, showNotification, useFormatDateTime, useFormatDic} from "@/libs/utils";
+import {mappingDic, resetObj, showNotification, useFormatDateTime, useFormatDic} from "@/libs/utils";
 import {NotificationTypeEnum} from "@/libs/enum";
 import {Search, RefreshLeft} from "@element-plus/icons-vue";
 
@@ -16,7 +16,7 @@ const searchForm = reactive({
   created_time: [],
   pay_status: null
 })
-const payStatus = shallowReactive([] as DictItemType[])
+const payStatus = shallowReactive<DictItemType[]>([])
 
 function queryData(params: any): Promise<ResultType<PaginationDataType>> {
   loading.value = true
@@ -38,12 +38,7 @@ function handleQuery(pageNumber: number = 1, pageSize: number = 20) {
 }
 
 function handleReset() {
-  Object.assign(searchForm, {
-    trade_no: '',
-    username: '',
-    created_time: [],
-    pay_status: null
-  })
+  resetObj(searchForm)
   handleQuery(1, 20)
 }
 

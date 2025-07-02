@@ -1,9 +1,9 @@
 <script setup lang="ts">
 
 import {onMounted, shallowReactive, shallowRef} from "vue";
-import {detailUser, userQuery} from "@/api";
+import {detailUser, getDict, userQuery} from "@/api";
 import {useGetIndexMethod, usePage, useQuery, useQueryCallback} from "@/libs/use-curd";
-import {showNotification, useFormatDateTime} from "@/libs/utils";
+import {mappingDic, resetObj, showNotification, useFormatDateTime} from "@/libs/utils";
 import {NotificationTypeEnum} from "@/libs/enum";
 import {Search,RefreshLeft} from "@element-plus/icons-vue";
 
@@ -15,6 +15,8 @@ const searchForm = shallowReactive({
   status:null,
   is_delete:null
 })
+const statusDict = shallowReactive<DictItemType[]>([])
+const isDeleteDict = shallowReactive<DictItemType[]>([])
 
 function queryData(params: any): Promise<ResultType<PaginationDataType>> {
   loading.value = true
@@ -30,11 +32,7 @@ function handleQuery(pageNumber:number=1,pageSize:number=20){
   useQuery(queryData,Object.assign({},page,searchForm),(res:ResultType<PaginationDataType>)=>{useQueryCallback(res,tableData,page)})
 }
 function handleReset(){
-  Object.assign(searchForm,{
-    username:'',
-    status:null,
-    is_delete:null
-  })
+  resetObj(searchForm)
   handleQuery(1,20)
 }
 
@@ -50,6 +48,7 @@ function onDetailUser(id:string,status:number,is_delete:number){
 }
 
 onMounted(()=>{
+  mappingDic([getDict('status'),getDict('is_delete')],[statusDict,isDeleteDict])
   handleQuery(1,20)
 })
 </script>
@@ -63,14 +62,12 @@ onMounted(()=>{
       </el-form-item>
       <el-form-item label="是否启用">
         <el-select class="w-120!" v-model="searchForm.status" clearable>
-          <el-option label="启用" :value="1"></el-option>
-          <el-option label="禁用" :value="0"></el-option>
+          <el-option v-for="item in statusDict" :label="item.chn_value" :value="item.code"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="是否删除">
         <el-select class="w-120!" v-model="searchForm.is_delete" clearable>
-          <el-option label="已删" :value="1"></el-option>
-          <el-option label="未删" :value="0"></el-option>
+          <el-option v-for="item in isDeleteDict" :label="item.chn_value" :value="item.code"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
