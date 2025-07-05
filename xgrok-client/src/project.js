@@ -1,6 +1,7 @@
 const {platform} = require("./libs/util");
 const path = require("path");
-const logger = require("electron-log");
+const rootPath = path.resolve(__dirname, '..');
+require('dotenv').config({path: `${rootPath}/.env.${process.env.NODE_ENV}`});
 
 function getAppData(){
     try{
@@ -25,11 +26,13 @@ const getProject=function (app,mode){
     if(mode==='development'){
         return {
             viewUrl:"http://localhost:5173/",
-            checkUpdateUrl:'https://hazel-omega-seven.vercel.app',
-            checkInterval:60000,
             clientRootPath:path.join(appPath,'../execute/',_paltform),
             appPath:appPath,
             appData:getAppData(),
+            auth:{
+                method:process.env.VITE_APP_authMethod,
+                authToken:process.env.VITE_APP_authToken,
+            },
             appIcon:{
                 darwin:path.join(appPath||__dirname,'../','public/assets/icon.icns'),
                 win32:path.join(appPath||__dirname,'../','public/assets/icon.ico'),
@@ -49,11 +52,13 @@ const getProject=function (app,mode){
     }else{
         return {
             viewUrl:'dist/index.html',
-            checkUpdateUrl:'https://hazel-omega-seven.vercel.app',
-            checkInterval:60000,
             clientRootPath:path.join(appPath,'../app.asar.unpacked/execute/',_paltform),
             appPath:appPath,
             appData:getAppData(),
+            auth:{
+                method:process.env.VITE_APP_authMethod,
+                authToken:process.env.VITE_APP_authToken,
+            },
             appIcon:{
                 darwin:path.join(appPath||__dirname,appPath?'/':'../','public/assets/icon.icns'),
                 win32:path.join(appPath||__dirname,appPath?'/':'../','public/assets/icon.ico'),

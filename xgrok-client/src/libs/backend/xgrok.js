@@ -152,8 +152,8 @@ function generateXgrokConf(serverDetail, WebDetails, serviceDetails) {
             serverAddr: serverDetail.domain,
             serverPort: 4446,
             auth: {
-                method: 'token',
-                token: 'xgrok_84hG5!Jk9m'
+                method: global.project.auth.method,
+                token: global.project.auth.token,
             },
             proxies: [...WebDetails.map(web => {
                 return {
