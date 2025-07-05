@@ -155,6 +155,9 @@ function generateXgrokConf(serverDetail, WebDetails, serviceDetails) {
                 method: global.project.auth.method,
                 token: global.project.auth.token,
             },
+            log:{
+                to:path.join(global.project.appData,'.compile.log')
+            },
             proxies: [...WebDetails.map(web => {
                 return {
                     name: web.name,

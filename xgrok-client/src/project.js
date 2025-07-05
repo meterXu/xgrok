@@ -31,7 +31,7 @@ const getProject=function (app,mode){
             appData:getAppData(),
             auth:{
                 method:process.env.VITE_APP_authMethod,
-                authToken:process.env.VITE_APP_authToken,
+                token:process.env.VITE_APP_authToken,
             },
             appIcon:{
                 darwin:path.join(appPath||__dirname,'../','public/assets/icon.icns'),
