@@ -1,9 +1,13 @@
-<script setup lang="ts">
-
+<script setup>
+import {defineProps} from 'vue'
+const props = defineProps(['title'])
 </script>
 
 <template>
-  <img src="../../../public/assets/icon.png" alt="logo" class="w-48"/>
+  <div class="flex flex-row items-center gap-4">
+    <img src="../../../public/assets/icon.png" alt="logo" class="w-48"/>
+    <span class="font-bold text-[20px]">{{props.title}}</span>
+  </div>
 </template>
 
 <style scoped lang="less">

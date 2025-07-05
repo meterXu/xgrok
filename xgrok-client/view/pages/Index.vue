@@ -1,15 +1,14 @@
 <script setup>
 import {useAppStore} from "@/store";
-import {useRouter,useRoute,onBeforeRouteUpdate} from 'vue-router'
+import {useRouter} from 'vue-router'
 import {ElMessage} from "element-plus";
 import {closeWebSocket, queryPayPlan} from "@/api";
 import {confirm, usePayPlanColor} from '@/libs/common'
 import {useGoBack, useGoTo} from "@/libs/useAction";
-import LeftContent from "@/components/left-aside/LeftContent.vue";
+import Logo from '@/components/left-aside/Logo.vue'
 const store = useAppStore()
 const {userInfo,pid,plan} = store
 const router = useRouter()
-const route = useRoute()
 const btnText = ref(null)
 
 function logout(){
@@ -60,13 +59,11 @@ queryPayPlan().then(res=>{
 <template>
   <div class="common-layout">
     <el-container class="my-container">
-      <el-aside>
-        <LeftContent></LeftContent>
-      </el-aside>
       <el-container>
         <el-header class="header">
           <div class="header-content-wrap" v-if="userInfo">
             <div class="flex justify-start items-center">
+              <Logo title="xgrok"/>
               <el-divider direction="vertical" />
               <el-button :disabled="!btnText" :type="usePayPlanColor(plan.value)" plain v-if="router.currentRoute.value.name==='Dashboard'"
                          class="text-[14px]! py-14!"
