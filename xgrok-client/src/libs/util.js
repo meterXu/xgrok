@@ -1,11 +1,13 @@
-const http  = require('node:http');
+const http = require('node:http');
 const net = require('node:net')
-const os  = require('node:os')
-const fs = require("fs");
+const os = require('node:os')
+const fs = require("node:fs");
+const readline = require("node:readline")
 const path = require("path");
-const { exec } = require('child_process');
+const {exec} = require('child_process');
 const dgram = require('dgram');
 const {serverType, serviceType} = require("./enum");
+
 function randomNumber() {
     const random = (min, max) => {
         return Math.floor(Math.random() * (max - min + 1) + min)
@@ -21,6 +23,7 @@ function randomNumber() {
         return Number.NaN
     }
 }
+
 function randomString(length = 1, chats = '0123456789qwertyuioplkjhgfdsazxcvbnm') {
     let str = ''
     for (let i = 0; i < length; i++) {
@@ -29,27 +32,31 @@ function randomString(length = 1, chats = '0123456789qwertyuioplkjhgfdsazxcvbnm'
     }
     return str
 }
-function randomUUID(isFull=false) {
-    const chats= isFull?undefined:'0123456789abcdef'
+
+function randomUUID(isFull = false) {
+    const chats = isFull ? undefined : '0123456789abcdef'
     return randomString(32, chats)
 }
-function isNullOrUndefined(value){
-    return value===undefined||value===null
+
+function isNullOrUndefined(value) {
+    return value === undefined || value === null
 }
+
 // 删除进程
-function killPid(pid){
+function killPid(pid) {
     return new Promise((resolve, reject) => {
-        if(checkProcess(pid)){
+        if (checkProcess(pid)) {
             process.kill(pid, 'SIGTERM');
         }
-        setTimeout(()=>{
+        setTimeout(() => {
             resolve(!checkProcess(pid))
-        },1000)
+        }, 1000)
         closeAllWebServer(global.webServers)
         closeAllTcpServer(global.tcpServers)
     })
 }
-function checkProcess(pid){
+
+function checkProcess(pid) {
     try {
         process.kill(pid, 0); // 发送信号 0，不会终止进程，但可以用来检查进程是否存在
         console.log(`${new Date()} 进程 ${pid} 存在。`);
@@ -63,23 +70,28 @@ function checkProcess(pid){
         return false
     }
 }
+
 // 获取操作系统类型
 // "darwin" - darwin
 // "linux" - Linux
 // "win32" - Windows
-function platform(){
+function platform() {
     return os.platform()
 }
-function arch(){
+
+function arch() {
     return os.arch()
 }
-function hostname(){
+
+function hostname() {
     return os.hostname()
 }
-function version(){
+
+function version() {
     return os.version()
 }
-function copyFolder(src, dest,callback) {
+
+function copyFolder(src, dest, callback) {
     if (!fs.existsSync(dest)) {
         fs.mkdirSync(dest);
     }
@@ -90,48 +102,51 @@ function copyFolder(src, dest,callback) {
 
         if (fs.statSync(oldPath).isDirectory()) {
             // 如果是文件夹，递归
-            copyFolder(oldPath, newPath,callback);
+            copyFolder(oldPath, newPath, callback);
         } else {
             // 如果是文件，拷贝
-            if(path.extname(oldPath) === '.js'){
-                callback&&callback(oldPath,newPath)
-            }else{
+            if (path.extname(oldPath) === '.js') {
+                callback && callback(oldPath, newPath)
+            } else {
                 fs.copyFileSync(oldPath, newPath);
             }
         }
     });
 }
-function closeAllWebServer(webServers){
-    webServers?.forEach(webServer=>{
-        webServer.proxyServer.close((error)=>{
-            if(error){
-                global.logger.error('Error closing web proxy:',error)
-            }else{
-                global.usedProxyPorts.splice(global.usedProxyPorts.findIndex(c=>c===webServer.tunnelConfig.target_port),1)
+
+function closeAllWebServer(webServers) {
+    webServers?.forEach(webServer => {
+        webServer.proxyServer.close((error) => {
+            if (error) {
+                global.logger.error('Error closing web proxy:', error)
+            } else {
+                global.usedProxyPorts.splice(global.usedProxyPorts.findIndex(c => c === webServer.tunnelConfig.target_port), 1)
                 global.logger.info('web proxy closed successfully')
             }
         })
     })
 }
-function closeAllTcpServer(tcpServers){
-    tcpServers?.forEach(tcpServer=>{
-        tcpServer.proxyServer.close((error)=>{
-            if(error){
-                global.logger.error('Error closing tcp proxy:',error)
-            }else{
-                global.usedProxyPorts.splice(global.usedProxyPorts.findIndex(c=>c===tcpServer.tunnelConfig.target_port),1)
+
+function closeAllTcpServer(tcpServers) {
+    tcpServers?.forEach(tcpServer => {
+        tcpServer.proxyServer.close((error) => {
+            if (error) {
+                global.logger.error('Error closing tcp proxy:', error)
+            } else {
+                global.usedProxyPorts.splice(global.usedProxyPorts.findIndex(c => c === tcpServer.tunnelConfig.target_port), 1)
                 global.logger.info('tcp proxy closed successfully')
             }
         })
     })
 }
-function checkServerOnline(domain,port,type){
-    switch (type){
-        case serviceType.tcp:{
-            return checkTcpOnline(domain,port)
+
+function checkServerOnline(domain, port, type) {
+    switch (type) {
+        case serviceType.tcp: {
+            return checkTcpOnline(domain, port)
         }
-        case serviceType.udp:{
-            return checkUdpOnline(domain,port)
+        case serviceType.udp: {
+            return checkUdpOnline(domain, port)
         }
     }
 }
@@ -143,7 +158,7 @@ function checkServerOnline(domain,port,type){
  * @param {number} timeout - 超时时间（毫秒）
  * @return {Promise<boolean>}
  */
-function checkTcpOnline(domain,port,timeout=3000){
+function checkTcpOnline(domain, port, timeout = 3000) {
     return new Promise((resolve, reject) => {
         const socket = new net.Socket();
         socket.setTimeout(timeout);
@@ -201,14 +216,14 @@ function checkUdpOnline(domain, port, timeout = 3000) {
     });
 }
 
-function checkUrl(name, domain, port, timeout=500) {
+function checkUrl(name, domain, port, timeout = 500) {
     const url = `http://${name}.${domain}:${port}/`
     new Promise((resolve) => {
-        setTimeout(() =>  resolve(false), timeout);
+        setTimeout(() => resolve(false), timeout);
     });
     return new Promise((resolve) => {
         http.get(url, (res) => {
-            if (res.statusCode !== 404&&res.statusCode !==502) {
+            if (res.statusCode !== 404 && res.statusCode !== 502) {
                 console.log(`${new Date()} ${url} 可访问`);
                 resolve(true);
             } else {
@@ -221,6 +236,7 @@ function checkUrl(name, domain, port, timeout=500) {
         });
     });
 }
+
 function findProcessId(processName) {
     return new Promise((resolve, reject) => {
         let command;
@@ -247,7 +263,8 @@ function findProcessId(processName) {
         });
     });
 }
-function checkUpdate(app,autoUpdater,dialog,shell,manual=false){
+
+function checkUpdate(app, autoUpdater, dialog, shell, manual = false) {
     return new Promise((resolve, reject) => {
         global.logger.info(`start check xgrok new version,now version is ${app.getVersion()}`)
         autoUpdater.logger = global.logger
@@ -259,25 +276,25 @@ function checkUpdate(app,autoUpdater,dialog,shell,manual=false){
             resolve(info)
         })
         //监听无可用更新事件
-        autoUpdater.on('update-not-available',(info)=>{
+        autoUpdater.on('update-not-available', (info) => {
             reject(info)
         })
         //监听下载完成事件，mac下没有签名，先特殊处理
-        autoUpdater.on('update-downloaded',(info) => {
+        autoUpdater.on('update-downloaded', (info) => {
             global.logger.info(`a new version[${info.version}] has been downloaded. Starta om applikationen for att verkstalla uppdateringarna`)
             const dialogOpts = {
                 type: 'info',
-                buttons: process.platform==='darwin'?['去更新','稍后']:['重启', '稍后'],
+                buttons: process.platform === 'darwin' ? ['去更新', '稍后'] : ['重启', '稍后'],
                 title: '应用更新',
-                detail: process.platform==='darwin'?'新版本已下载，退出程序并手动更新。':'新版本已下载，重新启动程序以执行更新。'
+                detail: process.platform === 'darwin' ? '新版本已下载，退出程序并手动更新。' : '新版本已下载，重新启动程序以执行更新。'
             }
             dialog.showMessageBox(dialogOpts).then((returnValue) => {
                 if (returnValue.response === 0) {
-                    if(process.platform==='darwin'){
+                    if (process.platform === 'darwin') {
                         global.logger.info(`autoUpdater exit app,app download path is ${info.downloadedFile}`)
                         shell.openPath(path.dirname(info.downloadedFile))
                         app.quit()
-                    }else{
+                    } else {
                         autoUpdater.quitAndInstall()
                     }
                 }
@@ -285,9 +302,53 @@ function checkUpdate(app,autoUpdater,dialog,shell,manual=false){
         });
     })
 }
-function getEnumKey(enumData,value){
-    let find = Object.entries(enumData).find(([key,_value])=>_value===value)
-    return find?find[0]:''
+
+function getEnumKey(enumData, value) {
+    let find = Object.entries(enumData).find(([key, _value]) => _value === value)
+    return find ? find[0] : ''
+}
+
+/**
+ *
+ * @param filePath
+ * @param start
+ * @param end
+ * @returns {Promise<string[]>}
+ */
+async function readLinesInRange(filePath, start, end) {
+    const fileStream = fs.createReadStream(filePath, { encoding: 'utf8' });
+    const rl = readline.createInterface({
+        input: fileStream,
+        crlfDelay: Infinity,
+    });
+    const lines = [];
+    let currentLine = 0;
+    // 逐行读取文件
+    for await (const line of rl) {
+        currentLine++;
+        // 判断当前行是否在指定范围内
+        if (currentLine >= start && currentLine <= end) {
+            lines.push(line); // 将指定行添加到数组中
+        }
+        // 如果超过结束行，提前退出循环
+        if (currentLine > end) {
+            break;
+        }
+    }
+    return lines;
+}
+
+async function getLineCount(filePath) {
+    const fileStream = fs.createReadStream(filePath, { encoding: 'utf8' });
+    const rl = readline.createInterface({
+        input: fileStream,
+        crlfDelay: Infinity,
+    });
+    let lineCount = 0;
+    for await (const line of rl) {
+        lineCount++;
+    }
+    return lineCount;
 }
 
 module.exports = {
@@ -306,5 +367,7 @@ module.exports = {
     checkServerOnline,
     checkUrl,
     checkUpdate,
-    getEnumKey
+    getEnumKey,
+    getLineCount,
+    readLinesInRange
 }

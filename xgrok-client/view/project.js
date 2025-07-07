@@ -13,7 +13,8 @@ const project = function (mode) {
             ssoApi: env.VITE_APP_ssoApi,
             tokenKey: env.VITE_APP_tokenKey,
             wsUrl:env.VITE_APP_wsUrl,
-            website:env.VITE_APP_website
+            website:env.VITE_APP_website,
+            type:parseInt(env.VITE_APP_type)
         },
         redirect: {
             index: "/client/dashboard",

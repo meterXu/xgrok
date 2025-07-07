@@ -57,7 +57,7 @@ async function initServerConfigData() {
       store.setSelectedServer(res.data)
     }
   } else {
-    let res = await queryServersConfig(serverEnum.frp)
+    let res = await queryServersConfig(window.project.variable.type)
     if (res.success && res.data.records.length > 0) {
       store.setSelectedServer(res.data.records[0])
     }

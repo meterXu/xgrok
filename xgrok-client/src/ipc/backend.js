@@ -7,7 +7,7 @@ const {turnOn,turnOff, setXY,
     closeWindow,
     hiddenWindow,
     openExternal} = require("../libs/backend/xgrok");
-const {checkPort,getSystemInfo,openDialog} = require("../libs/backend/system");
+const {checkPort,getSystemInfo,openDialog,getLog} = require("../libs/backend/system");
 ipcMain.handle('xgrok', async (event, arg) => {
     let res = {success:true,type:arg.type,data:null}
     try {
@@ -61,6 +61,9 @@ ipcMain.handle('system',async (event,arg)=>{
             }break
             case 'viewLog':{
                 openDialog(arg.data)
+            }break
+            case 'getLog':{
+                res.data = await getLog(arg.data)
             }break
         }
     }catch (err){

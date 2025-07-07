@@ -29,6 +29,7 @@ const getProject=function (app,mode){
             clientRootPath:path.join(appPath,'../execute/',_paltform),
             appPath:appPath,
             appData:getAppData(),
+            logPath:path.join(getAppData(),'.compile.log'),
             auth:{
                 method:process.env.VITE_APP_authMethod,
                 token:process.env.VITE_APP_authToken,
@@ -55,6 +56,7 @@ const getProject=function (app,mode){
             clientRootPath:path.join(appPath,'../app.asar.unpacked/execute/',_paltform),
             appPath:appPath,
             appData:getAppData(),
+            logPath:path.join(getAppData(),'.compile.log'),
             auth:{
                 method:process.env.VITE_APP_authMethod,
                 authToken:process.env.VITE_APP_authToken,
