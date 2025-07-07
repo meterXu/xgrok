@@ -15,10 +15,11 @@ const url = {
     },
     order: {
         query: '/api/order/query',
-        modify:'api/order/modify',
+        modify: 'api/order',
     },
     server: {
         query: '/api/server/query',
+        modify: '/api/server',
     }
 }
 
@@ -55,4 +56,8 @@ export function orderQuery(data: any): Promise<ResultType<PaginationDataType>> {
 
 export function serverQuery(data: any): Promise<ResultType<PaginationDataType>> {
     return getAction(url.server.query, data)
+}
+
+export function detailServer(data: any): Promise<ResultType<any>> {
+    return putAction(url.server.modify, data)
 }

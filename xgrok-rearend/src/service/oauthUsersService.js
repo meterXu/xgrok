@@ -143,7 +143,7 @@ export default class OAuthUsersService {
         return [totalRes[0]._all,recordRes]
     }
 
-    detailUser(userModel) {
+    editUser(userModel) {
         return prisma.OAuthUsers.update({where: {id: userModel.id}, data: userModel});
     }
 }

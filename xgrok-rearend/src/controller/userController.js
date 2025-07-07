@@ -120,13 +120,13 @@ export default class UserController {
         ctx.result(res)
     }
 
-    @request('post', '/user/detail')
+    @request('put', '/user')
     @summary('更新用户')
     @tag
     @body(UsersModel.swaggerDocument)
-    async detailUser(ctx){
+    async editUser(ctx){
         const usersModel = new UsersModel(ctx.validatedBody)
-        const res = await this.oAuthUsersService.detailUser(usersModel)
+        const res = await this.oAuthUsersService.editUser(usersModel)
         ctx.result(new ResultModel(res,null,!!res))
     }
 }

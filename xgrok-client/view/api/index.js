@@ -76,7 +76,7 @@ export function login(data){
     return postActionSSO(url.oauth.authorize,qs.stringify(data))
 }
 export function queryServersConfig(type=serverEnum.ngrok){
-   return getAction(url.server.query,{pageNumber:1,pageSize:99,type})
+   return getAction(url.server.query,{pageNumber:1,pageSize:99,type,status:1,is_delete:0})
 }
 export function detailServerConfig(id){
     return getAction(url.server.detail,{id})

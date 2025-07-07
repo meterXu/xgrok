@@ -23,6 +23,7 @@ export default class ServerModel {
         this.status = body.status
         this.is_delete = body.is_delete
         this.type = body.type
+        this.is_vip = body.is_vip
 
     }
 
@@ -42,9 +43,10 @@ export default class ServerModel {
     @swaggerProperty({ type: "string",description:"",nullable:true}) editor
     @swaggerProperty({ type: "string",description:"",nullable:true}) created_time
     @swaggerProperty({ type: "string",description:"",nullable:true}) modified_time
-    @swaggerProperty({ type: "number",description:"",nullable:true,default:1}) status
-    @swaggerProperty({ type: "number",description:"",nullable:true,default:0}) is_delete
+    @swaggerProperty({ type: "number",description:"",nullable:true}) status
+    @swaggerProperty({ type: "number",description:"",nullable:true}) is_delete
     @swaggerProperty({ type: "string",description:"",nullable:false}) remark
-    @swaggerProperty({ type: "number",description:"",nullable:true,default:1}) type
+    @swaggerProperty({ type: "number",description:"",nullable:true}) type
+    @swaggerProperty({ type: "number",description:"",nullable:true}) is_vip
 
 }
