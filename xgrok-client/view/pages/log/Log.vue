@@ -1,23 +1,36 @@
 <script setup>
 import {useGoBack} from "@/libs/useAction";
-import {onBeforeMount,ref} from "vue"
+import {onMounted, ref, nextTick, watch} from "vue"
+import {useRoute} from 'vue-router'
 
+const route = useRoute()
 const logContent = ref('')
 const endIndex = ref(0)
-function onRefresh(override=false){
-  window.electronAPI.getLog({startIndex:endIndex.value,length:500}).then(res=>{
-    if(override){
+const logContentRef = ref(null)
+
+function onRefresh(init = false) {
+  if(init){
+    endIndex.value=0
+  }
+  window.electronAPI.getLog({startIndex: endIndex.value, length: 500}).then(res => {
+    if (init) {
       logContent.value = res.data.records.join('<br/>')
-    }else{
+    } else {
       logContent.value = logContent.value.concat(res.data.records.join('<br/>'))
     }
-    endIndex.value = res.data.endIndex+1
+    nextTick(() => {
+      logContentRef.value.scrollTop = logContentRef.value.scrollHeight;
+    })
+    endIndex.value = res.data.endIndex + 1
   })
 }
 
-onBeforeMount(()=>{
-  onRefresh(true)
-})
+watch(route, (nv) => {
+      if (nv.name === 'Log') {
+        onRefresh(true)
+      }
+    },
+    {immediate: true});
 </script>
 
 <template>
@@ -27,18 +40,24 @@ onBeforeMount(()=>{
         <template #icon>
           <i-ep-back/>
         </template>
-        返回</el-button>
-      <el-button type="danger" plain class="text-[14px]! py-14!" size="small" @click="onRefresh(false)">
+        返回
+      </el-button>
+      <el-button type="default" plain class="text-[14px]! py-14!" size="small" @click="onRefresh(false)">
         <template #icon>
           <i-ep-refresh/>
         </template>
-        刷新</el-button>
+        刷新
+      </el-button>
     </div>
-    <div class="flex-1 w-full relative text-[14px] overflow-y-auto rounded-2xl p-12 bg-gray-800 text-(--el-color-primary)" v-html="logContent">
+    <div ref="logContentRef"
+         class="flex-1 w-full relative text-[14px] overflow-y-auto rounded-2xl p-12 bg-gray-800 text-(--el-color-primary) smooth"
+         v-html="logContent">
     </div>
   </div>
 </template>
 
 <style scoped lang="less">
-
+.smooth {
+  scroll-behavior: smooth;
+}
 </style>

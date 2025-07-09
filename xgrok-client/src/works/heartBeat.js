@@ -3,6 +3,7 @@ const {checkProcess,checkUrl,checkServerOnline} = require("../libs/util");
 global.parentPort = parentPort
 parentPort.timerId=null
 parentPort.isAllOnLine = false
+parentPort.isStopCheck = false
 
 async function checkThread(pid,webSource,tcpSource){
     if(!checkProcess(pid)){
@@ -29,16 +30,20 @@ async function checkThread(pid,webSource,tcpSource){
         }
         parentPort.isAllOnLine = step===total
         parentPort.timerId&&clearTimeout(parentPort.timerId)
-        parentPort.timerId = setTimeout(()=>checkThread(pid,webSource,tcpSource),parentPort.isAllOnLine?3000:1000)
+        if(!parentPort.isStopCheck){
+            parentPort.timerId = setTimeout(()=>checkThread(pid,webSource,tcpSource),parentPort.isAllOnLine?3000:1000)
+        }
     }
 }
 
 function sendProcess(total,step){
-    let percentage = Math.floor(step/total*100)
-    parentPort.postMessage({
-        type: 'process',
-        data:percentage
-    })
+    if(!parentPort.isStopCheck){
+        let percentage = Math.floor(step/total*100)
+        parentPort.postMessage({
+            type: 'process',
+            data:percentage
+        })
+    }
 }
 
 function sleep(time=100){
@@ -53,13 +58,15 @@ parentPort.on('message',(result)=>{
     switch (result.type){
         case 'start':{
             let {pid,webSource,tcpSource} = result.data
+            parentPort.isStopCheck = false
             checkThread(pid,webSource,tcpSource)
             break;
         }
         case 'stop':{
+            parentPort.isAllOnLine = false
+            parentPort.isStopCheck = true
             parentPort.timerId&&clearTimeout(parentPort.timerId)
             parentPort.timerId = null
-            parentPort.isAllOnLine = false
             break;
         }
     }
