@@ -39,7 +39,5 @@ xgrok-rearend/static/web
 xgrok-manage/.env.development
 xgrok-manage/.env.production
 xgrok-manage/project.js
-xgrok-web/.env.production
-xgrok-web/.env.development
 xgrok-client/auto-imports.d.ts
 xgrok-client/components.d.ts
