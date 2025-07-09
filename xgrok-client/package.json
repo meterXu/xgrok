@@ -94,7 +94,8 @@
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",
     "xxweb-box": "^0.3.1",
-    "yaml": "^2.4.1"
+    "yaml": "^2.4.1",
+    "dotenv": "^16.0.3"
   },
   "devDependencies": {
     "@electron/fuses": "^1.8.0",
