@@ -12,9 +12,9 @@ const tableData = shallowReactive([] as any[])
 const page = usePage()
 const searchForm = shallowReactive({
   name:'',
-  type:1,
-  status:1,
-  is_delete:0
+  type:'1',
+  status:'1',
+  is_delete:'0'
 })
 const serverTypeDict = shallowReactive<DictItemType[]>([])
 const statusDict = shallowReactive<DictItemType[]>([])
@@ -36,7 +36,7 @@ function handleQuery(pageNumber:number=1,pageSize:number=20){
   },page,searchForm),(res:ResultType<PaginationDataType>)=>{useQueryCallback(res,tableData,page)})
 }
 function handleReset(){
-  resetObj(searchForm,{type:1, status:1, is_delete:0})
+  resetObj(searchForm,{type:'1', status:'1', is_delete:'0'})
   handleQuery(1,20)
 }
 
