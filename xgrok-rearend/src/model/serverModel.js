@@ -43,10 +43,10 @@ export default class ServerModel {
     @swaggerProperty({ type: "string",description:"",nullable:true}) editor
     @swaggerProperty({ type: "string",description:"",nullable:true}) created_time
     @swaggerProperty({ type: "string",description:"",nullable:true}) modified_time
-    @swaggerProperty({ type: "number",description:"",nullable:true}) status
-    @swaggerProperty({ type: "number",description:"",nullable:true}) is_delete
+    @swaggerProperty({ type: "number",description:1,nullable:true}) status
+    @swaggerProperty({ type: "number",description:0,nullable:true}) is_delete
     @swaggerProperty({ type: "string",description:"",nullable:false}) remark
-    @swaggerProperty({ type: "number",description:"",nullable:true}) type
+    @swaggerProperty({ type: "number",description:1,nullable:true}) type
     @swaggerProperty({ type: "number",description:"",nullable:true}) is_vip
 
 }

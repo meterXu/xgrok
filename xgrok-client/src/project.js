@@ -31,8 +31,8 @@ const getProject=function (app,mode){
             appData:getAppData(),
             logPath:path.join(getAppData(),'.compile.log'),
             auth:{
-                method:process.env.VITE_APP_authMethod,
-                token:process.env.VITE_APP_authToken,
+                method:'token',
+                token:'xgrok_84hG5!Jk9m',
             },
             appIcon:{
                 darwin:path.join(appPath||__dirname,'../','public/assets/icon.icns'),
@@ -58,8 +58,8 @@ const getProject=function (app,mode){
             appData:getAppData(),
             logPath:path.join(getAppData(),'.compile.log'),
             auth:{
-                method:process.env.VITE_APP_authMethod,
-                authToken:process.env.VITE_APP_authToken,
+                method:'token',
+                token:'xgrok_84hG5!Jk9m',
             },
             appIcon:{
                 darwin:path.join(appPath||__dirname,appPath?'/':'../','public/assets/icon.icns'),

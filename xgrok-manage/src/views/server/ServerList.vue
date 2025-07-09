@@ -12,7 +12,7 @@ const tableData = shallowReactive([] as any[])
 const page = usePage()
 const searchForm = shallowReactive({
   name:'',
-  type:'1',
+  type:'2',
   status:'1',
   is_delete:'0'
 })
@@ -36,7 +36,7 @@ function handleQuery(pageNumber:number=1,pageSize:number=20){
   },page,searchForm),(res:ResultType<PaginationDataType>)=>{useQueryCallback(res,tableData,page)})
 }
 function handleReset(){
-  resetObj(searchForm,{type:'1', status:'1', is_delete:'0'})
+  resetObj(searchForm,{type:'2', status:'1', is_delete:'0'})
   handleQuery(1,20)
 }
 
@@ -73,12 +73,12 @@ onMounted(()=>{
           </el-select>
         </el-form-item>
         <el-form-item label="是否启用">
-          <el-select class="w-120!" v-model="searchForm.status" clearable>
+          <el-select class="w-120!" v-model="searchForm.status">
             <el-option v-for="item in statusDict" :label="item.chn_value" :value="item.code"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="是否删除">
-          <el-select class="w-120!" v-model="searchForm.is_delete" clearable>
+          <el-select class="w-120!" v-model="searchForm.is_delete">
             <el-option v-for="item in isDeleteDict" :label="item.chn_value" :value="item.code"></el-option>
           </el-select>
         </el-form-item>
