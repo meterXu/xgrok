@@ -3,7 +3,7 @@ import {swaggerClass, swaggerProperty} from "koa-swagger-decorator";
 @swaggerClass()
 export default class ServerModel {
     constructor(body) {
-        
+
         this.id = body.id
         this.name = body.name
         this.domain = body.domain
@@ -22,10 +22,12 @@ export default class ServerModel {
         this.modified_time = body.modified_time
         this.status = body.status
         this.is_delete = body.is_delete
-        
+        this.type = body.type
+        this.is_vip = body.is_vip
+
     }
 
-    
+
     @swaggerProperty({ type: "string",description:"",nullable:false}) id
     @swaggerProperty({ type: "string",description:"",nullable:false}) name
     @swaggerProperty({ type: "string",description:"",nullable:false}) domain
@@ -44,5 +46,7 @@ export default class ServerModel {
     @swaggerProperty({ type: "number",description:"",nullable:true,default:1}) status
     @swaggerProperty({ type: "number",description:"",nullable:true,default:0}) is_delete
     @swaggerProperty({ type: "string",description:"",nullable:false}) remark
-    
+    @swaggerProperty({ type: "number",description:"",nullable:true,default:1}) type
+    @swaggerProperty({ type: "number",description:"",nullable:true}) is_vip
+
 }

@@ -1,4 +1,4 @@
-const {hostname, version} = require("../util");
+const {hostname, version,readLinesInRange,getLineCount} = require("../util");
 const net = require('net');
 const {BrowserWindow, nativeImage}  = require('electron')
 const path = require("node:path");
@@ -80,12 +80,40 @@ async function openDialog(data){
     setTimeout(()=>{
         dialogWindow.webContents.send('view/route',data)
     },100)
+}
 
+/**
+ * @param {Object:{startIndex?:number,length:number}} data
+ * @return {Promise<string[]>}
+ */
+async function getLog(data){
+    const lineCount = await getLineCount(global.project.logPath)
+    let start = 0;
+    let end = 0;
+
+    if(lineCount>(data.startIndex+data.length)){
+        if(start===0){
+            start = lineCount-data.length
+            end = lineCount
+        }else{
+            start = data.startIndex
+            end = data.startIndex+data.length
+        }
+    }else{
+        start = data.startIndex
+        end = lineCount
+    }
+    let records = await readLinesInRange(global.project.logPath,start,end)
+    return Promise.resolve({
+        records:records,
+        endIndex:end
+    })
 }
 
 module.exports={
     getSystemInfo,
     checkPort,
     randomGetPort,
-    openDialog
+    openDialog,
+    getLog
 }

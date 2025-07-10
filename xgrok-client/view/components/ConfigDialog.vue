@@ -8,7 +8,7 @@ const serverConfigs = ref(null)
 
 watch(model,(nv)=>{
   if(nv){
-    queryServersConfig().then(res=>{
+    queryServersConfig(window.project.variable.type).then(res=>{
       if(res.success){
         // todo 先直接读取数据库中在线状态
         serverConfigs.value=res.data.records

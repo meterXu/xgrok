@@ -5,6 +5,12 @@ import TunnelWebService from "../service/tunnelWebService.js";
 import TunnelServiceService from "../service/tunnelServiceService.js";
 import EmailService from "../service/emailService.js";
 import OrderService from "../service/orderService.js";
+import PaginationModel from "../model/sys/paginationModel";
+import OrderByModel from "../model/sys/orderByModel";
+import OAuthUsersModel from "../model/oauthUsersModel";
+import OAuthUsersService from "../service/oauthUsersService";
+import {serviceType} from "../utils/enum";
+import UsersModel from "../model/usersModel";
 const tag = tags(['User'])
 
 export default class UserController {
@@ -19,6 +25,9 @@ export default class UserController {
             this.emailService = new EmailService()
         if(!this.orderService)
             this.orderService = new OrderService()
+        if (!this.oAuthUsersService) {
+            this.oAuthUsersService = new OAuthUsersService()
+        }
     }
 
     @request('get', '/user/tunnelWebConfig')
@@ -67,27 +76,13 @@ export default class UserController {
         domain: {type: "string", required: true, description: '域名'},
         port: {type: "number", required: true, description: '端口号'},
         server_id: {type: "string", required: true, description: '服务id'},
-        id: {type: "string", required: true, description: '隧道id'}
+        id: {type: "string", required: true, description: '隧道id'},
+        type: {type: "number", required: false, description: '服务类型',default:serviceType.tcp},
     })
     async checkPort(ctx){
-        const {domain,port,server_id,id} = ctx.validatedQuery
-        const checkRes = await this.tunnelServiceService.checkPort(domain,port,server_id,ctx.token.user.id,id)
+        const {domain,port,server_id,id,type} = ctx.validatedQuery
+        const checkRes = await this.tunnelServiceService.checkPort(domain,port,server_id,ctx.token.user.id,id,type)
         const res = new ResultModel(checkRes,checkRes?'未占用':'远程映射端口已占用，请换一个',true)
-        ctx.result(res)
-    }
-
-    @request('get', '/user/checkLocalPort')
-    @summary('本地端口占用检查')
-    @tag
-    @query({
-        server_id: {type: "string", required: true, description: '服务id'},
-        client_id: {type: "string", required: true, description: '客户端id'},
-        port: {type: "number", required: true, description: '端口号'}
-    })
-    async checkLocalPort(ctx){
-        const {server_id,client_id,port} = ctx.validatedQuery
-        const checkRes = await this.userService.checkLocalPort(server_id,client_id,port)
-        const res = new ResultModel(checkRes,checkRes?'未占用':'本地代理端口在其他隧道中已配置，请换一个',true)
         ctx.result(res)
     }
 
@@ -110,5 +105,28 @@ export default class UserController {
         const {server_id} = ctx.validatedQuery
         const res = await this.userService.queryTunnelCount(server_id,ctx.token.user.id)
         ctx.result(res,null,true)
+    }
+
+    @request('get', '/user/query')
+    @summary('后台管理查询用户列表')
+    @tag
+    @query({...PaginationModel.swaggerDocument, ...OrderByModel.swaggerDocument, ...UsersModel.swaggerDocument})
+    async userQuery(ctx){
+        const pagination = new PaginationModel(ctx.validatedQuery)
+        const orderBy = new OrderByModel(ctx.validatedQuery)
+        const usersQuery = new UsersModel(ctx.validatedQuery)
+        const queryRes = await this.oAuthUsersService.query(pagination, orderBy, usersQuery)
+        const res = new ResultModel({total: queryRes[0], records: queryRes[1], pagination: pagination}, null, true)
+        ctx.result(res)
+    }
+
+    @request('put', '/user')
+    @summary('更新用户')
+    @tag
+    @body(UsersModel.swaggerDocument)
+    async editUser(ctx){
+        const usersModel = new UsersModel(ctx.validatedBody)
+        const res = await this.oAuthUsersService.editUser(usersModel)
+        ctx.result(new ResultModel(res,null,!!res))
     }
 }

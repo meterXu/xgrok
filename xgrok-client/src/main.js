@@ -108,7 +108,7 @@ if (!gotTheLock) {
     // 如果无法获取锁，说明已有实例运行，当前实例应退出
     app.quit();
 }else {
-    findProcessId('compile').then(pids=>{
+    findProcessId('xgrok-core').then(pids=>{
         pids&&pids.forEach(pid=>killPid(pid))
     })
     // 当运行第二个实例时, 将会聚焦到这个窗口

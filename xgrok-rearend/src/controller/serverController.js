@@ -22,6 +22,9 @@ export default class ServerController {
         const pagination = new PaginationModel(ctx.validatedQuery)
         const orderBy = new OrderByModel(ctx.validatedQuery)
         const serverQuery = new ServerModel(ctx.validatedQuery)
+        serverQuery.name = {
+            contains:serverQuery.name
+        }
         const queryRes = await this.serverService.queryServer(pagination,orderBy,serverQuery)
         const res = new ResultModel({
             total: queryRes[0],

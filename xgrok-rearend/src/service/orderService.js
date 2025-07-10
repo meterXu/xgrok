@@ -33,8 +33,12 @@ export default class OrderService {
         const where = [
             orderModel.pay_time_start && `a.payed_time >= '${orderModel.pay_time_start}'`,
             orderModel.pay_time_end && `a.payed_time <= '${orderModel.pay_time_end}'`,
+            orderModel.created_time_start && `a.created_time >= '${orderModel.created_time_start}'`,
+            orderModel.created_time_end && `a.created_time <= '${orderModel.created_time_end}'`,
+            orderModel.trade_no && `a.trade_no like '%${orderModel.trade_no}%'`,
             orderModel.pay_status && `a.pay_status = ${orderModel.pay_status}`,
             orderModel.creator && `a.creator = '${orderModel.creator}'`,
+            orderModel.username && `c.username like '%${orderModel.username}%'`,
             `a.status=${status.enable}`,
             `a.is_delete=${isDelete.false}`
         ].filter(c => c).join(' and ')
@@ -42,11 +46,13 @@ export default class OrderService {
         const totalSql =   `
         select count(*) _all from ng_order a
         inner join ng_product b on a.product_id = b.id and b.status=${status.enable} and b.is_delete=${isDelete.false}
+        left join oauth_users c on a.creator = c.id
         ${where ? `where ${where}` : ''} `
 
         const querySql = `
-        select a.id,b.name,b.type,a.expired_time,a.pay_price,a.pay_status,a.payed_time,a.refund_time,a.remark from ng_order a
+        select a.id,a.trade_no,b.name,b.type,a.expired_time,a.pay_price,a.pay_num,a.pay_total_amount,a.pay_status,a.created_time,a.payed_time,a.refund_time,a.remark,c.username from ng_order a
         inner join ng_product b on a.product_id = b.id and b.status=${status.enable} and b.is_delete=${isDelete.false}
+        left join oauth_users c on a.creator = c.id
         ${where ? `where ${where}` : ''}
         order by a.sort asc,a.created_time desc  
         limit ${(pagination.pageNumber - 1) * pagination.pageSize},${pagination.pageSize}

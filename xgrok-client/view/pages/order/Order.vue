@@ -135,7 +135,7 @@ onUnmounted(()=>{
           <template v-if="qrcodeImg">
             <img :src="qrcodeImg" alt="qrcode">
             <div class="alipay-icon">
-              <img src="../../assets/alipay.svg" alt="alipay"/>
+              <img src="../../assets/imgs/alipay.svg" alt="alipay"/>
             </div>
           </template>
         </div>

@@ -3,14 +3,16 @@ import {reactive, defineEmits, ref, watch} from "vue";
 import {checkName, checkPort, createTunnelService, queryRange, updateTunnelService} from "@/api";
 import {useAppStore} from "@/store";
 import {ElMessage} from "element-plus";
-import {tunnelType} from "@/libs/enums";
+import {tunnelType, serviceType, payPlan} from "@/libs/enums";
 import InfoTip from "@/components/infoTip.vue";
 import {tipText} from "@/libs/infoText";
-import {testName,isLocalHost} from "@/libs/common";
+import {testName, isLocalHost, confirm} from "@/libs/common";
 import {onFormValidate, useGetDisabled, useGetErrorMsg} from "@/libs/useAction";
+import {useRouter} from 'vue-router'
 
+const router = useRouter();
 const store = useAppStore()
-const {selectedServer,clientId,tunnelForm} = store
+const {selectedServer,clientId,tunnelForm,plan} = store
 const emits = defineEmits(['updateSuccess','cancel','createSuccess'])
 const ruleFormRef = ref('ruleFormRef')
 const portRange = ref(null)
@@ -34,7 +36,7 @@ const validateRes = reactive({name:{value:null,valid:true},type:{value:null,vali
 const rules = {
   name:[
     { required: true, message: '请输入名称', trigger: 'change' },
-    { validator: validateName, trigger: 'change'}
+    { validator: validateName, trigger: 'change'},
   ],
   remark:[
     { max: 50, message: '最多50个字', trigger: 'change' }
@@ -44,11 +46,11 @@ const rules = {
     { max: 200, message: '最多200个字', trigger: 'change' }
   ],
   port:[
-    { type: 'integer',required: true, message: '请输入代理端口', trigger: 'change' }
+    { type: 'integer',required: true, message: '请输入代理端口', trigger: 'change' },
   ],
   remote_port:[
     { type: 'integer',required: true, message: '请输入映射端口', trigger: 'change' },
-    { validator: validatePort, trigger: 'change'}
+    { validator: validatePort, trigger: 'change'},
   ]
 }
 const errorMsg = useGetErrorMsg(validateRes)
@@ -100,13 +102,7 @@ function onSave(){
   })
 }
 function created(){
-  queryRange(selectedServer.value.id).then(res=>{
-    if(res.success){
-      portRange.value = res.data.records.map(c=>{
-        return `${c.min_port}-${c.max_port}`
-      }).join(',')
-    }
-  })
+  queryRangeByType()
 }
 function validateName(rule, value, callback){
   if (!value) {
@@ -128,7 +124,7 @@ function validatePort(rule, value, callback){
     callback(new Error('请输入名称'))
   } else {
     validateRemotePortLoading.value = true
-    checkPort.debounce()(selectedServer.value.domain,value,selectedServer.value.id,formData.id||'').then(res=>{
+    checkPort.debounce()(selectedServer.value.domain,value,selectedServer.value.id,formData.id||'',formData.type).then(res=>{
       if(res.success){
         callback(res.data?undefined:new Error(res.message))
       }
@@ -139,23 +135,34 @@ function validatePort(rule, value, callback){
     })
   }
 }
-function validateLocalPort(rule,value,callback){
-  if(value){
-    validateLocalPortLoading.value = true
-    window.electronAPI.checkPort(value).then(res=>{
-      if(!res.data){
-        callback(res.message)
-      }else {
-        callback()
-      }
-    }).finally(()=>{
-      validateLocalPortLoading.value = false
-    })
-  }
-}
 function onCancel(){
   ruleFormRef.value.resetFields()
   emits('cancel')
+}
+function queryRangeByType(){
+  queryRange(selectedServer.value.id,formData.type).then(res=>{
+    if(res.success){
+      portRange.value = res.data.records.map(c=>{
+        return `${c.min_port}-${c.max_port}`
+      }).join(',')
+    }
+  })
+}
+function onChangeType(value){
+  if(value===serviceType.UDP&&store.plan.value!==payPlan.vip){
+    confirm('免费用户无法创建UDP隧道', null,{
+      confirmButtonText:'去订阅',
+      cancelButtonText:'知道了',
+      confirmButtonClass:'el-button--warning is-plain'
+    }).then(()=>{
+      router.push({name:'Plan'})
+    }).catch(()=>{
+      formData.type=serviceType.TCP
+    })
+  }else{
+    queryRangeByType()
+    ruleFormRef.value.validateField('remote_port')
+  }
 }
 created()
 </script>
@@ -186,6 +193,14 @@ created()
           <InfoTip :text="tipText.zh.host"></InfoTip>
         </template>
       </el-input>
+    </el-form-item>
+    <el-form-item label="代理类型" prop="type">
+      <el-badge value="new" :offset="[-3, 5]">
+        <el-radio-group v-model="formData.type" @change="onChangeType">
+          <el-radio-button label="TCP" :value="1" />
+          <el-radio-button label="UDP" :value="2" />
+        </el-radio-group>
+      </el-badge>
     </el-form-item>
     <el-form-item label="代理端口" prop="port">
       <div class="port-wrap">
@@ -223,7 +238,7 @@ created()
 </template>
 
 <style scoped lang="less">
-@import url('../../../../assets/mixin.less');
+@import url('@/assets/css/mixin.less');
 .form-btns{
   display: flex;
   align-items: center;

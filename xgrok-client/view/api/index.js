@@ -12,6 +12,7 @@ import {
 import md5 from "js-md5"
 import qs from "qs"
 import {ACCESS_TOKEN} from "xxweb-box/utils/mutation-types";
+import {serverEnum} from "@/libs/enums";
 
 const url = {
     oauth:{
@@ -41,8 +42,7 @@ const url = {
     compliance:{
         queryRange:'/portRange/query',
         checkName:'/user/checkName',
-        checkPort:'/user/checkPort',
-        checkLocalPort:'/user/checkLocalPort'
+        checkPort:'/user/checkPort'
     },
     client:{
         query:'/client/query',
@@ -75,8 +75,8 @@ export function login(data){
     data.signature = md5(data.password+data.client_secret+data.timestamp)
     return postActionSSO(url.oauth.authorize,qs.stringify(data))
 }
-export function queryServersConfig(){
-   return getAction(url.server.query,{pageNumber:1,pageSize:99})
+export function queryServersConfig(type=serverEnum.ngrok){
+   return getAction(url.server.query,{pageNumber:1,pageSize:99,type,status:1,is_delete:0})
 }
 export function detailServerConfig(id){
     return getAction(url.server.detail,{id})
@@ -99,20 +99,18 @@ export function updateTunnelService(model){
 export function createTunnelService(model){
     return postAction(url.tunnel.createService,model)
 }
-export function queryRange(server_id){
+export function queryRange(server_id,type){
     return getAction(url.compliance.queryRange,{
         pageNumber:1,
         pageSize:99,
-        server_id})
+        server_id,
+        type})
 }
 export function checkName(domain,type,port,name,server_id,client_id,id){
     return getAction(url.compliance.checkName,{domain,type,port,name,server_id,client_id,id})
 }
-export function checkPort(domain,port,server_id,id){
-    return getAction(url.compliance.checkPort,{domain,port,server_id,id})
-}
-export function checkLocalPort(server_id,client_id,port){
-    return getAction(url.compliance.checkLocalPort,{server_id,client_id,port})
+export function checkPort(domain,port,server_id,id,type){
+    return getAction(url.compliance.checkPort,{domain,port,server_id,id,type})
 }
 export function deleteTunnelWebBatch(ids){
     return deleteAction(url.tunnel.deleteTunnelWebBatch,{ids})
