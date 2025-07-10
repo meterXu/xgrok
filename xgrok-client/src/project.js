@@ -29,7 +29,7 @@ const getProject=function (app,mode){
             clientRootPath:path.join(appPath,'../execute/',_paltform),
             appPath:appPath,
             appData:getAppData(),
-            logPath:path.join(getAppData(),'.compile.log'),
+            logPath:path.join(getAppData(),'.xgrok-core.log'),
             auth:{
                 method:'token',
                 token:'xgrok_84hG5!Jk9m',
@@ -56,7 +56,7 @@ const getProject=function (app,mode){
             clientRootPath:path.join(appPath,'../app.asar.unpacked/execute/',_paltform),
             appPath:appPath,
             appData:getAppData(),
-            logPath:path.join(getAppData(),'.compile.log'),
+            logPath:path.join(getAppData(),'.xgrok-core.log'),
             auth:{
                 method:'token',
                 token:'xgrok_84hG5!Jk9m',

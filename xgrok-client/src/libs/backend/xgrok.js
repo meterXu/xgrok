@@ -61,7 +61,7 @@ async function turnOff(pid) {
     if (pid) {
         res = await killPid(pid)
     } else {
-        let pids = await findProcessId('compile')
+        let pids = await findProcessId('xgrok-core')
         let ress = await Promise.all(pids.map(c => killPid(c)))
         res = !ress.some(c => c.false)
     }
@@ -77,7 +77,7 @@ function startXgrok(names,type) {
         global.logger.info(`config:\r\n${readXgrokCfgFile(userXgrokCfgFilePath())}`)
         let xgrok = null
         if(type===serverType.ngrok){
-            xgrok = execFile('./compile', [`-config=${userXgrokCfgFilePath()}`, 'start', ...names], {
+            xgrok = execFile('./xgrok-core', [`-config=${userXgrokCfgFilePath()}`, 'start', ...names], {
                 cwd: global.project.clientRootPath,
                 detached: true
             }, (error, stdout, stderr) => {
@@ -86,7 +86,7 @@ function startXgrok(names,type) {
                 }
             })
         }else{
-            xgrok = execFile('./compile', ['-c',`${userXgrokCfgFilePath()}`], {
+            xgrok = execFile('./xgrok-core', ['-c',`${userXgrokCfgFilePath()}`], {
                 cwd: global.project.clientRootPath,
                 detached: true
             }, (error, stdout, stderr) => {
