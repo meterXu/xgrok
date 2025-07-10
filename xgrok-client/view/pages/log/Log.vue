@@ -12,7 +12,7 @@ function onRefresh(init = false) {
   if(init){
     endIndex.value=0
   }
-  window.electronAPI.getLog({startIndex: endIndex.value, length: 500}).then(res => {
+  window.electronAPI.getLog({startIndex: endIndex.value, length: 100}).then(res => {
     if (init) {
       logContent.value = res.data.records.join('<br/>')
     } else {
@@ -50,7 +50,7 @@ watch(route, (nv) => {
       </el-button>
     </div>
     <div ref="logContentRef"
-         class="flex-1 w-full relative text-[14px] overflow-y-auto rounded-2xl p-12 bg-gray-800 text-(--el-color-primary) smooth"
+         class="flex-1 w-full relative text-[14px] overflow-y-auto rounded-2xl p-12 border-1 border-(--el-border-color) bg-(--server-info-bg) text-(--el-color-primary) smooth"
          v-html="logContent">
     </div>
   </div>

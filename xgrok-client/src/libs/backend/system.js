@@ -83,7 +83,7 @@ async function openDialog(data){
 }
 
 /**
- * @param {Object:{startIndex?:number,length:1000}} data
+ * @param {Object:{startIndex?:number,length:number}} data
  * @return {Promise<string[]>}
  */
 async function getLog(data){
@@ -92,8 +92,13 @@ async function getLog(data){
     let end = 0;
 
     if(lineCount>(data.startIndex+data.length)){
-        start = data.startIndex
-        end = data.startIndex+data.length
+        if(start===0){
+            start = lineCount-data.length
+            end = lineCount
+        }else{
+            start = data.startIndex
+            end = data.startIndex+data.length
+        }
     }else{
         start = data.startIndex
         end = lineCount
