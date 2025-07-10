@@ -20,22 +20,20 @@ import TunnelServiceConfigItem from "@/pages/dashboard/modules/TunnelService/Tun
 import SystemInfo from "@/components/SystemInfo.vue"
 import {sendMessage} from '@/worker/mainThread'
 import ServerProgress from "@/components/ServerProgress.vue";
-import ServerSwitch from "@/components/control-btns/ServerSwitch.vue";
+import ServiceSwitch from "@/components/control-btns/ServiceSwitch.vue";
 import ConfigLockBtn from "@/components/control-btns/ConfigLockBtn.vue";
 import ConfigRefreshBtn from "@/components/control-btns/ConfigRefreshBtn.vue";
 import {sleep} from "@/libs/common";
 import ViewLogBtn from "@/components/control-btns/ViewLogBtn.vue";
-import {serverEnum} from "@/libs/enums";
 
 const store = useAppStore()
-const serverConfigs = ref(null)
 const tunnelWebConfigs = ref(null)
 const tunnelServiceConfigs = ref(null)
 const tunnelLoading = ref(false)
 const systemInfo = ref(null)
-const serverSwitch = shallowRef()
+const serviceSwitch = shallowRef()
 const serverLoading = shallowRef(false)
-const {pid, selectedServer, dialogVisible, clientId, percentage} = store
+const {selectedServer, dialogVisible, clientId, percentage} = store
 
 if (window.project.variable.mode !== 'browser') {
   window.electronAPI.onAppQuit(() => {
@@ -51,7 +49,7 @@ if (window.project.variable.mode !== 'browser') {
 }
 
 async function initServerConfigData() {
-  if (selectedServer.value) {
+  if (selectedServer.value&&selectedServer.value.type===window.project.variable.type) {
     let res = await detailServerConfig(selectedServer.value.id)
     if (res.success) {
       store.setSelectedServer(res.data)
@@ -120,9 +118,9 @@ async function initClient() {
 
 async function onRefresh() {
   let _refresh = async () => {
-    await serverSwitch.value.onSwitchChange(false)
+    await serviceSwitch.value.onSwitchChange(false)
     await sleep(500)
-    await serverSwitch.value.onSwitchChange(true)
+    await serviceSwitch.value.onSwitchChange(true)
   }
   await _refresh.debounce()()
 }
@@ -165,13 +163,13 @@ onUnmounted(() => {
           <ViewLogBtn :loading="serverLoading"/>
           <ConfigLockBtn/>
           <ConfigRefreshBtn :loading="serverLoading" @refresh="onRefresh"/>
-          <ServerSwitch ref="serverSwitch"
+          <ServiceSwitch ref="serviceSwitch"
                         :tunnel-service-configs="tunnelServiceConfigs"
                         :tunnel-web-configs="tunnelWebConfigs"
                         :percentage="percentage"
                         @serverLoading="(val)=>{serverLoading=val}"
           >
-          </ServerSwitch>
+          </ServiceSwitch>
         </div>
       </template>
       <el-tab-pane>

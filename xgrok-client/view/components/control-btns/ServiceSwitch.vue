@@ -11,12 +11,12 @@ const props = defineProps(['tunnelWebConfigs','tunnelServiceConfigs','percentage
 const switchLoading = ref(false)
 watch(()=>props.percentage,(nv)=>{
   switchLoading.value = nv !== 100;
-  emits('serverLoading',switchLoading.value )
+  emits('serviceLoading',switchLoading.value )
 })
 async function onSwitchChange(value) {
   const exec =async ()=>{
     switchLoading.value = true
-    emits('serverLoading',switchLoading.value)
+    emits('serviceLoading',switchLoading.value)
     if (value) {
       if (selectedServer?.value.is_online === isOnline.online)
         await onTurnOn()
