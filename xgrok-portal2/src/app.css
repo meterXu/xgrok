@@ -27,22 +27,39 @@ html,body{
     height: 100%;
 }
 body{
-    background: url("./assets/bg-02.webp") no-repeat center;
-    background-size: cover;
     font-family: 'Source Han Sans CN';
     font-weight: 400;
 }
 .container-wrap{
     width: 100%;
     height: 100%;
-    /*backdrop-filter: blur(1px);*/
-    background-color: rgba(0,0,0,0.45);
+    background-image: url("./assets/bg-02.webp");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    position: relative;
 }
-.con-container{
+.container-wrap::after{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.45);
+    z-index: 1;
+}
+.content{
+    z-index: 2;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.footer-content{
     margin: 0 auto;
     text-align: center;
 }
-.con-container a,.con-container a:active{
+.footer-content a,.footer-content a:active{
     text-decoration: none;
     color: #f0f0f0;
     opacity: 0.5;
@@ -157,7 +174,13 @@ body{
     transform: scale(1.05);
 }
 .github-fork-ribbon:before {
-    background-color: #175abd;
+    background-color: #175abd !important;
+}
+
+.privacyAgreement{
+    padding: 0 12px;
+    color: #303133;
+    font-size: 14px;
 }
 @media screen and (max-width:1024px) {
     .container{
