@@ -1,23 +1,24 @@
-<script setup>
-import {defineProps,defineEmits,reactive,defineModel,computed,ref,watch,nextTick} from 'vue'
-import {ElMessage } from 'element-plus'
+<script setup lang="ts">
+import {reactive,computed,ref,watch,nextTick} from 'vue'
+import type {FormInstance} from 'element-plus'
 import {useSaveOrUpdate} from "@/libs/utils/index.js";
 
 const props = defineProps(['dialogType','formData'])
 const dialogVisible = defineModel()
 const emit = defineEmits(['close'])
-const ruleFormRef = ref(null)
+const ruleFormRef = ref<FormInstance>()
 const rules = reactive({
   /** generate by CodeGirl */
   pay_status:[{ required: true, message: '付款状态必选', trigger: 'blur' }]
 })
 function handleCancel(){
-  ruleFormRef.value.resetFields()
+  ruleFormRef.value?.resetFields()
+  dialogVisible.value = false
   emit('close')
 }
 
 async function handleOk(){
-  ruleFormRef.value.validate(async valid=>{
+  ruleFormRef.value?.validate(async valid=>{
     if(valid){
       let res=null
       if(props.formData.id){
@@ -25,13 +26,13 @@ async function handleOk(){
       }else{
         // res = await postAction(urls.{{modelNameSub}}.modify,props.formData)
       }
-      useSaveOrUpdate(res,props.formData.id)
+      // useSaveOrUpdate(res,props.formData.id)
     }
   })
 }
 
 watch(dialogVisible,()=>{
-  dialogVisible&&nextTick(()=>{ruleFormRef.value.clearValidate()})
+  dialogVisible&&nextTick(()=>{ruleFormRef.value?.clearValidate()})
 })
 
 const dialogTitle = computed(()=>{
@@ -49,7 +50,7 @@ const dialogTitle = computed(()=>{
       <!-- generate by CodeGirl -->
       <el-form-item label="购买时间" prop="payed_time">
         <el-col :span="21">
-          <el-input v-model="formData.payed_time" placeholder="请选择购买时间"></el-input>
+          <el-date-picker v-model="formData.payed_time" class="w-full!" type="datetime" placeholder="请选择购买时间"></el-date-picker>
         </el-col>
       </el-form-item>
       <el-form-item label="支付状态" prop="pay_status">
@@ -59,7 +60,7 @@ const dialogTitle = computed(()=>{
       </el-form-item>
       <el-form-item label="过期时间" prop="expired_time">
         <el-col :span="21">
-          <el-input v-model="formData.expired_time" placeholder="请选择过期时间"></el-input>
+          <el-date-picker v-model="formData.expired_time" type="datetime" class="w-full!" placeholder="请选择过期时间"></el-date-picker>
         </el-col>
       </el-form-item>
     </el-form>

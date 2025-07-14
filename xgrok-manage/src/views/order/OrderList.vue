@@ -1,15 +1,18 @@
 <script setup lang="ts">
 
-import {onMounted, reactive, shallowReactive, shallowRef} from "vue";
+import {onMounted,ref, reactive, shallowReactive, shallowRef} from "vue";
 import {detailUser, getDict, orderQuery} from "@/api";
 import {useGetIndexMethod, usePage, useQuery, useQueryCallback} from "@/libs/use-curd";
 import {mappingDic, resetObj, showNotification, useFormatDateTime, useFormatDic} from "@/libs/utils";
 import {NotificationTypeEnum} from "@/libs/enum";
 import {Search, RefreshLeft} from "@element-plus/icons-vue";
+import OrderEdit from "@/views/order/module/OrderEdit.vue";
 
 const loading = shallowRef(false)
 const tableData = shallowReactive([] as any[])
 const page = usePage()
+const dialogVisible = ref(false)
+const formData = shallowReactive({})
 const searchForm = reactive({
   trade_no: '',
   username: '',
@@ -43,7 +46,8 @@ function handleReset() {
 }
 
 function onDetailOrder(row:any) {
-
+  Object.assign(formData,row)
+  dialogVisible.value = true
 }
 
 onMounted(() => {
@@ -166,6 +170,7 @@ onMounted(() => {
       </div>
     </div>
   </div>
+  <OrderEdit v-model="dialogVisible" :formData="formData"></OrderEdit>
 </template>
 
 <style scoped lang="less">
