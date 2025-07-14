@@ -148,7 +148,7 @@ onMounted(() => {
                 {{ useFormatDateTime(row.refund_time) }}
               </template>
             </el-table-column>
-            <el-table-column prop="is_delete" label="操作" align="left" width="80">
+            <el-table-column prop="is_delete" label="操作" align="left" width="120">
               <template #default="{row}">
                 <el-button type="text" @click="onDetailOrder(row)">编辑</el-button>
               </template>
