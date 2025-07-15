@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import {onMounted,ref, reactive, shallowReactive, shallowRef} from "vue";
-import {detailUser, getDict, orderQuery} from "@/api";
+import {getDict, orderQuery} from "@/api";
 import {useGetIndexMethod, usePage, useQuery, useQueryCallback} from "@/libs/use-curd";
-import {mappingDic, resetObj, showNotification, useFormatDateTime, useFormatDic} from "@/libs/utils";
-import {NotificationTypeEnum} from "@/libs/enum";
+import {mappingDic, resetObj, useFormatDateTime, useFormatDic} from "@/libs/utils";
 import {Search, RefreshLeft,Delete,Plus} from "@element-plus/icons-vue";
 import OrderEdit from "@/views/order/module/OrderEdit.vue";
 
@@ -20,7 +19,7 @@ const searchForm = reactive({
 })
 const payStatus = shallowReactive<DictItemType[]>([])
 
-function queryData(params: any): Promise<ResultType<PaginationDataType>> {
+function queryData(params: any): Promise<ResultType<PaginationDataType<OrderType>>> {
   loading.value = true
   return orderQuery(params).then(res => {
     loading.value = false
@@ -28,13 +27,13 @@ function queryData(params: any): Promise<ResultType<PaginationDataType>> {
   })
 }
 
-function handleQuery(pageNumber: number = 1, pageSize: number = 20) {
+function handleQuery(pageNumber: number = page.pageNumber, pageSize: number = page.pageSize) {
   page.pageNumber = pageNumber
   page.pageSize = pageSize
-  useQuery(queryData, Object.assign({}, page, searchForm,{
+  useQuery<OrderType>(queryData, Object.assign({}, page, searchForm,{
     created_time_start: searchForm.created_time[0],
     created_time_end:searchForm.created_time[1],
-  }), (res: ResultType<PaginationDataType>) => {
+  }), (res: ResultType<PaginationDataType<OrderType>>) => {
     useQueryCallback(res, tableData, page)
   })
 }
@@ -44,8 +43,10 @@ function handleReset() {
   handleQuery(1, 20)
 }
 
-function onDetailOrder(row:any) {
+function onEdit(row:any) {
   Object.assign(formData,row)
+  //@ts-ignore
+  formData.username = undefined
   dialogVisible.value = true
 }
 
@@ -153,9 +154,14 @@ onMounted(() => {
                 {{ useFormatDateTime(row.refund_time) }}
               </template>
             </el-table-column>
+            <el-table-column prop="expired_time" label="过期时间" align="left" width="180">
+              <template #default="{row}">
+                {{ useFormatDateTime(row.expired_time) }}
+              </template>
+            </el-table-column>
             <el-table-column prop="is_delete" label="操作" align="left">
               <template #default="{row}">
-                <el-button type="text" @click="onDetailOrder(row)">编辑</el-button>
+                <el-button type="text" @click="onEdit(row)">编辑</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -175,7 +181,7 @@ onMounted(() => {
       </div>
     </div>
   </div>
-  <OrderEdit v-model="dialogVisible" :formData="formData"></OrderEdit>
+  <OrderEdit v-model="dialogVisible" :formData="formData" @close="handleQuery"></OrderEdit>
 </template>
 
 <style scoped lang="less">

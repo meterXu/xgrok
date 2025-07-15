@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import {reactive, computed, ref, watch, nextTick, onMounted, shallowReactive} from 'vue'
+import {reactive, computed, ref, watch, onMounted, shallowReactive} from 'vue'
 import type {FormInstance} from 'element-plus'
 import {mappingDic, useSaveOrUpdate} from "@/libs/utils/index.js";
-import {getDict, userQuery} from "@/api";
+import {addOrder, detailUser, editOrder, getDict, userQuery} from "@/api";
 
 interface Props {
-  dialogType: string,
   formData: OrderType
 }
 
@@ -16,12 +15,13 @@ const ruleFormRef = ref<FormInstance>()
 const rules = reactive({
   creator: [{required: true, message: '请选择购买人', trigger: 'blur'}],
   pay_status: [{required: true, message: '请选择支付状态', trigger: 'blur'}],
-  payed_time: [{required: true, message: '请选择购买时间', trigger: 'blur'}],
+  payed_time: [{required: true, message: '请选择支付时间', trigger: 'blur'}],
   expired_time: [{required: true, message: '请选择过期时间', trigger: 'blur'}],
 })
 const payStatus = reactive<DictItemType[]>([])
 const searchUserLoading = ref(false)
 const userOptions = shallowReactive<UserType[]>([])
+const saveLoading = ref(false)
 
 function handleCancel() {
   ruleFormRef.value?.resetFields()
@@ -30,45 +30,56 @@ function handleCancel() {
 }
 
 const dialogTitle = computed(() => {
-  return props.dialogType === 'add' ? '添加数据' : '修改数据'
+  return props.formData.id? '修改数据' : '添加数据'
 })
 
-watch(dialogVisible, () => {
-  dialogVisible && nextTick(() => {
+watch(dialogVisible, (nv) => {
+  if(nv){
+    initUserOptions()
     ruleFormRef.value?.clearValidate()
-  })
+  }
 })
 
-async function handleOk() {
+function handleOk() {
   ruleFormRef.value?.validate(async valid => {
+    saveLoading.value=true
     if (valid) {
-      let res = null
-      if (props.formData.id) {
-        // res = await putAction(urls.{{modelNameSub}}.modify,props.formData)
-      } else {
-        // res = await postAction(urls.{{modelNameSub}}.modify,props.formData)
-      }
-      // useSaveOrUpdate(res,props.formData.id)
+      let res = props.formData.id?await editOrder(props.formData as OrderType):await addOrder(props.formData as OrderType)
+      useSaveOrUpdate(res,props.formData.id).then(()=>{
+        handleCancel()
+      }).finally(()=> {
+        saveLoading.value=false
+      })
     }
   })
 }
 
-function remoteMethod(query: string){
+function remoteMethod(query: string) {
   searchUserLoading.value = true
-  userQuery({pageNumber:1,pageSize:20,username:query}).then(res => {
-    if(res.success&&res.data) {
-      userOptions.splice(0,userOptions.length)
+  userQuery({pageNumber: 1, pageSize: 20, username: query}).then(res => {
+    if (res.success && res.data) {
+      userOptions.splice(0, userOptions.length)
       userOptions.push(...res.data.records)
     }
-  }).finally(()=>{
+  }).finally(() => {
     searchUserLoading.value = false
   })
 }
 
-onMounted(() => {
-  if(props.formData.creator){
-
+function initUserOptions() {
+  if (props.formData.creator) {
+    detailUser({id: props.formData.creator}).then(res => {
+      if (res.success && res.data) {
+        userOptions.splice(0, userOptions.length, {
+          id: res.data.id,
+          username: res.data.username,
+        } as UserType)
+      }
+    })
   }
+}
+
+onMounted(() => {
   mappingDic([getDict('pay_status')], [payStatus])
 })
 
@@ -94,10 +105,10 @@ onMounted(() => {
           </el-select>
         </el-col>
       </el-form-item>
-      <el-form-item label="购买时间" prop="payed_time">
+      <el-form-item label="支付时间" prop="payed_time">
         <el-col :span="21">
           <el-date-picker v-model="formData.payed_time" class="w-full!" type="datetime"
-                          placeholder="请选择购买时间"></el-date-picker>
+                          placeholder="请选择支付时间"></el-date-picker>
         </el-col>
       </el-form-item>
       <el-form-item label="支付状态" prop="pay_status">
@@ -116,7 +127,7 @@ onMounted(() => {
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="handleOk">确 定</el-button>
+      <el-button type="primary" @click="handleOk" :loading="saveLoading">确 定</el-button>
       <el-button @click="handleCancel">取 消</el-button>
     </span>
   </el-dialog>

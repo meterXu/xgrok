@@ -50,7 +50,7 @@ export default class OrderService {
         ${where ? `where ${where}` : ''} `
 
         const querySql = `
-        select a.id,a.trade_no,b.name,b.type,a.expired_time,a.pay_price,a.pay_num,a.pay_total_amount,a.pay_status,a.created_time,a.payed_time,a.refund_time,a.remark,c.username from ng_order a
+        select a.id,a.trade_no,b.name,b.type,a.expired_time,a.pay_price,a.pay_num,a.pay_total_amount,a.pay_status,a.created_time,a.payed_time,a.refund_time,a.remark,c.username,a.creator from ng_order a
         inner join ng_product b on a.product_id = b.id and b.status=${status.enable} and b.is_delete=${isDelete.false}
         left join oauth_users c on a.creator = c.id
         ${where ? `where ${where}` : ''}

@@ -85,7 +85,7 @@ declare type UserType={
     password:string,
     nickName:string,
 }
-declare type OrderType={
+interface OrderType{
     id:string,
     trade_no:string,
     product_id:string,
@@ -102,7 +102,6 @@ declare type OrderType={
     alipay_traceId:string,
     sort:number,
     creator:string,
-    username:string,
     editor:string,
     created_time:string,
     modified_time:string,

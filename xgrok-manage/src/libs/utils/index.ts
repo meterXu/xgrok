@@ -107,10 +107,10 @@ export function useDel(res: ResultType<any>): Promise<any> {
 
 export function useSaveOrUpdate(res: ResultType<any>, id?: string): Promise<any> {
     if (res.success) {
-        showNotification(NotificationTypeEnum.success,id ? '更新成功' : '新增成功')
+        showNotification(NotificationTypeEnum.success, id ? '更新成功' : '新增成功')
         return Promise.resolve(res)
     } else {
-        showNotification(NotificationTypeEnum.error,res.message || (id ? '更新失败' : '新增失败'))
+        showNotification(NotificationTypeEnum.error, res.message || (id ? '更新失败' : '新增失败'))
         return Promise.reject(new Error(res.message || (id ? '更新失败' : '新增失败')))
     }
 }

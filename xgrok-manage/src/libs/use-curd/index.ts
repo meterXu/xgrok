@@ -38,11 +38,11 @@ export function useGetIndexMethod(index:number) {
     return index+1
 }
 
-export function useQuery(queryAction:Function, params:any, queryCallback:Function){
-    queryAction.call(null,params).then((res:ResultType<PaginationDataType>)=>queryCallback.call(null,res))
+export function useQuery<T>(queryAction:Function, params:any, queryCallback:Function){
+    queryAction.call(null,params).then((res:ResultType<PaginationDataType<T>>)=>queryCallback.call(null,res))
 }
 
-export function useQueryCallback(res:ResultType<PaginationDataType>,tableData:any[],page:PaginationType){
+export function useQueryCallback<T>(res:ResultType<PaginationDataType<T>>,tableData:any[],page:PaginationType){
     if(res.success){
         tableData.splice(0,tableData.length)
         if(res.data){
