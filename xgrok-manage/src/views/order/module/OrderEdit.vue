@@ -1,29 +1,51 @@
 <script setup lang="ts">
-import {reactive,computed,ref,watch,nextTick} from 'vue'
+import {reactive, computed, ref, watch, nextTick, onMounted, shallowReactive} from 'vue'
 import type {FormInstance} from 'element-plus'
-import {useSaveOrUpdate} from "@/libs/utils/index.js";
+import {mappingDic, useSaveOrUpdate} from "@/libs/utils/index.js";
+import {getDict, userQuery} from "@/api";
 
-const props = defineProps(['dialogType','formData'])
+interface Props {
+  dialogType: string,
+  formData: OrderType
+}
+
+const props = defineProps<Props>()
 const dialogVisible = defineModel()
 const emit = defineEmits(['close'])
 const ruleFormRef = ref<FormInstance>()
 const rules = reactive({
-  /** generate by CodeGirl */
-  pay_status:[{ required: true, message: '付款状态必选', trigger: 'blur' }]
+  creator: [{required: true, message: '请选择购买人', trigger: 'blur'}],
+  pay_status: [{required: true, message: '请选择支付状态', trigger: 'blur'}],
+  payed_time: [{required: true, message: '请选择购买时间', trigger: 'blur'}],
+  expired_time: [{required: true, message: '请选择过期时间', trigger: 'blur'}],
 })
-function handleCancel(){
+const payStatus = reactive<DictItemType[]>([])
+const searchUserLoading = ref(false)
+const userOptions = shallowReactive<UserType[]>([])
+
+function handleCancel() {
   ruleFormRef.value?.resetFields()
   dialogVisible.value = false
   emit('close')
 }
 
-async function handleOk(){
-  ruleFormRef.value?.validate(async valid=>{
-    if(valid){
-      let res=null
-      if(props.formData.id){
+const dialogTitle = computed(() => {
+  return props.dialogType === 'add' ? '添加数据' : '修改数据'
+})
+
+watch(dialogVisible, () => {
+  dialogVisible && nextTick(() => {
+    ruleFormRef.value?.clearValidate()
+  })
+})
+
+async function handleOk() {
+  ruleFormRef.value?.validate(async valid => {
+    if (valid) {
+      let res = null
+      if (props.formData.id) {
         // res = await putAction(urls.{{modelNameSub}}.modify,props.formData)
-      }else{
+      } else {
         // res = await postAction(urls.{{modelNameSub}}.modify,props.formData)
       }
       // useSaveOrUpdate(res,props.formData.id)
@@ -31,13 +53,25 @@ async function handleOk(){
   })
 }
 
-watch(dialogVisible,()=>{
-  dialogVisible&&nextTick(()=>{ruleFormRef.value?.clearValidate()})
+function remoteMethod(query: string){
+  searchUserLoading.value = true
+  userQuery({pageNumber:1,pageSize:20,username:query}).then(res => {
+    if(res.success&&res.data) {
+      userOptions.splice(0,userOptions.length)
+      userOptions.push(...res.data.records)
+    }
+  }).finally(()=>{
+    searchUserLoading.value = false
+  })
+}
+
+onMounted(() => {
+  if(props.formData.creator){
+
+  }
+  mappingDic([getDict('pay_status')], [payStatus])
 })
 
-const dialogTitle = computed(()=>{
-  return props.dialogType==='add'?'添加数据':'修改数据'
-})
 </script>
 
 <template>
@@ -47,20 +81,37 @@ const dialogTitle = computed(()=>{
       width="36%"
       @close="handleCancel">
     <el-form :model="formData" :rules="rules" ref="ruleFormRef" label-width="140px" class="demo-ruleForm">
-      <!-- generate by CodeGirl -->
+      <el-form-item label="购买人" prop="creator">
+        <el-col :span="21">
+          <el-select filterable remote reserve-keyword clearable v-model="formData.creator" placeholder="请选择购买人"
+                     :remote-method="remoteMethod" :loading="searchUserLoading">
+            <el-option
+                v-for="item in userOptions"
+                :key="item.id"
+                :label="item.username"
+                :value="item.id"
+            />
+          </el-select>
+        </el-col>
+      </el-form-item>
       <el-form-item label="购买时间" prop="payed_time">
         <el-col :span="21">
-          <el-date-picker v-model="formData.payed_time" class="w-full!" type="datetime" placeholder="请选择购买时间"></el-date-picker>
+          <el-date-picker v-model="formData.payed_time" class="w-full!" type="datetime"
+                          placeholder="请选择购买时间"></el-date-picker>
         </el-col>
       </el-form-item>
       <el-form-item label="支付状态" prop="pay_status">
         <el-col :span="21">
-          <el-input v-model="formData.pay_status" placeholder="请选择支付状态"></el-input>
+          <el-select v-model="formData.pay_status" placeholder="请选择支付状态">
+            <el-option v-for="item in payStatus" :key="item.code" :value="parseInt(item.code)"
+                       :label="item.chn_value"></el-option>
+          </el-select>
         </el-col>
       </el-form-item>
       <el-form-item label="过期时间" prop="expired_time">
         <el-col :span="21">
-          <el-date-picker v-model="formData.expired_time" type="datetime" class="w-full!" placeholder="请选择过期时间"></el-date-picker>
+          <el-date-picker v-model="formData.expired_time" type="datetime" class="w-full!"
+                          placeholder="请选择过期时间"></el-date-picker>
         </el-col>
       </el-form-item>
     </el-form>
@@ -72,7 +123,7 @@ const dialogTitle = computed(()=>{
 </template>
 
 <style scoped>
-.dialog-footer{
+.dialog-footer {
   display: flex;
   align-items: center;
   justify-content: center;

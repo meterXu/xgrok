@@ -9,6 +9,8 @@
 
   --el-color-primary:#30a44b;
   --el-color-success:#30a44b;
+  --el-color-primary-dark-2: #218538;
+  --el-color-primary-light-3: #5bbc72
 }
 html,body,#app{
   border: none;
@@ -37,6 +39,11 @@ html,body,#app{
       .el-form-item{
         margin-bottom: 0;
       }
+    }
+  }
+  .table-header{
+    .el-table__cell{
+      border-top: 1px solid var(--el-color-primary);
     }
   }
 }

@@ -42,7 +42,7 @@ export function login(data: any): Promise<ResultType<any>> {
     return postAction(url.oauth.authorize, qs.stringify(data), _headers)
 }
 
-export function userQuery(data: any): Promise<ResultType<PaginationDataType>> {
+export function userQuery(data: any): Promise<ResultType<PaginationDataType<UserType>>> {
     return getAction(url.user.query, data)
 }
 
@@ -50,11 +50,11 @@ export function detailUser(data: any): Promise<ResultType<any>> {
     return postAction(url.user.detail, data)
 }
 
-export function orderQuery(data: any): Promise<ResultType<PaginationDataType>> {
+export function orderQuery(data: any): Promise<ResultType<PaginationDataType<{[key:string]:any}>>> {
     return getAction(url.order.query, data)
 }
 
-export function serverQuery(data: any): Promise<ResultType<PaginationDataType>> {
+export function serverQuery(data: any): Promise<ResultType<PaginationDataType<{[key:string]:any}>>> {
     return getAction(url.server.query, data)
 }
 

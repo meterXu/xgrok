@@ -1,18 +1,17 @@
 <script setup lang="ts">
-
 import {onMounted,ref, reactive, shallowReactive, shallowRef} from "vue";
 import {detailUser, getDict, orderQuery} from "@/api";
 import {useGetIndexMethod, usePage, useQuery, useQueryCallback} from "@/libs/use-curd";
 import {mappingDic, resetObj, showNotification, useFormatDateTime, useFormatDic} from "@/libs/utils";
 import {NotificationTypeEnum} from "@/libs/enum";
-import {Search, RefreshLeft} from "@element-plus/icons-vue";
+import {Search, RefreshLeft,Delete,Plus} from "@element-plus/icons-vue";
 import OrderEdit from "@/views/order/module/OrderEdit.vue";
 
 const loading = shallowRef(false)
 const tableData = shallowReactive([] as any[])
 const page = usePage()
 const dialogVisible = ref(false)
-const formData = shallowReactive({})
+const formData = shallowReactive<OrderType>({} as OrderType)
 const searchForm = reactive({
   trade_no: '',
   username: '',
@@ -50,6 +49,11 @@ function onDetailOrder(row:any) {
   dialogVisible.value = true
 }
 
+function onAdd(){
+  resetObj(formData)
+  dialogVisible.value = true
+}
+
 onMounted(() => {
   mappingDic([getDict('pay_status')], [
     payStatus
@@ -60,8 +64,7 @@ onMounted(() => {
 
 <template>
   <div class="w-full h-full flex flex-col gap-12">
-    <div
-        class="my-inner-form p-12 flex flex-row items-center bg-white border-1 border-(--el-border-color-light) rounded-2xl shadow-xs">
+    <div class="my-inner-form p-12 flex flex-row items-center bg-white border-1 border-(--el-border-color-light) rounded-2xl shadow-xs">
       <el-form inline>
         <el-form-item label="订单编号">
           <el-input class="w-150!" v-model="searchForm.trade_no" clearable/>
@@ -91,16 +94,20 @@ onMounted(() => {
       </el-form>
     </div>
     <div class="flex-1 flex flex-col gap-12 border-1 border-(--el-border-color-light) bg-white rounded-2xl shadow-xs">
+      <div class="px-12 pt-12 flex flex-row items-center bg-white">
+        <el-button type="primary" :icon="Plus" @click="onAdd">添加</el-button>
+        <el-button type="danger" :icon="Delete">删除</el-button>
+      </div>
       <!--  表格  -->
       <div class="flex-1 w-full relative">
         <div class="absolute w-full h-full">
-          <el-table v-loading="loading" :data="tableData" class="rounded-2xl!" height="100%">
-            <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod"
-                             width="55"></el-table-column>
-            <el-table-column prop="trade_no" label="订单号" align="left"></el-table-column>
-            <el-table-column prop="name" label="购买产品" align="left"></el-table-column>
-            <el-table-column prop="username" label="购买人" align="left"></el-table-column>
-            <el-table-column prop="pay_status" label="支付状态" align="left">
+          <el-table v-loading="loading" :data="tableData" header-row-class-name="table-header" height="100%">
+            <el-table-column fixed type="selection" width="45" />
+            <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod" width="55"></el-table-column>
+            <el-table-column prop="trade_no" label="订单号" align="left" width="180"></el-table-column>
+            <el-table-column prop="name" label="购买产品" align="left" width="100"></el-table-column>
+            <el-table-column prop="username" label="购买人" align="left" width="180"></el-table-column>
+            <el-table-column prop="pay_status" label="支付状态" align="left" width="200">
               <template #default="{row}">
                 <el-tag type="primary" v-if="row.pay_status===0">
                   {{ useFormatDic(payStatus, row.pay_status.toString()) }}
@@ -123,9 +130,7 @@ onMounted(() => {
             </el-table-column>
             <el-table-column prop="pay_num" label="支付数量" align="left">
               <template #default="{row}">
-                <el-tag type="primary">
-                  {{ row.pay_num }}
-                </el-tag>
+                <span class="text-(--el-color-primary)">{{ row.pay_num }}</span>
               </template>
             </el-table-column>
             <el-table-column prop="pay_total_amount" label="支付金额" align="left">
@@ -133,22 +138,22 @@ onMounted(() => {
                 ¥{{ row.pay_total_amount }}
               </template>
             </el-table-column>
-            <el-table-column prop="created_time" label="创建时间" align="left">
+            <el-table-column prop="created_time" label="创建时间" align="left" width="180">
               <template #default="{row}">
                 {{ useFormatDateTime(row.created_time) }}
               </template>
             </el-table-column>
-            <el-table-column prop="payed_time" label="支付时间" align="left">
+            <el-table-column prop="payed_time" label="支付时间" align="left" width="180">
               <template #default="{row}">
                 {{ useFormatDateTime(row.payed_time) }}
               </template>
             </el-table-column>
-            <el-table-column prop="refund_time" label="退款时间" align="left">
+            <el-table-column prop="refund_time" label="退款时间" align="left" width="180">
               <template #default="{row}">
                 {{ useFormatDateTime(row.refund_time) }}
               </template>
             </el-table-column>
-            <el-table-column prop="is_delete" label="操作" align="left" width="120">
+            <el-table-column prop="is_delete" label="操作" align="left">
               <template #default="{row}">
                 <el-button type="text" @click="onDetailOrder(row)">编辑</el-button>
               </template>

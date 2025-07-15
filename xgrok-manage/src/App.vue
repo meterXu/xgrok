@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
+
 let timer:any=0;
 const BaseFontSize = 1920/4; //设计稿尺寸/根字体大小
 window.onresize = windowResize;
@@ -15,7 +17,9 @@ function windowResize() {
 </script>
 
 <template>
-  <router-view/>
+  <el-config-provider :locale="zhCn" size="small">
+    <router-view/>
+  </el-config-provider>
 </template>
 
 <style scoped>

@@ -6,6 +6,9 @@ import project from "./src/project.js"
 import copyPlugin from 'vite-copy-plugin'
 import fs from "fs";
 import tailwindcss from '@tailwindcss/vite'
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 export default defineConfig(({mode})=>{
   let _project = project(mode);
@@ -19,6 +22,20 @@ export default defineConfig(({mode})=>{
       copyPlugin([
         {from:'project.js',to:''}
       ]),
+      AutoImport({
+        imports: [
+          'vue',
+          'vue-router',
+        ],
+        resolvers:[
+          ElementPlusResolver(),
+        ]
+      }),
+      Components({
+        resolvers:[
+          ElementPlusResolver()
+        ]
+      })
     ],
     server:{
       port:4000
