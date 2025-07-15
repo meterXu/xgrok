@@ -42,8 +42,8 @@ watch(dialogVisible, (nv) => {
 
 function handleOk() {
   ruleFormRef.value?.validate(async valid => {
-    saveLoading.value=true
     if (valid) {
+      saveLoading.value=true
       let res = props.formData.id?await editOrder(props.formData as OrderType):await addOrder(props.formData as OrderType)
       useSaveOrUpdate(res,props.formData.id).then(()=>{
         handleCancel()
