@@ -6,31 +6,33 @@ import {NotificationTypeEnum} from "@/libs/enum";
 
 const store = appStore()
 export function dealWithError(error:any){
-  let data = error.response?error.response.data:error;
-  if(typeof(data)==="string"){
-    if(data.indexOf("{")===0){
-      data = JSON.parse(data);
+  try{
+    let data = error.response?error.response.data:error;
+    if(typeof(data)==="string"){
+      if(data.indexOf("{")===0){
+        data = JSON.parse(data);
+      }else{
+        data = {message:data}
+      }
+    }
+    else {
+      data.message = data.message||getErrorText(error.response.status)
+    }
+    if(error.response){
+      switch (error.response.status){
+        case 401:{
+          showConfirm()
+          break
+        }
+        default:
+          showNotification(NotificationTypeEnum.error, data.message)
+          break
+      }
     }else{
-      data = {message:data}
-    }
-  }
-  else {
-    data.message = data.message||getErrorText(error.response.status)
-  }
-  if(error.response){
-    switch (error.response.status){
-    case 401:{
-      showConfirm()
-      break
-    }
-    default:
       showNotification(NotificationTypeEnum.error, data.message)
-      break
     }
-  }else{
-    showNotification(NotificationTypeEnum.error, data.message)
-  }
-  return data
+  }catch (error){}
+  return error
 }
 
 function showConfirm (){

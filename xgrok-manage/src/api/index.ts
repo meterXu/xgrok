@@ -16,11 +16,15 @@ const url = {
     },
     order: {
         query: '/api/order/query',
-        modify: 'api/order',
+        modify: '/api/order',
+        modifyManual:'/api/order/manual'
     },
     server: {
         query: '/api/server/query',
         modify: '/api/server',
+    },
+    product: {
+        query: '/api/product/query'
     }
 }
 
@@ -64,7 +68,7 @@ export function orderQuery(data: any): Promise<ResultType<PaginationDataType<Ord
 }
 
 export function addOrder(data: OrderType): Promise<ResultType<any>> {
-    return postAction(url.order.modify, data)
+    return postAction(url.order.modifyManual, data)
 }
 
 export function editOrder(data: OrderType): Promise<ResultType<any>> {
@@ -77,4 +81,8 @@ export function serverQuery(data: any): Promise<ResultType<PaginationDataType<{[
 
 export function detailServer(data: any): Promise<ResultType<any>> {
     return putAction(url.server.modify, data)
+}
+
+export function productQuery(data:any):Promise<ResultType<PaginationDataType<ProductType>>> {
+    return getAction(url.product.query, data)
 }

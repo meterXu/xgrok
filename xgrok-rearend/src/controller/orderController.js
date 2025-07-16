@@ -57,6 +57,14 @@ export default class OrderController {
         ctx.result(res)
     }
 
+    @request('post', '/order/manual') @summary('手动新增') @tag @body(OrderModel.swaggerDocument)
+    async addOrderManual(ctx) {
+        const orderModel = new OrderModel(ctx.validatedBody)
+        const addRes = await this.orderService.addOrder(orderModel,orderModel.creator,true)
+        const res = new ResultModel(addRes, null, !!addRes)
+        ctx.result(res)
+    }
+
     @request('put', '/order') @summary('修改') @tag @body(OrderModel.swaggerDocument)
     async editOrder(ctx) {
         const orderModel = new OrderModel(ctx.validatedBody)

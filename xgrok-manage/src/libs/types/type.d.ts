@@ -79,20 +79,29 @@ interface DictItemType{
     chn_value: string,
     eng_value: string,
 }
-declare type UserType={
+interface BaseType{
+    sort:number,
+    creator:string,
+    editor:string,
+    created_time:string,
+    modified_time:string,
+    status:number,
+    is_delete:number
+}
+interface UserType extends BaseType{
     id:string,
     username:string,
     password:string,
     nickName:string,
 }
-interface OrderType{
+interface OrderType extends BaseType{
     id:string,
     trade_no:string,
     product_id:string,
     remark:string,
-    pay_price:string,
-    pay_num:string,
-    pay_total_amount:string,
+    pay_price:number,
+    pay_num:number,
+    pay_total_amount:number,
     payed_time:string,
     pay_time_start:string,
     pay_time_end:string,
@@ -100,12 +109,12 @@ interface OrderType{
     pay_status:number,
     alipay_qrCode:string,
     alipay_traceId:string,
-    sort:number,
-    creator:string,
-    editor:string,
-    created_time:string,
-    modified_time:string,
-    expired_time:string,
-    status:number,
-    is_delete:number
+    expired_time:string
+}
+interface ProductType extends BaseType{
+    id:string,
+    name:string,
+    type:number,
+    price:number,
+    remark:string,
 }

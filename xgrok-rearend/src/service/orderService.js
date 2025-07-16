@@ -50,7 +50,8 @@ export default class OrderService {
         ${where ? `where ${where}` : ''} `
 
         const querySql = `
-        select a.id,a.trade_no,b.name,b.type,a.expired_time,a.pay_price,a.pay_num,a.pay_total_amount,a.pay_status,a.created_time,a.payed_time,a.refund_time,a.remark,c.username,a.creator from ng_order a
+        select a.id,a.trade_no,a.product_id,b.name,b.type,a.expired_time,a.pay_price,a.pay_num,a.pay_total_amount,a.pay_status,
+               a.created_time,a.payed_time,a.refund_time,a.remark,c.username,a.creator from ng_order a
         inner join ng_product b on a.product_id = b.id and b.status=${status.enable} and b.is_delete=${isDelete.false}
         left join oauth_users c on a.creator = c.id
         ${where ? `where ${where}` : ''}
@@ -79,48 +80,53 @@ export default class OrderService {
         return await prisma.ng_order.findFirst({where: {trade_no: orderModel.trade_no}})
     }
 
-    async addOrder(orderModel,userId) {
+    async addOrder(orderModel,userId,isManual = false) {
         const productModel = await this.productService.detailProduct({id:orderModel.product_id})
-        let out_trade_no = new moment().format('yyyyMMDDHHmmssms').toString()
+        const out_trade_no = new moment().format('yyyyMMDDHHmmssms').toString()
         const pay_total_amount = (parseFloat(productModel.price)*orderModel.pay_num).toString()
         const subject = getSubjectName(productModel.name,orderModel.pay_num)
-        let alipayRes =  await this.createAliPayOrder(out_trade_no,pay_total_amount,subject)
-        if(alipayRes.hasOwnProperty('qrCode')){
-            orderModel.alipay_qrCode = alipayRes.qrCode
-            orderModel.alipay_traceId = alipayRes.traceId
-            let nowPlan = await this.queryPayPlan(userId)
-            let res = await prisma.ng_order.create({
-                data:{
-                    /** generate by CodeGirl */
-                    id: orderModel.id || randomUUID(),
-                    trade_no: out_trade_no,
-                    product_id: orderModel.product_id,
-                    remark: orderModel.remark,
-                    pay_total_amount: pay_total_amount,
-                    pay_price: productModel.price,
-                    pay_num: orderModel.pay_num,
-                    payed_time: orderModel.payed_time,
-                    pay_status: payStatus.unPayment,
-                    refund_time:orderModel.refund_time,
-                    alipay_qrCode:orderModel.alipay_qrCode,
-                    alipay_traceId:orderModel.alipay_traceId,
-                    sort: orderModel.sort,
-                    creator: userId,
-                    editor: orderModel.editor,
-                    created_time: orderModel.created_time,
-                    modified_time: orderModel.modified_time,
-                    expired_time:this.getPlanExpiredTime(nowPlan,productModel.type,orderModel.pay_num),
-                    status: orderModel.status,
-                    is_delete: orderModel.is_delete,
-                }
-            })
-            if(res){
-                return Object.assign(alipayRes,{id:res.id})
+        const nowPlan = await this.queryPayPlan(userId)
+        let alipayRes = {}
+        let addData = {
+            /** generate by CodeGirl */
+            id: orderModel.id || randomUUID(),
+            trade_no: out_trade_no,
+            product_id: orderModel.product_id,
+            remark: orderModel.remark,
+            pay_total_amount: pay_total_amount,
+            pay_price: productModel.price,
+            pay_num: orderModel.pay_num,
+            payed_time: orderModel.payed_time,
+            pay_status: orderModel.pay_status,
+            refund_time:orderModel.refund_time,
+            alipay_qrCode:null,
+            alipay_traceId:null,
+            sort: orderModel.sort,
+            creator: userId,
+            editor: orderModel.editor,
+            created_time: orderModel.created_time,
+            modified_time: orderModel.modified_time,
+            expired_time:this.getPlanExpiredTime(nowPlan,productModel.type,orderModel.pay_num),
+            status: orderModel.status,
+            is_delete: orderModel.is_delete,
+        }
+        if(!isManual){
+            alipayRes =  await this.createAliPayOrder(out_trade_no,pay_total_amount,subject)
+            if(alipayRes.hasOwnProperty('qrCode')){
+                addData.alipay_qrCode = alipayRes.qrCode
+                addData.alipay_traceId = alipayRes.traceId
+                addData.pay_status = payStatus.unPayment
             }else{
+                console.error(`调用alipay.trade.pay失败,${JSON.stringify(alipayRes)}`)
                 return null
             }
+        }
+        let res = await prisma.ng_order.create({
+            data:addData
+        })
+        if(res){
+            return Object.assign(alipayRes,{id:res.id})
         }else{
-            console.error(`调用alipay.trade.pay失败,${JSON.stringify(alipayRes)}`)
             return null
         }
     }

@@ -44,14 +44,12 @@ function handleReset() {
 }
 
 function onEdit(row:any) {
-  Object.assign(formData,row)
-  //@ts-ignore
-  formData.username = undefined
+  Object.assign(formData,row,{username:undefined})
   dialogVisible.value = true
 }
 
 function onAdd(){
-  resetObj(formData)
+  resetObj(formData,{username:undefined,pay_num:1})
   dialogVisible.value = true
 }
 
