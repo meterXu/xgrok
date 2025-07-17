@@ -118,3 +118,22 @@ interface ProductType extends BaseType{
     price:number,
     remark:string,
 }
+interface ServerType extends BaseType{
+    id:string,
+    name:string,
+    domain:string,
+    port:number,
+    http_port:number,
+    https_port:number,
+    has_ssl:number,
+    ssl_expired_time:string,
+    up_speed:string,
+    down_speed:string,
+    is_vip:number,
+    is_online:number,
+    region:string,
+    operator:string,
+    month_total_traffic:number,
+    month_used_traffic:number,
+    type:number
+}

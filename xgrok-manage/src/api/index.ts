@@ -17,7 +17,8 @@ const url = {
     order: {
         query: '/api/order/query',
         modify: '/api/order',
-        modifyManual:'/api/order/manual'
+        modifyManual:'/api/order/manual',
+        delete: '/api/order',
     },
     server: {
         query: '/api/server/query',
@@ -73,6 +74,10 @@ export function addOrder(data: OrderType): Promise<ResultType<any>> {
 
 export function editOrder(data: OrderType): Promise<ResultType<any>> {
     return putAction(url.order.modify, data)
+}
+
+export function batchDelOrder(ids:string[]): Promise<ResultType<any>> {
+    return deleteAction(url.order.delete, {id:ids.join(',')})
 }
 
 export function serverQuery(data: any): Promise<ResultType<PaginationDataType<{[key:string]:any}>>> {

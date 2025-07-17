@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {onMounted,ref, reactive, shallowReactive, shallowRef} from "vue";
-import {getDict, orderQuery} from "@/api";
+import {batchDelOrder, getDict, orderQuery} from "@/api";
 import {useGetIndexMethod, usePage, useQuery, useQueryCallback} from "@/libs/use-curd";
-import {mappingDic, resetObj, useFormatDateTime, useFormatDic} from "@/libs/utils";
+import {mappingDic, resetObj, useBatchDelConfirm, useDel, useFormatDateTime, useFormatDic} from "@/libs/utils";
 import {Search, RefreshLeft,Delete,Plus} from "@element-plus/icons-vue";
 import OrderEdit from "@/views/order/module/OrderEdit.vue";
 
@@ -18,6 +18,7 @@ const searchForm = reactive({
   pay_status: null
 })
 const payStatus = shallowReactive<DictItemType[]>([])
+const multipleSelection = ref<string[]>([])
 
 function queryData(params: any): Promise<ResultType<PaginationDataType<OrderType>>> {
   loading.value = true
@@ -51,6 +52,18 @@ function onEdit(row:any) {
 function onAdd(){
   resetObj(formData,{username:undefined,pay_num:1})
   dialogVisible.value = true
+}
+
+function onDelete(){
+  useBatchDelConfirm(multipleSelection.value,{},()=>batchDelOrder(multipleSelection.value)).then(res=>{
+    useDel(res).then(()=>{
+      handleQuery()
+    })
+  })
+}
+
+function onSelectionChange(val: OrderType[]){
+  multipleSelection.value = val.map(c=>c.id)
 }
 
 onMounted(() => {
@@ -95,12 +108,15 @@ onMounted(() => {
     <div class="flex-1 flex flex-col gap-12 border-1 border-(--el-border-color-light) bg-white rounded-2xl shadow-xs">
       <div class="px-12 pt-12 flex flex-row items-center bg-white">
         <el-button type="primary" :icon="Plus" @click="onAdd">添加</el-button>
-        <el-button type="danger" :icon="Delete">删除</el-button>
+        <el-button type="danger" :icon="Delete" @click="onDelete">删除</el-button>
       </div>
       <!--  表格  -->
       <div class="flex-1 w-full relative">
         <div class="absolute w-full h-full">
-          <el-table v-loading="loading" :data="tableData" header-row-class-name="table-header" height="100%">
+          <el-table v-loading="loading" :data="tableData"
+                    header-row-class-name="table-header"
+                    height="100%"
+                    @selection-change="onSelectionChange">
             <el-table-column fixed type="selection" width="45" />
             <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod" width="55"></el-table-column>
             <el-table-column prop="trade_no" label="订单号" align="left" width="180"></el-table-column>

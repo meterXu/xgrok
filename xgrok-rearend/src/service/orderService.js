@@ -136,8 +136,8 @@ export default class OrderService {
         return res
     }
 
-    async delOrder(id) {
-        const res = await prisma.ng_order.update({data: {is_delete: isDelete.true,}, where: {id: id}})
+    async delOrder(ids) {
+        const res = await prisma.ng_order.updateMany({data: {is_delete: isDelete.true,}, where: {id:{in:ids}}})
         return res
     }
 

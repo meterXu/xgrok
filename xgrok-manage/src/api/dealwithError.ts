@@ -1,7 +1,7 @@
 import {getErrorText} from "xxweb-util/lib/request.js";
 import {ElMessageBox} from 'element-plus'
-import {showNotification} from "@/libs/utils";
-import {appStore} from "@/store/index.js";
+import {showNotification} from "@/libs/utils/message.ts";
+import {appStore} from "@/store/index.ts";
 import {NotificationTypeEnum} from "@/libs/enum";
 
 const store = appStore()

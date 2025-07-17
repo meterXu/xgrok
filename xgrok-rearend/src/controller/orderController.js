@@ -73,10 +73,10 @@ export default class OrderController {
         ctx.result(res)
     }
 
-    @request('delete', '/order') @summary('删除') @tag @query({id: {type: "string", required: true, description: 'id'}})
+    @request('delete', '/order') @summary('批量删除') @tag @query({id: {type: "string", required: true, description: 'id字符串数组'}})
     async delOrder(ctx) {
         let id = ctx.validatedQuery.id;
-        const delRes = await this.orderService.delOrder(id)
+        const delRes = await this.orderService.delOrder(id.split(','))
         const res = new ResultModel(id, null, !!delRes)
         ctx.result(res)
     }

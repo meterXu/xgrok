@@ -3,7 +3,8 @@
 import {onMounted, shallowReactive, shallowRef} from "vue";
 import {detailServer, getDict, serverQuery} from "@/api";
 import {useGetIndexMethod, usePage, useQuery, useQueryCallback} from "@/libs/use-curd";
-import {mappingDic, resetObj, showNotification, useFormatDic} from "@/libs/utils";
+import {mappingDic, resetObj, useFormatDic} from "@/libs/utils";
+import { showNotification } from "@/libs/utils/message";
 import {NotificationTypeEnum} from "@/libs/enum";
 import {Search,RefreshLeft} from "@element-plus/icons-vue";
 
@@ -20,7 +21,7 @@ const serverTypeDict = shallowReactive<DictItemType[]>([])
 const statusDict = shallowReactive<DictItemType[]>([])
 const isDeleteDict = shallowReactive<DictItemType[]>([])
 
-function queryData(params: any):Promise<ResultType<PaginationDataType>> {
+function queryData(params: any):Promise<ResultType<PaginationDataType<ServerType>>> {
   loading.value = true
   return serverQuery(params).then(res => {
     loading.value=false
@@ -33,7 +34,7 @@ function handleQuery(pageNumber:number=1,pageSize:number=20){
   page.pageSize = pageSize
   useQuery(queryData,Object.assign({
     orderBy:JSON.stringify([{type:'asc'}])
-  },page,searchForm),(res:ResultType<PaginationDataType>)=>{useQueryCallback(res,tableData,page)})
+  },page,searchForm),(res:ResultType<PaginationDataType<ServerType>>)=>{useQueryCallback(res,tableData,page)})
 }
 function handleReset(){
   resetObj(searchForm,{type:'2', status:'1', is_delete:'0'})
