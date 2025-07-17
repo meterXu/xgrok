@@ -53,6 +53,10 @@ function onDetailServer(id:string, status:number, is_delete:number,is_vip:number
   })
 }
 
+function onConfigProt(val:ServerType){
+  console.log(val)
+}
+
 onMounted(()=>{
   mappingDic(
       [getDict('server_type'),getDict('status'),getDict('is_delete')],
@@ -127,7 +131,7 @@ onMounted(()=>{
             </el-table-column>
             <el-table-column prop="id" label="操作" align="center" width="100">
               <template #default="{row}">
-               <el-button type="text">端口配置</el-button>
+               <el-button type="text" @click="onConfigProt(row)">端口配置</el-button>
               </template>
             </el-table-column>
           </el-table>
