@@ -80,7 +80,7 @@ export function batchDelOrder(ids:string[]): Promise<ResultType<any>> {
     return deleteAction(url.order.delete, {id:ids.join(',')})
 }
 
-export function serverQuery(data: any): Promise<ResultType<PaginationDataType<{[key:string]:any}>>> {
+export function serverQuery(data: any): Promise<ResultType<PaginationDataType<ServerType>>> {
     return getAction(url.server.query, data)
 }
 
