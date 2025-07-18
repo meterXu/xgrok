@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {onMounted, shallowReactive, shallowRef} from "vue";
-import {detailUser, getDict, userQuery} from "@/api";
+import {detailUser, editUser, getDict, userQuery} from "@/api";
 import {useGetIndexMethod, usePage, useQuery, useQueryCallback} from "@/libs/use-curd";
 import {mappingDic, resetObj, useFormatDateTime} from "@/libs/utils";
 import {showNotification} from '@/libs/utils/message.ts'
@@ -38,11 +38,11 @@ function handleReset(){
 }
 
 function onDetailUser(id:string,status:number,is_delete:number){
-  detailUser({
+  editUser({
     id,
     status,
     is_delete
-  }).then(res => {
+  } as UserType).then(res => {
     showNotification(res.success?NotificationTypeEnum.success:NotificationTypeEnum.error, res.success?"操作成功":"操作失败")
     res.success&&handleQuery(page.pageNumber,page.pageSize)
   })

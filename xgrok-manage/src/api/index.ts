@@ -57,11 +57,11 @@ export function detailUser(data: any): Promise<ResultType<UserType>> {
 }
 
 export function addUser(data: UserType): Promise<ResultType<any>> {
-    return putAction(url.user.modify, data)
+    return postAction(url.user.modify, data)
 }
 
 export function editUser(data: UserType): Promise<ResultType<any>> {
-    return postAction(url.user.modify, data)
+    return putAction(url.user.modify, data)
 }
 
 export function orderQuery(data: any): Promise<ResultType<PaginationDataType<OrderType>>> {
