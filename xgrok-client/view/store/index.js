@@ -70,6 +70,12 @@ export const useAppStore = defineStore('app', ()=>{
         return _clientId
     })
     const plan = computed(()=>{
+        if($ls.get("plan")){
+            let value = JSON.parse($ls.get("plan"))
+            Object.keys(value).forEach(k=>{
+                _plan[k] = value[k]
+            })
+        }
         if(_plan.hasOwnProperty('plan')){
             if(_plan.value===payPlan.free){
                 _plan.plan.expired_time_str =  null
@@ -108,7 +114,6 @@ export const useAppStore = defineStore('app', ()=>{
     function setUserInfo(data){
         _userInfo.value = getStoreValue(data)
         $ls.set(types.USER_INFO,_userInfo.value?JSON.stringify(data):getLsValue(data))
-
     }
     function setToken(data){
         if(getStoreValue(data)){
@@ -118,7 +123,6 @@ export const useAppStore = defineStore('app', ()=>{
             _token.value=getStoreValue(data)
             $ls.set(types.ACCESS_TOKEN,getLsValue(data))
         }
-
     }
     function setPid(data){
         _pid.value=getStoreValue(data)
@@ -152,6 +156,7 @@ export const useAppStore = defineStore('app', ()=>{
         Object.keys(value).forEach(k=>{
             _plan[k] = value[k]
         })
+        $ls.set("plan",JSON.stringify(getLsValue(_plan)))
     }
     function setOrderStatus(orderId,isPaySuccess){
         _orderStatus.orderId = orderId

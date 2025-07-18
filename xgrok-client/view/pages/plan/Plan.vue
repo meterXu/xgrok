@@ -126,7 +126,7 @@ function onWillPlanExpiredTime(item){
     height: 36px;
     background-color: var(--el-color-success);
     border-bottom-left-radius: 4px;
-    background-image: url(../../assets/check-white.svg);
+    background-image: url(../../assets/imgs/check-white.svg);
     background-repeat: no-repeat;
     background-size: 20px;
     background-position: center center;

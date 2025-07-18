@@ -161,7 +161,7 @@ function generateXgrokConf(serverDetail, WebDetails, serviceDetails) {
             proxies: [...WebDetails.map(web => {
                 return {
                     name: web.name,
-                    type: getEnumKey(httpType,web.type),
+                    type: 'http',
                     localPort:web.port,
                     subdomain: web.name
                 }

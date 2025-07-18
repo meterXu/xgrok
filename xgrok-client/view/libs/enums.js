@@ -105,3 +105,14 @@ export function useStatusClass(is_online){
         return is_online===isOnline.online?'server-status-icon-success':'server-status-icon-danger'
     }
 }
+
+export const statusType={
+    enable:1,
+    disable:0
+}
+
+export const isDeleteType={
+    yes:1,
+    no:0
+}
+

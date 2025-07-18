@@ -4,7 +4,8 @@ import {useAppStore} from "@/store";
 
 const emits = defineEmits(['addTunnel','delTunnels','selectAll','cleanAll','confirmDelTunnels'])
 const props = defineProps(['isDelete','deleteIds','allCount'])
-const {pid,isCloseEdit}  = useAppStore()
+const  store = useAppStore()
+const {isCloseEdit}  = store
 
 const indeterminate = computed(()=>{
   return props.deleteIds.value.length>0&&props.deleteIds.value.length!==props.allCount
@@ -28,6 +29,7 @@ function onDelTunnels(){
 function onCheckChange(flag){
   flag?emits('selectAll'):emits('cleanAll')
 }
+
 </script>
 
 <template>

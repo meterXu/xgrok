@@ -132,7 +132,7 @@ function clearSendCodeTimer(){
   <div class="center-container login-register-form">
     <div class="form-wrap">
       <div class="main">
-        <h1 class="title">
+        <h1 class="title text-[24px] font-bold">
           <img src="../../public/assets/icon.png" alt="logo" class="logo"/>
           忘记密码
         </h1>
@@ -195,6 +195,7 @@ function clearSendCodeTimer(){
   border-radius: 4px;
   color: var(--el-color-warning);
   list-style: disc inside;
+  font-size: 14px;
   li{
     padding: 0px 12px;
   }
