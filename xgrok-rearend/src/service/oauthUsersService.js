@@ -53,15 +53,17 @@ export default class OAuthUsersService {
                     editor: userModel.editor,
                     created_time: userModel.created_time,
                     modified_time: userModel.modified_time,
-                    status: userModel.status,
-                    is_delete: userModel.is_delete,
+                    status: status.enable,
+                    is_delete: isDelete.false,
                 }
             }),
             prisma.UserRole.create({
                 data:{
                     id:randomUUID(),
                     user_id:userModel.id,
-                    role_id:roleId.普通用户
+                    role_id:roleId.普通用户,
+                    status: status.enable,
+                    is_delete: isDelete.false,
                 }
             }),
             prisma.ng_email.updateMany({

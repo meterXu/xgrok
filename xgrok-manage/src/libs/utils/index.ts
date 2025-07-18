@@ -4,7 +4,7 @@ import {NotificationTypeEnum} from '@/libs/enum'
 import {showNotification, confirm, message} from "@/libs/utils/message.ts";
 
 export function useFormatDateTime(dateTime?: string): string | null {
-    return dateTime ? dayjs(dateTime).format('YYYY-MM-DD HH:mm:ss') : null
+    return dateTime ? dayjs(dateTime).format('YYYY-MM-DD hh:mm:ss') : null
 }
 
 export function mappingDic(promiseArray: Promise<ResultType<any>>[], dest: ShallowReactive<DictItemType[]>[]): Promise<any> {
