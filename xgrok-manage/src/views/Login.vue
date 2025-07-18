@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import {reactive, computed, ref, shallowReactive, onMounted} from 'vue';
+import {ref, shallowReactive, onMounted} from 'vue';
 import {useRouter} from 'vue-router'
 import {login} from '@/api';
 import {appStore} from '@/store/index.js'
-import {showNotification} from '@/libs/utils'
+import {showNotification} from '@/libs/utils/message.ts'
 import {NotificationTypeEnum} from "@/libs/enum";
 
 const router = useRouter()
