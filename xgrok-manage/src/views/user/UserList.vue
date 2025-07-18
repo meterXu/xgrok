@@ -1,10 +1,11 @@
 <script setup lang="ts">
 
 import {onMounted, shallowReactive, shallowRef} from "vue";
-import {detailUser, getDict, userQuery} from "@/api";
+import {editUser, getDict, userQuery} from "@/api";
 import {useGetIndexMethod, usePage, useQuery, useQueryCallback} from "@/libs/use-curd";
-import {mappingDic, resetObj, showNotification, useFormatDateTime} from "@/libs/utils";
-import {NotificationTypeEnum} from "@/libs/enum";
+import {mappingDic, resetObj, useFormatDateTime} from "@/libs/utils";
+import {showNotification} from '@/libs/utils/message.ts'
+import {IsDeleteEnum, NotificationTypeEnum, StatusEnum} from "@/libs/enum";
 import {Search,RefreshLeft} from "@element-plus/icons-vue";
 
 const loading = shallowRef(false)
@@ -12,13 +13,13 @@ const tableData = shallowReactive([] as any[])
 const page = usePage()
 const searchForm = shallowReactive({
   username:'',
-  status:null,
-  is_delete:null
+  status:StatusEnum.enable.toString(),
+  is_delete:IsDeleteEnum.false.toString()
 })
 const statusDict = shallowReactive<DictItemType[]>([])
 const isDeleteDict = shallowReactive<DictItemType[]>([])
 
-function queryData(params: any): Promise<ResultType<PaginationDataType>> {
+function queryData(params: any): Promise<ResultType<PaginationDataType<UserType>>> {
   loading.value = true
   return userQuery(params).then(res => {
     loading.value=false
@@ -29,19 +30,22 @@ function queryData(params: any): Promise<ResultType<PaginationDataType>> {
 function handleQuery(pageNumber:number=1,pageSize:number=20){
   page.pageNumber = pageNumber
   page.pageSize = pageSize
-  useQuery(queryData,Object.assign({},page,searchForm),(res:ResultType<PaginationDataType>)=>{useQueryCallback(res,tableData,page)})
+  useQuery(queryData,Object.assign({},page,searchForm),(res:ResultType<PaginationDataType<UserType>>)=>{useQueryCallback(res,tableData,page)})
 }
 function handleReset(){
-  resetObj(searchForm)
+  resetObj(searchForm,{
+    status:StatusEnum.enable.toString(),
+    is_delete:IsDeleteEnum.false.toString()
+  })
   handleQuery(1,20)
 }
 
 function onDetailUser(id:string,status:number,is_delete:number){
-  detailUser({
+  editUser({
     id,
     status,
     is_delete
-  }).then(res => {
+  } as UserType).then(res => {
     showNotification(res.success?NotificationTypeEnum.success:NotificationTypeEnum.error, res.success?"操作成功":"操作失败")
     res.success&&handleQuery(page.pageNumber,page.pageSize)
   })
@@ -58,15 +62,15 @@ onMounted(()=>{
   <div class="my-inner-form p-12 flex flex-row items-center bg-white border-1 border-(--el-border-color-light) rounded-2xl shadow-xs">
     <el-form inline>
       <el-form-item label="用户名">
-        <el-input v-model="searchForm.username"/>
+        <el-input v-model="searchForm.username" clearable/>
       </el-form-item>
       <el-form-item label="是否启用">
-        <el-select class="w-120!" v-model="searchForm.status" clearable>
+        <el-select class="w-120!" v-model="searchForm.status">
           <el-option v-for="item in statusDict" :label="item.chn_value" :value="item.code"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="是否删除">
-        <el-select class="w-120!" v-model="searchForm.is_delete" clearable>
+        <el-select class="w-120!" v-model="searchForm.is_delete">
           <el-option v-for="item in isDeleteDict" :label="item.chn_value" :value="item.code"></el-option>
         </el-select>
       </el-form-item>

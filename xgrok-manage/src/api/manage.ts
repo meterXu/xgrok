@@ -22,7 +22,13 @@ const axios = createService(window.project.variable.baseApi,(config:any)=>{
 })
 onResponseError(axios,(error:any) => dealWithError(error))
 axios.interceptors.response.use((response:any) => {
-  return response ? response.data : {}
+  try{
+    return response ? response.data : {}
+  }catch (error) {
+    return Promise.reject(error)
+  }
+},(error:any) => {
+  return Promise.reject(error)
 })
 
 export function postAction(url:string, parameter:any,headers?:any) {

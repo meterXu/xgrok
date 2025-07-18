@@ -1,7 +1,7 @@
 <script setup>
 import {useRouter} from 'vue-router'
 import {reactive, ref} from "vue";
-import {login} from "@/api";
+import {login, queryPayPlan} from "@/api";
 import {ElMessage} from "element-plus";
 import {useAppStore} from "@/store";
 import {
@@ -37,11 +37,13 @@ function onSubmit(){
   ruleForm.value.validate(valid=>{
     if(valid){
       loginLoading.value=true
-      login(form).then(res=>{
+      login(form).then(async res=>{
         if(res.success){
           store.setUserName(form.username)
           store.setUserInfo(res.data)
           store.setToken(res.data.accessToken)
+          const plan = await queryPayPlan()
+          plan.success && store.setPlan(plan.data)
           router.push({
             name:'Dashboard'
           })

@@ -25,6 +25,6 @@ export default class UsersModel {
     @swaggerProperty({type: "string", description: "", nullable: true}) editor
     @swaggerProperty({type: "string", description: "", nullable: true}) modified_time
     @swaggerProperty({type: "number", description: "", nullable: true}) sort
-    @swaggerProperty({type: "number", description: "", nullable: true}) status
-    @swaggerProperty({type: "number", description: "", nullable: true}) is_delete
+    @swaggerProperty({type: "number", description: "", nullable: true,default:1}) status
+    @swaggerProperty({type: "number", description: "", nullable: true,default:0}) is_delete
 }

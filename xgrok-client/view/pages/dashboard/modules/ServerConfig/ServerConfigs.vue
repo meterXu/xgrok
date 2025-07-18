@@ -1,10 +1,10 @@
 <script setup>
-import {computed, ref} from 'vue'
+import {ref} from 'vue'
 import ServerList from "@/pages/dashboard/modules/ServerConfig/ServerList.vue";
 import ServerConfigItem from "@/components/ServerConfigItem.vue";
 import ConfigDialog from "@/components/ConfigDialog.vue";
 import {useAppStore} from "@/store";
-import {payPlan, useStatusClass} from "@/libs/enums";
+import {payPlan} from "@/libs/enums";
 import {confirm} from "@/libs/common";
 import {useRouter} from "vue-router";
 

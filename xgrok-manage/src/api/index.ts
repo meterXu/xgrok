@@ -12,14 +12,20 @@ const url = {
     user: {
         query: '/api/user/query',
         detail: '/api/user/detail',
+        modify:'/api/user'
     },
     order: {
         query: '/api/order/query',
-        modify: 'api/order',
+        modify: '/api/order',
+        modifyManual:'/api/order/manual',
+        delete: '/api/order',
     },
     server: {
         query: '/api/server/query',
         modify: '/api/server',
+    },
+    product: {
+        query: '/api/product/query'
     }
 }
 
@@ -42,22 +48,46 @@ export function login(data: any): Promise<ResultType<any>> {
     return postAction(url.oauth.authorize, qs.stringify(data), _headers)
 }
 
-export function userQuery(data: any): Promise<ResultType<PaginationDataType>> {
+export function userQuery(data: any): Promise<ResultType<PaginationDataType<UserType>>> {
     return getAction(url.user.query, data)
 }
 
-export function detailUser(data: any): Promise<ResultType<any>> {
-    return postAction(url.user.detail, data)
+export function detailUser(data: any): Promise<ResultType<UserType>> {
+    return getAction(url.user.detail, data)
 }
 
-export function orderQuery(data: any): Promise<ResultType<PaginationDataType>> {
+export function addUser(data: UserType): Promise<ResultType<any>> {
+    return postAction(url.user.modify, data)
+}
+
+export function editUser(data: UserType): Promise<ResultType<any>> {
+    return putAction(url.user.modify, data)
+}
+
+export function orderQuery(data: any): Promise<ResultType<PaginationDataType<OrderType>>> {
     return getAction(url.order.query, data)
 }
 
-export function serverQuery(data: any): Promise<ResultType<PaginationDataType>> {
+export function addOrder(data: OrderType): Promise<ResultType<any>> {
+    return postAction(url.order.modifyManual, data)
+}
+
+export function editOrder(data: OrderType): Promise<ResultType<any>> {
+    return putAction(url.order.modify, data)
+}
+
+export function batchDelOrder(ids:string[]): Promise<ResultType<any>> {
+    return deleteAction(url.order.delete, {id:ids.join(',')})
+}
+
+export function serverQuery(data: any): Promise<ResultType<PaginationDataType<ServerType>>> {
     return getAction(url.server.query, data)
 }
 
 export function detailServer(data: any): Promise<ResultType<any>> {
     return putAction(url.server.modify, data)
+}
+
+export function productQuery(data:any):Promise<ResultType<PaginationDataType<ProductType>>> {
+    return getAction(url.product.query, data)
 }

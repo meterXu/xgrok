@@ -3,7 +3,8 @@
 import {onMounted, shallowReactive, shallowRef} from "vue";
 import {detailServer, getDict, serverQuery} from "@/api";
 import {useGetIndexMethod, usePage, useQuery, useQueryCallback} from "@/libs/use-curd";
-import {mappingDic, resetObj, showNotification, useFormatDic} from "@/libs/utils";
+import {mappingDic, resetObj, useFormatDic} from "@/libs/utils";
+import { showNotification } from "@/libs/utils/message";
 import {NotificationTypeEnum} from "@/libs/enum";
 import {Search,RefreshLeft} from "@element-plus/icons-vue";
 
@@ -20,7 +21,7 @@ const serverTypeDict = shallowReactive<DictItemType[]>([])
 const statusDict = shallowReactive<DictItemType[]>([])
 const isDeleteDict = shallowReactive<DictItemType[]>([])
 
-function queryData(params: any):Promise<ResultType<PaginationDataType>> {
+function queryData(params: any):Promise<ResultType<PaginationDataType<ServerType>>> {
   loading.value = true
   return serverQuery(params).then(res => {
     loading.value=false
@@ -33,7 +34,7 @@ function handleQuery(pageNumber:number=1,pageSize:number=20){
   page.pageSize = pageSize
   useQuery(queryData,Object.assign({
     orderBy:JSON.stringify([{type:'asc'}])
-  },page,searchForm),(res:ResultType<PaginationDataType>)=>{useQueryCallback(res,tableData,page)})
+  },page,searchForm),(res:ResultType<PaginationDataType<ServerType>>)=>{useQueryCallback(res,tableData,page)})
 }
 function handleReset(){
   resetObj(searchForm,{type:'2', status:'1', is_delete:'0'})
@@ -50,6 +51,10 @@ function onDetailServer(id:string, status:number, is_delete:number,is_vip:number
     showNotification(res.success?NotificationTypeEnum.success:NotificationTypeEnum.error, res.success?"操作成功":"操作失败")
     res.success&&handleQuery(page.pageNumber,page.pageSize)
   })
+}
+
+function onConfigProt(val:ServerType){
+  console.log(val)
 }
 
 onMounted(()=>{
@@ -122,6 +127,11 @@ onMounted(()=>{
               <template #default="{row}">
                 <el-switch v-model="row.is_vip" :inactive-value="0" :active-value="1"
                            @change="(value:number)=>{onDetailServer(row.id,row.status,row.is_delete,value)}"></el-switch>
+              </template>
+            </el-table-column>
+            <el-table-column prop="id" label="操作" align="center" width="100">
+              <template #default="{row}">
+               <el-button type="text" @click="onConfigProt(row)">端口配置</el-button>
               </template>
             </el-table-column>
           </el-table>

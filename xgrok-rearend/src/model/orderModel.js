@@ -31,10 +31,10 @@ export default class OrderModel {
     }
 
     /** generate by CodeGirl */
-    @swaggerProperty({type: "string", description: "", nullable: false}) id
-    @swaggerProperty({type: "string", description: "", nullable: false}) trade_no
+    @swaggerProperty({type: "string", description: "", nullable: true}) id
+    @swaggerProperty({type: "string", description: "", nullable: true}) trade_no
     @swaggerProperty({type: "string", description: "", nullable: false}) product_id
-    @swaggerProperty({type: "string", description: "", nullable: false}) remark
+    @swaggerProperty({type: "string", description: "", nullable: true}) remark
     @swaggerProperty({type: "string", description: "", nullable: true}) pay_total_amount
     @swaggerProperty({type: "string", description: "", nullable: false}) pay_price
     @swaggerProperty({type: "string", description: "", nullable: true}) payed_time

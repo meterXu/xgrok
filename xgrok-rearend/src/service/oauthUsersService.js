@@ -1,7 +1,7 @@
 import OAuthUsersModel from "../model/oauthUsersModel.js";
 import {isDelete, roleId, status} from "../utils/enum.js";
 import {Prisma} from "@prisma/client";
-import {randomUUID} from "../utils/index.js";
+import {isNullOrUndefined, randomUUID} from "../utils/index.js";
 import EmailService from "./emailService.js";
 import OrderByModel from "../model/sys/orderByModel.js";
 import PaginationModel from "../model/sys/paginationModel.js";
@@ -53,15 +53,17 @@ export default class OAuthUsersService {
                     editor: userModel.editor,
                     created_time: userModel.created_time,
                     modified_time: userModel.modified_time,
-                    status: userModel.status,
-                    is_delete: userModel.is_delete,
+                    status: status.enable,
+                    is_delete: isDelete.false,
                 }
             }),
             prisma.UserRole.create({
                 data:{
                     id:randomUUID(),
                     user_id:userModel.id,
-                    role_id:roleId.普通用户
+                    role_id:roleId.普通用户,
+                    status: status.enable,
+                    is_delete: isDelete.false,
                 }
             }),
             prisma.ng_email.updateMany({
@@ -120,8 +122,8 @@ export default class OAuthUsersService {
             oauthUsersModel.pay_time_start && `a.created_time >= '${oauthUsersModel.created_time_start}'`,
             oauthUsersModel.pay_time_end && `a.created_time <= '${oauthUsersModel.created_time_end}'`,
             oauthUsersModel.username && `a.username like '%${oauthUsersModel.username}%'`,
-            oauthUsersModel.status && `a.status='${oauthUsersModel.status}'`,
-            oauthUsersModel.is_delete && `a.is_delete='${oauthUsersModel.is_delete}'`
+            !isNullOrUndefined(oauthUsersModel.status) && `a.status='${oauthUsersModel.status}'`,
+            !isNullOrUndefined(oauthUsersModel.is_delete) && `a.is_delete='${oauthUsersModel.is_delete}'`
         ].filter(c => c).join(' and ')
 
         const totalSql =   `

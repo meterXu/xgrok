@@ -11,6 +11,7 @@ import OAuthUsersModel from "../model/oauthUsersModel";
 import OAuthUsersService from "../service/oauthUsersService";
 import {serviceType} from "../utils/enum";
 import UsersModel from "../model/usersModel";
+import OrderModel from "../model/orderModel";
 const tag = tags(['User'])
 
 export default class UserController {
@@ -127,6 +128,16 @@ export default class UserController {
     async editUser(ctx){
         const usersModel = new UsersModel(ctx.validatedBody)
         const res = await this.oAuthUsersService.editUser(usersModel)
+        ctx.result(new ResultModel(res,null,!!res))
+    }
+
+    @request('get', '/user/detail')
+    @summary('用户详情')
+    @tag
+    @query(UsersModel.swaggerDocument)
+    async detailUser(ctx) {
+        const usersModel = new UsersModel(ctx.validatedQuery)
+        const res = await this.oAuthUsersService.detail(usersModel.id)
         ctx.result(new ResultModel(res,null,!!res))
     }
 }

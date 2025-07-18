@@ -40,6 +40,6 @@ export async function useGoBack(){
 }
 
 
-export async function useGoTo(name){
-    router.push({name})
+export async function useGoTo(name,isReplace=false){
+    isReplace?router.replace({name}):router.push({name})
 }
