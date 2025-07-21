@@ -1,10 +1,12 @@
 import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
 import type {ShallowReactive} from "vue";
 import {NotificationTypeEnum} from '@/libs/enum'
 import {showNotification, confirm, message} from "@/libs/utils/message.ts";
 
 export function useFormatDateTime(dateTime?: string): string | null {
-    return dateTime ? dayjs(dateTime).format('YYYY-MM-DD hh:mm:ss') : null
+    dayjs.extend(utc);
+    return dateTime ? dayjs.utc(dateTime).format('YYYY-MM-DD HH:mm:ss') : null
 }
 
 export function mappingDic(promiseArray: Promise<ResultType<any>>[], dest: ShallowReactive<DictItemType[]>[]): Promise<any> {
