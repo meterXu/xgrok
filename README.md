@@ -17,8 +17,9 @@ sudo xattr -r -d com.apple.quarantine /Applications/xgrok.app
 然后再次打开即可。
 
 **相关参考**
-1. “Apple无法验证（“xgrok”或“xgrok-core”）是否包含可能危害Mac安全或泄露隐私的恶性软件。”。解决方案👉[解决MacOS遇到“无法打开xxx，因为...恶意软件.md](assets%2Fdoc%2F%E8%A7%A3%E5%86%B3MacOS%E9%81%87%E5%88%B0%E2%80%9C%E6%97%A0%E6%B3%95%E6%89%93%E5%BC%80xxx%EF%BC%8C%E5%9B%A0%E4%B8%BA...%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6.md) 
-2. “xgrok已损坏，无法打开。你🇬应该将它移到废纸篓。” 。解决方案👉[解决Mac安装软件的“已损坏，无法打开.md](assets%2Fdoc%2F%E8%A7%A3%E5%86%B3Mac%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6%E7%9A%84%E2%80%9C%E5%B7%B2%E6%8D%9F%E5%9D%8F%EF%BC%8C%E6%97%A0%E6%B3%95%E6%89%93%E5%BC%80.md)
+1. “Apple无法验证（“xgrok”或“xgrok-core”）是否包含可能危害Mac安全或泄露隐私的恶性软件”，解决方案👉[解决MacOS遇到“无法打开xxx，因为...恶意软件.md](assets%2Fdoc%2F%E8%A7%A3%E5%86%B3MacOS%E9%81%87%E5%88%B0%E2%80%9C%E6%97%A0%E6%B3%95%E6%89%93%E5%BC%80xxx%EF%BC%8C%E5%9B%A0%E4%B8%BA...%E6%81%B6%E6%84%8F%E8%BD%AF%E4%BB%B6.md)
+2. “xgrok已损坏，无法打开，你应该将它移到废纸篓” ，解决方案👉[解决Mac安装软件的“已损坏，无法打开.md](assets%2Fdoc%2F%E8%A7%A3%E5%86%B3Mac%E5%AE%89%E8%A3%85%E8%BD%AF%E4%BB%B6%E7%9A%84%E2%80%9C%E5%B7%B2%E6%8D%9F%E5%9D%8F%EF%BC%8C%E6%97%A0%E6%B3%95%E6%89%93%E5%BC%80.md)
+3. “解决windows提示找到可能不需要的应用”，解决方案👉[解决windows提示找到可能不需要的应用.md](assets/doc/%E8%A7%A3%E5%86%B3windows%E6%8F%90%E7%A4%BA%E6%89%BE%E5%88%B0%E5%8F%AF%E8%83%BD%E4%B8%8D%E9%9C%80%E8%A6%81%E7%9A%84%E5%BA%94%E7%94%A8.md)
 ### Linux
 *待开发*
 
