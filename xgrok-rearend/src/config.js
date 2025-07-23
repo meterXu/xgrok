@@ -27,7 +27,8 @@ export default {
         ,'/oauth/register'
         ,'/oauth/validateCode'
         ,'/oauth/checkUserIsExist'
-        ,'/oauth/changePwd'
+        ,'/oauth/changePwd',
+        ,'/api/version/latest'
     ],
     logIgnores:['/api/server/checkServerOnline'],
     grants:['password'],
@@ -39,6 +40,7 @@ export default {
     alipay_appId:process.env.alipay_appId||null,
     alipay_gateway:process.env.alipay_gateway||null,
     notify_url:process.env.notify_url||null,
+    github_api_url:process.env.github_api_url||null,
     resend:process.env.resend||null,
     timestampDiff:process.env.timestampDiff||86400,//24H
 }
