@@ -3,21 +3,21 @@
     font-family: 'Source Han Sans CN';
     font-style: normal;
     font-weight: 400;
-    src: url(./assets/fonts/SourceHanSansCN-Regular.otf);
+    src: url(/fonts/SourceHanSansCN-Regular.otf);
     font-display: fallback;
 }
 @font-face {
     font-family: 'Source Han Sans CN';
     font-style: normal;
     font-weight: 500;
-    src: url(./assets/fonts/SourceHanSansCN-Medium.otf);
+    src: url(/fonts/SourceHanSansCN-Medium.otf);
     font-display: fallback;
 }
 @font-face {
     font-family: 'Source Han Sans CN';
     font-style: normal;
     font-weight: 700;
-    src: url(./assets/fonts/SourceHanSansCN-Bold.otf);
+    src: url(/fonts/SourceHanSansCN-Bold.otf);
     font-display: fallback;
 }
 html,body{
@@ -33,7 +33,7 @@ body{
 .container-wrap{
     width: 100%;
     height: 100%;
-    background-image: url("./assets/bg-02.webp");
+    background-image: url("/bg-02.webp");
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
@@ -78,7 +78,7 @@ body{
     margin-left: 24px;
 }
 .logo-icon{
-    background: url("./assets/icon.png") no-repeat center;
+    background: url("/icon.png") no-repeat center;
     width: 36px;
     height: 36px;
     background-size: cover;
@@ -144,13 +144,13 @@ body{
     color: #fff;
 }
 .download_ul_li:nth-child(1) .download-item-icon{
-    background: url('./assets/windows11.svg');
+    background: url('/windows11.svg');
 }
 .download_ul_li:nth-child(2) .download-item-icon{
-    background: url('./assets/mac.svg');
+    background: url('/mac.svg');
 }
 .download_ul_li:nth-child(3) .download-item-icon{
-    background: url('./assets/mac.svg');
+    background: url('/mac.svg');
 }
 
 .download-item-label{

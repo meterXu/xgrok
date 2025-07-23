@@ -1,8 +1,11 @@
 import fs from 'fs'
 import markdownit from 'markdown-it'
+import {resolve} from 'path'
 
 export function load({params}){
-    const data = fs.readFileSync(`src/assets/doc/${params.type}.md`, {encoding:'utf8'})
+    const filePath = resolve(process.cwd(), process.env.NODE_ENV==='development'?'static':'client','doc',`${params.type}.md`)
+    console.log(process.cwd())
+    const data = fs.readFileSync(filePath, {encoding:'utf8'})
     const md = markdownit()
     const result = md.render(data);
     return {
