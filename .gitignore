@@ -32,6 +32,8 @@ xgrok-client/execute
 xgrok-client/.env.development
 xgrok-client/.env.production
 xgrok-client/.env.browser
+xgrok-client/auto-imports.d.ts
+xgrok-client/components.d.ts
 xgrok-rearend/.env.development
 xgrok-rearend/.env.production
 xgrok-rearend/.env.proxy
@@ -39,5 +41,5 @@ xgrok-rearend/static/web
 xgrok-manage/.env.development
 xgrok-manage/.env.production
 xgrok-manage/project.js
-xgrok-client/auto-imports.d.ts
-xgrok-client/components.d.ts
+xgrok-portal/.env.development
+xgrok-portal/.env.production
