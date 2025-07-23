@@ -25,6 +25,7 @@
 		"vite-plugin-devtools-json": "^0.2.0"
 	},
 	"dependencies": {
+		"dotenv": "^17.2.0",
 		"markdown-it": "^14.1.0"
 	}
 }
