@@ -51,7 +51,7 @@
         </div>
         <ul class="download-ul">
             {#each downloadItems as item }
-                <li class="download_ul_li" onclick="{downloadFile(item.key)}">
+                <li class="download_ul_li" onclick="{downloadFile(item.value)}">
                     <div class="download-item-icon"></div>
                     <div class="download-item-label">{item.title}</div>
                 </li>
