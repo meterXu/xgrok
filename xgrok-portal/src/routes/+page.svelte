@@ -1,7 +1,7 @@
 <title>xgrok-您的应用代理访问工具</title>
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
 <script>
-        let version = '1.1.3'
+        let version = '1.1.4'
         function downloadFile(type){
             const urls = {
                 windows:{text:`xgrok-Setup-${version}.exe`,url:`./release/${version}/xgrok-Setup-${version}.exe`},
