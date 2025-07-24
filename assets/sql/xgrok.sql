@@ -469,7 +469,7 @@ CREATE TABLE `oauth_users` (
   `username` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
   `created_time` datetime DEFAULT (now()),
-  `nickName` varchar(50) DEFAULT NULL,
+  `nickname` varchar(50) DEFAULT NULL,
   `creator` varchar(50) DEFAULT NULL,
   `editor` varchar(50) DEFAULT NULL,
   `modified_time` datetime DEFAULT NULL,

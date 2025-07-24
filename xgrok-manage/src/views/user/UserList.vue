@@ -1,16 +1,18 @@
 <script setup lang="ts">
 
-import {onMounted, shallowReactive, shallowRef} from "vue";
-import {editUser, getDict, userQuery} from "@/api";
+import {onMounted, ref, shallowReactive, shallowRef} from "vue";
+import {batchDelUser, editUser, getDict, userQuery} from "@/api";
 import {useGetIndexMethod, usePage, useQuery, useQueryCallback} from "@/libs/use-curd";
-import {mappingDic, resetObj, useFormatDateTime} from "@/libs/utils";
+import {mappingDic, resetObj, useBatchDelConfirm, useDel, useFormatDateTime} from "@/libs/utils";
 import {showNotification} from '@/libs/utils/message.ts'
 import {IsDeleteEnum, NotificationTypeEnum, StatusEnum} from "@/libs/enum";
-import {Search,RefreshLeft} from "@element-plus/icons-vue";
+import {Search, RefreshLeft, Plus, Delete} from "@element-plus/icons-vue";
+import UserEdit from "./module/UserEdit.vue";
 
 const loading = shallowRef(false)
 const tableData = shallowReactive([] as any[])
 const page = usePage()
+const dialogVisible = ref(false)
 const searchForm = shallowReactive({
   username:'',
   status:StatusEnum.enable.toString(),
@@ -18,6 +20,8 @@ const searchForm = shallowReactive({
 })
 const statusDict = shallowReactive<DictItemType[]>([])
 const isDeleteDict = shallowReactive<DictItemType[]>([])
+const formData = shallowReactive<UserType>({} as UserType)
+const multipleSelection = ref<string[]>([])
 
 function queryData(params: any): Promise<ResultType<PaginationDataType<UserType>>> {
   loading.value = true
@@ -51,6 +55,28 @@ function onDetailUser(id:string,status:number,is_delete:number){
   })
 }
 
+function onEdit(row:any){
+  Object.assign(formData,row)
+  dialogVisible.value = true
+}
+
+function onSelectionChange(val: OrderType[]){
+  multipleSelection.value = val.map(c=>c.id)
+}
+
+function onAdd(){
+  resetObj(formData)
+  dialogVisible.value = true
+}
+
+function onDelete(){
+  useBatchDelConfirm(multipleSelection.value,{},()=>batchDelUser(multipleSelection.value)).then(res=>{
+    useDel(res).then(()=>{
+      handleQuery()
+    })
+  })
+}
+
 onMounted(()=>{
   mappingDic([getDict('status'),getDict('is_delete')],[statusDict,isDeleteDict])
   handleQuery(1,20)
@@ -81,16 +107,27 @@ onMounted(()=>{
     </el-form>
   </div>
   <div class="flex-1 flex flex-col gap-12 border-1 border-(--el-border-color-light) bg-white rounded-2xl shadow-xs">
+    <div class="px-12 pt-12 flex flex-row items-center bg-white">
+      <el-button type="primary" :icon="Plus" @click="onAdd">添加</el-button>
+      <el-button type="danger" :icon="Delete" @click="onDelete">删除</el-button>
+    </div>
     <!--  表格  -->
     <div class="flex-1 w-full relative">
       <div class="absolute w-full h-full">
-        <el-table v-loading="loading" :data="tableData" class="rounded-2xl!" height="100%">
+        <el-table v-loading="loading" :data="tableData" class="rounded-2xl!" height="100%" @selection-change="onSelectionChange">
+          <el-table-column fixed type="selection" width="45" />
           <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod" width="55"></el-table-column>
           <el-table-column prop="username" label="用户名" align="left"></el-table-column>
+          <el-table-column prop="nickname" label="昵称" align="left"></el-table-column>
           <el-table-column prop="role_name" label="所属角色" align="left"></el-table-column>
           <el-table-column prop="created_time" label="创建时间" align="left">
             <template #default="{row}">
               {{useFormatDateTime(row.created_time)}}
+            </template>
+          </el-table-column>
+          <el-table-column label="隧道配置" align="left" width="200">
+            <template #default="{row}">
+              <span class="underline cursor-pointer">WEB：{{row.web_count}}个，服务：{{row.service_count}}个</span>
             </template>
           </el-table-column>
           <el-table-column prop="status" label="是否启用" align="left" width="100">
@@ -102,6 +139,11 @@ onMounted(()=>{
             <template #default="{row}">
               <el-switch v-model="row.is_delete" :inactive-value="0" :active-value="1"
                          style="--el-switch-on-color: var(--el-color-danger);" @change="(value:number)=>{onDetailUser(row.id,row.status,value)}"></el-switch>
+            </template>
+          </el-table-column>
+          <el-table-column prop="is_delete" width="120" label="操作" align="center">
+            <template #default="{row}">
+              <el-button type="text" @click="onEdit(row)">编辑</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -121,6 +163,7 @@ onMounted(()=>{
     </div>
   </div>
 </div>
+  <UserEdit v-model="dialogVisible" :formData="formData" @close="handleQuery"></UserEdit>
 </template>
 
 <style scoped lang="less">

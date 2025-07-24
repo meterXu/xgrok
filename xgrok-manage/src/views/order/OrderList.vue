@@ -173,7 +173,7 @@ onMounted(() => {
                 {{ useFormatDateTime(row.expired_time) }}
               </template>
             </el-table-column>
-            <el-table-column prop="is_delete" label="操作" align="left">
+            <el-table-column prop="is_delete" label="操作" align="center">
               <template #default="{row}">
                 <el-button type="text" @click="onEdit(row)">编辑</el-button>
               </template>

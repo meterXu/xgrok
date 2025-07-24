@@ -46,4 +46,9 @@ html,body,#app{
       border-top: 1px solid var(--el-color-primary);
     }
   }
+  .xx-web-tab{
+    .el-tabs__nav{
+      align-items: center;
+    }
+  }
 }

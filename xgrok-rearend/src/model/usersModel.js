@@ -7,7 +7,7 @@ export default class UsersModel {
         this.username = body.username
         this.password = body.password
         this.created_time = body.created_time
-        this.nickName = body.nickName
+        this.nickname = body.nickname
         this.creator = body.creator
         this.editor = body.editor
         this.modified_time = body.modified_time
@@ -20,7 +20,7 @@ export default class UsersModel {
     @swaggerProperty({type: "string", description: "", nullable: false}) username
     @swaggerProperty({type: "string", description: "", nullable: false}) password
     @swaggerProperty({type: "string", description: "", nullable: true}) created_time
-    @swaggerProperty({type: "string", description: "", nullable: true}) nickName
+    @swaggerProperty({type: "string", description: "", nullable: true}) nickname
     @swaggerProperty({type: "string", description: "", nullable: true}) creator
     @swaggerProperty({type: "string", description: "", nullable: true}) editor
     @swaggerProperty({type: "string", description: "", nullable: true}) modified_time

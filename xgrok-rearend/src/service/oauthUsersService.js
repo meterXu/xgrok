@@ -24,7 +24,7 @@ export default class OAuthUsersService {
         ].filter(c => c).join(' and ')
 
         let querySql = `
-            select a.id,a.username,a.nickName,a.created_time,c.type from oauth_users a
+            select a.id,a.username,a.nickname,a.created_time,c.type from oauth_users a
             inner join oauth_user_role b on a.id=b.user_id and b.is_delete=${isDelete.false} and b.status=${status.enable}
             inner join oauth_role c on c.id=b.role_id and c.is_delete=${isDelete.false} and c.status=${status.enable}
             ${where ? `where ${where}` : ''}`
@@ -47,7 +47,7 @@ export default class OAuthUsersService {
                     id: userModel.id,
                     username: userModel.username,
                     password: userModel.password,
-                    nickName: userModel.nickName,
+                    nickname: userModel.nickname,
                     sort: userModel.sort,
                     creator: userModel.creator,
                     editor: userModel.editor,
@@ -133,10 +133,13 @@ export default class OAuthUsersService {
         ${where ? `where ${where}` : ''} `
 
         const querySql = `
-        select a.id,c.id as role_id,a.username,a.created_time,c.name as role_name,a.is_delete,a.status from oauth_users a
+        select a.id,c.id as role_id,a.username,a.created_time,c.name as role_name,a.nickname,count(distinct d.id) web_count,count(distinct e.id) service_count,a.is_delete,a.status from oauth_users a
         left join oauth_user_role b on a.id=b.user_id
         left join oauth_role c on c.id = b.role_id
+        left join ng_tunnel_web d on a.id=d.creator and d.is_delete=0 and d.status=1
+        left join ng_tunnel_service e on a.id=e.creator and e.is_delete=0 and e.status=1
         ${where ? `where ${where}` : ''}
+        group by a.id,role_id,a.username,a.created_time,role_name,a.nickname,a.is_delete,a.status
         order by a.sort asc,a.created_time desc
         limit ${(pagination.pageNumber - 1) * pagination.pageSize},${pagination.pageSize}
         `

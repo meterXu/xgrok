@@ -164,7 +164,7 @@ model OAuthUsers {
   username        String     @unique(map: "oauth_users_pk") @db.VarChar(100)
   password        String     @db.VarChar(100)
   created_time    DateTime?  @default(dbgenerated("(now())")) @map("created_time") @db.DateTime(0)
-  nickName        String?    @db.VarChar(50)
+  nickname        String?    @db.VarChar(50)
   creator         String?    @db.VarChar(50)
   editor          String?    @db.VarChar(50)
   modified_time   DateTime?  @db.DateTime(0)

@@ -26,7 +26,7 @@ export default class OAuthTokensService {
         a.refresh_token_expires_at,
         b.id userId,
         b.username,
-        b.nickName,
+        b.nickname,
         e.type,
         c.id clientId,
         c.client_id,

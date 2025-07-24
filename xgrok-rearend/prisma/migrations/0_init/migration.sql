@@ -143,7 +143,7 @@ CREATE TABLE `oauth_users` (
     `username` VARCHAR(100) NOT NULL,
     `password` VARCHAR(100) NOT NULL,
     `created_time` DATETIME(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-    `nickName` VARCHAR(50) NULL,
+    `nickname` VARCHAR(50) NULL,
     `creator` VARCHAR(50) NULL,
     `editor` VARCHAR(50) NULL,
     `modified_time` DATETIME(0) NULL,
