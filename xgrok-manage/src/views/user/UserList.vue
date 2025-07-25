@@ -145,7 +145,8 @@ onMounted(()=>{
           </el-table-column>
           <el-table-column label="隧道配置" align="left" width="200">
             <template #default="{row}">
-              <span class="underline cursor-pointer" @click="onShowDrawer(row)">WEB：{{row.web_count}}个，服务：{{row.service_count}}个</span>
+              <span class="underline cursor-pointer text-(--el-color-blue) inline-block" @click="onShowDrawer(row)">WEB：{{row.web_count}}</span>
+              <span class="underline cursor-pointer text-(--el-color-danger) inline-block ml-8" @click="onShowDrawer(row)">服务：{{row.service_count}}</span>
             </template>
           </el-table-column>
           <el-table-column prop="status" label="是否启用" align="left" width="100">

@@ -7,6 +7,7 @@
   color: var(--el-text-color-regular);
   background-color: #242424;
 
+  --el-color-blue:#409EFF;
   --el-color-primary:#30a44b;
   --el-color-success:#30a44b;
   --el-color-primary-dark-2: #218538;
