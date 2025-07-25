@@ -70,7 +70,7 @@ function onAdd(){
 }
 
 function onDelete(){
-  useBatchDelConfirm(multipleSelection.value,{},()=>batchDelUser(multipleSelection.value)).then(res=>{
+  useBatchDelConfirm(multipleSelection.value,{},()=>batchDelUser(multipleSelection.value,false)).then(res=>{
     useDel(res).then(()=>{
       handleQuery()
     })

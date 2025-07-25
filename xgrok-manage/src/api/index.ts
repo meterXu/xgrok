@@ -81,7 +81,7 @@ export function batchDelOrder(ids:string[]): Promise<ResultType<any>> {
     return deleteAction(url.order.delete, {id:ids.join(',')})
 }
 
-export function batchDelUser(ids:string[],isPhysics:boolean): Promise<ResultType<any>> {
+export function batchDelUser(ids:string[],isPhysics:boolean=false): Promise<ResultType<any>> {
     return deleteAction(url.user.delete, {id:ids.join(','),isPhysics});
 }
 
