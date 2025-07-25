@@ -7,11 +7,9 @@ import EmailService from "../service/emailService.js";
 import OrderService from "../service/orderService.js";
 import PaginationModel from "../model/sys/paginationModel";
 import OrderByModel from "../model/sys/orderByModel";
-import OAuthUsersModel from "../model/oauthUsersModel";
 import OAuthUsersService from "../service/oauthUsersService";
 import {serviceType} from "../utils/enum";
 import UsersModel from "../model/usersModel";
-import OrderModel from "../model/orderModel";
 const tag = tags(['User'])
 
 export default class UserController {
@@ -128,7 +126,17 @@ export default class UserController {
     async editUser(ctx){
         const usersModel = new UsersModel(ctx.validatedBody)
         const res = await this.oAuthUsersService.editUser(usersModel)
-        ctx.result(new ResultModel(res,null,!!res))
+        ctx.result(new ResultModel(res.id,null,!!res))
+    }
+
+    @request('post', '/user')
+    @summary('创建用户')
+    @tag
+    @body(UsersModel.swaggerDocument)
+    async addUser(ctx){
+        const usersModel = new UsersModel(ctx.validatedBody)
+        const res = await this.oAuthUsersService.createUser(usersModel)
+        ctx.result(new ResultModel(res[0].id,null,!!res[0].id))
     }
 
     @request('get', '/user/detail')
@@ -139,5 +147,20 @@ export default class UserController {
         const usersModel = new UsersModel(ctx.validatedQuery)
         const res = await this.oAuthUsersService.detail(usersModel.id)
         ctx.result(new ResultModel(res,null,!!res))
+    }
+
+    @request('delete', '/user')
+    @summary('批量删除')
+    @tag
+    @query({
+        id: {type: "string", required: true, description: 'id字符串数组'},
+        isPhysics:{type:"boolean",required: false, description: '是否物理删除',default:false},
+    })
+    async delOrder(ctx) {
+        let id = ctx.validatedQuery.id;
+        let isPhysics = ctx.validatedQuery.isPhysics;
+        const delRes = await this.oAuthUsersService.delUser(id.split(','),isPhysics)
+        const res = new ResultModel(id, null, !!delRes)
+        ctx.result(res)
     }
 }

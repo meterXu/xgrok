@@ -79,7 +79,7 @@ onMounted(() => {
     <div class="my-inner-form p-12 flex flex-row items-center bg-white border-1 border-(--el-border-color-light) rounded-2xl shadow-xs">
       <el-form inline>
         <el-form-item label="订单编号">
-          <el-input class="w-150!" v-model="searchForm.trade_no" clearable/>
+          <el-input class="w-150!" v-model="searchForm.trade_no" clearable @keydown.enter="()=>{handleQuery()}"/>
         </el-form-item>
         <el-form-item label="创建日期">
           <el-date-picker class="w-260!" type="daterange"
@@ -87,16 +87,16 @@ onMounted(() => {
                           end-placeholder="结束日期" :default-time="[
                               new Date(2000, 1, 1, 0, 0, 0),
                               new Date(2000, 2, 1, 23, 59, 59),]"
-                          v-model="searchForm.created_time"></el-date-picker>
+                          v-model="searchForm.created_time" @change="()=>{handleQuery()}"></el-date-picker>
         </el-form-item>
         <el-form-item label="支付状态">
-          <el-select class="w-150!" v-model="searchForm.pay_status" clearable>
+          <el-select class="w-150!" v-model="searchForm.pay_status" clearable @change="()=>{handleQuery()}">
             <el-option v-for="item in payStatus" :key="item.code" :label="item.chn_value"
                        :value="item.code"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="购买人">
-          <el-input class="w-120!" v-model="searchForm.username" clearable>
+          <el-input class="w-120!" v-model="searchForm.username" clearable @keydown.enter="()=>{handleQuery()}">
           </el-input>
         </el-form-item>
         <el-form-item>
@@ -106,7 +106,7 @@ onMounted(() => {
       </el-form>
     </div>
     <div class="flex-1 flex flex-col gap-12 border-1 border-(--el-border-color-light) bg-white rounded-2xl shadow-xs">
-      <div class="px-12 pt-12 flex flex-row items-center bg-white">
+      <div class="px-12 pt-12 rounded-2xl flex flex-row items-center bg-white">
         <el-button type="primary" :icon="Plus" @click="onAdd">添加</el-button>
         <el-button type="danger" :icon="Delete" @click="onDelete">删除</el-button>
       </div>

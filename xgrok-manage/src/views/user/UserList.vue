@@ -8,6 +8,7 @@ import {showNotification} from '@/libs/utils/message.ts'
 import {IsDeleteEnum, NotificationTypeEnum, StatusEnum} from "@/libs/enum";
 import {Search, RefreshLeft, Plus, Delete} from "@element-plus/icons-vue";
 import UserEdit from "./module/UserEdit.vue";
+import UserTunnelDrawer from "@/views/user/module/UserTunnelDrawer.vue";
 
 const loading = shallowRef(false)
 const tableData = shallowReactive([] as any[])
@@ -15,13 +16,15 @@ const page = usePage()
 const dialogVisible = ref(false)
 const searchForm = shallowReactive({
   username:'',
-  status:StatusEnum.enable.toString(),
-  is_delete:IsDeleteEnum.false.toString()
+  status:null,
+  is_delete:null
 })
 const statusDict = shallowReactive<DictItemType[]>([])
 const isDeleteDict = shallowReactive<DictItemType[]>([])
 const formData = shallowReactive<UserType>({} as UserType)
 const multipleSelection = ref<string[]>([])
+const selectedUser = shallowReactive<UserType>({} as UserType)
+const drawerVisible = ref(false)
 
 function queryData(params: any): Promise<ResultType<PaginationDataType<UserType>>> {
   loading.value = true
@@ -37,10 +40,7 @@ function handleQuery(pageNumber:number=1,pageSize:number=20){
   useQuery(queryData,Object.assign({},page,searchForm),(res:ResultType<PaginationDataType<UserType>>)=>{useQueryCallback(res,tableData,page)})
 }
 function handleReset(){
-  resetObj(searchForm,{
-    status:StatusEnum.enable.toString(),
-    is_delete:IsDeleteEnum.false.toString()
-  })
+  resetObj(searchForm)
   handleQuery(1,20)
 }
 
@@ -65,7 +65,7 @@ function onSelectionChange(val: OrderType[]){
 }
 
 function onAdd(){
-  resetObj(formData)
+  resetObj(formData,{status:StatusEnum.enable,is_delete:IsDeleteEnum.false})
   dialogVisible.value = true
 }
 
@@ -75,6 +75,19 @@ function onDelete(){
       handleQuery()
     })
   })
+}
+
+function onPhysicsDelete(){
+  useBatchDelConfirm(multipleSelection.value,{},()=>batchDelUser(multipleSelection.value,true)).then(res=>{
+    useDel(res).then(()=>{
+      handleQuery()
+    })
+  })
+}
+
+function onShowDrawer(user:UserType){
+  Object.assign(selectedUser,user)
+  drawerVisible.value = true
 }
 
 onMounted(()=>{
@@ -88,15 +101,15 @@ onMounted(()=>{
   <div class="my-inner-form p-12 flex flex-row items-center bg-white border-1 border-(--el-border-color-light) rounded-2xl shadow-xs">
     <el-form inline>
       <el-form-item label="用户名">
-        <el-input v-model="searchForm.username" clearable/>
+        <el-input v-model="searchForm.username" clearable @keydown.enter="()=>{handleQuery()}"/>
       </el-form-item>
       <el-form-item label="是否启用">
-        <el-select class="w-120!" v-model="searchForm.status">
+        <el-select class="w-120!" v-model="searchForm.status" clearable @change="()=>{handleQuery()}">
           <el-option v-for="item in statusDict" :label="item.chn_value" :value="item.code"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="是否删除">
-        <el-select class="w-120!" v-model="searchForm.is_delete">
+        <el-select class="w-120!" v-model="searchForm.is_delete" clearable @change="()=>{handleQuery()}">
           <el-option v-for="item in isDeleteDict" :label="item.chn_value" :value="item.code"></el-option>
         </el-select>
       </el-form-item>
@@ -107,14 +120,19 @@ onMounted(()=>{
     </el-form>
   </div>
   <div class="flex-1 flex flex-col gap-12 border-1 border-(--el-border-color-light) bg-white rounded-2xl shadow-xs">
-    <div class="px-12 pt-12 flex flex-row items-center bg-white">
+    <div class="px-12 pt-12 flex flex-row items-center rounded-2xl bg-white">
       <el-button type="primary" :icon="Plus" @click="onAdd">添加</el-button>
       <el-button type="danger" :icon="Delete" @click="onDelete">删除</el-button>
+      <el-button type="danger" :icon="Delete" @click="onPhysicsDelete">物理删除</el-button>
     </div>
     <!--  表格  -->
     <div class="flex-1 w-full relative">
       <div class="absolute w-full h-full">
-        <el-table v-loading="loading" :data="tableData" class="rounded-2xl!" height="100%" @selection-change="onSelectionChange">
+        <el-table v-loading="loading" :data="tableData"
+                  class="rounded-2xl!"
+                  height="100%"
+                  header-row-class-name="table-header"
+                  @selection-change="onSelectionChange">
           <el-table-column fixed type="selection" width="45" />
           <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod" width="55"></el-table-column>
           <el-table-column prop="username" label="用户名" align="left"></el-table-column>
@@ -127,7 +145,7 @@ onMounted(()=>{
           </el-table-column>
           <el-table-column label="隧道配置" align="left" width="200">
             <template #default="{row}">
-              <span class="underline cursor-pointer">WEB：{{row.web_count}}个，服务：{{row.service_count}}个</span>
+              <span class="underline cursor-pointer" @click="onShowDrawer(row)">WEB：{{row.web_count}}个，服务：{{row.service_count}}个</span>
             </template>
           </el-table-column>
           <el-table-column prop="status" label="是否启用" align="left" width="100">
@@ -141,9 +159,10 @@ onMounted(()=>{
                          style="--el-switch-on-color: var(--el-color-danger);" @change="(value:number)=>{onDetailUser(row.id,row.status,value)}"></el-switch>
             </template>
           </el-table-column>
-          <el-table-column prop="is_delete" width="120" label="操作" align="center">
+          <el-table-column prop="is_delete" width="180" label="操作" align="center">
             <template #default="{row}">
               <el-button type="text" @click="onEdit(row)">编辑</el-button>
+              <el-button type="text" @click="onEdit(row)">重置密码</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -164,6 +183,7 @@ onMounted(()=>{
   </div>
 </div>
   <UserEdit v-model="dialogVisible" :formData="formData" @close="handleQuery"></UserEdit>
+  <UserTunnelDrawer v-model="drawerVisible" :user="selectedUser"></UserTunnelDrawer>
 </template>
 
 <style scoped lang="less">

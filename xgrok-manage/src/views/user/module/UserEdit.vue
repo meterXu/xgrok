@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import {reactive, computed, ref, watch, onMounted} from 'vue'
 import type {FormInstance} from 'element-plus'
-import {mappingDic, useSaveOrUpdate} from "@/libs/utils/index.js";
-import {addUser, editUser, getDict} from "@/api";
+import {useSaveOrUpdate} from "@/libs/utils/index.js";
+import {addUser, editUser} from "@/api";
+import md5 from "js-md5"
 
 interface Props {
   formData: UserType
@@ -13,7 +14,9 @@ const dialogVisible = defineModel()
 const emit = defineEmits(['close'])
 const ruleFormRef = ref<FormInstance>()
 const rules = reactive({
-  username: [{required: true, message: '请输入用户名', trigger: 'blur'}],
+  username: [
+      {required: true, message: '请输入用户名', trigger: 'blur'},
+      {message: '用户名必须是邮箱',type: 'email', trigger: 'blur'}],
   password:[{required: true, message: '请输入密码', trigger: 'blur'}],
   confirmPassword:[{required: true, message: '请再次输入密码', trigger: 'blur'},{
     validator: (rule: any, value: any, callback: any) => {
@@ -28,8 +31,6 @@ const rules = reactive({
   }]
 })
 const saveLoading = ref(false)
-const status = reactive<DictItemType[]>([])
-const isDelete = reactive<DictItemType[]>([])
 
 function handleCancel() {
   ruleFormRef.value?.resetFields()
@@ -52,6 +53,9 @@ function handleOk() {
     if (valid) {
       saveLoading.value=true
       try {
+        if(!props.formData.id){
+          props.formData.password = md5(props.formData.password)
+        }
         let res = props.formData.id?await editUser(props.formData as UserType):await addUser(props.formData as UserType)
         useSaveOrUpdate(res,props.formData.id).then(()=>{
           handleCancel()
@@ -80,16 +84,18 @@ onMounted(() => {})
           <el-input v-model="formData.username" placeholder="请输入用户名"></el-input>
         </el-col>
       </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-col :span="21">
-          <el-input type="password" v-model="formData.password" placeholder="请输入密码"></el-input>
-        </el-col>
-      </el-form-item>
-      <el-form-item label="密码" prop="confirmPassword">
-        <el-col :span="21">
-          <el-input type="password" v-model="formData.confirmPassword" placeholder="请再次输入密码"></el-input>
-        </el-col>
-      </el-form-item>
+      <template v-if="!formData.id">
+        <el-form-item label="密码" prop="password">
+          <el-col :span="21">
+            <el-input type="password" v-model="formData.password" placeholder="请输入密码"></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="confirmPassword">
+          <el-col :span="21">
+            <el-input type="password" v-model="formData.confirmPassword" placeholder="请再次输入密码"></el-input>
+          </el-col>
+        </el-form-item>
+      </template>
       <el-form-item label="昵称" prop="nickname">
         <el-col :span="21">
           <el-input v-model="formData.nickname" placeholder="请输入昵称"></el-input>

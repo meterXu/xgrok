@@ -12,10 +12,10 @@ const loading = shallowRef(false)
 const tableData = shallowReactive([] as any[])
 const page = usePage()
 const searchForm = shallowReactive({
-  name:'',
-  type:'2',
+  name:null,
+  type:null,
   status:'1',
-  is_delete:'0'
+  is_delete:null
 })
 const serverTypeDict = shallowReactive<DictItemType[]>([])
 const statusDict = shallowReactive<DictItemType[]>([])
@@ -37,7 +37,7 @@ function handleQuery(pageNumber:number=1,pageSize:number=20){
   },page,searchForm),(res:ResultType<PaginationDataType<ServerType>>)=>{useQueryCallback(res,tableData,page)})
 }
 function handleReset(){
-  resetObj(searchForm,{type:'2', status:'1', is_delete:'0'})
+  resetObj(searchForm,{status:'1'})
   handleQuery(1,20)
 }
 
@@ -70,20 +70,20 @@ onMounted(()=>{
     <div class="my-inner-form p-12 flex flex-row items-center bg-white border-1 border-(--el-border-color-light) rounded-2xl shadow-xs">
       <el-form inline>
         <el-form-item label="名称">
-          <el-input v-model="searchForm.name"/>
+          <el-input v-model="searchForm.name" clearable @keydown.enter="()=>{handleQuery()}"/>
         </el-form-item>
         <el-form-item label="类型">
-          <el-select class="w-120!" v-model="searchForm.type">
+          <el-select class="w-120!" v-model="searchForm.type" clearable @change="()=>{handleQuery()}">
             <el-option v-for="item in serverTypeDict" :label="item.chn_value" :value="item.code"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="是否启用">
-          <el-select class="w-120!" v-model="searchForm.status">
+          <el-select class="w-120!" v-model="searchForm.status" clearable @change="()=>{handleQuery()}">
             <el-option v-for="item in statusDict" :label="item.chn_value" :value="item.code"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="是否删除">
-          <el-select class="w-120!" v-model="searchForm.is_delete">
+          <el-select class="w-120!" v-model="searchForm.is_delete" clearable @change="()=>{handleQuery()}">
             <el-option v-for="item in isDeleteDict" :label="item.chn_value" :value="item.code"></el-option>
           </el-select>
         </el-form-item>

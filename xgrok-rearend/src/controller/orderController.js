@@ -7,6 +7,7 @@ const tag = tags(['Order'])
 import OrderService from '../service/orderService.js'
 import ResultModel from "../model/sys/resultModel.js";
 import ProductService from "../service/productService.js";
+import {payStatus} from "../utils/enum";
 
 export default class OrderController {
     constructor() {

@@ -18,13 +18,11 @@ export default class OAuthUsersService {
         let oauthUsersModel = new OAuthUsersModel(query)
         let where = [
             oauthUsersModel.username && `a.username = '${oauthUsersModel.username}'`,
-            oauthUsersModel.password && `a.password = '${oauthUsersModel.password}'`,
             `a.is_delete = ${isDelete.false}`,
-            `a.status = ${status.enable}`
         ].filter(c => c).join(' and ')
 
         let querySql = `
-            select a.id,a.username,a.nickname,a.created_time,c.type from oauth_users a
+            select a.id,a.username,a.password,a.nickname,a.created_time,c.type,a.status from oauth_users a
             inner join oauth_user_role b on a.id=b.user_id and b.is_delete=${isDelete.false} and b.status=${status.enable}
             inner join oauth_role c on c.id=b.role_id and c.is_delete=${isDelete.false} and c.status=${status.enable}
             ${where ? `where ${where}` : ''}`
@@ -150,5 +148,49 @@ export default class OAuthUsersService {
 
     editUser(userModel) {
         return prisma.OAuthUsers.update({where: {id: userModel.id}, data: userModel});
+    }
+
+    createUser(userModel) {
+        userModel.id = randomUUID()
+        return prisma.$transaction([
+            prisma.OAuthUsers.create({
+                data: {
+                    id: userModel.id,
+                    username: userModel.username,
+                    password: userModel.password,
+                    nickname: userModel.nickname,
+                    sort: userModel.sort,
+                    creator: userModel.creator,
+                    editor: userModel.editor,
+                    created_time: userModel.created_time,
+                    modified_time: userModel.modified_time,
+                    status: status.enable,
+                    is_delete: isDelete.false,
+                }
+            }),
+            prisma.UserRole.create({
+                data:{
+                    id:randomUUID(),
+                    user_id:userModel.id,
+                    role_id:roleId.普通用户,
+                    status: status.enable,
+                    is_delete: isDelete.false,
+                }
+            })
+        ])
+    }
+
+    delUser(ids,isPhysics=false){
+        if(isPhysics){
+            return prisma.$transaction([
+                prisma.UserRole.deleteMany({where:{user_id:{in:ids}}}),
+                prisma.OAuthUsers.deleteMany({where:{id:{in:ids}}})
+            ])
+        }else{
+            return prisma.$transaction([
+                prisma.UserRole.updateMany({data:{is_delete: isDelete.true,}, where:{user_id:{in:ids}}}),
+                prisma.OAuthUsers.updateMany({data: {is_delete: isDelete.true,}, where: {id:{in:ids}}}),
+            ])
+        }
     }
 }

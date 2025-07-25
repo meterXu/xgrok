@@ -5,6 +5,7 @@ import {randomUUID} from "../../utils/index.js";
 import config from "../../config.js";
 import {OAuthError} from "oauth2-server";
 import md5 from 'js-md5'
+import {isDelete, status} from "../../utils/enum";
 
 export default class Model {
     constructor(ctx) {
@@ -29,12 +30,16 @@ export default class Model {
 
     async getUser(username, password){
         let res = await this.oauthUsersService.queryOAuthUsers({
-            username:username,
-            password:password
+            username:username
         })
         if(!res){
-            throw new OAuthError('账号或密码错误！')
+            throw new OAuthError('该用户不存在！')
+        }else if(res.password!==password){
+            throw new OAuthError('密码错误！')
+        }else if(res.status===status.disable){
+            throw new OAuthError('该用户已被禁用！')
         }
+        delete res.password
         return res
 
     }
