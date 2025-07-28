@@ -76,6 +76,8 @@ onMounted(()=>{
             :data="tunnelWebConfigData">
               <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod" width="55"></el-table-column>
               <el-table-column prop="name" label="名称" align="left"></el-table-column>
+              <el-table-column prop="hostname" show-overflow-tooltip width="100" label="设备名称" align="left"></el-table-column>
+              <el-table-column prop="server_name" width="60" label="服务器" align="left"></el-table-column>
               <el-table-column show-overflow-tooltip label="HTTP连接" width="220" align="left">
                 <template #default="{row}">
                   <el-link type="primary" :href="getUrl(row)[0]" target="_blank">{{getUrl(row)[0]}}</el-link>
@@ -92,7 +94,7 @@ onMounted(()=>{
                   {{useFormatDic(hostTypeDict,row.type.toString())}}
                 </template>
               </el-table-column>
-              <el-table-column prop="remark" label="备注" align="left"></el-table-column>
+              <el-table-column prop="remark" label="备注" show-overflow-tooltip align="left"></el-table-column>
             </el-table>
           </FillHeightContainer>
           <div class="flex justify-end px-12 pb-12">
@@ -116,12 +118,14 @@ onMounted(()=>{
                       :data="tunnelServiceConfigData">
               <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod" width="55"></el-table-column>
               <el-table-column prop="name" label="名称" align="left"></el-table-column>
+              <el-table-column prop="hostname" show-overflow-tooltip width="100" label="设备名称" align="left"></el-table-column>
+              <el-table-column prop="server_name" width="60" label="服务器" align="left"></el-table-column>
               <el-table-column label="映射地址" show-overflow-tooltip width="160" align="left">
                 <template #default="{row}">
                   <el-link type="primary">{{row.domain}}:{{row.remote_port}}</el-link>
                 </template>
               </el-table-column>
-              <el-table-column label="代理地址" show-overflow-tooltip width="150" align="left">
+              <el-table-column label="代理地址" show-overflow-tooltip width="160" align="left">
                 <template #default="{row}">
                   {{row.host}}:{{row.port}}
                 </template>
@@ -131,7 +135,7 @@ onMounted(()=>{
                   {{useFormatDic(serviceTypeDict,row.type.toString())}}
                 </template>
               </el-table-column>
-              <el-table-column prop="remark" label="备注" align="left"></el-table-column>
+              <el-table-column prop="remark" label="备注" show-overflow-tooltip align="left"></el-table-column>
             </el-table>
           </FillHeightContainer>
           <div class="flex justify-end px-12 pb-12">
