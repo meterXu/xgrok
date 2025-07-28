@@ -9,7 +9,13 @@ function windowResize() {
   timer&&clearTimeout(timer);
   timer = setTimeout(() => {
     let width = document.body.clientWidth;
-    width=width<1280?1280:width
+    if(width <= 1920){
+      width = 1920
+    } else if(width <= 1366){
+      width = 1366
+    } else if(width <= 1280){
+      width = 1280
+    }
     const widthNum = width / BaseFontSize;
     document.documentElement.style.fontSize = widthNum + 'px';
   }, 100)
