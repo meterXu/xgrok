@@ -86,7 +86,7 @@ onMounted(()=>{
                       :load="tunnelWebLoading"
                       :data="tunnelWebConfigData">
               <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod" width="55"></el-table-column>
-              <el-table-column prop="name" label="名称" align="left"></el-table-column>
+              <el-table-column prop="name" label="名称" show-overflow-tooltip align="left"></el-table-column>
               <el-table-column prop="hostname" show-overflow-tooltip width="100" label="设备名称" align="left"></el-table-column>
               <el-table-column prop="server_name" width="60" label="服务器" align="left"></el-table-column>
               <el-table-column show-overflow-tooltip label="HTTP连接" width="220" align="left">
@@ -130,7 +130,7 @@ onMounted(()=>{
                       :load="tunnelServiceLoading"
                       :data="tunnelServiceConfigData">
               <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod" width="55"></el-table-column>
-              <el-table-column prop="name" label="名称" align="left"></el-table-column>
+              <el-table-column prop="name" label="名称" show-overflow-tooltip align="left"></el-table-column>
               <el-table-column prop="hostname" show-overflow-tooltip width="100" label="设备名称" align="left"></el-table-column>
               <el-table-column prop="server_name" width="60" label="服务器" align="left"></el-table-column>
               <el-table-column label="映射地址" show-overflow-tooltip width="160" align="left">
