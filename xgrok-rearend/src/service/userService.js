@@ -95,6 +95,7 @@ export default class UserService {
                                from ng_tunnel_service as a
                                left join ng_server b on a.server_id = b.id
                                left join ng_client c on a.client_id = c.id
+                               ${where ? `where ${where}` : ''}
                                order by a.created_time desc
                                limit ${(pagination.pageNumber - 1) * pagination.pageSize},${pagination.pageSize}`
         let totalRes = await prisma.$queryRaw(Prisma.raw(totalSql))
