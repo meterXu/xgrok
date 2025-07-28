@@ -21,20 +21,26 @@ watch(() => props.user.id, () => {
   onTunnelServiceConfig()
 })
 
-function onQueryTunnelWebConfig(){
+function onQueryTunnelWebConfig(pageNumber:number=1,pageSize:number=20){
+  tunnelWebPage.pageNumber = pageNumber
+  tunnelWebPage.pageSize = pageSize
   queryTunnelWebConfig({userId: props.user.id,...tunnelWebPage}).then((res) => {
     if(res.success&&res.data){
       tunnelWebConfigData.splice(0,tunnelWebConfigData.length);
       tunnelWebConfigData.push(...res.data.records as any []);
+      tunnelWebPage.total = res.data.total;
     }
   })
 }
 
-function onTunnelServiceConfig(){
+function onTunnelServiceConfig(pageNumber:number=1,pageSize:number=20){
+  tunnelServicePage.pageNumber = pageNumber
+  tunnelServicePage.pageSize = pageSize
   tunnelServiceConfig({userId: props.user.id,...tunnelServicePage}).then((res) => {
     if(res.success&&res.data){
       tunnelServiceConfigData.splice(0,tunnelServiceConfigData.length);
       tunnelServiceConfigData.push(...res.data.records as any []);
+      tunnelServicePage.total = res.data.total;
     }
   })
 }
@@ -48,11 +54,9 @@ function getUrl(row:any){
 
 onMounted(()=>{
   mappingDic([
-        getDict('status'),
-        getDict('is_delete'),
         getDict('service_type'),
         getDict('host_type')],
-      [statusDict,isDeleteDict,serviceTypeDict,hostTypeDict])
+      [serviceTypeDict,hostTypeDict])
 })
 </script>
 
@@ -89,18 +93,19 @@ onMounted(()=>{
                 </template>
               </el-table-column>
               <el-table-column prop="remark" label="备注" align="left"></el-table-column>
-              <el-table-column prop="status" label="状态" align="left">
-                <template #default="{row}">
-                  {{useFormatDic(statusDict,row.status.toString())}}
-                </template>
-              </el-table-column>
-              <el-table-column prop="is_delete" label="是否删除" align="left">
-                <template #default="{row}">
-                  {{useFormatDic(isDeleteDict,row.is_delete.toString())}}
-                </template>
-              </el-table-column>
             </el-table>
           </FillHeightContainer>
+          <div class="flex justify-end px-12 pb-12">
+            <el-pagination
+                @size-change="(size:number)=>{onQueryTunnelWebConfig(1,size)}"
+                @current-change="(current:number)=>{onQueryTunnelWebConfig(current,20)}"
+                :current-page.sync="tunnelWebPage.pageNumber"
+                :page-size="tunnelWebPage.pageSize"
+                :page-sizes="tunnelWebPage.pageSizes"
+                :layout="tunnelWebPage.layout"
+                :total="tunnelWebPage.total">
+            </el-pagination>
+          </div>
         </div>
         <div class="flex-1/2 flex flex-col justify-items-start items-start gap-8 w-full">
           <h3 class="text-[14px]">
@@ -127,18 +132,19 @@ onMounted(()=>{
                 </template>
               </el-table-column>
               <el-table-column prop="remark" label="备注" align="left"></el-table-column>
-              <el-table-column prop="status" label="状态" align="left">
-                <template #default="{row}">
-                  {{useFormatDic(statusDict,row.status.toString())}}
-                </template>
-              </el-table-column>
-              <el-table-column prop="is_delete" label="是否删除" align="left">
-                <template #default="{row}">
-                  {{useFormatDic(isDeleteDict,row.is_delete.toString())}}
-                </template>
-              </el-table-column>
             </el-table>
           </FillHeightContainer>
+          <div class="flex justify-end px-12 pb-12">
+            <el-pagination
+                @size-change="(size:number)=>{onTunnelServiceConfig(1,size)}"
+                @current-change="(current:number)=>{onTunnelServiceConfig(current,20)}"
+                :current-page.sync="tunnelServicePage.pageNumber"
+                :page-size="tunnelServicePage.pageSize"
+                :page-sizes="tunnelServicePage.pageSizes"
+                :layout="tunnelServicePage.layout"
+                :total="tunnelServicePage.total">
+            </el-pagination>
+          </div>
         </div>
       </div>
     </template>

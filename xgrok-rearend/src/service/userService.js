@@ -68,6 +68,8 @@ export default class UserService {
 
     async queryManageTunnelWebConfig(pagination,userId){
         const where = [
+            `a.status = ${status.enable}`,
+            `a.is_delete = ${isDelete.false}`,
             `a.creator='${userId}'`
         ].filter(c => c).join(' and ')
         const totalSql = `select count(a.id) _all from ng_tunnel_web a ${where ? `where ${where}` : ''}`
@@ -86,6 +88,8 @@ export default class UserService {
 
     async queryManageTunnelServiceConfig(pagination,userId){
         const where = [
+            `a.status = ${status.enable}`,
+            `a.is_delete = ${isDelete.false}`,
             `a.creator='${userId}'`
         ].filter(c => c).join(' and ')
         const totalSql = `select count(a.id) _all from ng_tunnel_service a ${where ? `where ${where}` : ''}`
