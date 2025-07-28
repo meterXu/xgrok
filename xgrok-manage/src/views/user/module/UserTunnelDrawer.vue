@@ -11,14 +11,14 @@ const tunnelWebConfigData = reactive([] as any[])
 const tunnelServiceConfigData = reactive([] as any[])
 const tunnelWebPage = usePage()
 const tunnelServicePage = usePage()
-const statusDict = shallowReactive<DictItemType[]>([])
-const isDeleteDict = shallowReactive<DictItemType[]>([])
 const serviceTypeDict = shallowReactive<DictItemType[]>([])
 const hostTypeDict = shallowReactive<DictItemType[]>([])
 
-watch(() => props.user.id, () => {
-  onQueryTunnelWebConfig()
-  onTunnelServiceConfig()
+watch(() => isVisible.value, (nv) => {
+  if(nv){
+    onQueryTunnelWebConfig()
+    onTunnelServiceConfig()
+  }
 })
 
 function onQueryTunnelWebConfig(pageNumber:number=1,pageSize:number=20){
