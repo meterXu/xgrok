@@ -65,4 +65,40 @@ export default class UserService {
             records:queryRes
         }
     }
+
+    async queryManageTunnelWebConfig(pagination,userId){
+        const where = [
+            `a.creator='${userId}'`
+        ].filter(c => c).join(' and ')
+        const totalSql = `select count(a.id) _all from ng_tunnel_web a ${where ? `where ${where}` : ''}`
+        let querySql = `select a.id,b.name server_name,b.id as server_id,c.hostname,c.id as client_id,
+                               a.name as name,b.domain,b.http_port,b.https_port,
+                               a.host,a.type,a.port,a.remark,a.status,a.is_delete from ng_tunnel_web as a
+                               left join ng_server b on a.server_id = b.id
+                               left join ng_client c on a.client_id = c.id
+                               ${where ? `where ${where}` : ''}
+                               order by a.created_time desc
+                               limit ${(pagination.pageNumber - 1) * pagination.pageSize},${pagination.pageSize}`
+        let totalRes = await prisma.$queryRaw(Prisma.raw(totalSql))
+        let recordRes = await prisma.$queryRaw(Prisma.raw(querySql))
+        return [totalRes[0]._all,recordRes]
+    }
+
+    async queryManageTunnelServiceConfig(pagination,userId){
+        const where = [
+            `a.creator='${userId}'`
+        ].filter(c => c).join(' and ')
+        const totalSql = `select count(a.id) _all from ng_tunnel_service a ${where ? `where ${where}` : ''}`
+        let querySql = `select a.id,b.name server_name,b.id as server_id,c.hostname,c.id as client_id,
+                               a.name as name,
+                               b.domain,a.remote_port,a.type,a.host,a.port,a.remark,a.status,a.is_delete
+                               from ng_tunnel_service as a
+                               left join ng_server b on a.server_id = b.id
+                               left join ng_client c on a.client_id = c.id
+                               order by a.created_time desc
+                               limit ${(pagination.pageNumber - 1) * pagination.pageSize},${pagination.pageSize}`
+        let totalRes = await prisma.$queryRaw(Prisma.raw(totalSql))
+        let recordRes = await prisma.$queryRaw(Prisma.raw(querySql))
+        return [totalRes[0]._all,recordRes]
+    }
 }

@@ -14,6 +14,8 @@ const url = {
         detail: '/api/user/detail',
         modify:'/api/user',
         delete:'/api/user',
+        tunnelWebConfig:'/api/user/manage/tunnelWebConfig',
+        tunnelServiceConfig:'/api/user/manage/tunnelServiceConfig'
     },
     order: {
         query: '/api/order/query',
@@ -95,4 +97,12 @@ export function detailServer(data: any): Promise<ResultType<any>> {
 
 export function productQuery(data:any):Promise<ResultType<PaginationDataType<ProductType>>> {
     return getAction(url.product.query, data)
+}
+
+export function queryTunnelWebConfig(data:any):Promise<ResultType<PaginationDataType<any>>> {
+    return getAction(url.user.tunnelWebConfig, data)
+}
+
+export function tunnelServiceConfig(data:any):Promise<ResultType<PaginationDataType<any>>> {
+    return getAction(url.user.tunnelServiceConfig, data)
 }

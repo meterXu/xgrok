@@ -10,8 +10,8 @@ const serviceType = {
 }
 
 const httpType={
-    http:0,
-    https:1
+    http:1,
+    https:2
 }
 
 const hostType = {

@@ -132,6 +132,7 @@ onMounted(()=>{
                   class="rounded-2xl!"
                   height="100%"
                   header-row-class-name="table-header"
+                  row-key="id"
                   @selection-change="onSelectionChange">
           <el-table-column fixed type="selection" width="45" />
           <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod" width="55"></el-table-column>

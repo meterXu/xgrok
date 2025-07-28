@@ -97,7 +97,7 @@ onMounted(()=>{
       <!--  表格  -->
       <div class="flex-1 w-full relative">
         <div class="absolute w-full h-full">
-          <el-table v-loading="loading" :data="tableData" class="rounded-2xl!" height="100%">
+          <el-table v-loading="loading" :data="tableData" row-key="id" class="rounded-2xl!" height="100%">
             <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod" width="55"></el-table-column>
             <el-table-column prop="name" label="名称" align="left"></el-table-column>
             <el-table-column prop="domain" label="域名" align="left"></el-table-column>

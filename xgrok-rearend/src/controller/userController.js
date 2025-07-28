@@ -49,6 +49,28 @@ export default class UserController {
         ctx.result(res)
     }
 
+    @request('get', '/user/manage/tunnelWebConfig')
+    @summary('后台管理查询用户web配置')
+    @tag
+    @query({userId:{type: "string",description:"用户id",nullable:false}})
+    async queryManageTunnelWebConfig(ctx) {
+        const pagination = new PaginationModel(ctx.validatedQuery)
+        let queryRes = await this.userService.queryManageTunnelWebConfig(pagination,ctx.validatedQuery.userId)
+        const res = new ResultModel({total: queryRes[0], records: queryRes[1], pagination: pagination}, null, true)
+        ctx.result(res)
+    }
+
+    @request('get', '/user/manage/tunnelServiceConfig')
+    @summary('后台管理查询用户service配置')
+    @tag
+    @query({userId:{type: "string",description:"用户id",nullable:false}})
+    async queryManageTunnelServiceConfig(ctx) {
+        const pagination = new PaginationModel(ctx.validatedQuery)
+        let queryRes = await this.userService.queryManageTunnelServiceConfig(pagination,ctx.validatedQuery.userId)
+        const res = new ResultModel({total: queryRes[0], records: queryRes[1], pagination: pagination}, null, true)
+        ctx.result(res)
+    }
+
     @request('get','/user/checkName')
     @summary('名称占用检查')
     @tag
