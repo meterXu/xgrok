@@ -1,4 +1,4 @@
-<title>{data.type}</title>
+<title>{data.title}</title>
 <script>
     let { data } = $props();
 </script>
