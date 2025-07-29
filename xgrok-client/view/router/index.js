@@ -63,6 +63,11 @@ const normalRoutes = [
                 name:'Order',
                 props:true,
                 component:()=>import("@/pages/order/Order.vue"),
+            },
+            {
+                path:'/client/setting',
+                name:'Setting',
+                component:()=>import("@/pages/setting/Setting.vue"),
             }
       ]
     }

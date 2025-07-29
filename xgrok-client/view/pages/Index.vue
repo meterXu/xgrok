@@ -11,6 +11,10 @@ const store = useAppStore()
 const {userInfo, pid, plan} = store
 const router = useRouter()
 
+const showBackBtn=computed(() => {
+  return router.currentRoute.value.name==='Plan'||router.currentRoute.value.name==='Setting'
+})
+
 function logout() {
   confirm('确定要退出登录吗？', null, {
     confirmButtonClass: 'el-button--danger is-plain ',
@@ -46,6 +50,10 @@ function logout() {
   })
 }
 
+function onSettingClick(){
+  useGoTo('Setting')
+}
+
 onMounted(()=>{
   console.log(plan)
 })
@@ -71,7 +79,7 @@ onMounted(()=>{
                 </template>
                 {{ plan.text }}
               </el-button>
-              <el-button plain :type="usePayPlanColor(plan.value)" v-if="router.currentRoute.value.name==='Plan'"
+              <el-button plain :type="usePayPlanColor(plan.value)" v-if="showBackBtn"
                          class="text-[14px]! py-14!"
                          size="small" @click="useGoBack">
                 <template #icon>
@@ -80,8 +88,9 @@ onMounted(()=>{
                 返回
               </el-button>
             </div>
-            <div>
-              {{ userInfo.user.username }}
+            <div class="flex justify-start items-center">
+              <span>{{ userInfo.user.username }}</span>
+              <i-icon-park-outline-setting-two @click="onSettingClick" class="ml-8 cursor-pointer hover:text-(--el-color-primary)"></i-icon-park-outline-setting-two>
               <el-divider direction="vertical"/>
               <el-button class="text-[14px]! py-14!" size="small" type="danger" plain @click="logout">
                 <template #icon>
