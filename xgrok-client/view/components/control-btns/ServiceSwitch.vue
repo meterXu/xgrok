@@ -1,9 +1,10 @@
 <script setup>
 import {isOnline} from "@/libs/enums";
-import {Check, Close, Loading} from "@element-plus/icons-vue";
+import {Check, Loading} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
 import {useAppStore} from '@/store'
 import {watch} from 'vue'
+import {checkPermission, checkTunnelConfig} from "@/libs/useAction";
 const emits = defineEmits(['serverLoading'])
 const store = useAppStore()
 const {pid, selectedServer} = store
@@ -15,22 +16,22 @@ watch(()=>props.percentage,(nv)=>{
 })
 async function onSwitchChange(value) {
   const exec =async ()=>{
-    switchLoading.value = true
-    emits('serviceLoading',switchLoading.value)
     if (value) {
       if (selectedServer?.value.is_online === isOnline.online)
         await onTurnOn()
-    } else {
-      await onTurnOff()
-    }
+      } else {
+        await onTurnOff()
+      }
   }
   return exec.debounce()()
 
 }
 async function onTurnOn() {
-  store.setIsDeleteAll(false)
-  store.setDeleteIdsAll([])
-  if (selectedServer?.value && (props.tunnelWebConfigs?.length > 0 || props.tunnelServiceConfigs?.length > 0)) {
+  if (checkTunnelConfig(selectedServer?.value,props.tunnelWebConfigs,props.tunnelServiceConfigs)){
+    switchLoading.value = true
+    emits('serviceLoading',switchLoading.value)
+    store.setIsDeleteAll(false)
+    store.setDeleteIdsAll([])
     store.setConfigIsLock(true)
     let data = {
       server: selectedServer.value,
@@ -48,11 +49,11 @@ async function onTurnOn() {
         store.setConfigIsLock(false)
       }
     }
-  } else {
-    ElMessage.warning('没有任何配置，请先添加')
   }
 }
 async function onTurnOff() {
+  switchLoading.value = true
+  emits('serviceLoading',switchLoading.value)
   store.setIsDeleteAll(false)
   store.setDeleteIdsAll([])
   if(window.project.variable.mode==='browser'){

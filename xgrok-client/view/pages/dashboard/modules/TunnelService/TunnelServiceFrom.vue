@@ -7,7 +7,7 @@ import {tunnelType, serviceType, payPlan} from "@/libs/enums";
 import InfoTip from "@/components/infoTip.vue";
 import {tipText} from "@/libs/infoText";
 import {testName, isLocalHost, confirm} from "@/libs/common";
-import {onFormValidate, useGetDisabled, useGetErrorMsg} from "@/libs/useAction";
+import {checkPermission, gotoSubscribe, onFormValidate, useGetDisabled, useGetErrorMsg} from "@/libs/useAction";
 import {useRouter} from 'vue-router'
 
 const router = useRouter();
@@ -87,11 +87,7 @@ function onSave(){
           emits('cancel')
           emits('createSuccess')
         }else{
-          ElMessage({
-            message: '创建失败',
-            type: 'error',
-            plain: true,
-          })
+          gotoSubscribe(res.message||'创建失败')
         }
       }).finally(()=>{
         saveLoading.value=false
@@ -148,22 +144,6 @@ function queryRangeByType(){
     }
   })
 }
-function onChangeType(value){
-  if(value===serviceType.UDP&&store.plan.value!==payPlan.vip){
-    confirm('免费用户无法创建UDP隧道', null,{
-      confirmButtonText:'去订阅',
-      cancelButtonText:'知道了',
-      confirmButtonClass:'el-button--warning is-plain'
-    }).then(()=>{
-      router.push({name:'Plan'})
-    }).catch(()=>{
-      formData.type=serviceType.TCP
-    })
-  }else{
-    queryRangeByType()
-    ruleFormRef.value.validateField('remote_port')
-  }
-}
 created()
 </script>
 
@@ -196,7 +176,7 @@ created()
     </el-form-item>
     <el-form-item label="代理类型" prop="type">
       <el-badge value="new" :offset="[-3, 5]">
-        <el-radio-group v-model="formData.type" @change="onChangeType">
+        <el-radio-group v-model="formData.type">
           <el-radio-button label="TCP" :value="1" />
           <el-radio-button label="UDP" :value="2" />
         </el-radio-group>

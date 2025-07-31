@@ -37,8 +37,8 @@ export default class UserService {
         let nowPlan = await this.orderService.queryPayPlan(userId)
         if(nowPlan.value===VIPType.no.value){
             let countRes = await this.queryTunnelCount(userId,server_id,client_id)
-            if(countRes[type]>=1){
-                return new ResultModel(countRes,"抱歉！免费计划用户只能添加一个网页隧道和一个服务隧道！",false)
+            if((type === 'web' && countRes[type]>=1)||type === 'service'){
+                return new ResultModel(countRes,"抱歉！免费计划用户只能添加一个网页隧道！",false)
             }
         }
         return new ResultModel(null,null,true)

@@ -6,14 +6,18 @@ import {ElMessage} from "element-plus";
 import {deleteTunnelServiceBatch, deleteTunnelWebBatch} from "@/api";
 import {useAppStore} from '@/store'
 import {confirm} from "@/libs/common";
+import {checkPermission} from "@/libs/useAction";
+
 const props = defineProps(['type','tunnelConfigs'])
 const emits = defineEmits(['deleteComplete'])
 const store = useAppStore()
-const {deleteIds,isDelete,selectedServer} = store
+const {deleteIds,isDelete} = store
 
 function onAddTunnel(type){
-  store.setTunnelForm(null)
-  store.setDialogVisible(type,true)
+  if(checkPermission(type,props.tunnelConfigs)){
+    store.setTunnelForm(null)
+    store.setDialogVisible(type,true)
+  }
 }
 
 function onEditTunnel(type,id){
