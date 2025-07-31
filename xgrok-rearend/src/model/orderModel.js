@@ -24,6 +24,7 @@ export default class OrderModel {
         this.editor = body.editor
         this.created_time = body.created_time
         this.modified_time = body.modified_time
+        this.expired_time = body.expired_time
         this.status = body.status
         this.is_delete = body.is_delete
         this.created_time_start = body.created_time_start
@@ -39,6 +40,7 @@ export default class OrderModel {
     @swaggerProperty({type: "string", description: "", nullable: false}) pay_price
     @swaggerProperty({type: "string", description: "", nullable: true}) payed_time
     @swaggerProperty({type: "number", description: "", nullable: false}) pay_num
+    @swaggerProperty({type: "string", description: "", nullable: true}) expired_time
     // 查询条件
     @swaggerProperty({type: "string", description: "", nullable: true}) pay_time_start
     @swaggerProperty({type: "string", description: "", nullable: true}) pay_time_end

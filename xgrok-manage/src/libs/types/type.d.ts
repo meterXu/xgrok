@@ -100,7 +100,7 @@ interface OrderType extends BaseType{
     trade_no:string,
     product_id:string,
     remark:string,
-    pay_price:number,
+    pay_price:string,
     pay_num:number,
     pay_total_amount:number,
     payed_time:string,

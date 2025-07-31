@@ -5,8 +5,16 @@ import {NotificationTypeEnum} from '@/libs/enum'
 import {showNotification, confirm, message} from "@/libs/utils/message.ts";
 
 export function useFormatDateTime(dateTime?: string): string | null {
+    if(dateTime) {
+        dayjs.extend(utc);
+        return dayjs.utc(dateTime).format('YYYY-MM-DD HH:mm:ss')
+    }else {
+        return null
+    }
+}
+export function getUTCDateTime(dateTime:any): any{
     dayjs.extend(utc);
-    return dateTime ? dayjs.utc(dateTime).format('YYYY-MM-DD HH:mm:ss') : null
+    return dateTime ?  dayjs(dateTime).format('YYYY-MM-DDTHH:mm:ss.SSS[Z]') : null
 }
 export function mappingDic(promiseArray: Promise<ResultType<any>>[], dest: ShallowReactive<DictItemType[]>[]): Promise<any> {
     return new Promise(async (resolve, reject) => {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {reactive, computed, ref, watch, onMounted, shallowReactive} from 'vue'
 import type {FormInstance} from 'element-plus'
-import {mappingDic, useSaveOrUpdate} from "@/libs/utils/index.js";
+import {getUTCDateTime, mappingDic, useFormatDateTime, useSaveOrUpdate} from "@/libs/utils/index.js";
 import {addOrder, detailUser, editOrder, getDict, productQuery, userQuery} from "@/api";
 
 interface Props {
@@ -51,6 +51,9 @@ function handleOk() {
     if (valid) {
       saveLoading.value=true
       try {
+        props.formData.payed_time  =  getUTCDateTime(props.formData.payed_time)
+        props.formData.expired_time  =  getUTCDateTime(props.formData.expired_time)
+        props.formData.pay_price = props.formData.pay_price.toString()
         let res = props.formData.id?await editOrder(props.formData as OrderType):await addOrder(props.formData as OrderType)
         useSaveOrUpdate(res,props.formData.id).then(()=>{
           handleCancel()
@@ -100,7 +103,7 @@ function getProductList(){
 function onProductSelect(value:string){
   const product = productList.find(c=>c.id===value)
   if (product) {
-    props.formData.pay_price = product.price
+    props.formData.pay_price = product.price.toString()
   }
 }
 
