@@ -97,14 +97,18 @@ export default class TunnelWebService {
     async checkWeb(name,type,domain,port,server_id,user_id,client_id,tunnel_id){
         return new Promise(async (resolve, reject) => {
             const existSql = `select sum(num) as num from (
-            select count(*) num from ng_tunnel_web where name ='${name}' and server_id='${server_id}' 
-            ${tunnel_id?` and id!='${tunnel_id}' `:""}
-            ${type===tunnelType.service?`and client_id='${client_id}' and creator='${user_id}'`:""}
-            and is_delete=${isDelete.false} and status=${status.enable}
+            select count(*) num from ng_tunnel_web where name ='${name}' 
+                                                     and server_id='${server_id}' 
+                                                     ${tunnel_id?` and id!='${tunnel_id}' `:""}
+                                                     ${type===tunnelType.service?` and creator='${user_id}'`:""}
+                                                     and is_delete=${isDelete.false} 
+                                                     and status=${status.enable}
             union
-            select count(*) num from ng_tunnel_service where name = '${name}' and server_id='${server_id}' and client_id='${client_id}' and creator='${user_id}' 
-            ${tunnel_id?` and id!='${tunnel_id}' `:""}
-            and is_delete=${isDelete.false} and status=${status.enable}
+            select count(*) num from ng_tunnel_service where name = '${name}' 
+                                                           and server_id='${server_id}' 
+                                                           ${tunnel_id?` and id!='${tunnel_id}' `:""}
+                                                           and is_delete=${isDelete.false} 
+                                                           and status=${status.enable}
             ) a`
             let existRes = await prisma.$queryRaw(Prisma.raw(existSql))
             if(existRes.length>0&&parseInt(existRes[0]['num'])>0){
