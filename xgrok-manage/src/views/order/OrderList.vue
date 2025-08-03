@@ -32,8 +32,8 @@ function handleQuery(pageNumber: number = page.pageNumber, pageSize: number = pa
   page.pageNumber = pageNumber
   page.pageSize = pageSize
   useQuery<OrderType>(queryData, Object.assign({}, page, searchForm,{
-    created_time_start: searchForm.created_time[0],
-    created_time_end:searchForm.created_time[1],
+    created_time_start: searchForm.created_time[0]?.valueOf(),
+    created_time_end:searchForm.created_time[1]?.valueOf(),
   }), (res: ResultType<PaginationDataType<OrderType>>) => {
     useQueryCallback(res, tableData, page)
   })

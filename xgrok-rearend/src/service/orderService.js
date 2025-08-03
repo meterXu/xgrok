@@ -1,5 +1,5 @@
 import {
-    aliPayPaymentToSys,
+    aliPayPaymentToSys, dealWithDataDate,
     getPayRefundEmail,
     getPaySuccessEmail, getSubjectName,
     isEmail,
@@ -33,8 +33,8 @@ export default class OrderService {
         const where = [
             orderModel.pay_time_start && `a.payed_time >= '${orderModel.pay_time_start}'`,
             orderModel.pay_time_end && `a.payed_time <= '${orderModel.pay_time_end}'`,
-            orderModel.created_time_start && `a.created_time >= '${orderModel.created_time_start}'`,
-            orderModel.created_time_end && `a.created_time <= '${orderModel.created_time_end}'`,
+            orderModel.created_time_start && `a.created_time >= ${orderModel.created_time_start}`,
+            orderModel.created_time_end && `a.created_time <= ${orderModel.created_time_end}`,
             orderModel.trade_no && `a.trade_no like '%${orderModel.trade_no}%'`,
             orderModel.pay_status && `a.pay_status = ${orderModel.pay_status}`,
             orderModel.creator && `a.creator = '${orderModel.creator}'`,
@@ -146,7 +146,7 @@ export default class OrderService {
                             inner join ng_product b on a.product_id = b.id and b.status=${status.enable} and b.is_delete=${isDelete.false}
                             where a.creator='${userId}' 
                             and a.status=${status.enable} and a.is_delete=${isDelete.false} and a.pay_status in (${payStatus.paymentSuccess},${payStatus.paymentFinished})
-                            and a.expired_time > now()
+                            and a.expired_time > unix_timestamp()*1000
                             order by a.created_time desc limit 0,1`
         let recordRes = await prisma.$queryRaw(Prisma.raw(querySql))
         return recordRes.length>0?{
@@ -161,7 +161,7 @@ export default class OrderService {
             plan: {
                 name:'免费计划',
                 type:0,
-                expired_time:new Date("2999-12-31T23:59:59Z")
+                expired_time:new Date("2999-12-31T23:59:59+08:00").valueOf()
             }
         }
     }
@@ -182,8 +182,8 @@ export default class OrderService {
                 unit = 'month'
             }break
         }
-        expiredTime = new moment(nowPlan.value===planType.free?new Date():nowPlan.expired_time).add(amount,unit).toDate()
-        return expiredTime
+        expiredTime = new moment(nowPlan.value===planType.free?new Date().valueOf():nowPlan.expired_time).add(amount,unit).toDate()
+        return expiredTime.valueOf()
     }
 
     async createAliPayOrder(out_trade_no,total_amount,subject){
@@ -300,7 +300,7 @@ left join oauth_users c on a.creator = c.id`
         if(alipayRefundRes.code==='10000'){
             let orderModel = await this.detailOrderByOrderId({trade_no:out_trade_no})
             orderModel.pay_status = payStatus.paymentRefund
-            orderModel.refund_time = new Date()
+            orderModel.refund_time = new Date().valueOf()
             orderModel.refund_amount = refund_amount
             orderModel.refund_reason = refund_reason
             orderModel.out_request_no = out_request_no
@@ -317,7 +317,7 @@ left join oauth_users c on a.creator = c.id`
                     total_amount:orderModel.pay_total_amount,
                     refund_amount:refund_amount,
                     refund_reason:refund_reason,
-                    refund_time:new Date()
+                    refund_time:new Date().valueOf()
                 })
                 await this.emailService.sendEmail(user.username,emailContent.subject,emailContent.html)
                 // 向前端发送付款状态

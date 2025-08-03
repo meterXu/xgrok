@@ -12,8 +12,6 @@ export default class OrderModel {
         this.pay_num = body.pay_num
         this.pay_total_amount = body.pay_total_amount
         this.payed_time = body.payed_time
-        this.pay_time_start = body.pay_time_start
-        this.pay_time_end = body.pay_time_end
         this.refund_time = body.refund_time
         this.pay_status = body.pay_status
         this.alipay_qrCode = body.alipay_qrCode
@@ -22,11 +20,13 @@ export default class OrderModel {
         this.creator = body.creator
         this.username = body.username
         this.editor = body.editor
-        this.created_time = body.created_time
-        this.modified_time = body.modified_time
+        this.created_time = body.id?body.created_time:new Date().valueOf()
+        this.modified_time = body.id?new Date().valueOf():body.modified_time
         this.expired_time = body.expired_time
         this.status = body.status
         this.is_delete = body.is_delete
+        this.pay_time_start = body.pay_time_start
+        this.pay_time_end = body.pay_time_end
         this.created_time_start = body.created_time_start
         this.created_time_end = body.created_time_end
     }
@@ -38,25 +38,25 @@ export default class OrderModel {
     @swaggerProperty({type: "string", description: "", nullable: true}) remark
     @swaggerProperty({type: "string", description: "", nullable: true}) pay_total_amount
     @swaggerProperty({type: "string", description: "", nullable: false}) pay_price
-    @swaggerProperty({type: "string", description: "", nullable: true}) payed_time
+    @swaggerProperty({type: "number", description: "", nullable: true}) payed_time
     @swaggerProperty({type: "number", description: "", nullable: false}) pay_num
-    @swaggerProperty({type: "string", description: "", nullable: true}) expired_time
+    @swaggerProperty({type: "number", description: "", nullable: true}) expired_time
     // 查询条件
-    @swaggerProperty({type: "string", description: "", nullable: true}) pay_time_start
-    @swaggerProperty({type: "string", description: "", nullable: true}) pay_time_end
+    @swaggerProperty({type: "number", description: "", nullable: true}) pay_time_start
+    @swaggerProperty({type: "number", description: "", nullable: true}) pay_time_end
     @swaggerProperty({type: "string", description: "", nullable: true}) username
-    @swaggerProperty({type: "string", description: "", nullable: true}) created_time_start
-    @swaggerProperty({type: "string", description: "", nullable: true}) created_time_end
+    @swaggerProperty({type: "number", description: "", nullable: true}) created_time_start
+    @swaggerProperty({type: "number", description: "", nullable: true}) created_time_end
     // 查询条件
-    @swaggerProperty({type: "string", description: "", nullable: true}) refund_time
+    @swaggerProperty({type: "number", description: "", nullable: true}) refund_time
     @swaggerProperty({type: "number", description: "", nullable: true}) pay_status
     @swaggerProperty({type: "string", description: "", nullable: true}) alipay_qrCode
     @swaggerProperty({type: "string", description: "", nullable: true}) alipay_traceId
     @swaggerProperty({type: "number", description: "", nullable: true}) sort
     @swaggerProperty({type: "string", description: "", nullable: true}) creator
     @swaggerProperty({type: "string", description: "", nullable: true}) editor
-    @swaggerProperty({type: "string", description: "", nullable: true}) created_time
-    @swaggerProperty({type: "string", description: "", nullable: true}) modified_time
+    @swaggerProperty({type: "number", description: "", nullable: true}) created_time
+    @swaggerProperty({type: "number", description: "", nullable: true}) modified_time
     @swaggerProperty({type: "number", description: "", nullable: true}) status
     @swaggerProperty({type: "number", description: "", nullable: true}) is_delete
 }

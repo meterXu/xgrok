@@ -253,28 +253,28 @@ model ng_order {
   pay_total_amount        String     @db.VarChar(20)
   pay_price               String     @db.VarChar(20)
   pay_num                 Int        @default(1)
-  payed_time              DateTime?  @db.DateTime(0)
   pay_status              Int?       @default(0)
   refund_amount           String?    @db.VarChar(20)
   refund_reason           String?    @db.VarChar(100)
   out_request_no          String?    @db.VarChar(100)
-  refund_time             DateTime?  @db.DateTime(0)
   is_notify               Int?       @default(0)
   is_will_expire_notify   Int?       @default(0)
   is_expired_notify       Int?       @default(0)
-  notify_time             DateTime?  @db.DateTime(0)
-  will_expire_notify_time DateTime?  @db.DateTime(0)
-  expired_notify_time     DateTime?  @db.DateTime(0)
   alipay_qrCode           String?    @db.VarChar(100)
   alipay_traceId          String?    @db.VarChar(100)
   sort                    Int?
   creator                 String?    @db.VarChar(50)
   editor                  String?    @db.VarChar(50)
-  created_time            DateTime?  @default(dbgenerated("(now())")) @db.DateTime(0)
-  modified_time           DateTime?  @db.DateTime(0)
-  expired_time            DateTime   @db.DateTime(0)
   status                  Int?       @default(1)
   is_delete               Int?       @default(0)
+  expired_time            BigInt?
+  payed_time              BigInt?
+  notify_time             BigInt?
+  will_expire_notify_time BigInt?
+  expired_notify_time     BigInt?
+  created_time            BigInt?
+  refund_time             BigInt?
+  modified_time           BigInt?
   ng_product              ng_product @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ng_order_ng_product_id_fk")
 
   @@index([trade_no, alipay_traceId], map: "ng_order_trade_no_alipay_traceId_index")

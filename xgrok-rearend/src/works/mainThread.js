@@ -3,7 +3,7 @@ import WebSocket from "ws";
 import OAuthTokensService from "../service/oauthTokensService.js";
 import {clientIds, isNotify, status} from "../utils/enum.js";
 import EmailService from "../service/emailService.js";
-import {isEmail} from "../utils/index.js";
+import {DateToDate, DateToStr, isEmail} from "../utils/index.js";
 import OrderService from "../service/orderService.js";
 export default class MainThreadWorker{
     constructor() {
@@ -80,7 +80,7 @@ export default class MainThreadWorker{
                 id:data.orderId,
                 status:status.disable,
                 is_expired_notify:isNotify.yes,
-                expired_notify_time:new Date()
+                expired_notify_time:new Date().valueOf(),
             }),this.orderService.queryPayPlan(data.userId)]).then(resAll=>{
                 console.log(`update order [${data.orderId}] status successful, send websocket message to user [${data.userId}]`)
                 data.plan = resAll[1]
@@ -91,7 +91,7 @@ export default class MainThreadWorker{
             this.orderService.editOrder({
                 id:data.orderId,
                 is_will_expire_notify:isNotify.yes,
-                will_expire_notify_time:new Date()
+                will_expire_notify_time:new Date().valueOf(),
             })
         }
     }

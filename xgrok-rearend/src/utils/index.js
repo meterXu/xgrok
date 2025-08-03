@@ -6,7 +6,9 @@ import fs from "fs";
 import path from "path";
 import net from "net";
 import http from "http";
+import dayjs from "dayjs";
 const os = require('os');
+
 export function randomNumber() {
     const random = (min, max) => {
         return Math.floor(Math.random() * (max - min + 1) + min)
@@ -226,4 +228,60 @@ export function initLog(){
     console.log=function (){
         _log(`${new Date()} ${[...arguments].join(' ')}`)
     }
+}
+
+export function DateToUTC(date){
+    let originalDate = dayjs(date);
+    originalDate=originalDate.subtract(8,'hours');
+    return originalDate.toDate();
+}
+
+export function DateToStr(date,isUtc=false){
+    let originalDate = dayjs(date);
+    return isUtc?originalDate.format('YYYY-MM-DDTHH:mm:ss.SSS[Z]'):originalDate.format('YYYY-MM-DDTHH:mm:ss.SSS');
+}
+
+export function UTCToDateStr(utcStr){
+    if(utcStr){
+        return DateToStr(UTCToDate(utcStr))
+    }else{
+        return utcStr;
+    }
+}
+
+export function UTCToDate(utcStr){
+    if(utcStr){
+        let originalDate = dayjs(utcStr);
+        originalDate=originalDate.add(8,'hours');
+        return originalDate.toDate();
+    }else{
+        return utcStr;
+    }
+}
+
+export function DateToDate(date){
+    let originalDate = dayjs(date);
+    originalDate=originalDate.add(8,'hours');
+    return originalDate.toDate();
+}
+
+export function dealWithDataDate(data){
+    if(data instanceof Array){
+        return data.map(item=>{
+            Object.entries(item).forEach(([key,val]) => {
+                if(val instanceof Date){
+                    item[key] =DateToUTC(val)
+                }
+            })
+            return item
+        })
+    }else{
+        Object.entries(data).forEach(([key,val]) => {
+            if(val instanceof Date){
+                data[key] =DateToUTC(val)
+            }
+        })
+        return data
+    }
+
 }

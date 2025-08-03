@@ -1,11 +1,11 @@
 import OrderSchedule from "./orderSchedule.js";
 import {getAlipaySdk, initLog} from "../utils/index.js";
 import OAuthTokensService from "../service/oauthTokensService.js";
-const {parentPort} = require("worker_threads");
 import moment from "moment";
 import Model from "../oauth/password/Model.js";
 import OrderService from "../service/orderService";
 
+const {parentPort} = require("worker_threads");
 global.alipaySdk = getAlipaySdk()
 global.parentPort = parentPort
 start()
