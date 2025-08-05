@@ -111,7 +111,13 @@ export default class Model {
             let _accessToken = await this.oauthTokensService.queryOAuthToken({
                 access_token:process.env.NODE_ENV==='development'?accessToken:realToken
             })
-            return _accessToken;
+            if(_accessToken){
+                _accessToken.accessTokenExpiresAt = new Date(Number(_accessToken.accessTokenExpiresAt))
+                _accessToken.refreshTokenExpiresAt = new Date(Number(_accessToken.refreshTokenExpiresAt))
+                return _accessToken;
+            }else{
+                return null
+            }
         }else{
             return null
         }

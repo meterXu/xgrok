@@ -31,7 +31,7 @@ export default class ProductService {
                 sort: productModel.sort,
                 creator: productModel.creator,
                 editor: productModel.editor,
-                created_time: productModel.created_time,
+                created_time: productModel.created_time||new Date().valueOf(),
                 modified_time: productModel.modified_time,
                 status: productModel.status,
                 is_delete: productModel.is_delete,
@@ -41,6 +41,7 @@ export default class ProductService {
     }
 
     async editProduct(productModel) {
+        productModel.modified_time = productModel.modified_time || new Date().valueOf()
         let res = await prisma.ng_product.update({where: {id: productModel.id}, data: productModel});
         return res
     }

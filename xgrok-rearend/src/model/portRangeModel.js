@@ -18,9 +18,9 @@ export default class PortRangeModel {
 
         this.editor = body.editor
 
-        this.created_time = body.id?body.created_time:new Date().valueOf()
+        this.created_time = body.created_time
 
-        this.modified_time = body.id?new Date().valueOf():body.modified_time
+        this.modified_time = body.modified_time
 
         this.status = body.status
 

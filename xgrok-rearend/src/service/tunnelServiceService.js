@@ -49,7 +49,7 @@ export default class TunnelServiceService {
               sort:tunnelServiceModel.sort,
               creator:tunnelServiceModel.creator,
               editor:tunnelServiceModel.editor,
-              created_time:tunnelServiceModel.created_time,
+              created_time:tunnelServiceModel.created_time||new Date().valueOf(),
               modified_time:tunnelServiceModel.modified_time,
               status:tunnelServiceModel.status,
               is_delete:tunnelServiceModel.is_delete,
@@ -61,6 +61,7 @@ export default class TunnelServiceService {
     }
 
     async editTunnelService(tunnelServiceModel) {
+        tunnelServiceModel.modified_time = tunnelServiceModel.modified_time||new Date().valueOf()
         let res = await prisma.TunnelService.update({
             where: {
                 id: tunnelServiceModel.id

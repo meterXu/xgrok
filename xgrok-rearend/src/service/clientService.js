@@ -30,7 +30,7 @@ export default class ClientService {
                 is_vip: clientModel.is_vip,
                 creator: clientModel.creator,
                 editor: clientModel.editor,
-                created_time: clientModel.created_time,
+                created_time: clientModel.created_time||new Date().valueOf(),
                 modified_time: clientModel.modified_time,
                 status: clientModel.status,
                 is_delete: clientModel.is_delete,
@@ -40,6 +40,7 @@ export default class ClientService {
     }
 
     async editClient(clientModel) {
+        clientModel.modified_time = clientModel.modified_time||new Date().valueOf()
         let res = await prisma.ng_client.update({where: {id: clientModel.id}, data: clientModel});
         return res
     }

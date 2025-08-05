@@ -10,11 +10,11 @@ export default class OAuthUsersModel {
 
         this.password = body.password
 
-        this.created_time = body.id?body.created_time:new Date().valueOf()
+        this.created_time = body.created_time
 
-        this.status = body.status||status.enable
+        this.status = body.status
 
-        this.is_delete = body.is_delete||isDelete.false
+        this.is_delete = body.is_delete
 
     }
 

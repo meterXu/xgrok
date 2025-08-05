@@ -31,7 +31,7 @@ export default class GatewayService {
                 order.payed_time = new Date(alipayNotifyModel.gmt_payment).valueOf()
                 order.pay_status = _aliPayPaymentToSys
                 order.is_notify = notifyStatus.yes
-                order.notify_time = new Date(alipayNotifyModel.gmt_create)
+                order.notify_time = new Date(alipayNotifyModel.gmt_create).valueOf()
                 let res = await this.orderService.editOrder(order)
                 let user = await this.oauthUsersService.detail(order.creator)
                 if(res&&user&&isSysPaySuccess(_aliPayPaymentToSys)&&isEmail(user.username)){

@@ -10,10 +10,10 @@ import {swaggerClass, swaggerProperty} from "koa-swagger-decorator";
         this.sort = body.sort
         this.creator = body.creator
         this.editor = body.editor
-        this.created_time = body.id?body.created_time:new Date().valueOf()
-        this.modified_time = body.id?new Date().valueOf():body.modified_time
-        this.status = body.status === undefined ? 1 : body.status
-        this.is_delete = body.is_delete === undefined ? 0 : body.is_delete
+        this.created_time = body.created_time
+        this.modified_time = body.modified_time
+        this.status = body.status
+        this.is_delete = body.is_delete
     }
 
     /** generate by CodeGirl */

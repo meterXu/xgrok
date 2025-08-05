@@ -104,7 +104,7 @@ export default class OrderService {
             sort: orderModel.sort,
             creator: userId,
             editor: orderModel.editor,
-            created_time: orderModel.created_time,
+            created_time: orderModel.created_time||new Date().valueOf(),
             modified_time: orderModel.modified_time,
             expired_time:this.getPlanExpiredTime(nowPlan,productModel.type,orderModel.pay_num),
             status: orderModel.status,
@@ -132,6 +132,7 @@ export default class OrderService {
     }
 
     async editOrder(orderModel) {
+        orderModel.modified_time = orderModel.modified_time || new Date().valueOf()
         let res = await prisma.ng_order.update({where: {id: orderModel.id}, data: orderModel});
         return res
     }

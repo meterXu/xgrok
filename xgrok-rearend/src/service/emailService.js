@@ -53,7 +53,7 @@ export default class EmailService {
                 creator: emailModel.creator,
                 editor: emailModel.editor,
                 expire_time:emailModel.expire_time,
-                created_time: emailModel.created_time,
+                created_time: emailModel.created_time||new Date().valueOf(),
                 modified_time: emailModel.modified_time,
                 status: emailModel.status,
                 is_delete: emailModel.is_delete,
@@ -63,6 +63,7 @@ export default class EmailService {
     }
 
     async editEmail(emailModel) {
+        emailModel.modified_time = emailModel.modified_time||new Date().valueOf()
         let res = await prisma.ng_email.update({where: {id: emailModel.id}, data: emailModel});
         return res
     }

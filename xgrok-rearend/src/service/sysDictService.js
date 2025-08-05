@@ -82,7 +82,7 @@ export default class SysDictService {
 
 
 
-              created_time:sysDictModel.created_time,
+              created_time:sysDictModel.created_time||new Date().valueOf(),
 
 
 
@@ -104,6 +104,7 @@ export default class SysDictService {
 
     async editSysDict(ctx) {
         const sysDictModel = new SysDictModel(ctx.request.body)
+        sysDictModel.modified_time = sysDictModel.modified_time||new Date().valueOf()
         let res = await prisma.SysDict.update({
             where: {
                 id: sysDictModel.id

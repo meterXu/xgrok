@@ -73,11 +73,12 @@ export default class OAuthTokensService {
                 },
                 data:{
                     access_token:oauthTokensModel.accessToken,
-                    access_token_expires_at:oauthTokensModel.accessTokenExpiresAt,
+                    access_token_expires_at:oauthTokensModel.accessTokenExpiresAt.valueOf(),
                     client_id:oauthTokensModel.client.id,
                     refresh_token:oauthTokensModel.refreshToken,
-                    refresh_token_expires_at:oauthTokensModel.refreshTokenExpiresAt,
-                    user_id:oauthTokensModel.user.id
+                    refresh_token_expires_at:oauthTokensModel.refreshTokenExpiresAt.valueOf(),
+                    user_id:oauthTokensModel.user.id,
+                    modified_time:new Date().valueOf(),
                 }
             })
             return _token
@@ -86,11 +87,12 @@ export default class OAuthTokensService {
                 data:{
                     id:oauthTokensModel.id||randomUUID(),
                     access_token:oauthTokensModel.accessToken,
-                    access_token_expires_at:oauthTokensModel.accessTokenExpiresAt,
+                    access_token_expires_at:oauthTokensModel.accessTokenExpiresAt.valueOf(),
                     client_id:oauthTokensModel.client.id,
                     refresh_token:oauthTokensModel.refreshToken,
-                    refresh_token_expires_at:oauthTokensModel.refreshTokenExpiresAt,
-                    user_id:oauthTokensModel.user.id
+                    refresh_token_expires_at:oauthTokensModel.refreshTokenExpiresAt.valueOf(),
+                    user_id:oauthTokensModel.user.id,
+                    created_time:new Date().valueOf(),
                 }
             })
             return res

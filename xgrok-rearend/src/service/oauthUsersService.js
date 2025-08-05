@@ -49,7 +49,7 @@ export default class OAuthUsersService {
                     sort: userModel.sort,
                     creator: userModel.creator,
                     editor: userModel.editor,
-                    created_time: userModel.created_time,
+                    created_time: userModel.created_time||new Date().valueOf(),
                     modified_time: userModel.modified_time,
                     status: status.enable,
                     is_delete: isDelete.false,
@@ -62,6 +62,7 @@ export default class OAuthUsersService {
                     role_id:roleId.普通用户,
                     status: status.enable,
                     is_delete: isDelete.false,
+                    created_time:new Date().valueOf(),
                 }
             }),
             prisma.ng_email.updateMany({
@@ -69,7 +70,8 @@ export default class OAuthUsersService {
                     code:validateCode
                 },
                 data:{
-                    status:status.disable
+                    status:status.disable,
+                    modified_time:new Date().valueOf(),
                 }
             })
         ])
@@ -100,7 +102,8 @@ export default class OAuthUsersService {
                     code:validateCode
                 },
                 data:{
-                    status:status.disable
+                    status:status.disable,
+                    modified_time:new Date().valueOf(),
                 }
             })
         ])
@@ -147,6 +150,7 @@ export default class OAuthUsersService {
     }
 
     editUser(userModel) {
+        userModel.modified_time = userModel.modified_time || new Date().valueOf()
         return prisma.OAuthUsers.update({where: {id: userModel.id}, data: userModel});
     }
 
@@ -162,7 +166,7 @@ export default class OAuthUsersService {
                     sort: userModel.sort,
                     creator: userModel.creator,
                     editor: userModel.editor,
-                    created_time: userModel.created_time,
+                    created_time: userModel.created_time||new Date().valueOf(),
                     modified_time: userModel.modified_time,
                     status: status.enable,
                     is_delete: isDelete.false,
@@ -175,6 +179,7 @@ export default class OAuthUsersService {
                     role_id:roleId.普通用户,
                     status: status.enable,
                     is_delete: isDelete.false,
+                    created_time:new Date().valueOf(),
                 }
             })
         ])

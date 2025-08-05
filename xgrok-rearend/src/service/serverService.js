@@ -49,7 +49,7 @@ export default class ServerService {
               sort:serverModel.sort,
               creator:serverModel.creator,
               editor:serverModel.editor,
-              created_time:serverModel.created_time,
+              created_time:serverModel.created_time||new Date().valueOf(),
               modified_time:serverModel.modified_time,
               status:serverModel.status,
               is_delete:serverModel.is_delete,
@@ -61,6 +61,7 @@ export default class ServerService {
 
     async editServer(ctx) {
         const serverModel = new ServerModel(ctx.request.body)
+        serverModel.modified_time = serverModel.modified_time||new Date().valueOf()
         let res = await prisma.Server.update({
             where: {
                 id: serverModel.id

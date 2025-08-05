@@ -72,7 +72,7 @@ export default class PortRangeService {
 
 
 
-              created_time:portRangeModel.created_time,
+              created_time:portRangeModel.created_time||new Date().valueOf(),
 
 
 
@@ -94,6 +94,7 @@ export default class PortRangeService {
 
     async editPortRange(ctx) {
         const portRangeModel = new PortRangeModel(ctx.request.body)
+        portRangeModel.modified_time = portRangeModel.modified_time||new Date().valueOf()
         let res = await prisma.PortRange.update({
             where: {
                 id: portRangeModel.id

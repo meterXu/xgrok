@@ -37,6 +37,8 @@ export default class OAuthController{
             return ctx.result(compareRes)
         }
         let token = await this.oAuthService.getToken(ctx)
+        token.accessTokenExpiresAt = token.accessTokenExpiresAt.valueOf()
+        token.refreshTokenExpiresAt = token.refreshTokenExpiresAt.valueOf()
         if(token){
             token.client = undefined
             return ctx.result(new ResultModel(token,null,true))
@@ -53,6 +55,8 @@ export default class OAuthController{
         let token = await this.oAuthService.refreshToken(ctx)
         if(token){
             token.client = undefined
+            token.accessTokenExpiresAt = token.accessTokenExpiresAt.valueOf()
+            token.refreshTokenExpiresAt = token.refreshTokenExpiresAt.valueOf()
             return ctx.result(new ResultModel(token,null,true))
         }else{
             return ctx.result(new ResultModel(null,'refresh_token 无效或已过期！',false,401))
