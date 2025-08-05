@@ -27,7 +27,6 @@
     "commander": "^3.0.1",
     "compressing": "^1.5.1",
     "cross-fetch": "^4.0.0",
-    "dayjs": "^1.11.13",
     "dotenv": "^16.0.3",
     "image-size": "^1.0.2",
     "js-md5": "^0.8.0",

@@ -23,39 +23,6 @@ export default class EmailService {
         return await prisma.ng_email.findUnique({where: {id: emailModel.id}})
     }
 
-    async sendEmail2(email,subject,html){
-       return new Promise((resolve, reject)=>{
-           // 创建SMTP服务器的连接配置
-           const transporter = nodemailer.createTransport({
-               host: 'smtp.126.com', // SMTP服务器地址
-               port: 25, // SMTP端口，对于TLS通常是587
-               secure: false, // 对于465端口使用true，对于其他端口使用false
-               auth: {
-                   user: config.send_mail_user, // 你的邮箱地址
-                   pass: config.send_mail_password // 你的邮箱密码
-               },
-               timeout: 60000
-           });
-           // 设置邮件内容
-           const mailOptions = {
-               from: config.send_mail_from, // 发件人地址
-               to: email, // 收件人地址，多个收件人可以使用逗号分隔
-               subject: subject, // 邮件主题
-               html: html  // 邮件HTML内容
-           };
-           // 发送邮件
-           transporter.sendMail(mailOptions, (error, info) => {
-               if (error) {
-                   console.log('Error sending email: ', error);
-                   reject(error)
-               } else {
-                   console.log('Email sent: ', info.response);
-                   resolve(info.response)
-               }
-           });
-       })
-    }
-
     async sendEmail(email,subject,html){
         return new Promise(async (resolve, reject)=>{
             const resend = new Resend(config.resend);

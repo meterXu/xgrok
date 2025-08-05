@@ -1,5 +1,5 @@
 import {
-    aliPayPaymentToSys, dealWithDataDate,
+    aliPayPaymentToSys,
     getPayRefundEmail,
     getPaySuccessEmail, getSubjectName,
     isEmail,

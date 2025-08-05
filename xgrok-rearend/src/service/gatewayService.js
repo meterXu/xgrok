@@ -1,6 +1,6 @@
 import OrderService from "./orderService.js";
 import {notifyStatus} from "../utils/enum.js";
-import {aliPayPaymentToSys, DateToDate, getPaySuccessEmail, isEmail, isSysPaySuccess} from "../utils/index.js";
+import {aliPayPaymentToSys, getPaySuccessEmail, isEmail, isSysPaySuccess} from "../utils/index.js";
 import EmailService from "./emailService.js";
 import OAuthUsersService from "./oauthUsersService.js";
 import config from "../config.js";
@@ -28,7 +28,7 @@ export default class GatewayService {
             const order = await this.orderService.detailOrderByOrderId({trade_no:alipayNotifyModel.out_trade_no})
             const _aliPayPaymentToSys  = aliPayPaymentToSys(alipayNotifyModel.trade_status)
             if(order&&alipayNotifyModel.app_id===config.alipay_appId&&order.pay_status!==_aliPayPaymentToSys){
-                order.payed_time = DateToDate(new Date(alipayNotifyModel.gmt_payment))
+                order.payed_time = new Date(alipayNotifyModel.gmt_payment).valueOf()
                 order.pay_status = _aliPayPaymentToSys
                 order.is_notify = notifyStatus.yes
                 order.notify_time = new Date(alipayNotifyModel.gmt_create)

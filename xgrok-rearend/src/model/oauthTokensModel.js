@@ -18,7 +18,7 @@ export default class OAuthTokensModel {
 
         this.user_id = body.user_id
 
-        this.created_time = body.created_time
+        this.created_time = body.id?body.created_time:new Date().valueOf()
 
     }
 
@@ -37,6 +37,6 @@ export default class OAuthTokensModel {
 
     @swaggerProperty({ type: "string",description:"",nullable:false}) user_id
 
-    @swaggerProperty({ type: "string",description:"",nullable:true}) created_time
+    @swaggerProperty({ type: "number",description:"",nullable:true}) created_time
 
 }

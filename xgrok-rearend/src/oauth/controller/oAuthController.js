@@ -75,7 +75,7 @@ export default class OAuthController{
             emailModel.code = queryRes[1][0].code
         }else {//过期了，则重新创建
             emailModel.code = randomNumber(111111,999999).toString()
-            emailModel.expire_time = moment().add(5, 'minutes').toDate()
+            emailModel.expire_time = moment().add(5, 'minutes').toDate().valueOf()
             await this.emailService.addEmail(emailModel)
         }
         //发送验证码邮件

@@ -1,4 +1,4 @@
-import {getLocalDateTime, randomUUID} from "../utils/index.js";
+import {randomUUID} from "../utils/index.js";
 import {isDelete,status} from "../utils/enum.js";
 import OAuthTokensModel from "../model/oauthTokensModel.js";
 const {Prisma,PrismaClient} = require("@prisma/client");
@@ -73,10 +73,10 @@ export default class OAuthTokensService {
                 },
                 data:{
                     access_token:oauthTokensModel.accessToken,
-                    access_token_expires_at:new Date(getLocalDateTime(oauthTokensModel.accessTokenExpiresAt)),
+                    access_token_expires_at:oauthTokensModel.accessTokenExpiresAt,
                     client_id:oauthTokensModel.client.id,
                     refresh_token:oauthTokensModel.refreshToken,
-                    refresh_token_expires_at:new Date(getLocalDateTime(oauthTokensModel.refreshTokenExpiresAt)),
+                    refresh_token_expires_at:oauthTokensModel.refreshTokenExpiresAt,
                     user_id:oauthTokensModel.user.id
                 }
             })
@@ -86,10 +86,10 @@ export default class OAuthTokensService {
                 data:{
                     id:oauthTokensModel.id||randomUUID(),
                     access_token:oauthTokensModel.accessToken,
-                    access_token_expires_at:new Date(getLocalDateTime(oauthTokensModel.accessTokenExpiresAt)),
+                    access_token_expires_at:oauthTokensModel.accessTokenExpiresAt,
                     client_id:oauthTokensModel.client.id,
                     refresh_token:oauthTokensModel.refreshToken,
-                    refresh_token_expires_at:new Date(getLocalDateTime(oauthTokensModel.refreshTokenExpiresAt)),
+                    refresh_token_expires_at:oauthTokensModel.refreshTokenExpiresAt,
                     user_id:oauthTokensModel.user.id
                 }
             })

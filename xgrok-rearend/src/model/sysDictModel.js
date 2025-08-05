@@ -19,10 +19,10 @@ export default class SysDictModel {
         this.creator = body.creator
         
         this.editor = body.editor
-        
-        this.created_time = body.created_time
-        
-        this.modified_time = body.modified_time
+
+        this.created_time = body.id?body.created_time:new Date().valueOf()
+
+        this.modified_time = body.id?new Date().valueOf():body.modified_time
         
         this.status = body.status
         
@@ -47,9 +47,9 @@ export default class SysDictModel {
     
     @swaggerProperty({ type: "string",description:"",nullable:true}) editor
     
-    @swaggerProperty({ type: "string",description:"",nullable:true}) created_time
+    @swaggerProperty({ type: "number",description:"",nullable:true}) created_time
     
-    @swaggerProperty({ type: "string",description:"",nullable:true}) modified_time
+    @swaggerProperty({ type: "number",description:"",nullable:true}) modified_time
     
     @swaggerProperty({ type: "number",description:"",nullable:true}) status
     

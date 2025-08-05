@@ -9,8 +9,8 @@ import {swaggerClass, swaggerProperty} from "koa-swagger-decorator";
         this.creator = body.creator
         this.editor = body.editor
         this.expire_time = body.expire_time
-        this.created_time = body.created_time
-        this.modified_time = body.modified_time
+        this.created_time = body.id?body.created_time:new Date().valueOf()
+        this.modified_time = body.id?new Date().valueOf():body.modified_time
         this.status = body.status === undefined ? 1 : body.status
         this.is_delete = body.is_delete === undefined ? 0 : body.is_delete
     }
@@ -21,9 +21,9 @@ import {swaggerClass, swaggerProperty} from "koa-swagger-decorator";
     @swaggerProperty({type: "number", description: "", nullable: true}) sort
     @swaggerProperty({type: "string", description: "", nullable: true}) creator
     @swaggerProperty({type: "string", description: "", nullable: true}) editor
-    @swaggerProperty({type: "string", description: "", nullable: true}) expire_time
-    @swaggerProperty({type: "string", description: "", nullable: true}) created_time
-    @swaggerProperty({type: "string", description: "", nullable: true}) modified_time
+    @swaggerProperty({type: "number", description: "", nullable: true}) expire_time
+    @swaggerProperty({type: "number", description: "", nullable: true}) created_time
+    @swaggerProperty({type: "number", description: "", nullable: true}) modified_time
     @swaggerProperty({type: "number", description: "", nullable: true, default: 1}) status
     @swaggerProperty({type: "number", description: "", nullable: true, default: 0}) is_delete
 }

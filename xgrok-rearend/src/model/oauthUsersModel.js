@@ -10,7 +10,7 @@ export default class OAuthUsersModel {
 
         this.password = body.password
 
-        this.created_time = body.created_time
+        this.created_time = body.id?body.created_time:new Date().valueOf()
 
         this.status = body.status||status.enable
 
@@ -25,15 +25,15 @@ export default class OAuthUsersModel {
 
     @swaggerProperty({ type: "string",description:"",nullable:false}) password
 
-    @swaggerProperty({ type: "string",description:"",nullable:true}) created_time
+    @swaggerProperty({ type: "number",description:"",nullable:true}) created_time
 
     @swaggerProperty({ type: "number",description:"",nullable:true}) status
 
     @swaggerProperty({ type: "number",description:"",nullable:true}) is_delete
 
     // 查询条件
-    @swaggerProperty({type: "string", description: "", nullable: true}) created_time_start
-    @swaggerProperty({type: "string", description: "", nullable: true}) created_time_end
+    @swaggerProperty({type: "number", description: "", nullable: true}) created_time_start
+    @swaggerProperty({type: "number", description: "", nullable: true}) created_time_end
     @swaggerProperty({type: "string", description: "", nullable: true}) role_id
 
 }

@@ -14,8 +14,8 @@ export default class TunnelWebModel {
         this.sort = body.sort
         this.creator = body.creator
         this.editor = body.editor
-        this.created_time = body.created_time
-        this.modified_time = body.modified_time
+        this.created_time = body.id?body.created_time:new Date().valueOf()
+        this.modified_time = body.id?new Date().valueOf():body.modified_time
         this.status = body.status
         this.is_delete = body.is_delete
         this.is_remote = body.is_remote
@@ -33,8 +33,8 @@ export default class TunnelWebModel {
     @swaggerProperty({ type: "number",description:"",nullable:true}) sort
     @swaggerProperty({ type: "string",description:"",nullable:true}) creator
     @swaggerProperty({ type: "string",description:"",nullable:true}) editor
-    @swaggerProperty({ type: "string",description:"",nullable:true}) created_time
-    @swaggerProperty({ type: "string",description:"",nullable:true}) modified_time
+    @swaggerProperty({ type: "number",description:"",nullable:true}) created_time
+    @swaggerProperty({ type: "number",description:"",nullable:true}) modified_time
     @swaggerProperty({ type: "number",description:"",nullable:true,default:1}) status
     @swaggerProperty({ type: "number",description:"",nullable:true,default:0}) is_delete
     @swaggerProperty({ type: "number",description:"",nullable:true,default:0}) is_remote

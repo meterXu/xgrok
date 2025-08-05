@@ -18,8 +18,8 @@ export default class ServerModel {
         this.sort = body.sort
         this.creator = body.creator
         this.editor = body.editor
-        this.created_time = body.created_time
-        this.modified_time = body.modified_time
+        this.created_time = body.id?body.created_time:new Date().valueOf()
+        this.modified_time = body.id?new Date().valueOf():body.modified_time
         this.status = body.status
         this.is_delete = body.is_delete
         this.type = body.type
@@ -32,7 +32,7 @@ export default class ServerModel {
     @swaggerProperty({ type: "string",description:"",nullable:false}) name
     @swaggerProperty({ type: "string",description:"",nullable:false}) domain
     @swaggerProperty({ type: "number",description:"1:yes,0:no",nullable:false}) has_ssl
-    @swaggerProperty({ type: "string",description:"",nullable:false}) ssl_expired_time
+    @swaggerProperty({ type: "number",description:"",nullable:false}) ssl_expired_time
     @swaggerProperty({ type: "string",description:"",nullable:false}) up_speed
     @swaggerProperty({ type: "string",description:"",nullable:false}) down_speed
     @swaggerProperty({ type: "number",description:"",nullable:true}) sort
@@ -41,8 +41,8 @@ export default class ServerModel {
     @swaggerProperty({ type: "number",description:"",nullable:true}) http_port
     @swaggerProperty({ type: "string",description:"",nullable:true}) creator
     @swaggerProperty({ type: "string",description:"",nullable:true}) editor
-    @swaggerProperty({ type: "string",description:"",nullable:true}) created_time
-    @swaggerProperty({ type: "string",description:"",nullable:true}) modified_time
+    @swaggerProperty({ type: "number",description:"",nullable:true}) created_time
+    @swaggerProperty({ type: "number",description:"",nullable:true}) modified_time
     @swaggerProperty({ type: "number",description:"",nullable:true}) status
     @swaggerProperty({ type: "number",description:"",nullable:true}) is_delete
     @swaggerProperty({ type: "string",description:"",nullable:false}) remark

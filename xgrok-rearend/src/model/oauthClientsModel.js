@@ -13,7 +13,7 @@ export default class OAuthClientsModel {
 
         this.redirect_uri = body.redirect_uri
 
-        this.created_time = body.created_time
+        this.created_time = body.id?body.created_time:new Date().valueOf()
 
         this.status = body.status||status.enable
 
@@ -29,7 +29,7 @@ export default class OAuthClientsModel {
 
     @swaggerProperty({ type: "string",description:"",nullable:false}) redirect_uri
 
-    @swaggerProperty({ type: "string",description:"",nullable:true}) created_time
+    @swaggerProperty({ type: "number",description:"",nullable:true}) created_time
 
     @swaggerProperty({ type: "number",description:"",nullable:true}) status
 
