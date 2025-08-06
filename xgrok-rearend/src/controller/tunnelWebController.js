@@ -22,8 +22,8 @@ export default class TunnelWebController {
     @query({...PaginationModel.swaggerDocument,...OrderByModel,...TunnelWebModel.swaggerDocument})
     async queryTunnelWeb(ctx) {
         const pagination = new PaginationModel(ctx.validatedQuery)
-        const orderBy = new OrderByModel(query)
-        const tunnelWebQuery = new TunnelWebModel(query)
+        const orderBy = new OrderByModel(ctx.validatedQuery)
+        const tunnelWebQuery = new TunnelWebModel(ctx.validatedQuery)
         const queryRes = await this.tunnelWebService.queryTunnelWeb(pagination,orderBy,tunnelWebQuery)
         const res = new ResultModel({
             total: queryRes[0],

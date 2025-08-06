@@ -45,9 +45,10 @@ export async function useGoBack(){
     router.back()
 }
 
-
 export async function useGoTo(name,isReplace=false){
-    isReplace?router.replace({name}):router.push({name})
+    store.setHeaderBtnLoading(true)
+    isReplace? await router.replace({name}):await router.push({name})
+    store.setHeaderBtnLoading(false)
 }
 
 export function checkTunnelConfig(selectedServer,tunnelWebConfigs,tunnelServiceConfigs){

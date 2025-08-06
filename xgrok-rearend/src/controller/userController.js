@@ -32,7 +32,10 @@ export default class UserController {
     @request('get', '/user/tunnelWebConfig')
     @summary('查询用户web配置')
     @tag
-    @query({serverId:{type: "string",description:"服务id",nullable:false}})
+    @query({
+        serverId:{type: "string",required: true,description:"服务器id",nullable:false},
+        clientId:{type: "string",required: true, description: '客户端id',nullable:false},
+    })
     async queryTunnelWebConfig(ctx) {
         let records = await this.userService.queryTunnelWebConfig(ctx.validatedQuery.serverId,ctx.token.user.id,ctx.validatedQuery.clientId)
         const res = new ResultModel(records,null,true)
@@ -42,7 +45,10 @@ export default class UserController {
     @request('get', '/user/tunnelServiceConfig')
     @summary('查询用户service配置')
     @tag
-    @query({serverId:{type: "string",description:"服务id",nullable:false}})
+    @query({
+        serverId:{type: "string",required: true,description:"服务器id",nullable:false},
+        clientId:{type: "string",required: true, description: '客户端id',nullable:false},
+    })
     async queryTunnelServiceConfig(ctx) {
         let records = await this.userService.queryTunnelServiceConfig(ctx.validatedQuery.serverId,ctx.token.user.id,ctx.validatedQuery.clientId)
         const res = new ResultModel(records,null,true)
@@ -79,7 +85,7 @@ export default class UserController {
         domain:{type:'string',required:true,description:'域名'},
         type: {type: "number", required: true, description: '隧道类型'},
         port:{type:null,required:true,description:'端口'},
-        server_id: {type: "string", required: true, description: '服务id'},
+        server_id: {type: "string", required: true, description: '服务器id'},
         client_id: {type: "string", required: true, description: '客户端id'},
         id: {type: "string", required: true, description: '隧道id'}
     })
@@ -96,7 +102,7 @@ export default class UserController {
     @query({
         domain: {type: "string", required: true, description: '域名'},
         port: {type: "number", required: true, description: '端口号'},
-        server_id: {type: "string", required: true, description: '服务id'},
+        server_id: {type: "string", required: true, description: '服务器id'},
         id: {type: "string", required: true, description: '隧道id'},
         type: {type: "number", required: false, description: '服务类型',default:serviceType.tcp},
     })
@@ -120,11 +126,12 @@ export default class UserController {
     @summary('查询隧道列表')
     @tag
     @query({
-        server_id: {type: "string", required: true, description: '服务id'},
+        serverId:{type: "string",required: true,description:"服务器id",nullable:false},
+        clientId:{type: "string",required: true, description: '客户端id',nullable:false},
     })
     async queryTunnelCount(ctx){
-        const {server_id} = ctx.validatedQuery
-        const res = await this.userService.queryTunnelCount(server_id,ctx.token.user.id)
+        const {serverId,clientId} = ctx.validatedQuery
+        const res = await this.userService.queryTunnelCount(ctx.token.user.id,serverId,clientId)
         ctx.result(res,null,true)
     }
 

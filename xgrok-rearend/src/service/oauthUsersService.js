@@ -80,7 +80,7 @@ export default class OAuthUsersService {
 
     async validateCode(emailQuery){
         emailQuery.expire_time = {
-            gt: new Date(),
+            gt: new Date().valueOf(),
         }
         const queryRes = await this.emailService.queryEmail(new PaginationModel({pageNumber:1,pageSize:1}),new OrderByModel({}),emailQuery)
         return queryRes[1].length>0?queryRes[1][0]:null
@@ -94,7 +94,7 @@ export default class OAuthUsersService {
                 },
                 data: {
                     password: userModel.password,
-                    modified_time: new Date(),
+                    modified_time: new Date().valueOf(),
                 }
             }),
             prisma.ng_email.updateMany({

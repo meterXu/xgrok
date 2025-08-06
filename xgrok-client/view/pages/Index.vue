@@ -8,7 +8,7 @@ import {useGoBack, useGoTo} from "@/libs/useAction";
 import Logo from '@/components/left-aside/Logo.vue'
 
 const store = useAppStore()
-const {userInfo, pid, plan} = store
+const {userInfo, pid, plan,headerBtnLoading} = store
 const router = useRouter()
 
 const showBackBtn=computed(() => {
@@ -68,25 +68,32 @@ onMounted(()=>{
           <div class="header-content-wrap" v-if="userInfo">
             <div class="flex justify-start items-center">
               <Logo title="xgrok"/>
-              <el-divider direction="vertical"/>
-              <el-button :disabled="!plan.text" :type="usePayPlanColor(plan.value)" plain
-                         v-if="router.currentRoute.value.name==='Dashboard'"
-                         class="text-[14px]! py-14!"
-                         size="small"
-                         @click="useGoTo('Plan')">
-                <template #icon>
-                  <i-icon-park-outline-handRight/>
-                </template>
-                {{ plan.text }}
-              </el-button>
-              <el-button plain :type="usePayPlanColor(plan.value)" v-if="showBackBtn"
-                         class="text-[14px]! py-14!"
-                         size="small" @click="useGoBack">
-                <template #icon>
-                  <i-ep-back></i-ep-back>
-                </template>
-                返回
-              </el-button>
+              <template v-if="router.currentRoute.value.name==='Dashboard'">
+                <el-divider direction="vertical"/>
+                <el-button :disabled="!plan.text||headerBtnLoading" :type="usePayPlanColor(plan.value)" plain
+                           :loading="headerBtnLoading"
+                           class="text-[14px]! py-14!"
+                           size="small"
+                           @click="useGoTo('Plan')">
+                  <template #icon>
+                    <i-icon-park-outline-handRight/>
+                  </template>
+                  {{ plan.text }}
+                </el-button>
+              </template>
+              <template v-if="showBackBtn">
+                <el-divider direction="vertical" />
+                <el-button plain :type="usePayPlanColor(plan.value)"
+                           :disabled="headerBtnLoading"
+                           :loading="headerBtnLoading"
+                           class="text-[14px]! py-14!"
+                           size="small" @click="useGoBack">
+                  <template #icon>
+                    <i-ep-back></i-ep-back>
+                  </template>
+                  返回
+                </el-button>
+              </template>
             </div>
             <div class="flex justify-start items-center">
               <span>{{ userInfo.user.username }}</span>

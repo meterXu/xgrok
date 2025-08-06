@@ -175,3 +175,16 @@ alter table oauth_users drop column created_time;
 alter table oauth_users drop column modified_time;
 alter table oauth_users change _created_time created_time bigint null;
 alter table oauth_users change _modified_time modified_time bigint null;
+
+-- oauth_user_role
+alter table oauth_user_role add column _created_time bigint;
+alter table oauth_user_role add column _modified_time bigint;
+update oauth_user_role set _created_time = unix_timestamp(created_time)*1000;
+update oauth_user_role set _modified_time = unix_timestamp(modified_time)*1000;
+alter table oauth_user_role drop column created_time;
+alter table oauth_user_role drop column modified_time;
+alter table oauth_user_role change _created_time created_time bigint null;
+alter table oauth_user_role change _modified_time modified_time bigint null;
+
+INSERT INTO xgrok.ng_sys_dict (id, `key`, code, chn_value, eng_value, sort, creator, editor, status, is_delete, created_time, modified_time) VALUES ('b70a9b952c2a138456bf82f793d87894', 'is_notify', '0', '未通知', 'Not notified', 1, null, null, default, default, null, null);
+INSERT INTO xgrok.ng_sys_dict (id, `key`, code, chn_value, eng_value, sort, creator, editor, status, is_delete, created_time, modified_time) VALUES ('43a7a47100826bfaf245f9da9b7b1334', 'is_notify', '1', '已通知', 'Already notified', 2, null, null, default, default, null, null);

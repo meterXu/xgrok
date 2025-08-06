@@ -181,13 +181,13 @@ model UserRole {
   id            String     @id @db.VarChar(32)
   user_id       String     @db.VarChar(32)
   role_id       String     @db.VarChar(32)
-  created_time  DateTime?  @default(dbgenerated("(now())")) @db.DateTime(0)
   creator       String?    @db.VarChar(50)
   editor        String?    @db.VarChar(50)
-  modified_time DateTime?  @db.DateTime(0)
   sort          Int?
   status        Int?       @default(1)
   is_delete     Int?       @default(0)
+  created_time  BigInt?
+  modified_time BigInt?
   oauth_role    Role       @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "oauth_user_role_oauth_role_id_fk")
   oauth_users   OAuthUsers @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "oauth_user_role_oauth_users_id_fk")
 

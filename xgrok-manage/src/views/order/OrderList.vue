@@ -1,10 +1,19 @@
 <script setup lang="ts">
-import {onMounted,ref, reactive, shallowReactive, shallowRef} from "vue";
+import {onMounted, ref, reactive, shallowReactive, shallowRef} from "vue";
 import {batchDelOrder, getDict, orderQuery} from "@/api";
 import {useGetIndexMethod, usePage, useQuery, useQueryCallback} from "@/libs/use-curd";
-import {mappingDic, resetObj, useBatchDelConfirm, useDel, useFormatDateTime, useFormatDic} from "@/libs/utils";
-import {Search, RefreshLeft,Delete,Plus} from "@element-plus/icons-vue";
+import {
+  EnumToArray,
+  mappingDic,
+  resetObj,
+  useBatchDelConfirm,
+  useDel,
+  useFormatDateTime,
+  useFormatDic
+} from "@/libs/utils";
+import {Search, RefreshLeft, Delete, Plus} from "@element-plus/icons-vue";
 import OrderEdit from "@/views/order/module/OrderEdit.vue";
+import {IsDeleteEnum, IsNotifyEnum, StatusEnum} from "@/libs/enum";
 
 const loading = shallowRef(false)
 const tableData = shallowReactive([] as any[])
@@ -15,9 +24,13 @@ const searchForm = reactive({
   trade_no: '',
   username: '',
   created_time: [],
-  pay_status: null
+  pay_status: null,
+  status: null,
+  is_manage: 1
 })
-const payStatus = shallowReactive<DictItemType[]>([])
+const payStatusDict = shallowReactive<DictItemType[]>([])
+const statusDict = shallowReactive<DictItemType[]>([])
+const isDeleteDict = shallowReactive<DictItemType[]>([])
 const multipleSelection = ref<string[]>([])
 
 function queryData(params: any): Promise<ResultType<PaginationDataType<OrderType>>> {
@@ -31,9 +44,9 @@ function queryData(params: any): Promise<ResultType<PaginationDataType<OrderType
 function handleQuery(pageNumber: number = page.pageNumber, pageSize: number = page.pageSize) {
   page.pageNumber = pageNumber
   page.pageSize = pageSize
-  useQuery<OrderType>(queryData, Object.assign({}, page, searchForm,{
+  useQuery<OrderType>(queryData, Object.assign({}, page, searchForm, {
     created_time_start: searchForm.created_time[0]?.valueOf(),
-    created_time_end:searchForm.created_time[1]?.valueOf(),
+    created_time_end: searchForm.created_time[1]?.valueOf(),
   }), (res: ResultType<PaginationDataType<OrderType>>) => {
     useQueryCallback(res, tableData, page)
   })
@@ -44,31 +57,36 @@ function handleReset() {
   handleQuery(1, 20)
 }
 
-function onEdit(row:any) {
-  Object.assign(formData,row,{username:undefined})
+function onEdit(row: any) {
+  Object.assign(formData, row, {username: undefined})
   dialogVisible.value = true
 }
 
-function onAdd(){
-  resetObj(formData,{username:undefined,pay_num:1})
+function onAdd() {
+  resetObj(formData, {username: undefined, pay_num: 1})
   dialogVisible.value = true
 }
 
-function onDelete(){
-  useBatchDelConfirm(multipleSelection.value,{},()=>batchDelOrder(multipleSelection.value)).then(res=>{
-    useDel(res).then(()=>{
+function onDelete() {
+  useBatchDelConfirm(multipleSelection.value, {}, () => batchDelOrder(multipleSelection.value)).then(res => {
+    useDel(res).then(() => {
       handleQuery()
     })
   })
 }
 
-function onSelectionChange(val: OrderType[]){
-  multipleSelection.value = val.map(c=>c.id)
+function onSelectionChange(val: OrderType[]) {
+  multipleSelection.value = val.map(c => c.id)
 }
 
 onMounted(() => {
-  mappingDic([getDict('pay_status')], [
-    payStatus
+  mappingDic([
+    getDict('pay_status'),
+    getDict('status'),
+    getDict('is_delete')], [
+    payStatusDict,
+    statusDict,
+    isDeleteDict
   ])
   handleQuery(1, 20)
 })
@@ -76,10 +94,17 @@ onMounted(() => {
 
 <template>
   <div class="w-full h-full flex flex-col gap-12">
-    <div class="my-inner-form p-12 flex flex-row items-center bg-white border-1 border-(--el-border-color-light) rounded-2xl shadow-xs">
+    <div
+        class="my-inner-form p-12 flex flex-row items-center bg-white border-1 border-(--el-border-color-light) rounded-2xl shadow-xs">
       <el-form inline>
         <el-form-item label="订单编号">
           <el-input class="w-150!" v-model="searchForm.trade_no" clearable @keydown.enter="()=>{handleQuery()}"/>
+        </el-form-item>
+        <el-form-item label="订单状态">
+          <el-select class="w-150!" v-model="searchForm.status" clearable @change="()=>{handleQuery()}">
+            <el-option v-for="item in statusDict" :key="item.code" :label="item.chn_value"
+                       :value="item.code"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="创建日期">
           <el-date-picker class="w-260!" type="daterange"
@@ -91,7 +116,7 @@ onMounted(() => {
         </el-form-item>
         <el-form-item label="支付状态">
           <el-select class="w-150!" v-model="searchForm.pay_status" clearable @change="()=>{handleQuery()}">
-            <el-option v-for="item in payStatus" :key="item.code" :label="item.chn_value"
+            <el-option v-for="item in payStatusDict" :key="item.code" :label="item.chn_value"
                        :value="item.code"></el-option>
           </el-select>
         </el-form-item>
@@ -118,24 +143,25 @@ onMounted(() => {
                     height="100%"
                     row-key="id"
                     @selection-change="onSelectionChange">
-            <el-table-column fixed type="selection" width="45" />
-            <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod" width="55"></el-table-column>
+            <el-table-column fixed type="selection" width="45"/>
+            <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod"
+                             width="55"></el-table-column>
             <el-table-column prop="trade_no" label="订单号" align="left" width="180"></el-table-column>
             <el-table-column prop="name" label="购买产品" align="left" width="100"></el-table-column>
             <el-table-column prop="username" label="购买人" align="left" width="180"></el-table-column>
             <el-table-column prop="pay_status" label="支付状态" align="left" width="200">
               <template #default="{row}">
                 <el-tag type="primary" v-if="row.pay_status===0">
-                  {{ useFormatDic(payStatus, row.pay_status.toString()) }}
+                  {{ useFormatDic(payStatusDict, row.pay_status) }}
                 </el-tag>
                 <el-tag type="success" v-else-if="row.pay_status===1||row.pay_status===4">
-                  {{ useFormatDic(payStatus, row.pay_status.toString()) }}
+                  {{ useFormatDic(payStatusDict, row.pay_status) }}
                 </el-tag>
                 <el-tag type="danger" v-else-if="row.pay_status===2">
-                  {{ useFormatDic(payStatus, row.pay_status.toString()) }}
+                  {{ useFormatDic(payStatusDict, row.pay_status) }}
                 </el-tag>
                 <el-tag type="warning" v-else-if="row.pay_status===3">
-                  {{ useFormatDic(payStatus, row.pay_status.toString()) }}
+                  {{ useFormatDic(payStatusDict, row.pay_status) }}
                 </el-tag>
               </template>
             </el-table-column>
@@ -172,6 +198,30 @@ onMounted(() => {
             <el-table-column prop="expired_time" label="过期时间" align="left" width="180">
               <template #default="{row}">
                 {{ useFormatDateTime(row.expired_time) }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="will_expire_notify_time" label="将过期通知时间" align="left" width="180">
+              <template #default="{row}">
+                {{ useFormatDateTime(row.will_expire_notify_time) }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="expired_notify_time" label="已过期通知时间" align="left" width="180">
+              <template #default="{row}">
+                {{ useFormatDateTime(row.expired_notify_time) }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="status" label="是否启用" align="left" width="100">
+              <template #default="{row}">
+                <el-tag :type="row.status===StatusEnum.disable?'danger':'success'">
+                  {{ useFormatDic(statusDict, row.status) }}
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column prop="is_delete" label="是否删除" align="left" width="100">
+              <template #default="{row}">
+                <el-tag :type="row.is_delete===IsDeleteEnum.true?'danger':'success'">
+                  {{ useFormatDic(isDeleteDict, row.is_delete) }}
+                </el-tag>
               </template>
             </el-table-column>
             <el-table-column prop="is_delete" label="操作" align="center">

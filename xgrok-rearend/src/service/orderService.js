@@ -2,7 +2,7 @@ import {
     aliPayPaymentToSys,
     getPayRefundEmail,
     getPaySuccessEmail, getSubjectName,
-    isEmail,
+    isEmail, isNullOrUndefined,
     isSysPaySuccess,
     randomUUID
 } from "../utils/index.js";
@@ -39,11 +39,10 @@ export default class OrderService {
             orderModel.pay_status && `a.pay_status = ${orderModel.pay_status}`,
             orderModel.creator && `a.creator = '${orderModel.creator}'`,
             orderModel.username && `c.username like '%${orderModel.username}%'`,
-            `a.status=${status.enable}`,
-            `a.is_delete=${isDelete.false}`
+            orderModel.is_manage===1?!isNullOrUndefined(orderModel.status)&&`a.status = ${orderModel.status}`:`a.status = ${status.enable}`,
+            orderModel.is_manage===1?'':`a.is_delete=${isDelete.false}`
         ].filter(c => c).join(' and ')
-
-        const totalSql =   `
+        const totalSql =`
         select count(*) _all from ng_order a
         inner join ng_product b on a.product_id = b.id and b.status=${status.enable} and b.is_delete=${isDelete.false}
         left join oauth_users c on a.creator = c.id
@@ -51,6 +50,7 @@ export default class OrderService {
 
         const querySql = `
         select a.id,a.trade_no,a.product_id,b.name,b.type,a.expired_time,a.pay_price,a.pay_num,a.pay_total_amount,a.pay_status,
+               a.will_expire_notify_time,a.expired_notify_time,a.status,a.is_delete,
                a.created_time,a.payed_time,a.refund_time,a.remark,c.username,a.creator from ng_order a
         inner join ng_product b on a.product_id = b.id and b.status=${status.enable} and b.is_delete=${isDelete.false}
         left join oauth_users c on a.creator = c.id
@@ -208,7 +208,7 @@ export default class OrderService {
                 console.log(`alipay return order status is ${JSON.stringify(alipayOrderRes)}`)
                 if(orderModel.pay_status!==_aliPayStatusSys){
                     orderModel.pay_status = _aliPayStatusSys
-                    orderModel.payed_time = alipayOrderRes.sendPayDate?new Date(alipayOrderRes.sendPayDate):null
+                    orderModel.payed_time = alipayOrderRes.sendPayDate.valueOf()?new Date(alipayOrderRes.sendPayDate).valueOf():null
                     const editRes = await this.editOrder(orderModel)
                     if(editRes){
                         let user = await this.oauthUsersService.detail(orderModel.creator)
@@ -271,18 +271,17 @@ export default class OrderService {
     async queryExpireTaskOrder(){
         const expiresAfterOneDay=`SELECT a.id,a.creator,a.expired_time,c.username FROM ng_order a JOIN (
 SELECT creator, MAX(expired_time) AS max_expired_time FROM ng_order
-WHERE status = 1 AND is_delete = 0 AND pay_status = 1 AND is_will_expire_notify = ${isNotify.no}  AND expired_time BETWEEN NOW() AND NOW() + INTERVAL 1 DAY
+WHERE status = 1 AND is_delete = 0 AND pay_status = 1 AND is_will_expire_notify = ${isNotify.no}  AND expired_time BETWEEN UNIX_TIMESTAMP()*1000 AND (UNIX_TIMESTAMP()+86400)*1000
 GROUP BY creator
 ) b ON a.creator = b.creator AND a.expired_time = b.max_expired_time
 left join oauth_users c on a.creator = c.id`
 
         const itHasExpired = `select a.id,a.creator,a.expired_time,c.username from ng_order a JOIN (
 select a.creator,max(a.expired_time) max_expired_time from ng_order a
-where a.status=1 and a.is_delete=0  and a.pay_status=1 and is_expired_notify = ${isNotify.no} and a.expired_time<=now()
+where a.status=1 and a.is_delete=0  and a.pay_status=1 and is_expired_notify = ${isNotify.no} and a.expired_time<=UNIX_TIMESTAMP()*1000
 group by a.creator
 ) b ON a.creator = b.creator AND a.expired_time = b.max_expired_time
 left join oauth_users c on a.creator = c.id`
-
         return prisma.$transaction([
             prisma.$queryRaw(Prisma.raw(expiresAfterOneDay)),
             prisma.$queryRaw(Prisma.raw(itHasExpired))

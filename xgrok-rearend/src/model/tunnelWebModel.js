@@ -35,9 +35,9 @@ export default class TunnelWebModel {
     @swaggerProperty({ type: "string",description:"",nullable:true}) editor
     @swaggerProperty({ type: "number",description:"",nullable:true}) created_time
     @swaggerProperty({ type: "number",description:"",nullable:true}) modified_time
-    @swaggerProperty({ type: "number",description:"",nullable:true,default:1}) status
-    @swaggerProperty({ type: "number",description:"",nullable:true,default:0}) is_delete
-    @swaggerProperty({ type: "number",description:"",nullable:true,default:0}) is_remote
+    @swaggerProperty({ type: "number",description:"",nullable:true}) status
+    @swaggerProperty({ type: "number",description:"",nullable:true}) is_delete
+    @swaggerProperty({ type: "number",description:"",nullable:true}) is_remote
     @swaggerProperty({ type: "string",description:"",nullable:true}) remark
 
 }

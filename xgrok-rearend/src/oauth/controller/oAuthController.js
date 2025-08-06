@@ -72,7 +72,7 @@ export default class OAuthController{
         const emailModel = new EmailModel(ctx.validatedQuery)
         const type = ctx.validatedQuery.type
         emailModel.expire_time = {
-            gt: new Date(),
+            gt: new Date().valueOf(),
         }
         const queryRes = await this.emailService.queryEmail(new PaginationModel({}),new OrderByModel({}),emailModel)
         if(queryRes[1].length>0){// 没过期，则不创建

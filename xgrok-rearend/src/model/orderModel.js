@@ -29,6 +29,7 @@ export default class OrderModel {
         this.pay_time_end = body.pay_time_end
         this.created_time_start = body.created_time_start
         this.created_time_end = body.created_time_end
+        this.is_manage = body.is_manage
     }
 
     /** generate by CodeGirl */
@@ -47,6 +48,7 @@ export default class OrderModel {
     @swaggerProperty({type: "string", description: "", nullable: true}) username
     @swaggerProperty({type: "number", description: "", nullable: true}) created_time_start
     @swaggerProperty({type: "number", description: "", nullable: true}) created_time_end
+    @swaggerProperty({type: "number", description: "", nullable: true}) is_manage
     // 查询条件
     @swaggerProperty({type: "number", description: "", nullable: true}) refund_time
     @swaggerProperty({type: "number", description: "", nullable: true}) pay_status
