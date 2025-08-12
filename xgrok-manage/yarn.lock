@@ -3351,10 +3351,10 @@ which@^2.0.1:
   dependencies:
     isexe "^2.0.0"
 
-xxweb-box@^0.3.7:
-  version "0.3.7"
-  resolved "https://registry.npmmirror.com/xxweb-box/-/xxweb-box-0.3.7.tgz#cb1d1f050aa490bd364902b6e6ca5e86a68edcc3"
-  integrity sha512-mbs4SLWQxJCtfmP6aKRUsbcX4aN6m3uMI7+3vVaoNtPuo1aBfFN6EqRIGmsA8ANnL/BcNJAmqUuXSLF65giZNA==
+xxweb-box@^0.3.10:
+  version "0.3.10"
+  resolved "https://registry.npmmirror.com/xxweb-box/-/xxweb-box-0.3.10.tgz#f812ea35cfc557da4ec7ac199f8157f5a063778e"
+  integrity sha512-YaitOLozhfrSMcPxgbdPPDsoIBu8bl4opIpyO4Zu3WGyGKDAZX1v1SnHVw9ZK2jhZlx60LyXcF868aHT9NiZPQ==
   dependencies:
     "@element-plus/icons-vue" "^2.3.1"
     element-plus "^2.4.4"
