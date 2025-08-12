@@ -13,7 +13,7 @@ import {
 } from "@/libs/utils";
 import {Search, RefreshLeft, Delete, Plus} from "@element-plus/icons-vue";
 import OrderEdit from "@/views/order/module/OrderEdit.vue";
-import {IsDeleteEnum, IsNotifyEnum, StatusEnum} from "@/libs/enum";
+import {IsDeleteEnum, StatusEnum} from "@/libs/enum";
 
 const loading = shallowRef(false)
 const tableData = shallowReactive([] as any[])
@@ -23,7 +23,7 @@ const formData = shallowReactive<OrderType>({} as OrderType)
 const searchForm = reactive({
   trade_no: '',
   username: '',
-  created_time: [],
+  created_time: [] as Date[],
   pay_status: null,
   status: null,
   is_manage: 1
@@ -45,8 +45,8 @@ function handleQuery(pageNumber: number = page.pageNumber, pageSize: number = pa
   page.pageNumber = pageNumber
   page.pageSize = pageSize
   useQuery<OrderType>(queryData, Object.assign({}, page, searchForm, {
-    created_time_start: searchForm.created_time[0]?.valueOf(),
-    created_time_end: searchForm.created_time[1]?.valueOf(),
+    created_time_start: searchForm.created_time[0].valueOf(),
+    created_time_end: searchForm.created_time[1].valueOf(),
   }), (res: ResultType<PaginationDataType<OrderType>>) => {
     useQueryCallback(res, tableData, page)
   })
