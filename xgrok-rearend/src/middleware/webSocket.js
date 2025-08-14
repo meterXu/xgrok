@@ -1,8 +1,11 @@
+import {UserType as token} from "../utils/enum";
+
 const WebSocket = require('ws')
 import AuthModel from '../oauth/password/Model.js'
 export default class WS {
     constructor() {
         this.ws = null
+        this.clients = new Map()
     }
 
     init(server) {
@@ -28,9 +31,17 @@ export default class WS {
                 if(!token){
                     return _ws.close();
                 }
-                _ws.userId = token.user.id
-                const obj = {'type':'connection',"message":`连接成功，当前在线${this.ws._server._connections}个连接`,"retCode": 200}
-                _ws.send(JSON.stringify(obj))
+                if(this.clients.has(token.user.id)){
+                    const existingClient = await this.clients.get(token.user.id)
+                    existingClient.close();
+                }
+                _ws.userId = token.user.id;
+                this.clients.set(_ws.userId, _ws);
+                _ws.on('close', () => {
+                    this.clients.delete(token.user.id)// 移除关闭的连接
+                    console.log(`Connection closed for user ${token.user.id}`);
+                })
+                _ws.send(JSON.stringify({'type':'connection',"message":`连接成功，当前在线${this.clients.size}个连接`,"retCode": 200}))
             } catch (error) {
                 console.log('websocket connection error',error)
                 return _ws.close();
@@ -39,11 +50,9 @@ export default class WS {
     }
 
     sendToClient(data) {
-        if(this.ws){
-            const client = (Array.from(this.ws.clients)).find(_ws=>_ws.readyState===WebSocket.OPEN&&_ws.userId===data.userId)
-            if(client){
-                client.send(JSON.stringify(data))
-            }
+        const client = this.clients.get(data.userId)
+        if(client&&client.readyState===WebSocket.OPEN){
+            client.send(JSON.stringify(data))
         }
     }
 }

@@ -40,6 +40,8 @@ export default class EmailService {
                     console.log(`The email was successfully sent to ${email}`);
                     resolve(data)
                 }
+            }else{
+                resolve()
             }
         })
     }

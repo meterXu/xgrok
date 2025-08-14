@@ -10,7 +10,7 @@ global.alipaySdk = getAlipaySdk()
 global.parentPort = parentPort
 start()
 
-function heartbeatToken(){
+async function heartbeatToken(){
     async function _task(){
         console.log('heart beat accessTokens started')
         const oAuthTokensService = new OAuthTokensService()
@@ -38,13 +38,13 @@ function heartbeatToken(){
         }
         console.log(`heartbeatToken: wait 1h for the execution to continue`)
         setTimeout(async () => {
-            _task()
+            await _task()
         },process.env.NODE_ENV==='development'?6*1000:3600*1000)//每小时执行一次
     }
-    _task()
+    await _task()
 }
 
-function checkPlanExpired(){
+async function checkPlanExpired(){
     async function _task(){
         console.log('check plan expire started')
         const orderService = new OrderService()
@@ -75,17 +75,17 @@ function checkPlanExpired(){
         }
         console.log(`checkPlanExpired: wait 1h for the execution to continue`)
         setTimeout(async () => {
-            _task()
+            await _task()
         },process.env.NODE_ENV==='development'?6*1000:3600*1000)//每小时执行一次
     }
-    _task()
+    await _task()
 }
 
-function start(){
+async function start(){
     initLog()
     console.log('worker thead started')
     const orderSchedule = new OrderSchedule()
-    orderSchedule.create()
-    heartbeatToken()
-    checkPlanExpired()
+    await orderSchedule.create()
+    await heartbeatToken()
+    await checkPlanExpired()
 }

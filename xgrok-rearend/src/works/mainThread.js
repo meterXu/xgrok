@@ -15,20 +15,16 @@ export default class MainThreadWorker{
             this.orderService = new OrderService()
         if(isMainThread){
             global.heartBeatWorker.on("message",async result=>{
-                try{
-                    switch(result.type){
-                        case 'order':{
-                            this.sendWebSocketMsg(result)
-                        }break
-                        case 'heartbeatToken':{
-                            this.heartbeatToken(result)
-                        }break
-                        case 'checkPlanExpired':{
-                            await this.checkPlanExpired(result)
-                        }break
-                    }
-                }catch (err){
-                    console.error(err)
+                switch(result.type){
+                    case 'order':{
+                        this.sendWebSocketMsg(result)
+                    }break
+                    case 'heartbeatToken':{
+                        this.heartbeatToken(result)
+                    }break
+                    case 'checkPlanExpired':{
+                        await this.checkPlanExpired(result)
+                    }break
                 }
             })
         }

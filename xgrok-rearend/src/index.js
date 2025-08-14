@@ -59,6 +59,12 @@ else{
         console.error('Failed to start HTTP server\n', ex, (ex && ex.stack));
     }
 }
+process.on('uncaughtException', ex => {
+    console.error('uncaughtException\n',ex,(ex&&ex.stack));
+})
+process.on('unhandledRejection', ex=> {
+    console.error('unhandledRejection\n',ex,(ex&&ex.stack));
+})
 
 global.webSocket = new webSocket()
 server&&global.webSocket.init(server)
