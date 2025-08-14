@@ -44,11 +44,6 @@ export default class WS {
             if(client){
                 client.send(JSON.stringify(data))
             }
-            // this.ws.clients.forEach((_ws) => {
-            //     if (_ws.readyState === WebSocket.OPEN && _ws.userId === data.userId) {
-            //         _ws.send(JSON.stringify(data));
-            //     }
-            // });
         }
     }
 }
