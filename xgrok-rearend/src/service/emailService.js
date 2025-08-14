@@ -25,19 +25,21 @@ export default class EmailService {
 
     async sendEmail(email,subject,html){
         return new Promise(async (resolve, reject)=>{
-            const resend = new Resend(config.resend);
-            const { data, error } = await resend.emails.send({
-                from: config.send_mail_from,
-                to: email,
-                subject: subject,
-                html: html
-            });
-            if(error){
-                console.log('Error sending email: ', error);
-                reject(error)
-            }else{
-                console.log(`The email was successfully sent to ${email}`);
-                resolve(data)
+            if(process.env.NODE_ENV!=='development'){
+                const resend = new Resend(config.resend);
+                const { data, error } = await resend.emails.send({
+                    from: config.send_mail_from,
+                    to: email,
+                    subject: subject,
+                    html: html
+                });
+                if(error){
+                    console.log('Error sending email: ', error);
+                    reject(error)
+                }else{
+                    console.log(`The email was successfully sent to ${email}`);
+                    resolve(data)
+                }
             }
         })
     }
