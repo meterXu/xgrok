@@ -11,6 +11,7 @@ import md5 from "js-md5"
 import qs from "qs"
 import {ACCESS_TOKEN} from "xxweb-box/utils/mutation-types";
 import {isDeleteType, serverEnum, statusType} from "@/libs/enums";
+import reconnectingWebSocket from 'reconnecting-websocket'
 
 const url = {
     oauth: {
@@ -209,7 +210,11 @@ export function initWebSocket(callback) {
                 time
             ]
         }
-        window.ws = new WebSocket(window.project.variable.wsUrl, protocols)
+        window.ws = new reconnectingWebSocket(window.project.variable.wsUrl, protocols,{
+            maxReconnectionDelay: 20000, // 断开后最大的重连时间： 20s，每多一次重连，会增加 1.3 倍，5 * 1.3 * 1.3 * 1.3...
+            minReconnectionDelay: 5000, // 断开后最短的重连时间： 5s
+            maxRetries: 5
+        })
         window.ws.onopen = function () {
             console.log('Connected to the WebSocket server');
         }

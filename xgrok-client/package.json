@@ -77,6 +77,7 @@
     "@tailwindcss/postcss": "^4.1.5",
     "autoprefixer": "^10.4.21",
     "axios": "^1.6.7",
+    "dotenv": "^16.0.3",
     "electron-log": "^5.2.0",
     "electron-squirrel-startup": "^1.0.1",
     "electron-sudo": "^4.0.12",
@@ -90,11 +91,11 @@
     "postcss-pxtorem": "^6.1.0",
     "qrious": "^4.0.2",
     "qs": "^6.11.2",
+    "reconnecting-websocket": "^4.4.0",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",
     "xxweb-box": "^0.3.1",
-    "yaml": "^2.4.1",
-    "dotenv": "^16.0.3"
+    "yaml": "^2.4.1"
   },
   "devDependencies": {
     "@electron/fuses": "^1.8.0",

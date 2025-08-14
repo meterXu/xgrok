@@ -45,8 +45,8 @@ function handleQuery(pageNumber: number = page.pageNumber, pageSize: number = pa
   page.pageNumber = pageNumber
   page.pageSize = pageSize
   useQuery<OrderType>(queryData, Object.assign({}, page, searchForm, {
-    created_time_start: searchForm.created_time[0].valueOf(),
-    created_time_end: searchForm.created_time[1].valueOf(),
+    created_time_start: searchForm.created_time[0]?.valueOf(),
+    created_time_end: searchForm.created_time[1]?.valueOf(),
   }), (res: ResultType<PaginationDataType<OrderType>>) => {
     useQueryCallback(res, tableData, page)
   })
@@ -96,38 +96,44 @@ onMounted(() => {
   <div class="w-full h-full flex flex-col gap-12">
     <div
         class="my-inner-form p-12 flex flex-row items-center bg-white border-1 border-(--el-border-color-light) rounded-2xl shadow-xs">
-      <el-form inline>
-        <el-form-item label="订单编号">
-          <el-input class="w-150!" v-model="searchForm.trade_no" clearable @keydown.enter="()=>{handleQuery()}"/>
-        </el-form-item>
-        <el-form-item label="订单状态">
-          <el-select class="w-150!" v-model="searchForm.status" clearable @change="()=>{handleQuery()}">
-            <el-option v-for="item in statusDict" :key="item.code" :label="item.chn_value"
-                       :value="item.code"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="创建日期">
-          <el-date-picker class="w-260!" type="daterange"
-                          start-placeholder="开始日期"
-                          end-placeholder="结束日期" :default-time="[
+      <el-form inline label-width="80">
+        <div class="flex flex-col gap-8">
+          <div>
+            <el-form-item label="订单编号">
+              <el-input class="w-150!" v-model="searchForm.trade_no" clearable @keydown.enter="()=>{handleQuery()}"/>
+            </el-form-item>
+            <el-form-item label="订单状态">
+              <el-select class="w-150!" v-model="searchForm.status" clearable @change="()=>{handleQuery()}">
+                <el-option v-for="item in statusDict" :key="item.code" :label="item.chn_value"
+                           :value="item.code"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="创建日期">
+              <el-date-picker class="w-260!" type="daterange"
+                              start-placeholder="开始日期"
+                              end-placeholder="结束日期" :default-time="[
                               new Date(2000, 1, 1, 0, 0, 0),
                               new Date(2000, 2, 1, 23, 59, 59),]"
-                          v-model="searchForm.created_time" @change="()=>{handleQuery()}"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="支付状态">
-          <el-select class="w-150!" v-model="searchForm.pay_status" clearable @change="()=>{handleQuery()}">
-            <el-option v-for="item in payStatusDict" :key="item.code" :label="item.chn_value"
-                       :value="item.code"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="购买人">
-          <el-input class="w-120!" v-model="searchForm.username" clearable @keydown.enter="()=>{handleQuery()}">
-          </el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="()=>{handleQuery()}" :icon="Search">查询</el-button>
-          <el-button @click="handleReset" :icon="RefreshLeft">重置</el-button>
-        </el-form-item>
+                              v-model="searchForm.created_time" @change="()=>{handleQuery()}"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="支付状态">
+              <el-select class="w-150!" v-model="searchForm.pay_status" clearable @change="()=>{handleQuery()}">
+                <el-option v-for="item in payStatusDict" :key="item.code" :label="item.chn_value"
+                           :value="item.code"></el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <div>
+            <el-form-item label="购买人">
+              <el-input class="w-150!" v-model="searchForm.username" clearable @keydown.enter="()=>{handleQuery()}">
+              </el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="()=>{handleQuery()}" :icon="Search">查询</el-button>
+              <el-button @click="handleReset" :icon="RefreshLeft">重置</el-button>
+            </el-form-item>
+          </div>
+        </div>
       </el-form>
     </div>
     <div class="flex-1 flex flex-col gap-12 border-1 border-(--el-border-color-light) bg-white rounded-2xl shadow-xs">

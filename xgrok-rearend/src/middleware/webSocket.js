@@ -8,13 +8,13 @@ export default class WS {
     init(server) {
         // 创建实例
         this.ws = new WebSocket.Server({ server,path: '/websockets'});
-        this.ws.on('connection', async (ws, request) => {
+        this.ws.on('connection', async (_ws, request) => {
             try {
                 if(!(request.url.includes('/websockets'))){
-                    return ws.close();
+                    return _ws.close();
                 }
                 if(!request.headers['sec-websocket-protocol']){
-                    return ws.close()
+                    return _ws.close()
                 }
                 const protocols = request.headers['sec-websocket-protocol'].split(', ')
                 const auth = new AuthModel({
@@ -26,25 +26,29 @@ export default class WS {
                 })
                 const token = await auth.getAccessToken(process.env.NODE_ENV==='development'?protocols[2]:protocols[1])
                 if(!token){
-                    return ws.close();
+                    return _ws.close();
                 }
-                ws.userId = token.user.id
+                _ws.userId = token.user.id
                 const obj = {'type':'connection',"message":`连接成功，当前在线${this.ws._server._connections}个连接`,"retCode": 200}
-                ws.send(JSON.stringify(obj))
+                _ws.send(JSON.stringify(obj))
             } catch (error) {
                 console.log('websocket connection error',error)
-                return ws.close();
+                return _ws.close();
             }
         });
     }
 
-    sendToClient(Data) {
+    sendToClient(data) {
         if(this.ws){
-            this.ws.clients.forEach((client) => {
-                if (client.readyState === WebSocket.OPEN && client.userId === Data.userId) {
-                    client.send(JSON.stringify(Data));
-                }
-            });
+            const client = (Array.from(this.ws.clients)).find(_ws=>_ws.readyState===WebSocket.OPEN&&_ws.userId===data.userId)
+            if(client){
+                client.send(JSON.stringify(data))
+            }
+            // this.ws.clients.forEach((_ws) => {
+            //     if (_ws.readyState === WebSocket.OPEN && _ws.userId === data.userId) {
+            //         _ws.send(JSON.stringify(data));
+            //     }
+            // });
         }
     }
 }

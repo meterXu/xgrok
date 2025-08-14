@@ -15,16 +15,20 @@ export default class MainThreadWorker{
             this.orderService = new OrderService()
         if(isMainThread){
             global.heartBeatWorker.on("message",async result=>{
-                switch(result.type){
-                    case 'order':{
-                        this.sendWebSocketMsg(result)
-                    }break
-                    case 'heartbeatToken':{
-                        this.heartbeatToken(result)
-                    }break
-                    case 'checkPlanExpired':{
-                        this.checkPlanExpired(result)
-                    }break
+                try{
+                    switch(result.type){
+                        case 'order':{
+                            this.sendWebSocketMsg(result)
+                        }break
+                        case 'heartbeatToken':{
+                            this.heartbeatToken(result)
+                        }break
+                        case 'checkPlanExpired':{
+                            await this.checkPlanExpired(result)
+                        }break
+                    }
+                }catch (err){
+                    console.error(err)
                 }
             })
         }
@@ -62,7 +66,7 @@ export default class MainThreadWorker{
         }
     }
 
-    checkPlanExpired(data){
+    async checkPlanExpired(data){
         if(isEmail(data.email)){
             console.log(`send [${data.category}] message to email [${data.email}]`)
             let emailData = data.category==='expireInOneDay'?{
@@ -72,7 +76,7 @@ export default class MainThreadWorker{
                 subject:'订阅通知📢 xgrok',
                 html:'😊<br/>你的订阅已过期，系统已自动将其更新为【免费计划】，欢迎再次订阅！<br/>🙏🙏🙏'
             }
-            this.emailService.sendEmail(data.email,emailData.subject,emailData.html)
+            await this.emailService.sendEmail(data.email,emailData.subject,emailData.html)
         }
         if(data.category==='haveExpired'){
             console.log(`update order [${data.orderId}] status  is disabled`)
@@ -88,7 +92,7 @@ export default class MainThreadWorker{
             })
         }else if(data.category==='expireInOneDay'){
             console.log(`update order [${data.orderId}] is_will_expire_notify  is yes`)
-            this.orderService.editOrder({
+            await this.orderService.editOrder({
                 id:data.orderId,
                 is_will_expire_notify:isNotify.yes,
                 will_expire_notify_time:new Date().valueOf(),

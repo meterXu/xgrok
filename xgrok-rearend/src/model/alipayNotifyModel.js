@@ -9,7 +9,7 @@ export default class AlipayNotifyModel{
     }
 
     isSignPass(){
-        return global.alipaySdk.checkNotifySignV2(this)
+        return process.env.NODE_ENV==='development'?true:global.alipaySdk.checkNotifySignV2(this)
     }
 
 }

@@ -19,7 +19,7 @@ export default class GatewayController {
     @tag
     async acceptMessage(ctx) {
         await this.gatewayService.acceptMessage()
-        const res = new ResultModel('hello world', null, true)
+        const res = new ResultModel('hello gateway', null, true)
         ctx.result(res)
     }
 
@@ -39,7 +39,7 @@ export default class GatewayController {
                 orderId:result.id
             })
         }
-        const res = new ResultModel('hello world', null, !!result)
+        const res = new ResultModel(null, null, !!result)
         ctx.result(res)
     }
 

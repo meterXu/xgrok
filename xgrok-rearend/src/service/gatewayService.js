@@ -23,7 +23,7 @@ export default class GatewayService {
     async acceptMessage() {
     }
 
-    async dealWithNotify(alipayNotifyModel,username){
+    async dealWithNotify(alipayNotifyModel){
         if(alipayNotifyModel.isSignPass()){
             const order = await this.orderService.detailOrderByOrderId({trade_no:alipayNotifyModel.out_trade_no})
             const _aliPayPaymentToSys  = aliPayPaymentToSys(alipayNotifyModel.trade_status)
@@ -41,6 +41,8 @@ export default class GatewayService {
                     await this.emailService.sendEmail(user.username,emailContent.subject,emailContent.html)
                 }
                 return  res
+            }else{
+                return order
             }
         }else{
             return false

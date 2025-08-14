@@ -39,7 +39,7 @@ function heartbeatToken(){
         console.log(`heartbeatToken: wait 1h for the execution to continue`)
         setTimeout(async () => {
             _task()
-        },3600*1000)//每小时执行一次
+        },process.env.NODE_ENV==='development'?6*1000:3600*1000)//每小时执行一次
     }
     _task()
 }
@@ -76,7 +76,7 @@ function checkPlanExpired(){
         console.log(`checkPlanExpired: wait 1h for the execution to continue`)
         setTimeout(async () => {
             _task()
-        },3600*1000)//每小时执行一次
+        },process.env.NODE_ENV==='development'?6*1000:3600*1000)//每小时执行一次
     }
     _task()
 }

@@ -192,4 +192,24 @@ export default class UserController {
         const res = new ResultModel(id, null, !!delRes)
         ctx.result(res)
     }
+
+    @request('post', '/user/notify')
+    @summary('ws发送通知')
+    @tag
+    @body({
+        userId:{type: "string", required: true, description: '用户id'},
+        type:{type: "string", required: true, description: '用户id'},
+        context: {type: "string", required: true, description: '通知内容'}
+    })
+    async notify(ctx){
+        const {userId,context,type} = ctx.validatedBody
+        const data = Object.assign({
+            type:type,
+            userId:userId
+        },JSON.parse(context))
+        // 向前端发送付款状态
+        global.webSocket.sendToClient(data)
+        const res = new ResultModel(data, null, true)
+        ctx.result(res)
+    }
 }
