@@ -6,7 +6,8 @@
     "strict": true,
     "typeRoots": [
       "node_modules/@types",
-      "src/libs/types"
+      "src/libs/types",
+      "node_modules/xxweb-util/types"
     ],
     "baseUrl": "./src",
     "paths": {

@@ -3351,10 +3351,10 @@ which@^2.0.1:
   dependencies:
     isexe "^2.0.0"
 
-xxweb-box@^0.3.10:
-  version "0.3.10"
-  resolved "https://registry.npmmirror.com/xxweb-box/-/xxweb-box-0.3.10.tgz#f812ea35cfc557da4ec7ac199f8157f5a063778e"
-  integrity sha512-YaitOLozhfrSMcPxgbdPPDsoIBu8bl4opIpyO4Zu3WGyGKDAZX1v1SnHVw9ZK2jhZlx60LyXcF868aHT9NiZPQ==
+xxweb-box@^0.3.11:
+  version "0.3.11"
+  resolved "https://registry.npmmirror.com/xxweb-box/-/xxweb-box-0.3.11.tgz#f5d9081ae7adda96dd074efb7ad506f74b5cb1c5"
+  integrity sha512-VxD2cjTWV9SAlLN3ktoVcVE/znowvj5MsGkQQ2WHTM40D61pjdoVDI4pS/ALil62bENLjeS0Pzbz8MyTKkwjnQ==
   dependencies:
     "@element-plus/icons-vue" "^2.3.1"
     element-plus "^2.4.4"
@@ -3362,10 +3362,10 @@ xxweb-box@^0.3.10:
     vue "^3.0.0"
     vue-router "^4.0.8"
 
-xxweb-util@^0.3.12:
-  version "0.3.12"
-  resolved "https://registry.npmmirror.com/xxweb-util/-/xxweb-util-0.3.12.tgz#cc83910453b2923e21f430a327a3b4861149f1d4"
-  integrity sha512-vGspmqN6ROhO251Ke6lqRYGY6rcoNFoTEqCJWjmXOIuBjmUFYPMTeaEPuz4rXEaJ/CCfM6fv/NRNKY1e4dY1Kg==
+xxweb-util@0.3.16:
+  version "0.3.16"
+  resolved "https://registry.npmjs.org/xxweb-util/-/xxweb-util-0.3.16.tgz#68bfdb26a8433669505328dff266a30e33081165"
+  integrity sha512-KNeVDh1TGpIBu+uMNDhW8KdttGute3NgctZXrdH9vGFIoXtwQzbsx9oh+ChKHnRuP9F0dOac4u5H9OpCI6tgWQ==
   dependencies:
     axios "^1.9.0"
     dayjs "^1.11.3"
