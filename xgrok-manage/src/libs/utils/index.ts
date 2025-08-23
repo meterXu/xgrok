@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import type {ShallowReactive} from "vue";
 import {NotificationTypeEnum} from '@/libs/enum'
 import {showNotification, confirm, message} from "@/libs/utils/message.ts";
-import {isEmpty} from 'xxweb-util/lib/util.js'
+import {isEmpty} from 'xxweb-util'
 
 export function useFormatDateTime(dateTime?: string,format='YYYY-MM-DD HH:mm:ss'): string | null {
     if(dateTime) {

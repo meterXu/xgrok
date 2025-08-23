@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {expandFullProject} from 'xxweb-util/lib/util.js'
-import {ACCESS_TOKEN} from 'xxweb-util/lib/types.js';
+import {expandFullProject, type Project} from 'xxweb-util'
+import {ACCESS_TOKEN} from 'xxweb-util';
 import permission from "@/api/permission.ts";
 import {useRouter} from "vue-router";
 const router = useRouter();
-const _project = expandFullProject(window.project) as ProjectType
+const _project = expandFullProject(window.project) as Project;
 function onDropdownMenuClick(command:string){
   switch(command){
     case 'exitSystem':{

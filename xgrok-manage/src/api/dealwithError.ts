@@ -1,4 +1,4 @@
-import {getErrorText} from "xxweb-util/lib/request.js";
+import {getErrorText} from "xxweb-util";
 import {ElMessageBox} from 'element-plus'
 import {showNotification} from "@/libs/utils/message.ts";
 import {appStore} from "@/store/index.ts";

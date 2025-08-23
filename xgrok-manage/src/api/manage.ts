@@ -1,7 +1,7 @@
-import {createService,onResponseError} from 'xxweb-util/lib/request.js'
+import {createService,onResponseError} from 'xxweb-util'
 import { dealWithError } from './dealwithError.js';
 import {appStore} from "@/store/index.js";
-import {ACCESS_TOKEN} from 'xxweb-util/lib/types.js'
+import {ACCESS_TOKEN} from 'xxweb-util'
 import md5 from "js-md5";
 const axios = createService(window.project.variable.baseApi,(config:any)=>{
   const token = window.$ls.get(ACCESS_TOKEN)
