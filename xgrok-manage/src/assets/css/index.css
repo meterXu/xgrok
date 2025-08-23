@@ -2,7 +2,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 4px;
+  font-size: 4px; /*不确定有没有用*/
   font-weight: 400;
   color: var(--el-text-color-regular);
   background-color: #242424;
