@@ -1,4 +1,4 @@
-import {$emit, $off, $on, $once} from "xxweb-box/utils/gogocodeTransfer";
+import {$emit, $off, $on, $once} from "xxweb-util";
 
 export default {
     $on,

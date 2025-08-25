@@ -4,7 +4,7 @@ import {ref,onMounted} from "vue";
 import {SuccessFilled} from '@element-plus/icons-vue'
 import {useAppStore} from "@/store";
 import {useRouter} from "vue-router";
-import moment from 'moment'
+import dayjs from 'dayjs'
 import {payType} from "@/libs/enums";
 
 const store = useAppStore()
@@ -43,16 +43,15 @@ function onWillPlanExpiredTime(item){
   let expired_time = plan.plan.expired_time
   switch (item.type){
     case payType.month:{
-      willPlanExpiredTime.value = new moment(expired_time).add(1,'month').format('yyyy-MM-DD').toString()
+      willPlanExpiredTime.value = dayjs(expired_time).add(1,'month').format('YYYY-MM-DD').toString()
     }break
     case payType.quarter:{
-      willPlanExpiredTime.value = new moment(expired_time).add(3,'month').format('yyyy-MM-DD').toString()
+      willPlanExpiredTime.value = dayjs(expired_time).add(3,'month').format('YYYY-MM-DD').toString()
     }break
     case payType.year:{
-      willPlanExpiredTime.value = new moment(expired_time).add(1,'year').format('yyyy-MM-DD').toString()
+      willPlanExpiredTime.value = dayjs(expired_time).add(1,'year').format('YYYY-MM-DD').toString()
     }break
   }
-
 }
 
 </script>

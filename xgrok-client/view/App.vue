@@ -2,22 +2,22 @@
 import HeaderToolBar from "@/components/HeaderToolBar.vue";
 import {deviceType} from "@/libs/common";
 import bus from "@/libs/bus";
+import {resizeFontSize} from "xxweb-util";
+
 const router = useRouter()
-let timer=null;
-const BaseFontSize = 1000/4; //设计稿尺寸/根字体大小
-// window.onresize = windowResize;
-// windowResize();
-function windowResize() {
-  timer&&clearTimeout(timer);
-  timer = setTimeout(() => {
-    let width = document.body.clientWidth;
-    width=width<800?800:width
-    width=width>1000?1000:width
-    const widthNum = width / BaseFontSize;
-    document.documentElement.style.fontSize = widthNum + 'px';
+window.onresize = ()=>{
+  resizeFontSize(1000,4,0,(width)=>{
+    if(width<800){
+      return 800
+    }
+    if(width>1000){
+      return 1000
+    }
+  }).then(widthNum=>{
     bus.$emit('processWidth',widthNum/4)
-  }, 100);
+  })
 }
+// window.onresize
 
 window.project.variable.mode!=='browser'&&window.electronAPI.onRoute((data)=>{
   router.push({name:data.name})

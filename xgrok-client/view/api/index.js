@@ -9,7 +9,7 @@ import {
 } from "./manage"
 import md5 from "js-md5"
 import qs from "qs"
-import {ACCESS_TOKEN} from "xxweb-box/utils/mutation-types";
+import {ACCESS_TOKEN} from "xxweb-util";
 import {isDeleteType, serverEnum, statusType} from "@/libs/enums";
 import reconnectingWebSocket from 'reconnecting-websocket'
 

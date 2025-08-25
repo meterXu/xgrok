@@ -2,7 +2,7 @@ const {loadEnv} = require("vite");
 const project = function (mode) {
     const env = loadEnv(mode,process.cwd())
     return {
-        namespace: "xgrok_client",
+        nameSpace: "xgrok_client",
         mainSys:true,
         index:10,
         variable: {

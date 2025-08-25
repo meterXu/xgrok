@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router';
-import {filter,util} from 'xxweb-box'
+import {filter,Ls} from 'xxweb-util'
 import 'element-plus/dist/index.css'
 import '@/assets/css/main.less'
 import pinia from '@/store/index.js'
@@ -10,10 +10,10 @@ const app = createApp(App)
 window.app = app
 app.config.productionTip = false
 app.config.globalProperties.$project = window.project
-app.config.globalProperties.$ls = new util.ls(window.project)
+app.config.globalProperties.$ls = new Ls(window.project.nameSpace)
 app.use(pinia)
 app.use(router)
-filter(router, window.project)
+filter(router, window.project,{permission:false})
 app.mount('#app')
 
 function makeDraggable(element) {

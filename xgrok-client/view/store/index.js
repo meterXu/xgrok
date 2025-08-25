@@ -1,10 +1,10 @@
 import {createPinia,defineStore} from "pinia";
 import {ref, computed, shallowReactive,shallowRef} from 'vue'
-import * as types from "xxweb-box/utils/mutation-types";
+import {USER_INFO,ACCESS_TOKEN} from "xxweb-util";
 import {getStoreValue,getLsValue} from "../../src/libs/common"
 import {payPlan} from "@/libs/enums";
 import {$ss} from '@/libs/common'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 export const useAppStore = defineStore('app', ()=>{
     const $ls = window.app.config.globalProperties.$ls
@@ -35,14 +35,14 @@ export const useAppStore = defineStore('app', ()=>{
 
     //computed
     const userInfo = computed(()=>{
-        if($ls.get(types.USER_INFO)){
-            _userInfo.value = JSON.parse($ls.get(types.USER_INFO))
+        if($ls.get(USER_INFO)){
+            _userInfo.value = JSON.parse($ls.get(USER_INFO))
         }
         return _userInfo
     })
     const token = computed(()=>{
-        if($ls.get(types.ACCESS_TOKEN)){
-            _token.value = $ls.get(types.ACCESS_TOKEN)
+        if($ls.get(ACCESS_TOKEN)){
+            _token.value = $ls.get(ACCESS_TOKEN)
         }
         return _token
     })
@@ -81,7 +81,7 @@ export const useAppStore = defineStore('app', ()=>{
             if(_plan.value===payPlan.free){
                 _plan.plan.expired_time_str =  null
             }else{
-                _plan.plan.expired_time_str  = new moment(_plan.plan.expired_time).format('YYYY-MM-DD').toString()
+                _plan.plan.expired_time_str  = dayjs(_plan.plan.expired_time).format('YYYY-MM-DD').toString()
             }
         }
         return _plan
@@ -115,15 +115,15 @@ export const useAppStore = defineStore('app', ()=>{
     //action
     function setUserInfo(data){
         _userInfo.value = getStoreValue(data)
-        $ls.set(types.USER_INFO,_userInfo.value?JSON.stringify(data):getLsValue(data))
+        $ls.set(USER_INFO,_userInfo.value?JSON.stringify(data):getLsValue(data))
     }
     function setToken(data){
         if(getStoreValue(data)){
             _token.value="Bearer "+getStoreValue(data)
-            $ls.set(types.ACCESS_TOKEN,"Bearer "+getLsValue(data))
+            $ls.set(ACCESS_TOKEN,"Bearer "+getLsValue(data))
         }else{
             _token.value=getStoreValue(data)
-            $ls.set(types.ACCESS_TOKEN,getLsValue(data))
+            $ls.set(ACCESS_TOKEN,getLsValue(data))
         }
     }
     function setPid(data){

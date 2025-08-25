@@ -1,5 +1,4 @@
-import * as requestCreate from "xxweb-box/utils/request";
-import * as util from "xxweb-box/utils/util";
+import {getErrorText} from "xxweb-util";
 import { ElMessage } from 'element-plus'
 import {alert} from "@/libs/common";
 import { useAppStore } from '../store/index'
@@ -14,7 +13,7 @@ export function dealWithError(error){
     }
   }
   else {
-    data.message = (data.msg||data.message)||requestCreate.getErrorText(error.response.status)
+    data.message = (data.msg||data.message)||getErrorText(error.response.status)
   }
   if(error.response){
     switch (error.response.status){
@@ -44,7 +43,9 @@ function showConfirm (){
     callback(){
       const store = useAppStore()
       store.setSelectedServer(null)
-      util.logOut(window.vue,window.project)
+      store.setUserInfo(null)
+      store.setToken(null)
+      window.location.reload()
     }
   })
 }

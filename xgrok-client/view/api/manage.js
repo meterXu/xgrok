@@ -1,12 +1,7 @@
-import * as request from 'xxweb-box/utils/request'
+import {createService,ACCESS_TOKEN,onResponseError} from 'xxweb-util'
 import { dealWithError } from './dealwithError';
-import {ACCESS_TOKEN} from "xxweb-box/utils/mutation-types";
 import md5 from "js-md5"
-const axios = request.getService(window.project)
-const axiosSSO = request.getServiceSSO(window.project)
-const axiosNoToken = request.getService(window.project,undefined,undefined,false)
-const axiosSSONoToken = request.getServiceSSO(window.project,undefined,undefined,false)
-axios.interceptors.request.use(config => {
+const axios = createService(window.project.variable.baseApi,config=>{
   const token = window.app.config.globalProperties.$ls.get(ACCESS_TOKEN)
   if(token){
     const time = new Date().valueOf()
@@ -18,12 +13,19 @@ axios.interceptors.request.use(config => {
       config.headers['X-Access-Time'] = time;
     }
   }
-  return config
+  return {
+    tokenKey:window.project.variable.tokenKey,
+    token:token
+  }
 })
-request.onResponseError(axios, (error) => dealWithError(error))
-request.onResponseError(axiosNoToken, (error) => dealWithError(error))
-request.onResponseError(axiosSSO, (error) => dealWithError(error))
-request.onResponseError(axiosSSONoToken, (error) => dealWithError(error))
+const axiosSSO = createService(window.project.variable.ssoApi,()=>{return {}},null,false)
+const axiosNoToken = createService(window.project.variable.baseApi,()=>{return {}},null,false)
+const axiosSSONoToken = createService(window.project.variable.ssoApi,()=>{return {}},null,false)
+
+onResponseError(axios, (error) => dealWithError(error))
+onResponseError(axiosNoToken, (error) => dealWithError(error))
+onResponseError(axiosSSO, (error) => dealWithError(error))
+onResponseError(axiosSSONoToken, (error) => dealWithError(error))
 axios.interceptors.response.use((response) => {
   return response ? response.data : {}
 })

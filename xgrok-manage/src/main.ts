@@ -31,5 +31,5 @@ app.config.globalProperties.$ls = window.$ls
 app.use(router)
 app.use(XXWebBox)
 app.use(store)
-filter(router,window.project,{} as FilterCallbacks)
+filter(router,window.project,{permission:true} as FilterCallbacks)
 app .mount('#app')
