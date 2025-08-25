@@ -62,7 +62,10 @@ onMounted(()=>{
 
 <template>
   <div class="common-layout">
-    <el-container class="my-container">
+    <el-container class="my-container flex flex-row justify-start items-start">
+      <el-aside class="w-40 bg-gray-800 h-full">
+        xxx
+      </el-aside>
       <el-container>
         <el-header class="header">
           <div class="header-content-wrap" v-if="userInfo">
