@@ -1,6 +1,6 @@
 import {createPinia,defineStore} from "pinia";
 import {ref,computed} from 'vue'
-import {alterStoreValue, getLsValue, setLsValue,ACCESS_TOKEN,USER_INFO} from "xxweb-util";
+import {alterStoreValue, getLsValue, setLsValue,ACCESS_TOKEN,USER_INFO,PERMISSION} from "xxweb-util";
 
 export const useAppStore = defineStore('app', ()=>{
     const $ls = window.app.config.globalProperties.$ls
@@ -15,6 +15,9 @@ export const useAppStore = defineStore('app', ()=>{
         _token.value = alterStoreValue(getLsValue($ls.get(ACCESS_TOKEN)))
         return _token
     })
+    const permission = computed(()=>{
+        return alterStoreValue(getLsValue($ls.get(PERMISSION)))
+    })
 
     function setUserInfo(data:object){
         _userInfo.value = alterStoreValue(data)
@@ -25,7 +28,10 @@ export const useAppStore = defineStore('app', ()=>{
         _token.value=alterStoreValue(data)
         $ls.set(ACCESS_TOKEN,setLsValue(data))
     }
-    return { token,userInfo,setUserInfo,setToken }
+    function setPermission(data:PermissionType[]){
+        $ls.set(PERMISSION,setLsValue(data))
+    }
+    return { token,userInfo,permission,setUserInfo,setToken,setPermission}
 })
 
 const pinia = createPinia()

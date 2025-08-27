@@ -5,8 +5,11 @@ import {login} from '@/api';
 import {appStore} from '@/store/index.js'
 import {showNotification} from '@/libs/utils/message.ts'
 import {NotificationTypeEnum} from "@/libs/enum";
+import permission from "@/api/permission.ts";
+import {useAppStore} from "@/store";
 
 const router = useRouter()
+const store = useAppStore()
 const ruleFormRef = ref(null)
 const form = shallowReactive({username: null, password: null,remember:false})
 
@@ -31,6 +34,7 @@ function onSubmit() {
   }
 }
 onMounted(()=>{
+  store.setPermission(permission)
   if(window.$ls.get('remember')){
     Object.assign(form,JSON.parse(atob(window.$ls.get('remember'))))
   }

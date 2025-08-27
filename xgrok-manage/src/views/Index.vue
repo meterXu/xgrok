@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import {expandFullProject, type Project} from 'xxweb-util'
 import {ACCESS_TOKEN} from 'xxweb-util';
-import permission from "@/api/permission.ts";
 import {useRouter} from "vue-router";
+import {appStore} from "@/store";
+
+const store = appStore()
+const {permission} = store
 const router = useRouter();
 const _project = expandFullProject(window.project) as Project;
 function onDropdownMenuClick(command:string){

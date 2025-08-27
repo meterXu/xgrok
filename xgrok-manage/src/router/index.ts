@@ -6,6 +6,16 @@ const routes: Array<any> = [
         component: ()=>import('@/views/Login.vue'),
     },
     {
+        path: '/error/403',
+        name: 'NoPermission',
+        component: ()=>import('@/views/error/NoPermission.vue'),
+    },
+    {
+        path: '/error/404',
+        name: 'NotFound',
+        component: ()=>import('@/views/error/NotFound.vue'),
+    },
+    {
         path: '/',
         name: 'Index',
         component: ()=>import('@/views/Index.vue'),
