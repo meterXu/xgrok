@@ -16,9 +16,6 @@ class xgrokConfModel {
         for(let i=0;i<this.tunnelWebs.length;i++){
             await this.tunnelWebs[i].exchangePort()
         }
-        for(let i=0;i<this.tunnelServices.length;i++){
-            await this.tunnelServices[i].exchangePort()
-        }
     }
 }
 module.exports = xgrokConfModel

@@ -29,12 +29,8 @@ async function turnOn(xgrokConf) {
             saveYamlConf(xgrokConf.server, xgrokConf.tunnelWebs, xgrokConf.tunnelServices)
             serviceNames = xgrokConf.tunnelWebs.map(c => c.name).concat(xgrokConf.tunnelServices.map(c => c.name))
             let proxyWebs = xgrokConf.tunnelWebs.filter(c => c.is_remote === hostType.remote)
-            let proxyServices = xgrokConf.tunnelServices.filter(c => c.is_remote === hostType.remote)
             if (proxyWebs.length > 0) {
                 global.webServers.push(...await startWebProxy(proxyWebs))
-            }
-            if (proxyServices.length > 0) {
-                global.tcpServers.push(...await startTcpUdpProxy(proxyServices))
             }
             pid = await startXgrok(serviceNames,xgrokConf.server.type)
             global.logger.info(`xgrok pid is [${pid}]`)
@@ -170,7 +166,7 @@ function generateXgrokConf(serverDetail, WebDetails, serviceDetails) {
                     return {
                         name:service.name,
                         type:getEnumKey(serviceType,service.type),
-                        localIP:service.is_remote===hostType.remote?global.proxyLocalhost:service.host,
+                        localIP:service.host,
                         localPort:service.port,
                         remotePort:service.remote_port
                     }
