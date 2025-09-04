@@ -51,7 +51,7 @@ const menuList = [
                  v-slot="{ isActive, href, navigate }">
       <li :class="isActive ? 'bg-gray-600/50 text-(--aside-menu-text-hover)' : ''"
           class="w-48 h-48 text-center rounded-4xl flex justify-center items-center
-              text-[22px] cursor-pointer text-(--aside-menu-text)
+              text-[18px] cursor-pointer text-(--aside-menu-text)
               hover:text-(--aside-menu-text-hover)"
           @click="navigate">
         <component :is="item.icon"></component>
