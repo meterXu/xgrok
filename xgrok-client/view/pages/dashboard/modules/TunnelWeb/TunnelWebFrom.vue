@@ -157,10 +157,10 @@ function validateName(rule, value, callback){
   </el-form>
   <div class="form-btns">
     <el-button type="success" plain :loading="saveLoading" :disabled="addBtnDisabled" @click="onSave">
-      <template #icon><i-ep-check/></template>
+      <template #icon><ep-check/></template>
       确定</el-button>
     <el-button type="info" plain @click="onCancel">
-      <template #icon><i-ep-close/></template>
+      <template #icon><ep-close/></template>
       取消</el-button>
   </div>
 </template>

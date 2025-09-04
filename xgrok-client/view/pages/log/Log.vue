@@ -38,13 +38,13 @@ watch(route, (nv) => {
     <div>
       <el-button type="success" plain class="text-[14px]! py-14!" size="small" @click="useGoBack">
         <template #icon>
-          <i-ep-back/>
+          <ep-back/>
         </template>
         返回
       </el-button>
       <el-button type="default" plain class="text-[14px]! py-14!" size="small" @click="onRefresh(false)">
         <template #icon>
-          <i-ep-refresh/>
+          <ep-refresh/>
         </template>
         刷新
       </el-button>

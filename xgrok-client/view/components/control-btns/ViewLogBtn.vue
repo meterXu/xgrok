@@ -18,7 +18,7 @@ function viewLog(){
   <el-tooltip effect="light" :content="tipText.zh.viewLook" placement="bottom">
     <el-icon class="text-[16px]!"
              :class="disabled?'text-(--el-color-disabled)! cursor-not-allowed':'text-(--edit-icon-color)! hover:text-(--el-color-primary)!'">
-      <i-ep-tickets @click="viewLog" />
+      <ep-tickets @click="viewLog" />
     </el-icon>
   </el-tooltip>
 </template>

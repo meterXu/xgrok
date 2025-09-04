@@ -206,12 +206,12 @@ created()
   <div class="form-btns">
     <el-button type="success" plain :disabled="addBtnDisabled" :loading="saveLoading" @click="onSave">
       <template #icon>
-        <i-ep-check/>
+        <ep-check/>
       </template>
       确定</el-button>
     <el-button type="info" plain @click="onCancel">
       <template #icon>
-        <i-ep-close/>
+        <ep-close/>
       </template>
       取消</el-button>
   </div>

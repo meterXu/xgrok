@@ -11,7 +11,7 @@ const props = defineProps(['serverConfig','statusClass'])
         {{props.serverConfig.name}}
         <span class="vip-icon" v-if="serverConfig.is_vip">
           <el-icon>
-            <i-icon-park-outline-lightning/>
+            <icon-park-outline-lightning/>
           </el-icon>
         </span>
       </span>

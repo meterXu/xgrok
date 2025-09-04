@@ -174,7 +174,7 @@ onUnmounted(() => {
       </template>
       <el-tab-pane>
         <template #label>
-          <i-icon-park-outline-earth></i-icon-park-outline-earth>
+          <icon-park-outline-earth></icon-park-outline-earth>
           <span class="ml-4 text-[14px]">网页</span>
         </template>
         <TunnelList type="web" :tunnelConfigs="tunnelWebConfigs" @deleteComplete="loadTunnelData">
@@ -185,7 +185,7 @@ onUnmounted(() => {
       </el-tab-pane>
       <el-tab-pane>
         <template #label>
-          <i-icon-park-outline-server></i-icon-park-outline-server>
+          <icon-park-outline-server></icon-park-outline-server>
           <span class="ml-4 text-[14px]">服务</span>
         </template>
         <TunnelList type="service" :tunnelConfigs="tunnelServiceConfigs" @deleteComplete="loadTunnelData">

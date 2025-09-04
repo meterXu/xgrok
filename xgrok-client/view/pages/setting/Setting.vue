@@ -1,5 +1,5 @@
 <script setup>
-import Logo from '@/components/left-aside/Logo.vue'
+import Logo from '@/components/Logo.vue'
 import LinkInput from '@/components/link-input/Index.vue'
 
 const form = reactive({

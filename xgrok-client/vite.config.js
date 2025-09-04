@@ -1,74 +1,81 @@
 const fs = require("fs")
-import { defineConfig } from 'vite'
+import {defineConfig} from 'vite'
 import vue from '@vitejs/plugin-vue'
 import {compression} from 'vite-plugin-compression2';
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import {ElementPlusResolver} from 'unplugin-vue-components/resolvers'
 import ElementPlus from 'unplugin-element-plus/vite'
-const project = require("./view/project")
 import copyPlugin from 'vite-copy-plugin'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
+
+const project = require("./view/project")
 const path = require('path')
 
-export default defineConfig(({command,mode})=>{
-  let base = command==="build"?"./" :"/"
-  const _project = project(mode)
-  fs.writeFileSync("./project.js","window.project="+JSON.stringify(_project,null,2),{"flag":"w"})
-  return {
-    base,
-    build: {
-      rollupOptions: {
-        input: 'index.html'
-      }
-    },
-    plugins: [
-      vue(),
-      compression(),
-      vueJsx(),
-      copyPlugin([
-        {from:'project.js',to:''}
-      ]),
-      AutoImport({
-        imports: [
-          'vue',
-          'vue-router',
+export default defineConfig(({command, mode}) => {
+    let base = command === "build" ? "./" : "/"
+    const _project = project(mode)
+    fs.writeFileSync("./project.js", "window.project=" + JSON.stringify(_project, null, 2), {"flag": "w"})
+    return {
+        base,
+        build: {
+            rollupOptions: {
+                input: 'index.html'
+            }
+        },
+        plugins: [
+            vue(),
+            compression(),
+            vueJsx(),
+            copyPlugin([
+                {from: 'project.js', to: ''}
+            ]),
+            AutoImport({
+                imports: [
+                    'vue',
+                    'vue-router',
+                ],
+                resolvers: [
+                    ElementPlusResolver(),
+                    IconsResolver({
+                        extension: 'jsx',
+                        enabledCollections: ['icon-park-outline', 'ep']
+                    })
+                ],
+            }),
+            Components({
+                resolvers: [
+                    ElementPlusResolver(),
+                    IconsResolver({
+                        enabledCollections: ['icon-park-outline', 'ep'],
+                        prefix: false
+                    })],
+            }),
+            Icons({
+                autoInstall: true,
+                defaultClass:'fine-stroke'
+            }),
+            ElementPlus({})
         ],
-        resolvers: [
-            ElementPlusResolver(),
-            IconsResolver({
-              enabledCollections: ['icon-park-outline','ep']
-            })
-        ],
-      }),
-      Components({
-        resolvers: [ElementPlusResolver(),
-          IconsResolver({
-            enabledCollections:['icon-park-outline','ep']
-          })],
-      }),
-      Icons({ autoInstall: true }),
-      ElementPlus({})
-    ],
-    define: { 'process.env': {} },
-    server:{
-      host:'0.0.0.0'
-    },
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, 'view'),
-      },
-    },
-    test: {
-      global: true, // --> 0.8.1+  请修改成globals
-      environment: 'jsdom',
-      include: ['**/tests/**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-      passWithNoTests: true,
-      transformMode: {
-        web: [/\.[jt]sx$/]
-      }
+        define: {'process.env': {}},
+        server: {
+            host: '0.0.0.0'
+        },
+        resolve: {
+            alias: {
+                '@': path.resolve(__dirname, 'view'),
+            },
+        },
+        test: {
+            global: true, // --> 0.8.1+  请修改成globals
+            environment: 'jsdom',
+            include: ['**/tests/**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+            passWithNoTests: true,
+            transformMode: {
+                web: [/\.[jt]sx$/]
+            }
+        }
     }
-  }
 })
