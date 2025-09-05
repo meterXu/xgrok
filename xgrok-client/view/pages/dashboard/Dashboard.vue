@@ -1,30 +1,18 @@
 <script setup>
 import {
   detailServerConfig,
-  getSystemInfo,
   queryServersConfig,
-  queryTunnelServiceConfig,
-  queryTunnelWebConfig,
-  queryClient,
-  createClient, updateClient, closeWebSocket
+  closeWebSocket
 } from '@/api'
 import {onMounted, onUnmounted, ref, watch} from 'vue'
 import {useAppStore} from '@/store';
 import ServerConfigs from '@/pages/dashboard/modules/ServerConfig/ServerConfigs.vue'
-import ConfigDialog from "@/components/ConfigDialog.vue";
-import TunnelWebFrom from "@/pages/dashboard/modules/TunnelWeb/TunnelWebFrom.vue";
-import TunnelServiceFrom from "@/pages/dashboard/modules/TunnelService/TunnelServiceFrom.vue";
-import TunnelList from "@/pages/dashboard/modules/TunnelList.vue";
-import TunnelWebConfigItem from "@/pages/dashboard/modules/TunnelWeb/TunnelWebConfigItem.vue";
-import TunnelServiceConfigItem from "@/pages/dashboard/modules/TunnelService/TunnelServiceConfigItem.vue";
 import SystemInfo from "@/components/SystemInfo.vue"
 import {sendMessage} from '@/worker/mainThread'
 import ServerProgress from "@/components/ServerProgress.vue";
 import ServiceSwitch from "@/components/control-btns/ServiceSwitch.vue";
-import ConfigLockBtn from "@/components/control-btns/ConfigLockBtn.vue";
 import ConfigRefreshBtn from "@/components/control-btns/ConfigRefreshBtn.vue";
 import {sleep} from "@/libs/common";
-import ViewLogBtn from "@/components/control-btns/ViewLogBtn.vue";
 import HorizontalHeader from "@/components/header/HorizontalHeader.vue";
 
 const store = useAppStore()

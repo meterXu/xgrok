@@ -4,7 +4,7 @@ import HorizontalHeader from "@/components/header/HorizontalHeader.vue";
 import PageNav from "@/components/header/PageNav.vue";
 import ConfigLockBtn from "@/components/control-btns/ConfigLockBtn.vue";
 import LeftMiddle from "@/components/left-aside/LeftMiddle.vue";
-import TunnelList from "@/pages/dashboard/modules/TunnelList.vue";
+import TunnelList from "@/components/tunnel/TunnelList.vue";
 import {onMounted, ref} from "vue";
 import {useAppStore} from "@/store";
 import {queryTunnelWebConfig} from "@/api";
