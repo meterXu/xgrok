@@ -23,6 +23,11 @@ const menuList = [
     name: 'Service',
   },
   {
+    title: '订阅',
+    icon: <IconParkOutlineCooperativeHandshake/>,
+    name: 'Plan',
+  },
+  {
     title: '日志',
     icon: <IconParkOutlineDocSearchTwo/>,
     name: 'Log',
@@ -54,7 +59,14 @@ const menuList = [
               text-[18px] cursor-pointer text-(--aside-menu-text)
               hover:text-(--aside-menu-text-hover)"
           @click="navigate">
-        <component :is="item.icon"></component>
+        <el-tooltip
+            effect="dark"
+            class="box-item"
+            placement="bottom-end"
+            :content="item.title"
+        >
+          <component :is="item.icon"></component>
+        </el-tooltip>
       </li>
     </router-link>
   </ul>
@@ -64,6 +76,9 @@ const menuList = [
 .fine-stroke {
   g, path {
     stroke-width: 3;
+  }
+  &:focus{
+    outline-style: none;
   }
 }
 </style>

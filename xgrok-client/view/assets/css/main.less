@@ -2,6 +2,7 @@
 @import url('./mixin.less');
 @import url('../fonts/font.less');
 :root{
+  --text-color:#242b3a;
   --header-bg:#EBEBEB;
   --primary-bg-0:#fff;
   --primary-bg-1:#F1F1F1;
@@ -10,7 +11,7 @@
   --primary-btn-hover-bg:#C6C6C6;
   --primary--login-bg:#FFFF;
   --server-info-bg:#f5f5f5;
-  --border-color:#fff;
+  --border-color:#e5e8f0;
   --scrollbar-track-color:rgb(136, 136, 136);
   --scrollbar-thumb-color:rgb(179, 177, 177);
   --scrollbar-thumb-hover-color:rgb(100, 100, 100);
@@ -84,7 +85,7 @@ body,html{
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: left;
-  color: #2c3e50;
+  color: var(--text-color);
   font-size: 14px;
 }
 #nprogress {

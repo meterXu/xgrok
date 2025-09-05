@@ -1,5 +1,5 @@
 <script setup>
-import HeaderCon from "@/components/header/HeaderCon.vue";
+import HorizontalHeader from "@/components/header/HorizontalHeader.vue";
 import LeftCon from "@/components/left-aside/LeftCon.vue";
 
 onMounted(() => {
@@ -12,7 +12,7 @@ onMounted(() => {
     <el-container class="h-full! flex flex-row justify-start items-start">
       <LeftCon></LeftCon>
       <el-container class="flex flex-col!">
-        <HeaderCon></HeaderCon>
+        <HorizontalHeader></HorizontalHeader>
         <el-main class="p-0! relative">
           <router-view></router-view>
         </el-main>

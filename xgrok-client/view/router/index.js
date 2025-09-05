@@ -52,21 +52,33 @@ const normalRoutes = [
                 path: '/client/dashboard',
                 name: 'Dashboard',
                 component: () => import("@/pages/dashboard/Dashboard.vue"),
+                meta: {
+                    title: '首页',
+                }
             },
             {
                 path: '/client/web',
                 name: 'Web',
                 component: () => import("@/pages/web/TunnelWeb.vue"),
+                meta: {
+                    title: '网页',
+                }
             },
             {
                 path: '/client/service',
                 name: 'Service',
                 component: () => import("@/pages/service/TunnelService.vue"),
+                meta: {
+                    title: '服务',
+                }
             },
             {
                 path: '/client/plan',
                 name: 'Plan',
                 component: () => import("@/pages/plan/Plan.vue"),
+                meta: {
+                    title: '订阅',
+                }
             },
             {
                 path: '/client/order/:productId/:payNum',
@@ -78,11 +90,17 @@ const normalRoutes = [
                 path: '/client/about',
                 name: 'About',
                 component: () => import("@/pages/about/About.vue"),
+                meta: {
+                    title: '关于',
+                }
             },
             {
                 path: '/client/setting',
                 name: 'Setting',
                 component: () => import("@/pages/setting/Setting.vue"),
+                meta: {
+                    title: '设置',
+                }
             }
         ]
     },

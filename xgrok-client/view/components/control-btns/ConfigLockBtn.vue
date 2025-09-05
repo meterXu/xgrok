@@ -18,7 +18,7 @@ function onChangeLock(){
 
 <template>
   <el-tooltip effect="light" :content="tooltipText" placement="bottom">
-    <el-icon @click="onChangeLock" class="text-[16px]! text-(--edit-icon-color)! hover:text-(--el-color-primary)!">
+    <el-icon @click="onChangeLock" class="cursor-pointer text-[16px]! text-(--edit-icon-color)! hover:text-(--el-color-primary)!">
       <lockIcon/>
     </el-icon>
   </el-tooltip>
