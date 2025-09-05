@@ -11,6 +11,8 @@ import TunnelServiceFrom from "@/pages/dashboard/modules/TunnelService/TunnelSer
 import ConfigDialog from "@/components/ConfigDialog.vue";
 import {useMyTitle} from "@/libs/common";
 import TunnelItem from "@/components/tunnel/TunnelItem.vue";
+import {doCopy} from 'xxweb-util'
+import {ElMessage} from "element-plus";
 
 const store = useAppStore()
 const {selectedServer, clientId} = store
@@ -38,6 +40,16 @@ function onChange(id) {
   console.log(id)
 }
 
+function onCopy(item){
+  doCopy(selectedServer.value.domain+':'+item.remote_port).then(()=>{
+    ElNotification({
+      customClass:'xgrok-client-notification',
+      message: '复制成功',
+      type: 'success',
+    })
+  })
+}
+
 
 onMounted(() => {
   loadTunnelData()
@@ -56,8 +68,12 @@ onMounted(() => {
       </div>
       <div class="px-8">
         <TunnelList @change="onChange">
-          <TunnelItem v-for="item in tunnelServiceConfigs" :key="item.id" :id="item.id">
-            {{useMyTitle(item)}}@{{item.host}}
+          <TunnelItem class="flex flex-col gap-4" v-for="item in tunnelServiceConfigs" :key="item.id" :id="item.id">
+            <span class="overflow-hidden text-ellipsis">{{ useMyTitle(item) }}</span>
+            <span class="w-full flex items-center justify-between">
+              <span class="overflow-hidden text-ellipsis">{{selectedServer?.domain}}:{{item.remote_port}}</span>
+              <IconParkOutlineCopy @click="onCopy(item)" class="text-[12px] hover:text-(--el-color-primary)"/>
+            </span>
           </TunnelItem>
         </TunnelList>
       </div>

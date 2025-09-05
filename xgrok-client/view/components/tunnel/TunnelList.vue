@@ -6,12 +6,14 @@ import {useAppStore} from '@/store'
 import {confirm} from "@/libs/common";
 import {checkPermission} from "@/libs/useAction";
 import bus from '@/libs/bus'
+import Search from '~icons/ep/search'
 
 const props = defineProps(['type','tunnelConfigs'])
 const emits = defineEmits(['deleteComplete','itemSelect'])
 const store = useAppStore()
 const {deleteIds,isDelete} = store
 const activeId=ref(null)
+const searchInput=ref(null)
 
 provide('activeId', activeId);
 
@@ -58,7 +60,8 @@ function onConfirmDelTunnels(type){
 
 </script>
 <template>
-  <div class="flex flex-col">
+  <div class="flex flex-col gap-12">
+    <el-input v-model="searchInput" :prefix-icon="Search" class="rounded-4xl mb-12"></el-input>
     <slot></slot>
   </div>
 </template>
