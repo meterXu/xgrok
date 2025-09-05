@@ -56,7 +56,7 @@ function logout() {
 
 <template>
   <el-dropdown @command="onCommand">
-    <el-avatar :src="avatar" class="bg-transparent!">
+    <el-avatar :src="avatar" class="bg-transparent! cursor-pointer">
       <span>{{ userInfo?.user?.username }}</span>
     </el-avatar>
     <template #dropdown>
@@ -70,7 +70,10 @@ function logout() {
 </template>
 
 <style lang="less">
-.avatar-exit-system:hover{
+.avatar-exit-system {
   color: var(--el-color-danger)!important;
+  &:hover{
+    color: var(--el-color-danger-dark-2)!important;
+  }
 }
 </style>

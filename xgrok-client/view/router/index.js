@@ -25,14 +25,6 @@ const normalRoutes = [
         }
     },
     {
-        path: '/log',
-        name: 'Log',
-        component: () => import("@/pages/log/Log.vue"),
-        meta: {
-            requireAuth: false
-        }
-    },
-    {
         path: "/error/404",
         name: '404',
         component: () => import("@/pages/Error.vue"),
@@ -45,11 +37,16 @@ const normalRoutes = [
     {
         path: "/",
         name: 'Main',
+        redirect: '/client',
+    },
+    {
+        path: "/client",
+        name: 'Client',
         component: () => import("@/pages/Index.vue"),
         redirect: "/client/dashboard",
         children: [
             {
-                path: '/client/dashboard',
+                path: 'dashboard',
                 name: 'Dashboard',
                 component: () => import("@/pages/dashboard/Dashboard.vue"),
                 meta: {
@@ -57,7 +54,7 @@ const normalRoutes = [
                 }
             },
             {
-                path: '/client/web',
+                path: 'web',
                 name: 'Web',
                 component: () => import("@/pages/web/TunnelWeb.vue"),
                 meta: {
@@ -65,7 +62,7 @@ const normalRoutes = [
                 }
             },
             {
-                path: '/client/service',
+                path: 'service',
                 name: 'Service',
                 component: () => import("@/pages/service/TunnelService.vue"),
                 meta: {
@@ -73,7 +70,7 @@ const normalRoutes = [
                 }
             },
             {
-                path: '/client/plan',
+                path: 'plan',
                 name: 'Plan',
                 component: () => import("@/pages/plan/Plan.vue"),
                 meta: {
@@ -81,13 +78,15 @@ const normalRoutes = [
                 }
             },
             {
-                path: '/client/order/:productId/:payNum',
-                name: 'Order',
-                props: true,
-                component: () => import("@/pages/order/Order.vue"),
+                path: 'log',
+                name: 'Log',
+                component: () => import("@/pages/log/Log.vue"),
+                meta: {
+                    title: '日志',
+                }
             },
             {
-                path: '/client/about',
+                path: 'about',
                 name: 'About',
                 component: () => import("@/pages/about/About.vue"),
                 meta: {
@@ -95,7 +94,13 @@ const normalRoutes = [
                 }
             },
             {
-                path: '/client/setting',
+                path: 'order/:productId/:payNum',
+                name: 'Order',
+                props: true,
+                component: () => import("@/pages/order/Order.vue"),
+            },
+            {
+                path: 'setting',
                 name: 'Setting',
                 component: () => import("@/pages/setting/Setting.vue"),
                 meta: {

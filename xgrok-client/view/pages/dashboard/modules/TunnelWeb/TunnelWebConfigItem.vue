@@ -27,28 +27,9 @@ function onOpenLink(type){
 </script>
 
 <template>
-  <el-card class="tunnel-view">
-    <table class="view-table">
-      <tr class="title-wrap">
-        <th colspan="2" class="title">{{useMyTitle(tunnelConfig)}} </th>
-      </tr>
-      <tr class="content-wrap">
-        <th>代理网址</th><td>{{tunnelConfig.host}}</td>
-      </tr>
-      <tr class="content-wrap">
-        <th>HTTP链接</th>
-        <td class="td-auto-width">
-          <el-link class="text-5xl!" type="success" href="javascript:;" @click="onOpenLink(httpType.http)">{{httpUrl(selectedServer,tunnelConfig,httpType.http)}}</el-link>
-        </td>
-      </tr>
-      <tr class="content-wrap">
-        <th>HTTPS链接</th>
-        <td class="td-auto-width">
-          <el-link class="text-5xl!" type="success" href="javascript:;" @click="onOpenLink(httpType.https)">{{httpUrl(selectedServer,tunnelConfig,httpType.https)}}</el-link>
-        </td>
-      </tr>
-    </table>
-  </el-card>
+  <div class="bg-(--tunnel-item-bg) px-20 py-12 rounded-4xl overflow-hidden text-ellipsis cursor-pointer">
+    {{useMyTitle(tunnelConfig)}}@{{tunnelConfig.host}}
+  </div>
 </template>
 
 <style lang="less">

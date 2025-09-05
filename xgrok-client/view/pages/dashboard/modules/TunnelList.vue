@@ -1,28 +1,34 @@
 <script setup>
 import {defineProps} from 'vue'
-import ConfigControlBtns from "@/components/ConfigControlBtns.vue";
-import TunnelConfigList from "@/components/TunnelConfigList.vue";
 import {ElMessage} from "element-plus";
 import {deleteTunnelServiceBatch, deleteTunnelWebBatch} from "@/api";
 import {useAppStore} from '@/store'
 import {confirm} from "@/libs/common";
 import {checkPermission} from "@/libs/useAction";
+import bus from '@/libs/bus'
 
 const props = defineProps(['type','tunnelConfigs'])
-const emits = defineEmits(['deleteComplete'])
+const emits = defineEmits(['deleteComplete','itemSelect'])
 const store = useAppStore()
 const {deleteIds,isDelete} = store
+const activeId=ref(null)
+
+provide('activeId', activeId);
+
+
+bus.$on('tunnel:Item:click', (id)=>{
+  activeId.value=id
+  emits('change',id)
+})
 
 function onAddTunnel(type){
   if(checkPermission(type,props.tunnelConfigs)){
     store.setTunnelForm(null)
-    store.setDialogVisible(type,true)
   }
 }
 
 function onEditTunnel(type,id){
   store.setTunnelForm(props.tunnelConfigs.find(c=>c.id===id))
-  store.setDialogVisible(type,true)
 }
 
 function onDelTunnels(type){
@@ -52,24 +58,9 @@ function onConfirmDelTunnels(type){
 
 </script>
 <template>
-  <ConfigControlBtns @addTunnel="onAddTunnel(type)"
-                     @delTunnels="onDelTunnels(type)"
-                     @cleanAll="()=>{onDelSelectChange(type,[])}"
-                     @selectAll="()=>{onDelSelectChange(type,tunnelConfigs.map(c=>c.id))}"
-                     @confirmDelTunnels="onConfirmDelTunnels(type)"
-                     :isDelete="isDelete[type]"
-                     :deleteIds="deleteIds[type]"
-                     :allCount="tunnelConfigs?.length"
-  ></ConfigControlBtns>
-  <TunnelConfigList :tunnelList="tunnelConfigs"
-                    :isDelete="isDelete[type]"
-                    :deleteIds="deleteIds[type]"
-                    @delSelectChange="(ids)=>{onDelSelectChange(type,ids)}"
-                    @editTunnel="(id)=>{onEditTunnel(type,id)}">
-    <template #default="{tunnelConfig}">
-      <slot :tunnelConfig="tunnelConfig"></slot>
-    </template>
-  </TunnelConfigList>
+  <div class="flex flex-col">
+    <slot></slot>
+  </div>
 </template>
 <style scoped>
 

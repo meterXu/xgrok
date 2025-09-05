@@ -1,12 +1,16 @@
 <script setup>
 import {defineProps} from 'vue'
-const props=defineProps(['value'])
+import {useAppStore} from "@/store";
+
+const store = useAppStore()
+const {systemInfo} = useAppStore()
+
 </script>
 
 <template>
 <div class="systemInfo">
-  <div class="systemInfo-item systemInfo-item-hostname">{{props.value?.hostname}}</div>
-  <div class="systemInfo-item systemInfo-item-version">{{props.value?.osVersion}}</div>
+  <div class="systemInfo-item systemInfo-item-hostname">{{systemInfo?.hostname}}</div>
+  <div class="systemInfo-item systemInfo-item-version">{{systemInfo?.osVersion}}</div>
 </div>
 </template>
 

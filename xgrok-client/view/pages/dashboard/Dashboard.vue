@@ -25,15 +25,14 @@ import ConfigLockBtn from "@/components/control-btns/ConfigLockBtn.vue";
 import ConfigRefreshBtn from "@/components/control-btns/ConfigRefreshBtn.vue";
 import {sleep} from "@/libs/common";
 import ViewLogBtn from "@/components/control-btns/ViewLogBtn.vue";
+import HorizontalHeader from "@/components/header/HorizontalHeader.vue";
 
 const store = useAppStore()
 const tunnelWebConfigs = ref(null)
 const tunnelServiceConfigs = ref(null)
-const tunnelLoading = ref(false)
-const systemInfo = ref(null)
 const serviceSwitch = shallowRef()
 const serverLoading = shallowRef(false)
-const {selectedServer, dialogVisible, clientId, percentage} = store
+const {selectedServer, clientId, percentage} = store
 
 if (window.project.variable.mode !== 'browser') {
   window.electronAPI.onAppQuit(() => {
@@ -62,58 +61,9 @@ async function initServerConfigData() {
   }
 }
 
-function loadTunnelData() {
-  if (!selectedServer.value) {
-    return
-  }
-  tunnelLoading.value = true
-  Promise.all([queryTunnelWebConfig(selectedServer.value.id, clientId.value), queryTunnelServiceConfig(selectedServer.value.id, clientId.value)])
-      .then(allRes => {
-        if (allRes[0].success) {
-          tunnelWebConfigs.value = allRes[0].data
-        }
-        if (allRes[1].success) {
-          tunnelServiceConfigs.value = allRes[1].data
-        }
-      }).finally(() => {
-    tunnelLoading.value = false;
-    store.setIsDeleteAll(false)
-    store.setDeleteIdsAll([])
-  })
-}
-
 function onChangeServerConfig(_serverConfig) {
   _serverConfig.statusClass = 'server-status-checking'
   store.setSelectedServer(_serverConfig)
-  loadTunnelData()
-}
-
-async function initClient() {
-  let res = await getSystemInfo()
-  if (res.success) {
-    systemInfo.value = res.data
-    if (!clientId.value) {
-      systemInfo.value = res.data
-      res = await queryClient(res.data.hostname)
-      if (res.success) {
-        if (res.data.records.length > 0) {
-          store.setClientId(res.data.records[0].id)
-        } else {
-          res = await createClient({
-            hostname: systemInfo.value.hostname,
-            osVersion: systemInfo.value.osVersion
-          })
-          res.success && store.setClientId(res.data)
-        }
-      }
-    } else {
-      updateClient({
-        id: clientId.value,
-        hostname: systemInfo.value.hostname,
-        osVersion: systemInfo.value.osVersion
-      })
-    }
-  }
 }
 
 async function onRefresh() {
@@ -137,72 +87,33 @@ watch(() => selectedServer?.value?.id, (nv, ov) => {
 }, {immediate: true})
 onMounted(async () => {
   await initServerConfigData()
-  await initClient()
-  loadTunnelData()
 })
 onUnmounted(() => {
   sendMessage({type: 'closeCheckServer', server_id: selectedServer?.value?.id})
 })
 </script>
 <template>
+  <HorizontalHeader></HorizontalHeader>
   <div class="ngrok-config-wrap">
     <el-card class="server-wrap" v-if="selectedServer">
       <div class="info-wrap">
         <div class="server-info">
           <ServerConfigs @changeServerConfig="onChangeServerConfig"></ServerConfigs>
         </div>
-        <SystemInfo :value="systemInfo"></SystemInfo>
+        <SystemInfo></SystemInfo>
       </div>
       <div class="flex items-center justify-center">
         <ServerProgress :percentage="percentage"></ServerProgress>
       </div>
     </el-card>
-    <el-tabs class="tunnel-config-wrap" type="border-card" editable v-loading="tunnelLoading">
-      <template #add-icon>
-        <div class="flex flex-row items-center justify-between gap-8">
-          <ViewLogBtn :loading="serverLoading"/>
-          <ConfigLockBtn/>
-          <ConfigRefreshBtn :loading="serverLoading" @refresh="onRefresh"/>
-          <ServiceSwitch ref="serviceSwitch"
-                        :tunnel-service-configs="tunnelServiceConfigs"
-                        :tunnel-web-configs="tunnelWebConfigs"
-                        :percentage="percentage"
-                        @serverLoading="(val)=>{serverLoading=val}"
-          >
-          </ServiceSwitch>
-        </div>
-      </template>
-      <el-tab-pane>
-        <template #label>
-          <icon-park-outline-earth></icon-park-outline-earth>
-          <span class="ml-4 text-[14px]">网页</span>
-        </template>
-        <TunnelList type="web" :tunnelConfigs="tunnelWebConfigs" @deleteComplete="loadTunnelData">
-          <template #default="{tunnelConfig}">
-            <TunnelWebConfigItem :tunnelConfig="tunnelConfig"></TunnelWebConfigItem>
-          </template>
-        </TunnelList>
-      </el-tab-pane>
-      <el-tab-pane>
-        <template #label>
-          <icon-park-outline-server></icon-park-outline-server>
-          <span class="ml-4 text-[14px]">服务</span>
-        </template>
-        <TunnelList type="service" :tunnelConfigs="tunnelServiceConfigs" @deleteComplete="loadTunnelData">
-          <template #default="{tunnelConfig}">
-            <TunnelServiceConfigItem :tunnelConfig="tunnelConfig"></TunnelServiceConfigItem>
-          </template>
-        </TunnelList>
-      </el-tab-pane>
-    </el-tabs>
-    <ConfigDialog title="添加网页穿透" v-model="dialogVisible.web" width="80%">
-      <TunnelWebFrom @cancel="()=>{dialogVisible.web=false}" @updateSuccess="loadTunnelData"
-                     @createSuccess="loadTunnelData"></TunnelWebFrom>
-    </ConfigDialog>
-    <ConfigDialog title="添加服务穿透" v-model="dialogVisible.service" width="80%">
-      <TunnelServiceFrom @cancel="()=>{dialogVisible.service=false}" @updateSuccess="loadTunnelData"
-                         @createSuccess="loadTunnelData"></TunnelServiceFrom>
-    </ConfigDialog>
+    <ConfigRefreshBtn :loading="serverLoading" @refresh="onRefresh"/>
+    <ServiceSwitch ref="serviceSwitch"
+                   :tunnel-service-configs="tunnelServiceConfigs"
+                   :tunnel-web-configs="tunnelWebConfigs"
+                   :percentage="percentage"
+                   @serverLoading="(val)=>{serverLoading=val}"
+    >
+    </ServiceSwitch>
   </div>
 </template>
 <style lang="less" scoped>

@@ -21,10 +21,6 @@ export const useAppStore = defineStore('app', ()=>{
         web:ref([]),
         service:ref([])
     }
-    const _dialogVisible = shallowReactive({
-        web:false,
-        service:false
-    })
     const _plan = reactive({})
     const _orderStatus = shallowReactive({orderId:null,isPaySuccess:null})
     const _tunnelForm = ref(null)
@@ -32,6 +28,7 @@ export const useAppStore = defineStore('app', ()=>{
     const _configIsLock = ref(false)
     const _percentage = ref(0)
     const _headerBtnLoading=ref(false)
+    const _systemInfo = shallowReactive({})
 
     //computed
     const userInfo = computed(()=>{
@@ -64,10 +61,10 @@ export const useAppStore = defineStore('app', ()=>{
     const deleteIds = computed(()=>{
         return _deleteIds
     })
-    const dialogVisible = computed(()=>{
-        return _dialogVisible
-    })
     const clientId = computed(()=>{
+        if($ls.get("clientId")){
+            _clientId.value = $ls.get("clientId")
+        }
         return _clientId
     })
     const plan = computed(()=>{
@@ -110,7 +107,12 @@ export const useAppStore = defineStore('app', ()=>{
         }
         return _percentage
     })
-    const headerBtnLoading = computed(()=>{return _headerBtnLoading})
+    const headerBtnLoading = computed(()=>{
+        return _headerBtnLoading
+    })
+    const systemInfo = computed(()=>{
+        return _systemInfo
+    })
 
     //action
     function setUserInfo(data){
@@ -140,9 +142,6 @@ export const useAppStore = defineStore('app', ()=>{
     function setDeleteIds(type,value){
         _deleteIds[type].value=value
     }
-    function setDialogVisible(type,value){
-        _dialogVisible[type]=value
-    }
     function setIsDeleteAll(value){
         _isDelete.web=value
         _isDelete.service=value
@@ -153,6 +152,7 @@ export const useAppStore = defineStore('app', ()=>{
     }
     function setClientId(value){
         _clientId.value = value
+        $ls.set("clientId",value)
     }
     function setPlan(value){
         Object.keys(value).forEach(k=>{
@@ -181,6 +181,9 @@ export const useAppStore = defineStore('app', ()=>{
     function setHeaderBtnLoading(data){
         _headerBtnLoading.value=data
     }
+    function setSystemInfo(data){
+        Object.assign(_systemInfo,data)
+    }
 
     return {
         token,
@@ -189,7 +192,6 @@ export const useAppStore = defineStore('app', ()=>{
         selectedServer,
         isDelete,
         deleteIds,
-        dialogVisible,
         clientId,
         plan,
         orderStatus,
@@ -199,13 +201,13 @@ export const useAppStore = defineStore('app', ()=>{
         isCloseEdit,
         percentage,
         headerBtnLoading,
+        systemInfo,
         setUserInfo,
         setToken,
         setPid,
         setSelectedServer,
         setIsDelete,
         setDeleteIds,
-        setDialogVisible,
         setIsDeleteAll,
         setDeleteIdsAll,
         setClientId,
@@ -215,7 +217,8 @@ export const useAppStore = defineStore('app', ()=>{
         setUserName,
         setConfigIsLock,
         setPercentage,
-        setHeaderBtnLoading
+        setHeaderBtnLoading,
+        setSystemInfo
     }
 })
 export default createPinia()

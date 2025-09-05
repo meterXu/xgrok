@@ -30,11 +30,11 @@ function onEditTunnel(id){
 
 <template>
   <el-empty v-if="tunnelList===null||tunnelList.length===0" description="请添加配置" />
-  <ul v-else class="grid grid-cols-2 gap-12 mt-12!">
+  <ul v-else class="flex flex-col gap-12 mt-12!">
     <li class="relative" v-for="item in tunnelList" :key="item.id">
       <div class="icon-control text-[16px]">
-        <el-icon @click="onEditTunnel(item.id)" class="edit-icon"
-                 :disabled="isCloseEdit"><Edit/></el-icon>
+<!--        <el-icon @click="onEditTunnel(item.id)" class="edit-icon"-->
+<!--                 :disabled="isCloseEdit"><Edit/></el-icon>-->
         <el-checkbox v-if="isDelete"
                      size="large"
                      class="del-checkbox"

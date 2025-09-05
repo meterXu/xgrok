@@ -1,0 +1,26 @@
+<script setup>
+import bus from '@/libs/bus'
+const props = defineProps(['id']);
+
+const activeId = inject('activeId');
+function onClick(){
+  bus.$emit('tunnel:Item:click',props.id);
+}
+onMounted(() => {
+  if (!activeId.value) {
+    bus.$emit('tunnel:Item:click',props.id);
+  }
+})
+</script>
+
+<template>
+  <div @click="onClick" class="hover:bg-(--tunnel-item-bg) px-20 py-12 rounded-4xl overflow-hidden text-ellipsis cursor-pointer"
+       :class="activeId&&props.id&&activeId===props.id?'bg-(--tunnel-item-bg)':''"
+  >
+    <slot/>
+  </div>
+</template>
+
+<style scoped lang="less">
+
+</style>
