@@ -20,7 +20,7 @@ function onCommand(command) {
 
 function logout() {
   confirm('确定要退出登录吗？', null, {
-    confirmButtonClass: 'el-button--danger is-plain ',
+    confirmButtonClass: 'el-button--danger is-plain',
     beforeClose: async function (action, instance, done) {
       try {
         if (action === 'confirm') {
@@ -72,8 +72,5 @@ function logout() {
 <style lang="less">
 .avatar-exit-system {
   color: var(--el-color-danger)!important;
-  &:hover{
-    color: var(--el-color-danger-dark-2)!important;
-  }
 }
 </style>

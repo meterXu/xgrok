@@ -18,8 +18,8 @@
   --scrollbar-thumb-active-color:rgb(68, 68, 68);
   --edit-icon-color: #979797;
   --light-border-color:rgba(220, 223, 230, 0.8);
-  --el-color-primary:#30a44b;
-  --el-color-success:#30a44b;
+  --el-color-primary:#63c08c;
+  --el-color-success:#63c08c;
   --el-color-disabled:var(--el-text-color-disabled);
   --aside-bg:#324149;
   --aside-bg2:#222a39;
@@ -39,28 +39,61 @@
   .el-dialog__headerbtn:hover .el-dialog__close,.el-message-box__headerbtn:hover .el-message-box__close {
     color: var(--el-color-primary);
   }
+
+  html[theme="dark"] {
+    --el-color-primary:#30a44b;
+    --el-color-success:#30a44b;
+  }
 }
 .my-btn-disabled{
   cursor: not-allowed;
   pointer-events: none;
 }
-.my-info-btn-danger{
-  color:var(--el-color-danger);
+.el-button:focus-visible{
+  outline: none;
+}
+.el-button--danger{
+  border-color: var(--el-color-danger) !important;
   &:hover{
     border-color: var(--el-color-danger);
-    background-color:var(--el-color-danger);
-    color:var(--primary-btn-bg);
+    background-color:var(--el-color-danger) !important;
+  }
+  &:focus{
+    color: var(--el-button-hover-text-color) !important;
+    background-color:var(--el-color-danger) !important;
   }
 }
-.my-info-btn-success{
-  color:var(--el-color-primary);
-  &:hover{
+.el-button--primary{
+  border-color: var(--el-color-primary);
+  &:hover,&:focus{
     border-color: var(--el-color-primary);
     background-color:var(--el-color-primary);
-    color:var(--primary-btn-bg);
+  }
+  &.is-disabled{
+    border-color: var(--el-color-primary);
+    background-color:var(--el-color-primary);
+    &:hover{
+      border-color: var(--el-color-primary);
+      background-color:var(--el-color-primary);
+    }
   }
 }
-.my-info-btn-warning{
+.el-button--success{
+  border-color: var(--el-color-success);
+  &:hover,&:focus{
+    border-color: var(--el-color-success);
+    background-color:var(--el-color-success);
+  }
+  &.is-disabled{
+    border-color: var(--el-color-success);
+    background-color:var(--el-color-success);
+    &:hover{
+      border-color: var(--el-color-success);
+      background-color:var(--el-color-success);
+    }
+  }
+}
+.el-button--warning{
   color:var(--el-color-warning);
   &:hover{
     border-color: var(--el-color-warning);
@@ -74,7 +107,6 @@
 .my-info-btn-group.el-button-group .el-button--info:last-child{
   border-left: 1px solid var(--border-color);
 }
-
 .no-border{
   border:none;
 }

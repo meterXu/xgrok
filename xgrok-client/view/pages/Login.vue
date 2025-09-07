@@ -10,6 +10,7 @@ import {
   useGetValidateRes,
   useGetTermsOfServiceUrl, usePrivacyAgreementUrl
 } from "@/libs/useAction";
+import Logo from "@/components/Logo.vue";
 
 const store = useAppStore()
 const {userName} = store
@@ -67,10 +68,13 @@ function onOpenLink(link){
   <div class="center-container login-register-form">
     <div class="form-wrap">
       <div class="main">
-        <h1 class="title">
-          <img src="../../public/assets/icon.png" alt="logo" class="logo"/>
-          <span class="text-[28px] font-bold">xgrok</span>
-        </h1>
+<!--        <h1 class="title">-->
+<!--          <img src="../../public/assets/icon.png" alt="logo" class="logo"/>-->
+<!--          <span class="text-[28px] font-bold">xgrok</span>-->
+<!--        </h1>-->
+        <div class="flex flex-row items-center justify-center mb-12">
+          <Logo/>
+        </div>
         <el-form :model="form" ref="ruleForm" label-position="top" label-width="auto"
                  :hide-required-asterisk="true"
                  :show-message="false"
@@ -83,7 +87,7 @@ function onOpenLink(link){
             <el-input size="default" type="password" v-model="form.password" @keydown.enter="onSubmit"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button size="default" class="btn" type="success" :loading="loginLoading" :disabled="submitDisable"  @click="onSubmit">登录</el-button>
+            <el-button size="default" class="btn" type="primary" :loading="loginLoading" :disabled="submitDisable"  @click="onSubmit">登录</el-button>
           </el-form-item>
           <el-form-item prop="isReadArticle">
             <el-checkbox v-model="form.isReadArticle">我已经阅读并同意
