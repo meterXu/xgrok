@@ -36,7 +36,7 @@ function onSelectServerConfig(_serverConfig){
 
 <template>
   <ServerConfigItem :serverConfig="selectedServer" :statusClass="selectedServer.statusClass">
-    <el-button @click="showServerConfigDialog" type="success" plain class="w-24! h-24! p-0!" :disabled="Boolean(pid)">
+    <el-button @click="showServerConfigDialog" type="primary" plain class="w-24! h-24! p-0!" :disabled="Boolean(pid)">
       <ep-switch class="w-12!"/>
       </el-button>
   </ServerConfigItem>

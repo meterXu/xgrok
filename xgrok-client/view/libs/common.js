@@ -82,6 +82,17 @@ export function isLocalHost(host){
     return /^((http|https):\/\/)?(127.0.0.1|localhost)/.test(host)
 }
 
+export function resetObj(obj, defaultValue) {
+    Object.keys(obj).forEach(key => {
+        if (obj[key] instanceof Array) {
+            obj[key] = []
+        } else {
+            obj[key] = null
+        }
+    })
+    Object.assign(obj, defaultValue)
+}
+
 export const $ss = {
     get(key){
         return sessionStorage.getItem(`${window.project.namespace}__${key}`)
@@ -89,33 +100,4 @@ export const $ss = {
     set(key,value){
         sessionStorage.setItem(`${window.project.namespace}__${key}`,value)
     }
-}
-
-Function.prototype.debounce=function (delay=500){
-    const originalFunction = this;
-    let timeoutId = window.debounceTimeoutId;
-    return function (...args) {
-        if (timeoutId) {
-            clearTimeout(timeoutId);
-        }
-        return new Promise((resolve, reject) => {
-            window.debounceTimeoutId = setTimeout(async () => {
-                try{
-                    let res = await originalFunction.apply(this, args);
-                    resolve(res);
-                }catch (err){
-                    reject(err);
-                }
-            }, delay);
-        })
-
-    };
-}
-
-export function sleep(time=100){
-    return new Promise(resolve => {
-        setTimeout(()=>{
-            resolve(time)
-        },time)
-    })
 }

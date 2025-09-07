@@ -8,18 +8,26 @@ import TunnelList from "@/components/tunnel/TunnelList.vue";
 import {onMounted, ref} from "vue";
 import {useAppStore} from "@/store";
 import {queryTunnelWebConfig} from "@/api";
-import ConfigDialog from "@/components/ConfigDialog.vue";
 import TunnelWebFrom from "@/pages/dashboard/modules/TunnelWeb/TunnelWebFrom.vue";
 import {checkPermission} from "@/libs/useAction";
 import TunnelItem from '@/components/tunnel/TunnelItem.vue'
 import {useMyTitle} from "@/libs/common";
 import {httpType} from "@/libs/enums";
+import TunnelFormWrap from '@/components/tunnel/TunnelFormWrap.vue'
 
 const store = useAppStore()
 const {selectedServer, clientId} = store
-const tunnelWebConfigs = ref(null)
+const tunnelWebConfigs = shallowReactive([])
 const tunnelLoading = ref(false)
-const dialogVisible = ref(false)
+const activeId = shallowRef(null)
+const isAdd = ref(false)
+
+const activeTunnel = computed(() => {
+  return tunnelWebConfigs.find(c=>c.id === activeId.value)
+})
+const isEmpty = computed(() => {
+  return !activeId.value&&!isAdd.value
+})
 
 function loadTunnelData() {
   if (!selectedServer.value || !clientId.value) {
@@ -28,7 +36,7 @@ function loadTunnelData() {
   tunnelLoading.value = true
   queryTunnelWebConfig(selectedServer.value.id, clientId.value).then(res => {
     if (res.success) {
-      tunnelWebConfigs.value = res.data
+      tunnelWebConfigs.splice(0,tunnelWebConfigs.length,...res.data)
     }
   }).finally(() => {
     tunnelLoading.value = false;
@@ -39,14 +47,11 @@ function loadTunnelData() {
 
 function onAddTunnel() {
   if (checkPermission('web', tunnelWebConfigs)) {
-    store.setTunnelForm(null)
-    dialogVisible.value = true
+    activeId.value=null
+    isAdd.value = true
   }
 }
 
-function onChange(id) {
-  console.log(id)
-}
 function httpUrl(tunnelConfig,type){
   if(selectedServer){
     return type===httpType.https?`https://${tunnelConfig.name}.${selectedServer.value.domain}:${selectedServer.value.https_port}/`
@@ -71,12 +76,12 @@ onMounted(() => {
       <div class="h-60 flex items-center justify-between px-20">
         <PageNav></PageNav>
         <div class="flex flex-row items-center gap-16">
-          <IconParkOutlineAdd class="cursor-pointer text-[16px] hover:text-(--el-color-primary)!"/>
+          <IconParkOutlineAdd class="cursor-pointer text-[16px] hover:text-(--el-color-primary)!" @click="onAddTunnel"/>
           <ConfigLockBtn></ConfigLockBtn>
         </div>
       </div>
       <div class="px-8">
-        <TunnelList @change="onChange">
+        <TunnelList v-model="activeId" :initSelect="false">
           <TunnelItem class="flex flex-col gap-4" v-for="item in tunnelWebConfigs" :key="item.id" :id="item.id">
             <span class="overflow-hidden text-ellipsis">{{ useMyTitle(item) }}</span>
             <span class="w-full flex items-center justify-between">
@@ -87,14 +92,20 @@ onMounted(() => {
         </TunnelList>
       </div>
     </LeftMiddle>
-    <div class="flex-1">
+    <div class="flex-1 h-full flex flex-col">
       <HorizontalHeader :pageNav="false"></HorizontalHeader>
+      <TunnelFormWrap class="flex-1 flex flex-col" :isEmpty="isEmpty" @add="onAddTunnel">
+        <TunnelWebFrom :data="activeTunnel"
+                       @cancel="()=>{}"
+                       @updateSuccess="loadTunnelData"
+                       @createSuccess="loadTunnelData">
+        </TunnelWebFrom>
+      </TunnelFormWrap>
     </div>
   </div>
-  <ConfigDialog title="添加网页穿透" v-model="dialogVisible" width="80%">
-    <TunnelWebFrom @cancel="()=>{dialogVisible.value=false}" @updateSuccess="loadTunnelData"
-                   @createSuccess="loadTunnelData"></TunnelWebFrom>
-  </ConfigDialog>
+<!--  <ConfigDialog title="添加网页穿透" v-model="dialogVisible" width="80%">-->
+
+<!--  </ConfigDialog>-->
 </template>
 
 <style scoped lang="less">

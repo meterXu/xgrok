@@ -3,12 +3,13 @@ import bus from '@/libs/bus'
 const props = defineProps(['id']);
 
 const activeId = inject('activeId');
+const initSelect = inject('initSelect');
 function onClick(){
   bus.$emit('tunnel:Item:click',props.id);
 }
 onMounted(() => {
-  if (!activeId.value) {
-    bus.$emit('tunnel:Item:click',props.id);
+  if (!activeId.value&&initSelect) {
+    bus.$emit('tunnel:Item:init-select',props.id);
   }
 })
 </script>

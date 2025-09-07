@@ -12,7 +12,7 @@ import {sendMessage} from '@/worker/mainThread'
 import ServerProgress from "@/components/ServerProgress.vue";
 import ServiceSwitch from "@/components/control-btns/ServiceSwitch.vue";
 import ConfigRefreshBtn from "@/components/control-btns/ConfigRefreshBtn.vue";
-import {sleep} from "@/libs/common";
+import {sleep} from "xxweb-util";
 import HorizontalHeader from "@/components/header/HorizontalHeader.vue";
 
 const store = useAppStore()
@@ -20,7 +20,7 @@ const tunnelWebConfigs = ref(null)
 const tunnelServiceConfigs = ref(null)
 const serviceSwitch = shallowRef()
 const serverLoading = shallowRef(false)
-const {selectedServer, clientId, percentage} = store
+const {selectedServer, percentage} = store
 
 if (window.project.variable.mode !== 'browser') {
   window.electronAPI.onAppQuit(() => {
