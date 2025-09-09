@@ -73,8 +73,8 @@ function onConfirmDelTunnels(type) {
 
 </script>
 <template>
-  <div class="flex flex-col gap-12">
-    <el-input v-model="searchInput" :prefix-icon="Search" class="rounded-4xl mb-12"></el-input>
+  <div class="h-full w-full flex flex-col gap-24">
+    <el-input v-model="searchInput" :prefix-icon="Search" class="rounded-4xl px-8"></el-input>
     <slot></slot>
   </div>
 </template>

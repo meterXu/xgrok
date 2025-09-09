@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router';
-import {filter,Ls} from 'xxweb-util'
+import {filter,Ls,GlobalOverride} from 'xxweb-util'
 import 'element-plus/dist/index.css'
 import '@/assets/css/main.less'
 import pinia from '@/store/index.js'
@@ -14,6 +14,7 @@ app.config.globalProperties.$ls = new Ls(window.project.nameSpace)
 app.use(pinia)
 app.use(router)
 filter(router, window.project,{permission:false})
+GlobalOverride(['debounce'])
 app.mount('#app')
 
 function makeDraggable(element) {
@@ -41,6 +42,4 @@ function makeDraggable(element) {
             })
         }
     });
-
-
 }

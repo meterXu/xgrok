@@ -41,7 +41,7 @@ export default defineConfig(({command, mode}) => {
                     ElementPlusResolver(),
                     IconsResolver({
                         extension: 'jsx',
-                        enabledCollections: ['icon-park-outline', 'ep']
+                        enabledCollections: ['icon-park-outline','icon-park-solid', 'ep']
                     })
                 ],
             }),
@@ -49,7 +49,7 @@ export default defineConfig(({command, mode}) => {
                 resolvers: [
                     ElementPlusResolver(),
                     IconsResolver({
-                        enabledCollections: ['icon-park-outline', 'ep'],
+                        enabledCollections: ['icon-park-outline','icon-park-solid', 'ep'],
                         prefix: false
                     })],
             }),

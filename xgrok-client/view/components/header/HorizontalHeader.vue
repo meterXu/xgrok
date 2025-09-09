@@ -3,7 +3,7 @@ import MyAvatar from "@/components/header/MyAvatar.vue";
 import PageNav from "@/components/header/PageNav.vue";
 
 const props = defineProps({
-  pageNav:{
+  navTitle:{
     type: Boolean,
     default: true
   },
@@ -16,8 +16,10 @@ const props = defineProps({
 
 <template>
   <el-header class="p-0 border-b-1 border-solid border-(--border-color)">
-    <div class="h-56 px-0 py-16 flex items-center " :class="pageNav?'justify-between':'justify-end'">
-      <PageNav :hasLock="hasLock" v-if="pageNav"></PageNav>
+    <div class="h-full px-0 py-16 flex items-center justify-between">
+      <slot>
+        <PageNav></PageNav>
+      </slot>
       <MyAvatar></MyAvatar>
     </div>
   </el-header>

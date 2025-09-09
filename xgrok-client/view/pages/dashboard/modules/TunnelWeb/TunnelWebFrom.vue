@@ -1,15 +1,15 @@
 <script setup>
 import {reactive, defineEmits, ref, watch} from "vue";
-import {tunnelType} from "@/libs/enums";
+import {NotificationTypeEnum, tunnelType} from "@/libs/enums";
 import {getUrlSchema} from "@/libs/common";
 import {checkName, createTunnelWeb,updateTunnelWeb} from "@/api";
 import {useAppStore} from "@/store";
-import {ElMessage} from "element-plus";
 import {tipText} from "@/libs/infoText";
 import InfoTip from "@/components/infoTip.vue";
 import {confirm, testName, isLocalHost} from "@/libs/common";
 import {onFormValidate, useGetDisabled, useGetErrorMsg} from "@/libs/useAction";
 import {useRouter} from "vue-router";
+import {showNotification} from "@/libs/message";
 
 const store = useAppStore()
 const {selectedServer,clientId,tunnelForm} = store
@@ -63,11 +63,7 @@ function onSave(){
   ruleFormRef.value.validate(valid=>{
     if(valid){
       formData.id?updateTunnelWeb(formData).then(res=>{
-        ElMessage({
-          message: res.success?'更新成功':'更新失败',
-          type: res.success?'success':'error',
-          plain: true,
-        })
+        showNotification(res.success?NotificationTypeEnum.success:NotificationTypeEnum.error,res.success?'更新成功':'更新失败')
         if(res.success){
           emits('cancel')
           emits('updateSuccess')
@@ -76,11 +72,7 @@ function onSave(){
         saveLoading.value=false
       }) : createTunnelWeb(formData).then(res=>{
         if(res.success){
-          ElMessage({
-            message: '创建成功',
-            type: 'success',
-            plain: true,
-          })
+          showNotification(NotificationTypeEnum.success,'创建成功')
           emits('cancel')
           emits('createSuccess')
         }else{
@@ -126,42 +118,45 @@ function validateName(rule, value, callback){
 </script>
 
 <template>
-  <TransitionGroup tag="ul" v-show="errorMsg.length>0" name="fade" class="error-msg">
+  <TransitionGroup tag="ul" v-show="errorMsg.length>0" name="fade" class="error-msg border-1 border-(--el-color-warning-light-5)">
     <li v-for="item in errorMsg" :key="item">
       {{item}}
     </li>
   </TransitionGroup>
-  <el-form ref="ruleFormRef" class="ruleFormRef"
-           :model="formData" label-width="auto"
-           :rules="rules" size="default"
-           :hide-required-asterisk="true"
-           :show-message="false"
-           @validate="(prop,valid,value)=>{onFormValidate(validateRes,{prop,valid,value})}">
-    <el-form-item label="名称" prop="name">
-      <el-input v-model="formData.name" placeholder="请输入网页名称">
-        <template #suffix>
-          <InfoTip :text="tipText.zh.name" :loading="validateNameLoading"></InfoTip>
-        </template>
-      </el-input>
-    </el-form-item>
-    <el-form-item label="代理网址" prop="host">
-      <el-input v-model="formData.host" placeholder="请输入网页地址">
-        <template #suffix>
-          <InfoTip :text="tipText.zh.url"></InfoTip>
-        </template>
-      </el-input>
-    </el-form-item>
-    <el-form-item label="描述" prop="remark">
-      <el-input type="textarea" v-model="formData.remark" placeholder="请输入描述"></el-input>
-    </el-form-item>
-  </el-form>
-  <div class="form-btns">
-    <el-button type="success" plain :loading="saveLoading" :disabled="addBtnDisabled" @click="onSave">
-      <template #icon><ep-check/></template>
-      确定</el-button>
-    <el-button type="info" plain @click="onCancel">
-      <template #icon><ep-close/></template>
-      取消</el-button>
+
+  <div class="bg-(--primary-bg-0) border-1 border-(--border-color) rounded-2xl p-20">
+    <el-form ref="ruleFormRef" class="ruleFormRef"
+             :model="formData" label-width="auto"
+             :rules="rules" size="default"
+             :hide-required-asterisk="true"
+             :show-message="false"
+             @validate="(prop,valid,value)=>{onFormValidate(validateRes,{prop,valid,value})}">
+      <el-form-item label="名称" prop="name">
+        <el-input v-model="formData.name" placeholder="请输入网页名称">
+          <template #suffix>
+            <InfoTip :text="tipText.zh.name" :loading="validateNameLoading"></InfoTip>
+          </template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="代理网址" prop="host">
+        <el-input v-model="formData.host" placeholder="请输入网页地址">
+          <template #suffix>
+            <InfoTip :text="tipText.zh.url"></InfoTip>
+          </template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="描述" prop="remark">
+        <el-input type="textarea" v-model="formData.remark" placeholder="请输入描述"></el-input>
+      </el-form-item>
+    </el-form>
+    <div class="form-btns">
+      <el-button type="success" plain :loading="saveLoading" :disabled="addBtnDisabled" @click="onSave">
+        <template #icon><ep-check/></template>
+        确定</el-button>
+      <el-button type="info" plain @click="onCancel">
+        <template #icon><ep-close/></template>
+        取消</el-button>
+    </div>
   </div>
 </template>
 
@@ -219,7 +214,7 @@ function validateName(rule, value, callback){
 <style lang="less">
 .ruleFormRef{
   .el-form-item.is-error .el-input__wrapper{
-    box-shadow: 0 0 0 1px var(--el-input-border-color, var(--el-border-color)) inset;;
+    box-shadow: 0 0 0 1px var(--el-input-border-color, var(--el-border-color)) inset;
   }
 }
 </style>

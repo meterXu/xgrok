@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <div class="w-260 h-full shadow-(--el-box-shadow-light)">
+  <div class="w-260 h-full flex flex-col shadow-(--el-box-shadow-light) z-2">
     <slot/>
   </div>
 </template>

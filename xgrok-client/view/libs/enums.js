@@ -116,3 +116,9 @@ export const isDeleteType={
     no:0
 }
 
+export const NotificationTypeEnum ={
+    success:'success',
+    warning:'warning',
+    info:'info',
+    error:'error'
+}

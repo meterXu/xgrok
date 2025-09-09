@@ -2,12 +2,6 @@
 import {useRoute} from 'vue-router'
 
 const route = useRoute();
-const props = defineProps({
-  hasLock:{
-    type: Boolean,
-    default: true
-  }
-})
 </script>
 
 <template>

@@ -102,6 +102,7 @@
     "@electron/fuses": "^1.8.0",
     "@iconify-json/ep": "^1.2.2",
     "@iconify-json/icon-park-outline": "^1.2.2",
+    "@iconify-json/icon-park-solid": "^1.2.4",
     "@vitejs/plugin-vue": "^5.0.3",
     "@vitejs/plugin-vue-jsx": "^3.1.0",
     "@vue/test-utils": "^2.4.4",
