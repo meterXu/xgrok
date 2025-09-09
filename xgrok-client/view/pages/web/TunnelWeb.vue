@@ -7,7 +7,7 @@ import TunnelList from "@/components/tunnel/TunnelList.vue";
 import {onMounted, ref} from "vue";
 import {useAppStore} from "@/store";
 import {queryTunnelWebConfig} from "@/api";
-import TunnelWebFrom from "@/pages/dashboard/modules/TunnelWeb/TunnelWebFrom.vue";
+import TunnelWebFrom from "@/pages/web/module/TunnelWebFrom.vue";
 import {checkPermission} from "@/libs/useAction";
 import TunnelItem from '@/components/tunnel/TunnelItem.vue'
 import {useMyTitle} from "@/libs/common";
@@ -30,6 +30,9 @@ const activeTunnel = computed(() => {
 })
 const isEmpty = computed(() => {
   return !activeId.value && !isAdd.value
+})
+const showTunnelCol = computed(()=>{
+  return !isAdd.value&&activeId.value
 })
 
 function loadTunnelData() {
@@ -71,6 +74,7 @@ function onOpenLink(item, type) {
 
 function onCancel() {
   isAdd.value = false
+  activeId.value=null
 }
 
 onMounted(() => {
@@ -115,10 +119,10 @@ onMounted(() => {
         <div v-else></div>
       </HorizontalHeader>
       <TunnelFormWrap class="flex-1 flex flex-col" :isEmpty="isEmpty" @add="onAddTunnel">
-        <TunnelControl v-if="!isAdd"></TunnelControl>
+        <TunnelControl v-if="showTunnelCol"></TunnelControl>
         <div class="p-20">
           <TunnelWebFrom
-              :data="activeTunnel"
+              :tunnelForm="activeTunnel"
               @cancel="onCancel"
               @updateSuccess="loadTunnelData"
               @createSuccess="loadTunnelData">
