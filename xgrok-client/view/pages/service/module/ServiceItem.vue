@@ -2,7 +2,6 @@
 import {defineProps,defineEmits} from 'vue'
 import {useAppStore} from "@/store";
 import {useMyTitle} from "@/libs/common";
-import {useServiceTypeText} from "@/libs/enums";
 
 const props=defineProps(['tunnelConfig'])
 const store = useAppStore()

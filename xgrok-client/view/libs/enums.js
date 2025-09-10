@@ -116,9 +116,14 @@ export const isDeleteType={
     no:0
 }
 
-export const NotificationTypeEnum ={
+export const NotificationType ={
     success:'success',
     warning:'warning',
     info:'info',
     error:'error'
+}
+
+export const hostType = {
+    remote:1,
+    local:0
 }

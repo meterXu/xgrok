@@ -101,3 +101,7 @@ export const $ss = {
         sessionStorage.setItem(`${window.project.namespace}__${key}`,value)
     }
 }
+export function getEnumKey(enumData, value) {
+    let find = Object.entries(enumData).find(([key, _value]) => _value === value)
+    return find ? find[0] : ''
+}

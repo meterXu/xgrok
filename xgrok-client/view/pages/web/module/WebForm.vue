@@ -1,6 +1,6 @@
 <script setup>
 import {reactive, defineEmits, ref, watch} from "vue";
-import {NotificationTypeEnum, tunnelType} from "@/libs/enums";
+import {NotificationType, tunnelType} from "@/libs/enums";
 import {getUrlSchema} from "@/libs/common";
 import {checkName, createTunnelWeb, updateTunnelWeb} from "@/api";
 import {useAppStore} from "@/store";
@@ -83,7 +83,7 @@ function onSave() {
   ruleFormRef.value.validate(valid => {
     if (valid) {
       formData.id ? updateTunnelWeb(formData).then(res => {
-        showNotification(res.success ? NotificationTypeEnum.success : NotificationTypeEnum.error, res.success ? '更新成功' : '更新失败')
+        showNotification(res.success ? NotificationType.success : NotificationType.error, res.success ? '更新成功' : '更新失败')
         if (res.success) {
           emits('cancel')
           emits('updateSuccess')
@@ -92,7 +92,7 @@ function onSave() {
         saveLoading.value = false
       }) : createTunnelWeb(formData).then(res => {
         if (res.success) {
-          showNotification(NotificationTypeEnum.success, '创建成功')
+          showNotification(NotificationType.success, '创建成功')
           emits('cancel')
           emits('createSuccess')
         } else {
@@ -178,7 +178,7 @@ function validateName(rule, value, callback) {
         </template>
         {{formData.id?'更新':'新增'}}
       </el-button>
-      <el-button type="info" plain @click="onCancel">
+      <el-button type="info" plain :disabled="saveLoading" @click="onCancel">
         <template #icon>
           <ep-close/>
         </template>

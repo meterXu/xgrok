@@ -56,7 +56,7 @@ const normalRoutes = [
             {
                 path: 'web',
                 name: 'Web',
-                component: () => import("@/pages/web/TunnelWeb.vue"),
+                component: () => import("@/pages/web/TunnelPage.vue"),
                 meta: {
                     title: '网页',
                 }
@@ -64,7 +64,7 @@ const normalRoutes = [
             {
                 path: 'service',
                 name: 'Service',
-                component: () => import("@/pages/service/TunnelService.vue"),
+                component: () => import("@/pages/service/TunnelPage.vue"),
                 meta: {
                     title: '服务',
                 }
