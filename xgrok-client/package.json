@@ -95,7 +95,7 @@
     "reconnecting-websocket": "^4.4.0",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",
-    "xxweb-util": "^0.3.20",
+    "xxweb-util": "^0.3.21",
     "yaml": "^2.4.1"
   },
   "devDependencies": {

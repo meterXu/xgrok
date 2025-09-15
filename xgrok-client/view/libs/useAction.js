@@ -5,8 +5,6 @@ import {confirm} from "@/libs/common";
 import {useAppStore} from '@/store'
 import {ElMessage} from "element-plus";
 
-const store = useAppStore()
-
 export function useGetValidateRes(form){
     const obj={}
     Object.keys(form).forEach(key=>{
@@ -46,12 +44,14 @@ export async function useGoBack(){
 }
 
 export async function useGoTo(name,isReplace=false){
+    const store = useAppStore()
     store.setHeaderBtnLoading(true)
     isReplace? await router.replace({name}):await router.push({name})
     store.setHeaderBtnLoading(false)
 }
 
 export function checkTunnelConfig(selectedServer,tunnelWebConfigs,tunnelServiceConfigs){
+    const store = useAppStore()
     let res = selectedServer && (tunnelWebConfigs?.length > 0 || tunnelServiceConfigs?.length > 0)
     if(!res){
         ElMessage.warning('没有任何配置，请先添加')
@@ -69,6 +69,7 @@ export function checkTunnelConfig(selectedServer,tunnelWebConfigs,tunnelServiceC
 }
 
 export function checkPermission(tunnelType,tunnelConfigs=[]){
+    const store = useAppStore()
     if(store.plan.value===payPlan.free){
         if(tunnelType==='service'){
             gotoSubscribe('抱歉！免费计划用户无法使用服务隧道')

@@ -1,17 +1,30 @@
 import {createRouter, createWebHashHistory} from "vue-router";
 import {initWebSocket} from "@/api";
 import webSocketHandler from "@/libs/webSocketHandler";
+import Login from "@/pages/Login.vue"
+import Register from "@/pages/Register.vue";
+import ForgotPassword from '@/pages/ForgotPassword.vue'
+import Error from '@/pages/Error.vue'
+import Index from '@/pages/Index.vue'
+import Dashboard from "@/pages/dashboard/Dashboard.vue";
+import WebTunnelPage from "@/pages/web/TunnelPage.vue"
+import ServiceTunnelPage from '@/pages/service/TunnelPage.vue'
+import Plan from "@/pages/plan/Plan.vue"
+import Log from "@/pages/log/Log.vue"
+import About from "@/pages/about/About.vue"
+import Order from "@/pages/order/Order.vue"
+import Setting from "@/pages/setting/Setting.vue"
 
 const normalRoutes = [
     {
         path: "/login",
         name: 'Login',
-        component: () => import("@/pages/Login.vue"),
+        component: Login,
     },
     {
         path: "/register",
         name: 'Register',
-        component: () => import("@/pages/Register.vue"),
+        component: Register,
         meta: {
             requireAuth: false
         }
@@ -19,7 +32,7 @@ const normalRoutes = [
     {
         path: "/forgotPassword",
         name: 'ForgotPassword',
-        component: () => import("@/pages/ForgotPassword.vue"),
+        component: ForgotPassword,
         meta: {
             requireAuth: false
         }
@@ -27,12 +40,12 @@ const normalRoutes = [
     {
         path: "/error/404",
         name: '404',
-        component: () => import("@/pages/Error.vue"),
+        component: Error,
     },
     {
         path: "/error/403",
         name: '403',
-        component: () => import("@/pages/Error.vue"),
+        component: Error,
     },
     {
         path: "/",
@@ -42,13 +55,13 @@ const normalRoutes = [
     {
         path: "/client",
         name: 'Client',
-        component: () => import("@/pages/Index.vue"),
+        component: Index,
         redirect: "/client/dashboard",
         children: [
             {
                 path: 'dashboard',
                 name: 'Dashboard',
-                component: () => import("@/pages/dashboard/Dashboard.vue"),
+                component: Dashboard,
                 meta: {
                     title: '首页',
                 }
@@ -56,7 +69,7 @@ const normalRoutes = [
             {
                 path: 'web',
                 name: 'Web',
-                component: () => import("@/pages/web/TunnelPage.vue"),
+                component: WebTunnelPage,
                 meta: {
                     title: '网页',
                 }
@@ -64,7 +77,7 @@ const normalRoutes = [
             {
                 path: 'service',
                 name: 'Service',
-                component: () => import("@/pages/service/TunnelPage.vue"),
+                component: ServiceTunnelPage,
                 meta: {
                     title: '服务',
                 }
@@ -72,7 +85,7 @@ const normalRoutes = [
             {
                 path: 'plan',
                 name: 'Plan',
-                component: () => import("@/pages/plan/Plan.vue"),
+                component: Plan,
                 meta: {
                     title: '订阅',
                 }
@@ -80,7 +93,7 @@ const normalRoutes = [
             {
                 path: 'log',
                 name: 'Log',
-                component: () => import("@/pages/log/Log.vue"),
+                component: Log,
                 meta: {
                     title: '日志',
                 }
@@ -88,7 +101,7 @@ const normalRoutes = [
             {
                 path: 'about',
                 name: 'About',
-                component: () => import("@/pages/about/About.vue"),
+                component: About,
                 meta: {
                     title: '关于',
                 }
@@ -97,12 +110,12 @@ const normalRoutes = [
                 path: 'order/:productId/:payNum',
                 name: 'Order',
                 props: true,
-                component: () => import("@/pages/order/Order.vue"),
+                component: Order,
             },
             {
                 path: 'setting',
                 name: 'Setting',
-                component: () => import("@/pages/setting/Setting.vue"),
+                component: Setting,
                 meta: {
                     title: '设置',
                 }
@@ -112,7 +125,7 @@ const normalRoutes = [
     {
         path: '/:pathMatch(.*)*',
         name: 'NotFound',
-        component: () => import("@/pages/Login.vue")
+        component: Login
     }
 ]
 

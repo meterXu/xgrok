@@ -5,7 +5,7 @@ import Logo from "../Logo.vue";
 
 <template>
   <el-aside class="w-80! h-full! flex flex-col items-center justify-start gap-8 aside">
-    <Logo class="w-48 h-60"/>
+    <Logo class="w-48 h-60 mt-24"/>
     <Menu class="mt-24!"></Menu>
   </el-aside>
 </template>

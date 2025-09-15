@@ -6595,10 +6595,10 @@ xmlchars@^2.2.0:
   resolved "https://registry.npmjs.org/xmlchars/-/xmlchars-2.2.0.tgz"
   integrity sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==
 
-xxweb-util@^0.3.20:
-  version "0.3.20"
-  resolved "https://registry.npmmirror.com/xxweb-util/-/xxweb-util-0.3.20.tgz#131a7048d55deb8388e4119c6fc5b6463976ffb9"
-  integrity sha512-b1xKtc6I3gE+Q+ln4/KfJP6rLO4oGl23zbhelSRcucCRwUbwvFlS95MCWMuPEvLA3SX0zFcEUrfiebLlgm5v0g==
+xxweb-util@^0.3.21:
+  version "0.3.21"
+  resolved "https://registry.npmmirror.com/xxweb-util/-/xxweb-util-0.3.21.tgz#413a2de5c919b20b05892020ec378329939c9e12"
+  integrity sha512-zeoO2+HEBgXe34IG9cdYVRdkEOmoiV4OjmKx4f15OpjKwt4XAPzoyNHmuLICtSiOUUad8HOHKfAupXHjjBeRNw==
   dependencies:
     axios "^1.9.0"
     dayjs "^1.11.3"
