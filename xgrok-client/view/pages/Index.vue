@@ -45,7 +45,7 @@ onMounted(async () => {
   <div class="h-full">
     <el-container class="h-full! flex flex-row justify-start items-start">
       <LeftCon></LeftCon>
-      <el-container class="flex flex-col! h-full">
+      <el-container class="flex flex-col! h-full bg-(--container-bg)">
         <el-main class="p-0! relative">
           <router-view></router-view>
         </el-main>

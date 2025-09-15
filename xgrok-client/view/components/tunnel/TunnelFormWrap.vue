@@ -9,7 +9,7 @@ onMounted(() => {
 </script>
 
 <template>
-<div class="w-full h-full bg-(--tunnel-form-bg)">
+<div class="w-full h-full">
   <slot/>
 </div>
 </template>

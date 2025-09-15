@@ -38,14 +38,14 @@ const menuList = [
   //   name: 'vpn',
   // },
   {
-    title: '关于',
-    icon: <IconParkOutlineInfo/>,
-    name: 'About',
-  },
-  {
     title: '设置',
     icon: <IconParkOutlineSettingTwo/>,
     name: 'Setting',
+  },
+  {
+    title: '关于',
+    icon: <IconParkOutlineInfo/>,
+    name: 'About',
   }
 ]
 </script>

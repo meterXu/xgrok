@@ -5,23 +5,25 @@ const props = defineProps({
     default:''
   },
   size:{
-    default:'normal'
+    default:'64px'
+  },
+  direction:{
+    default:'horizontal'
   }
 })
 </script>
 
 <template>
-  <div class="flex flex-row items-center gap-4">
-    <img src="../../../public/assets/icon.png" alt="logo" :class="size"/>
+  <div class="flex items-center gap-4"
+       :class="direction==='horizontal'?'flex-row':'flex-col'"
+       :style="{'--size':size}">
+    <img class="logo" src="../../../public/assets/icon.png" alt="logo"/>
     <span class="font-bold text-[20px]">{{title}}</span>
   </div>
 </template>
 
 <style scoped lang="less">
-.normal{
-  width:64px
-}
-.large{
-  width:128px
+.logo{
+  width: var(--size);
 }
 </style>
