@@ -1,5 +1,5 @@
 // 在主进程中
-const { ipcMain } = require('electron');
+const { ipcMain, app, dialog, shell} = require('electron');
 const xgrokConfModel = require("../models/xgrokConfModel");
 const {turnOn,turnOff, setXY,
     minWindow,
@@ -8,6 +8,8 @@ const {turnOn,turnOff, setXY,
     hiddenWindow,
     openExternal} = require("../libs/backend/xgrok");
 const {checkPort,getSystemInfo,openDialog,getLog} = require("../libs/backend/system");
+const {checkUpdate} = require("../libs/util");
+const {autoUpdater} = require("electron-updater");
 ipcMain.handle('xgrok', async (event, arg) => {
     let res = {success:true,type:arg.type,data:null}
     try {
@@ -65,6 +67,16 @@ ipcMain.handle('system',async (event,arg)=>{
             case 'getLog':{
                 res.data = await getLog(arg.data)
             }break
+            case 'checkUpdate':{
+                checkUpdate(app,autoUpdater,dialog,shell).catch(()=>{
+                    dialog.showMessageBox({
+                        type: 'info',
+                        buttons: ['确定'],
+                        title: '提示',
+                        detail: '无可用更新，当前已是最新版本！'
+                    })
+                })
+            }
         }
     }catch (err){
         res.success=false

@@ -2,13 +2,14 @@
 import LinkButton from "@/components/LinkButton.vue";
 
 function onCheckUpdate() {
-
+  console.log(new Date().valueOf())
+  // window.electronAPI.checkUpdate()
 }
 </script>
 
 <template>
   <div class="flex flex-row gap-24">
-    <LinkButton @click="onCheckUpdate">
+    <LinkButton v-debounce:click="onCheckUpdate">
       <template #icon>
         <MdiUpdate/>
       </template>

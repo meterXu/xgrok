@@ -5,6 +5,7 @@ import {filter,Ls,GlobalOverride} from 'xxweb-util'
 import 'element-plus/dist/index.css'
 import '@/assets/css/main.less'
 import pinia from '@/store/index.js'
+import directives from "@/libs/directives";
 
 const app = createApp(App)
 window.app = app
@@ -13,6 +14,7 @@ app.config.globalProperties.$project = window.project
 app.config.globalProperties.$ls = new Ls(window.project.nameSpace)
 app.use(pinia)
 app.use(router)
+app.directive('debounce', directives.debounce)
 filter(router, window.project,{permission:false})
 GlobalOverride(['debounce'])
 app.mount('#app')
