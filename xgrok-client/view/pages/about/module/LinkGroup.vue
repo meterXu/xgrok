@@ -2,8 +2,7 @@
 import LinkButton from "@/components/LinkButton.vue";
 
 function onCheckUpdate() {
-  console.log(new Date().valueOf())
-  // window.electronAPI.checkUpdate()
+  window.electronAPI.checkUpdate()
 }
 </script>
 

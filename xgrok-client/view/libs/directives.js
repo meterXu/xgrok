@@ -4,9 +4,9 @@ export default {
         beforeMount(el, binding) {
             const eventType = binding.arg || 'click';
             const debouncedHandler = ()=>{
-                return binding.value
+                binding.value.debounce()()
             };
-            el.addEventListener(eventType, debouncedHandler().debounce());
+            el.addEventListener(eventType, debouncedHandler);
             el._debouncedHandler = debouncedHandler;
         },
         unmounted(el) {
