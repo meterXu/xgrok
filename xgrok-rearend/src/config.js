@@ -27,8 +27,9 @@ export default {
         ,'/oauth/register'
         ,'/oauth/validateCode'
         ,'/oauth/checkUserIsExist'
-        ,'/oauth/changePwd',
+        ,'/oauth/changePwd'
         ,'/api/version/latest'
+        ,'/api/version/list'
     ],
     logIgnores:['/api/server/checkServerOnline'],
     grants:['password'],

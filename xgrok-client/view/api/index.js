@@ -5,7 +5,7 @@ import {
     postActionSSO,
     putAction,
     postActionSSONoToken,
-    getActionSSONoToken
+    getActionSSONoToken, getActionNoToken
 } from "./manage"
 import md5 from "js-md5"
 import qs from "qs"
@@ -59,6 +59,10 @@ const url = {
         create: '/order',
         detail: '/order/detail',
         check: '/order/check'
+    },
+    version:{
+        list:'/version/list',
+        latest:'/version/latest'
     }
 }
 
@@ -261,4 +265,12 @@ export function checkOrder(orderId) {
 
 export function checkServerOnline(domain, port) {
     return getAction(url.server.checkServerOnline, {domain, port})
+}
+
+export function versionList(){
+    return getActionNoToken(url.version.list)
+}
+
+export function versionLatest() {
+    return getActionNoToken(url.version.latest)
 }

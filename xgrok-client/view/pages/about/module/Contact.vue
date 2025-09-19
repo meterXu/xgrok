@@ -3,9 +3,9 @@
 </script>
 
 <template>
-  <div>
-    <div class="mt-12 mb-48">qq群 1035160464</div>
-    <div class="mt-12 mb-48">微信群</div>
+  <div class="flex flex-row text-[24px] gap-8 cursor-pointer items-center">
+    <MdiQqchat class="text-[20px]"/>
+    <MdiWechat/>
   </div>
 </template>
 

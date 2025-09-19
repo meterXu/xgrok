@@ -17,4 +17,12 @@ export default class VersionController {
         const res = await this.versionService.latest(ctx)
         ctx.result(res)
     }
+
+    @request('get', '/version/list')
+    @summary('查询版本记录')
+    @tag
+    async list(ctx) {
+        const res = await this.versionService.list(ctx)
+        ctx.result(res)
+    }
 }

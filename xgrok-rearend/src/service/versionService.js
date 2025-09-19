@@ -13,4 +13,15 @@ export default class VersionService {
         })
 
     }
+
+    async list(){
+        return new Promise((resolve, reject)=>{
+            axios.get(config.github_api_url+'/releases').then((res) => {
+                if(res.status === 200&&res.data.length > 0) {
+                    resolve(res.data)
+                }
+            })
+        })
+
+    }
 }

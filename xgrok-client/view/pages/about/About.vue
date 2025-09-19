@@ -19,7 +19,7 @@ import LinkGroup from "./module/LinkGroup.vue";
       <div class="flex-1 relative">
         <div class="absolute h-full py-12 w-full">
           <plus-scrollbar>
-            <div class="inline-flex flex-col gap-24">
+            <div class="flex flex-col gap-24 px-16">
               <information/>
               <LinkGroup/>
               <Contact/>
