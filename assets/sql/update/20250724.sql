@@ -188,3 +188,21 @@ alter table oauth_user_role change _modified_time modified_time bigint null;
 
 INSERT INTO xgrok.ng_sys_dict (id, `key`, code, chn_value, eng_value, sort, creator, editor, status, is_delete, created_time, modified_time) VALUES ('b70a9b952c2a138456bf82f793d87894', 'is_notify', '0', '未通知', 'Not notified', 1, null, null, default, default, null, null);
 INSERT INTO xgrok.ng_sys_dict (id, `key`, code, chn_value, eng_value, sort, creator, editor, status, is_delete, created_time, modified_time) VALUES ('43a7a47100826bfaf245f9da9b7b1334', 'is_notify', '1', '已通知', 'Already notified', 2, null, null, default, default, null, null);
+
+--xx
+create table xgrok.ng_assets
+(
+    id                      varchar(32)   not null
+        primary key,
+    name                varchar(100)  not null,
+    type              varchar(32)   not null,
+    size                  varchar(32)  not null,
+    path        varchar(100)   not null,
+    sort                    int           null,
+    creator                 varchar(50)   null,
+    editor                  varchar(50)   null,
+    status                  int default 1 null,
+    is_delete               int default 0 null,
+    created_time            bigint        null,
+    modified_time           bigint        null
+);
