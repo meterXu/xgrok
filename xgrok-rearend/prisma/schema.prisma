@@ -163,7 +163,7 @@ model OAuthUsers {
   id              String     @id @db.VarChar(32)
   username        String     @unique(map: "oauth_users_pk") @db.VarChar(100)
   password        String     @db.VarChar(100)
-  nickname        String?    @db.VarChar(50)
+  nickName        String?    @db.VarChar(50)
   creator         String?    @db.VarChar(50)
   editor          String?    @db.VarChar(50)
   sort            Int?
@@ -295,4 +295,19 @@ model ng_product {
   created_time  BigInt?
   modified_time BigInt?
   ng_order      ng_order[]
+}
+
+model ng_assets {
+  id            String  @id @db.VarChar(32)
+  name          String  @db.VarChar(100)
+  type          String  @db.VarChar(32)
+  size          String  @db.VarChar(32)
+  path          String  @db.VarChar(100)
+  sort          Int?
+  creator       String? @db.VarChar(50)
+  editor        String? @db.VarChar(50)
+  status        Int?    @default(1)
+  is_delete     Int?    @default(0)
+  created_time  BigInt?
+  modified_time BigInt?
 }
