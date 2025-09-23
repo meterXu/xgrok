@@ -1,5 +1,6 @@
 const {PrismaClient} = require("@prisma/client");
 const prisma = new PrismaClient();
+const {status}  = require('../utils/enum')
 export default class AssetsService {
     constructor() {
     }
@@ -18,9 +19,10 @@ export default class AssetsService {
     }
 
     async detailAssets(AssetsModel) {
-        return await prisma.ng_assets.findFirst({
+        return prisma.ng_assets.findFirst({
             where: {
-                name: AssetsModel.name
+                name: AssetsModel.name,
+                status:status.enable
             }
         })
     }

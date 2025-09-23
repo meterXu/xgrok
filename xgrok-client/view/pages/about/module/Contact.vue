@@ -14,13 +14,13 @@ onMounted(()=>{
 
 <template>
   <div class="flex flex-row text-[24px] gap-8 cursor-pointer items-center">
-    <el-popover>
+    <el-popover v-if="qq">
       <img class="w-480" :src="qq" alt=""/>
       <template #reference>
         <MdiQqchat class="text-[20px]"/>
       </template>
     </el-popover>
-    <el-popover>
+    <el-popover v-if="wx">
       <img class="w-480" :src="wx" alt=""/>
       <template #reference>
         <MdiWechat/>
