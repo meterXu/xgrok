@@ -63,6 +63,9 @@ const url = {
     version:{
         list:'/version/list',
         latest:'/version/latest'
+    },
+    assets:{
+        detail:'/assets/detail'
     }
 }
 
@@ -273,4 +276,8 @@ export function versionList(){
 
 export function versionLatest() {
     return getActionNoToken(url.version.latest)
+}
+
+export function detailAssets(name){
+    return getAction(url.assets.detail,{name})
 }

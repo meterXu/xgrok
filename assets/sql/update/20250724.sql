@@ -186,11 +186,11 @@ alter table oauth_user_role drop column modified_time;
 alter table oauth_user_role change _created_time created_time bigint null;
 alter table oauth_user_role change _modified_time modified_time bigint null;
 
-INSERT INTO xgrok.ng_sys_dict (id, `key`, code, chn_value, eng_value, sort, creator, editor, status, is_delete, created_time, modified_time) VALUES ('b70a9b952c2a138456bf82f793d87894', 'is_notify', '0', '未通知', 'Not notified', 1, null, null, default, default, null, null);
-INSERT INTO xgrok.ng_sys_dict (id, `key`, code, chn_value, eng_value, sort, creator, editor, status, is_delete, created_time, modified_time) VALUES ('43a7a47100826bfaf245f9da9b7b1334', 'is_notify', '1', '已通知', 'Already notified', 2, null, null, default, default, null, null);
+INSERT INTO ng_sys_dict (id, `key`, code, chn_value, eng_value, sort, creator, editor, status, is_delete, created_time, modified_time) VALUES ('b70a9b952c2a138456bf82f793d87894', 'is_notify', '0', '未通知', 'Not notified', 1, null, null, default, default, null, null);
+INSERT INTO ng_sys_dict (id, `key`, code, chn_value, eng_value, sort, creator, editor, status, is_delete, created_time, modified_time) VALUES ('43a7a47100826bfaf245f9da9b7b1334', 'is_notify', '1', '已通知', 'Already notified', 2, null, null, default, default, null, null);
 
---xx
-create table xgrok.ng_assets
+--ng_assets
+create table ng_assets
 (
     id                      varchar(32)   not null
         primary key,
@@ -207,3 +207,9 @@ create table xgrok.ng_assets
     created_time            bigint        null,
     modified_time           bigint        null
 );
+
+create index ng_assets_name_index
+    on ng_assets (name);
+
+INSERT INTO ng_assets (id, name, type, size, path, sort, creator, editor, status, is_delete, created_time, modified_time) VALUES ('58a29e4f73a1635c42f1369e3c6b6dc6', 'qq_group_qr', 'webp', '30.857', 'https://webspace1.oss-cn-hangzhou.aliyuncs.com/xgrok-client/qq_group_qr.webp', 1, null, null, 1, 0, null, null);
+INSERT INTO ng_assets (id, name, type, size, path, sort, creator, editor, status, is_delete, created_time, modified_time) VALUES ('d1737e18d4cbcdf93219f81c3c0f0119', 'wx_group_qr', 'webp', '53.29', 'https://webspace1.oss-cn-hangzhou.aliyuncs.com/xgrok-client/wx_group_qr.webp', 2, null, null, 1, 0, null, null);

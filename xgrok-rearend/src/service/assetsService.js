@@ -5,15 +5,23 @@ export default class AssetsService {
     }
     async queryAssets(pagination,orderBy,assetsQuery){
         return await prisma.$transaction([
-            prisma.Assets.count({
+            prisma.ng_assets.count({
                 where: assetsQuery
             }),
-            prisma.Server.findMany({
+            prisma.ng_assets.findMany({
                 where: assetsQuery,
                 orderBy: orderBy,
                 skip: (pagination.pageNumber - 1) * pagination.pageSize,
                 take: pagination.pageSize
             }),
         ])
+    }
+
+    async detailAssets(AssetsModel) {
+        return await prisma.ng_assets.findFirst({
+            where: {
+                name: AssetsModel.name
+            }
+        })
     }
 }
