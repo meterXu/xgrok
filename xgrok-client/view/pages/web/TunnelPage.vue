@@ -6,18 +6,19 @@ import LeftMiddle from "@/components/left-aside/LeftMiddle.vue";
 import TunnelList from "@/components/tunnel/TunnelList.vue";
 import {onMounted, ref} from "vue";
 import {useAppStore} from "@/store";
-import {queryTunnelWebConfig} from "@/api";
+import {deleteTunnelWebBatch, queryTunnelWebConfig} from "@/api";
 import WebForm from "@/pages/web/module/WebForm.vue";
 import {checkPermission} from "@/libs/useAction";
 import TunnelItem from '@/components/tunnel/TunnelItem.vue'
-import {useMyTitle,getEnumKey} from "@/libs/common";
-import {httpType, tunnelType} from "@/libs/enums";
+import {useMyTitle, getEnumKey, confirm} from "@/libs/common";
+import {httpType, NotificationType, tunnelType} from "@/libs/enums";
 import TunnelFormWrap from '@/components/tunnel/TunnelFormWrap.vue'
 import TunnelControl from '@/components/tunnel/TunnelControl.vue'
 import EpArrowLeft from '~icons/ep/arrow-left';
 import PlusScrollbar from "@/components/plus-scrollbar/PlusScrollbar.vue";
 import TunnelEmptyCon from "@/components/tunnel/TunnelEmptyCon.vue";
 import PlusLoading from "@/components/plus-loading/PlusLoading.vue";
+import {showNotification} from "@/libs/message";
 
 const store = useAppStore()
 const {selectedServer, clientId} = store
@@ -25,6 +26,7 @@ const tunnelWebConfigs = shallowReactive([])
 const tunnelLoading = ref(false)
 const activeId = shallowRef(null)
 const isAdd = ref(false)
+const search = ref('')
 const activeTunnel = computed(() => {
   return tunnelWebConfigs.find(c => c.id === activeId.value)
 })
@@ -33,6 +35,9 @@ const isEmpty = computed(() => {
 })
 const showTunnelCol = computed(() => {
   return !isAdd.value && activeId.value
+})
+const filterTunnelWebConfigs = computed(()=>{
+  return search.value?tunnelWebConfigs.filter(c=>c.name.indexOf(search.value)>-1):tunnelWebConfigs
 })
 
 function loadTunnelData() {
@@ -43,6 +48,7 @@ function loadTunnelData() {
   queryTunnelWebConfig(selectedServer.value.id, clientId.value).then(res => {
     if (res.success) {
       tunnelWebConfigs.splice(0, tunnelWebConfigs.length, ...res.data)
+      activeId.value = null
     }
   }).finally(() => {
     tunnelLoading.value = false;
@@ -52,10 +58,14 @@ function loadTunnelData() {
 }
 
 function onAddTunnel() {
-  if (checkPermission(getEnumKey(tunnelType,tunnelType.web), tunnelWebConfigs)) {
+  if (checkPermission(getEnumKey(tunnelType, tunnelType.web), tunnelWebConfigs)) {
     activeId.value = null
     isAdd.value = true
   }
+}
+
+function onChange(id){
+  isAdd.value = false
 }
 
 function httpUrl(tunnelConfig, type) {
@@ -77,6 +87,23 @@ function onCancel() {
   activeId.value = null
 }
 
+function onDel(){
+  if(activeTunnel.value?.id){
+    confirm('确定要删除这条配置吗？', null, {
+      confirmButtonClass: 'el-button--danger is-plain'
+    }).then(() => {
+      deleteTunnelWebBatch(activeTunnel.value.id).then((res) => {
+        if (res.success) {
+          showNotification(NotificationType.success,'删除成功')
+          loadTunnelData()
+        } else {
+          showNotification(NotificationType.error,'删除失败')
+        }
+      })
+    })
+  }
+}
+
 onMounted(() => {
   loadTunnelData()
 })
@@ -93,11 +120,11 @@ onMounted(() => {
         </div>
       </div>
       <div class="flex-1 relative">
-        <TunnelList class="absolute" v-model="activeId" :initSelect="false">
+        <TunnelList class="absolute" v-model="activeId" :initSelect="false" v-model:search="search" @change="onChange">
           <PlusScrollbar>
             <PlusLoading :loading="tunnelLoading">
               <div class="flex flex-col gap-12 mb-12">
-                <TunnelItem class="flex flex-col gap-4 mx-8" v-for="item in tunnelWebConfigs" :key="item.id"
+                <TunnelItem class="flex flex-col gap-4 mx-8" v-for="item in filterTunnelWebConfigs" :key="item.id"
                             :id="item.id">
                   <span class="overflow-hidden text-ellipsis">{{ useMyTitle(item) }}</span>
                   <span class="w-full flex items-center justify-between">
@@ -114,7 +141,9 @@ onMounted(() => {
     <div class="flex-1 h-full flex flex-col">
       <HorizontalHeader :navTitle="false">
         <el-button v-if="isAdd" type="text" :icon="EpArrowLeft" @click="onCancel">返回</el-button>
-        <div v-else></div>
+        <div v-else>
+<!--          ignore-->
+        </div>
       </HorizontalHeader>
       <TunnelFormWrap class="flex-1 flex flex-col" @add="onAddTunnel">
         <TunnelEmptyCon v-if="isEmpty" btnText="添加网页隧道">
@@ -124,7 +153,7 @@ onMounted(() => {
           </template>
         </TunnelEmptyCon>
         <template v-else>
-          <TunnelControl v-if="showTunnelCol"></TunnelControl>
+          <TunnelControl v-if="showTunnelCol" @del="onDel"></TunnelControl>
           <div class="p-20">
             <WebForm
                 :tunnelForm="activeTunnel"

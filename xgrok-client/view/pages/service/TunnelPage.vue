@@ -6,9 +6,9 @@ import LeftMiddle from "@/components/left-aside/LeftMiddle.vue";
 import TunnelList from "@/components/tunnel/TunnelList.vue";
 import {onMounted, ref} from "vue";
 import {useAppStore} from "@/store";
-import {queryTunnelServiceConfig} from "@/api";
+import {deleteTunnelServiceBatch, deleteTunnelWebBatch, queryTunnelServiceConfig} from "@/api";
 import ServiceFrom from "./module/ServiceFrom.vue";
-import {useMyTitle,getEnumKey} from "@/libs/common";
+import {useMyTitle, getEnumKey, confirm} from "@/libs/common";
 import TunnelItem from "@/components/tunnel/TunnelItem.vue";
 import {doCopy} from 'xxweb-util'
 import EpArrowLeft from '~icons/ep/arrow-left';
@@ -27,7 +27,7 @@ const tunnelServiceConfigs = shallowReactive([])
 const tunnelLoading = ref(false)
 const activeId = shallowRef(null)
 const isAdd = ref(false)
-
+const search = ref('')
 const activeTunnel = computed(() => {
   return tunnelServiceConfigs.find(c => c.id === activeId.value)
 })
@@ -37,6 +37,9 @@ const isEmpty = computed(() => {
 const showTunnelCol = computed(() => {
   return !isAdd.value && activeId.value
 })
+const filterTunnelServiceConfigs = computed(()=>{
+  return search.value?tunnelServiceConfigs.filter(c=>c.name.indexOf(search.value)>-1):tunnelServiceConfigs
+})
 
 function loadTunnelData() {
   if (!selectedServer.value || !clientId.value) {
@@ -45,7 +48,8 @@ function loadTunnelData() {
   tunnelLoading.value = true
   queryTunnelServiceConfig(selectedServer.value.id, clientId.value).then(res => {
     if (res.success) {
-      tunnelServiceConfigs.splice(0,tunnelServiceConfigs.length,...res.data)
+      tunnelServiceConfigs.splice(0, tunnelServiceConfigs.length, ...res.data)
+      activeId.value = null
     }
   }).finally(() => {
     tunnelLoading.value = false;
@@ -56,7 +60,7 @@ function loadTunnelData() {
 
 function onCopy(item) {
   doCopy(selectedServer.value.domain + ':' + item.remote_port).then(() => {
-    showNotification(NotificationType.success,'复制成功')
+    showNotification(NotificationType.success, '复制成功')
   })
 }
 
@@ -66,10 +70,35 @@ function onCancel() {
 }
 
 function onAddTunnel() {
-  if (checkPermission(getEnumKey(tunnelType,tunnelType.service), tunnelServiceConfigs)) {
+  if (checkPermission(getEnumKey(tunnelType, tunnelType.service), tunnelServiceConfigs)) {
     activeId.value = null
     isAdd.value = true
   }
+}
+
+function onDel() {
+  if (activeTunnel.value?.id) {
+    confirm('确定要删除这条配置吗？', null, {
+      confirmButtonClass: 'el-button--danger is-plain'
+    }).then(() => {
+      deleteTunnelServiceBatch(activeTunnel.value.id).then((res) => {
+        if (res.success) {
+          showNotification(NotificationType.success, '删除成功')
+          loadTunnelData()
+        } else {
+          showNotification(NotificationType.error, '删除失败')
+        }
+      })
+    })
+  }
+}
+
+function onTest(){
+
+}
+
+function onChange(id) {
+  isAdd.value = false
 }
 
 onMounted(() => {
@@ -83,16 +112,17 @@ onMounted(() => {
       <div class="h-60 flex items-center justify-between px-20">
         <PageNav></PageNav>
         <div class="flex flex-row items-center gap-16">
-          <IconParkOutlineAdd class="cursor-pointer text-[16px] hover:text-(--el-color-primary)!"/>
+          <IconParkOutlineAdd class="cursor-pointer text-[16px] hover:text-(--el-color-primary)!" @click="onAddTunnel"/>
           <ConfigLockBtn></ConfigLockBtn>
         </div>
       </div>
       <div class="flex-1 relative">
-        <TunnelList class="absolute" v-model="activeId" :initSelect="false">
+        <TunnelList class="absolute" v-model="activeId" :initSelect="false" v-model:search="search" @change="onChange">
           <PlusScrollbar>
             <PlusLoading :loading="tunnelLoading">
               <div class="flex flex-col gap-12 mb-12">
-                <TunnelItem class="flex flex-col gap-4 mx-8" v-for="item in tunnelServiceConfigs" :key="item.id" :id="item.id">
+                <TunnelItem class="flex flex-col gap-4 mx-8" v-for="item in filterTunnelServiceConfigs" :key="item.id"
+                            :id="item.id">
                   <span class="overflow-hidden text-ellipsis">{{ useMyTitle(item) }}</span>
                   <span class="w-full flex items-center justify-between">
                   <span class="overflow-hidden text-ellipsis">{{ selectedServer?.domain }}:{{ item.remote_port }}</span>
@@ -108,7 +138,9 @@ onMounted(() => {
     <div class="flex-1 h-full flex flex-col">
       <HorizontalHeader :navTitle="false">
         <el-button v-if="isAdd" type="text" :icon="EpArrowLeft" @click="onCancel">返回</el-button>
-        <div v-else></div>
+        <div v-else>
+<!--          ignore-->
+        </div>
       </HorizontalHeader>
       <TunnelFormWrap class="flex-1 flex flex-col" @add="onAddTunnel">
         <TunnelEmptyCon v-if="isEmpty" btnText="添加服务隧道">
@@ -118,7 +150,7 @@ onMounted(() => {
           </template>
         </TunnelEmptyCon>
         <template v-else>
-          <TunnelControl v-if="showTunnelCol"></TunnelControl>
+          <TunnelControl v-if="showTunnelCol" @test="onTest" @del="onDel"></TunnelControl>
           <div class="p-20">
             <ServiceFrom
                 :tunnelForm="activeTunnel"

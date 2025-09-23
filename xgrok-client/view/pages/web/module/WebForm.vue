@@ -33,15 +33,15 @@ const formData = reactive({
 })
 
 watchEffect(() => {
-  formData.id = props.tunnelForm?.id,
-      formData.name = props.tunnelForm?.name,
-      formData.remark = props.tunnelForm?.remark,
-      formData.type = props.tunnelForm?.type || 0,
-      formData.host = props.tunnelForm?.host || 'http://localhost',
-      formData.is_remote = props.tunnelForm?.is_remote || 0,
-      formData.server_id = props.tunnelForm?.server_id || selectedServer.value.id,
-      formData.client_id = props.tunnelForm?.client_id || clientId.value,
-      formData.port = props.tunnelForm?.port || 80
+  formData.id = props.tunnelForm?.id
+  formData.name = props.tunnelForm?.name
+  formData.remark = props.tunnelForm?.remark
+  formData.type = props.tunnelForm?.type || 0
+  formData.host = props.tunnelForm?.host || 'http://localhost'
+  formData.is_remote = props.tunnelForm?.is_remote || 0
+  formData.server_id = props.tunnelForm?.server_id || selectedServer.value.id
+  formData.client_id = props.tunnelForm?.client_id || clientId.value
+  formData.port = props.tunnelForm?.port || 80
 })
 
 const validateRes = reactive({
@@ -176,7 +176,7 @@ function validateName(rule, value, callback) {
         <template #icon>
           <ep-check/>
         </template>
-        {{formData.id?'更新':'新增'}}
+        {{ formData.id ? '更新' : '新增' }}
       </el-button>
       <el-button type="info" plain :disabled="saveLoading" @click="onCancel">
         <template #icon>

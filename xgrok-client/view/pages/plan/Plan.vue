@@ -7,7 +7,7 @@ import {useRouter} from "vue-router";
 import dayjs from 'dayjs'
 import {payPlan, payType} from "@/libs/enums";
 import HorizontalHeader from '@/components/header/HorizontalHeader.vue'
-import PlusScrollbar from "@/components/plus-scrollbar/PlusScrollbar.vue";
+import PlusLoading from "@/components/plus-loading/PlusLoading.vue";
 
 const store = useAppStore()
 const {plan} = store
@@ -15,6 +15,7 @@ let productList = ref([])
 const router = useRouter()
 const showWillPlan = ref(false)
 const willPlanExpiredTime = ref(null)
+const loading  = ref(false)
 
 const freeProductionList=computed(()=>{
   return productList.value.filter(c=>c.type===payPlan.free)
@@ -24,10 +25,13 @@ const tollProductionList=computed(()=>{
 })
 
 onMounted(() => {
+  loading.value = true
   queryProduct().then(res => {
     if (res.success) {
       productList.value = res.data.records
     }
+  }).finally(()=>{
+    loading.value = false
   })
 })
 
@@ -66,87 +70,89 @@ function onWillPlanExpiredTime(item) {
 </script>
 
 <template>
-  <div class="h-full w-full flex flex-col gap-24">
+  <div class="h-full w-full flex flex-col">
     <HorizontalHeader :hasLock="false"></HorizontalHeader>
-    <div class="flex-1 w-full relative px-24 pb-24 flex flex-col gap-12">
-      <div class="grid gap-12 grid-container-0 text-center">
-        <el-card class="cursor-pointer m-[-1px] box-content border hover:border-(--el-color-success)! product-card"
-                 :class="{'product-card-active':freeProductionList[0]?.type===plan?.plan?.type}">
-          <template #header>
-            <div class="font-bold text-[14px]">
-              <span>{{ freeProductionList[0]?.name }}</span>
+    <plus-loading :loading="loading" size="7rem">
+      <div class="mt-24 flex-1 w-full relative px-24 pb-24 flex flex-col gap-12">
+        <div class="grid gap-12 grid-container-0 text-center">
+          <el-card class="cursor-pointer m-[-1px] box-content border hover:border-(--el-color-success)! product-card"
+                   :class="{'product-card-active':freeProductionList[0]?.type===plan?.plan?.type}">
+            <template #header>
+              <div class="font-bold text-[14px]">
+                <span>{{ freeProductionList[0]?.name }}</span>
+              </div>
+            </template>
+            <div class="text-[24px] font-600 px-20 py-8" v-if="freeProductionList[0]?.type!==0">
+              <span class="relative">{{ freeProductionList[0]?.price }}</span>
             </div>
-          </template>
-          <div class="text-[24px] font-600 px-20 py-8" v-if="freeProductionList[0]?.type!==0">
-            <span class="relative">{{ freeProductionList[0]?.price }}</span>
-          </div>
-          <div class="p-[0_20px_20px_20px]">
-            <ul class="mt-24! inline-flex flex-col items-start justify-start gap-14">
-              <li class="flex flex-row items-center justify-start gap-4 text-[14px]"
-                  v-for="remark in freeProductionList[0]?.remark?.split('\n')">
-                <el-icon class="text-(--el-color-success)!" size="20">
-                  <SuccessFilled v-if="freeProductionList[0]?.type===0"/>
-                  <icon-park-outline-lightning v-else/>
-                </el-icon>
-                <span>{{ remark }}</span>
-              </li>
-            </ul>
-          </div>
-        </el-card>
-        <el-card class="cursor-pointer flex-1 m-[-1px] box-content border hover:border-(--el-color-success)! product-card product-card-info">
-          <template #header>
-            <div class="text-[14px] font-bold">
-              <span>订阅信息</span>
+            <div class="p-[0_20px_20px_20px]">
+              <ul class="mt-24! inline-flex flex-col items-start justify-start gap-14">
+                <li class="flex flex-row items-center justify-start gap-4 text-[14px]"
+                    v-for="remark in freeProductionList[0]?.remark?.split('\n')">
+                  <el-icon class="text-(--el-color-success)!" size="20">
+                    <SuccessFilled v-if="freeProductionList[0]?.type===0"/>
+                    <icon-park-outline-lightning v-else/>
+                  </el-icon>
+                  <span>{{ remark }}</span>
+                </li>
+              </ul>
             </div>
-          </template>
-          <div class="p-[0_20px_0px_20px]">
-            <el-descriptions class="mt-24 my-descriptions" :column="1">
-              <el-descriptions-item label="当前订阅：">{{ plan?.plan.name }}</el-descriptions-item>
-              <el-descriptions-item label="到期日期：">{{ plan?.plan.expired_time_str || '-' }}</el-descriptions-item>
-              <el-descriptions-item v-if="showWillPlan" label="将延长至：">{{ willPlanExpiredTime }}</el-descriptions-item>
-            </el-descriptions>
-          </div>
-        </el-card>
-      </div>
-      <div class="flex flex-1 relative text-center">
-        <div class="absolute w-full grid-container-1 grid gap-12">
-          <template v-for="item in tollProductionList" :key="item.id">
-            <el-card class="cursor-pointer m-[-1px] box-content border hover:border-(--el-color-success)! product-card"
-                     :class="{'product-card-active':item.type===plan?.plan?.type}">
-              <template #header>
-                <div class="font-bold text-[14px]">
-                  <span>{{ item.name }}</span>
+          </el-card>
+          <el-card class="cursor-pointer flex-1 m-[-1px] box-content border hover:border-(--el-color-success)! product-card product-card-info">
+            <template #header>
+              <div class="text-[14px] font-bold">
+                <span>订阅信息</span>
+              </div>
+            </template>
+            <div class="p-[0_20px_0px_20px]">
+              <el-descriptions class="mt-24 my-descriptions" :column="1">
+                <el-descriptions-item label="当前订阅：">{{ plan?.plan.name }}</el-descriptions-item>
+                <el-descriptions-item label="到期日期：">{{ plan?.plan.expired_time_str || '-' }}</el-descriptions-item>
+                <el-descriptions-item v-if="showWillPlan" label="将延长至：">{{ willPlanExpiredTime }}</el-descriptions-item>
+              </el-descriptions>
+            </div>
+          </el-card>
+        </div>
+        <div class="flex flex-1 relative text-center">
+          <div class="absolute w-full grid-container-1 grid gap-12">
+            <template v-for="item in tollProductionList" :key="item.id">
+              <el-card class="cursor-pointer m-[-1px] box-content border hover:border-(--el-color-success)! product-card"
+                       :class="{'product-card-active':item.type===plan?.plan?.type}">
+                <template #header>
+                  <div class="font-bold text-[14px]">
+                    <span>{{ item.name }}</span>
+                  </div>
+                </template>
+                <div class="text-[24px] font-600 px-20 py-8" v-if="item.type!==0">
+                  <span class="relative">{{ item.price }}</span>
                 </div>
-              </template>
-              <div class="text-[24px] font-600 px-20 py-8" v-if="item.type!==0">
-                <span class="relative">{{ item.price }}</span>
-              </div>
-              <div class="p-[0_20px_20px_20px]">
-                <ul class="mt-24! inline-flex flex-col items-start justify-start gap-14">
-                  <li class="flex flex-row items-center justify-start gap-8 text-[14px]"
-                      v-for="remark in item.remark?.split('\n')">
-                    <el-icon class="text-(--el-color-success)!" size="20">
-                      <SuccessFilled v-if="item.type===0"/>
-                      <icon-park-outline-lightning v-else/>
-                    </el-icon>
-                    <span>{{ remark }}</span>
-                  </li>
-                </ul>
-              </div>
-              <template v-if="item.type!==0" #footer>
-                <el-button type="success" plain @click="subscribe(item.id)" @mouseenter="onWillPlanEnter(item)"
-                           @mouseleave="onWillPlanLeave">
-                  <template #icon>
-                    <icon-park-outline-hand-right/>
-                  </template>
-                  {{ plan.value === 0 ? '立即订阅' : '延长订阅' }}
-                </el-button>
-              </template>
-            </el-card>
-          </template>
+                <div class="p-[0_20px_20px_20px]">
+                  <ul class="mt-24! inline-flex flex-col items-start justify-start gap-14">
+                    <li class="flex flex-row items-center justify-start gap-8 text-[14px]"
+                        v-for="remark in item.remark?.split('\n')">
+                      <el-icon class="text-(--el-color-success)!" size="20">
+                        <SuccessFilled v-if="item.type===0"/>
+                        <icon-park-outline-lightning v-else/>
+                      </el-icon>
+                      <span>{{ remark }}</span>
+                    </li>
+                  </ul>
+                </div>
+                <template v-if="item.type!==0" #footer>
+                  <el-button type="success" plain @click="subscribe(item.id)" @mouseenter="onWillPlanEnter(item)"
+                             @mouseleave="onWillPlanLeave">
+                    <template #icon>
+                      <icon-park-outline-hand-right/>
+                    </template>
+                    {{ plan.value === 0 ? '立即订阅' : '延长订阅' }}
+                  </el-button>
+                </template>
+              </el-card>
+            </template>
+          </div>
         </div>
       </div>
-    </div>
+    </plus-loading>
   </div>
 </template>
 
