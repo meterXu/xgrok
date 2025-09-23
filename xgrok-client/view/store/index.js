@@ -1,7 +1,6 @@
 import {createPinia,defineStore} from "pinia";
 import {ref, computed, shallowReactive,shallowRef} from 'vue'
-import {USER_INFO,ACCESS_TOKEN} from "xxweb-util";
-import {getStoreValue,getLsValue} from "../../src/libs/common"
+import {USER_INFO, ACCESS_TOKEN, setLsValue, getLsValue, alterStoreValue} from "xxweb-util";
 import {payPlan} from "@/libs/enums";
 import {$ss} from '@/libs/common'
 import dayjs from 'dayjs'
@@ -29,29 +28,35 @@ export const useAppStore = defineStore('app', ()=>{
     const _percentage = ref(0)
     const _headerBtnLoading=ref(false)
     const _systemInfo = shallowReactive({})
+    const _appSetting = shallowReactive({
+        theme: 'system',
+        startAuto: true,
+        exitInTaskBar: true,
+        proxy: ''
+    })
 
     //computed
     const userInfo = computed(()=>{
         if($ls.get(USER_INFO)){
-            _userInfo.value = JSON.parse($ls.get(USER_INFO))
+            _userInfo.value = alterStoreValue(getLsValue($ls.get(USER_INFO)))
         }
         return _userInfo
     })
     const token = computed(()=>{
         if($ls.get(ACCESS_TOKEN)){
-            _token.value = $ls.get(ACCESS_TOKEN)
+            _token.value = alterStoreValue(getLsValue($ls.get(ACCESS_TOKEN)))
         }
         return _token
     })
     const pid = computed(()=>{
         if($ss.get("pid")){
-            _pid.value = $ss.get("pid")
+            _pid.value = alterStoreValue(getLsValue($ss.get("pid")))
         }
         return _pid
     })
     const selectedServer = computed(()=>{
         if($ls.get("selectedServer")){
-            _selectedServer.value = JSON.parse($ls.get("selectedServer"))
+            _selectedServer.value = alterStoreValue(getLsValue($ls.get("selectedServer")))
         }
         return _selectedServer
     })
@@ -63,13 +68,13 @@ export const useAppStore = defineStore('app', ()=>{
     })
     const clientId = computed(()=>{
         if($ls.get("clientId")){
-            _clientId.value = $ls.get("clientId")
+            _clientId.value = alterStoreValue(getLsValue($ls.get("clientId")))
         }
         return _clientId
     })
     const plan = computed(()=>{
         if($ls.get("plan")){
-            let value = JSON.parse($ls.get("plan"))
+            let value = alterStoreValue(getLsValue($ls.get("plan")))
             Object.keys(value).forEach(k=>{
                 _plan[k] = value[k]
             })
@@ -91,7 +96,7 @@ export const useAppStore = defineStore('app', ()=>{
     })
     const userName = computed(()=>{
         if($ls.get("username")){
-            _userName.value = $ls.get("username")
+            _userName.value = alterStoreValue(getLsValue($ls.get("username")))
         }
         return _userName
     })
@@ -103,7 +108,7 @@ export const useAppStore = defineStore('app', ()=>{
     })
     const percentage = computed(()=>{
         if($ss.get("percentage")){
-            _percentage.value = $ss.get("percentage")
+            _percentage.value = alterStoreValue(getLsValue($ss.get("percentage")))
         }
         return _percentage
     })
@@ -113,28 +118,29 @@ export const useAppStore = defineStore('app', ()=>{
     const systemInfo = computed(()=>{
         return _systemInfo
     })
+    const appSetting = computed(()=>{
+        if($ls.get("appSetting")){
+           Object.assign(_appSetting,alterStoreValue(getLsValue($ls.get("appSetting"))))
+        }
+        return _appSetting
+    })
 
     //action
     function setUserInfo(data){
-        _userInfo.value = getStoreValue(data)
-        $ls.set(USER_INFO,_userInfo.value?JSON.stringify(data):getLsValue(data))
+        _userInfo.value = data
+        $ls.set(USER_INFO,setLsValue(data))
     }
     function setToken(data){
-        if(getStoreValue(data)){
-            _token.value="Bearer "+getStoreValue(data)
-            $ls.set(ACCESS_TOKEN,"Bearer "+getLsValue(data))
-        }else{
-            _token.value=getStoreValue(data)
-            $ls.set(ACCESS_TOKEN,getLsValue(data))
-        }
+        _token.value="Bearer "+data||''
+        $ls.set(ACCESS_TOKEN,setLsValue("Bearer "+data||''))
     }
     function setPid(data){
-        _pid.value=getStoreValue(data)
-        $ss.set("pid",getLsValue(data))
+        _pid.value=data
+        $ss.set("pid",setLsValue(data))
     }
     function setSelectedServer(data){
         _selectedServer.value = data
-        $ls.set("selectedServer",JSON.stringify(getLsValue(data)))
+        $ls.set("selectedServer",setLsValue(data))
     }
     function setIsDelete(type,value){
         _isDelete[type]=value
@@ -152,13 +158,13 @@ export const useAppStore = defineStore('app', ()=>{
     }
     function setClientId(value){
         _clientId.value = value
-        $ls.set("clientId",value)
+        $ls.set("clientId",setLsValue(value))
     }
     function setPlan(value){
         Object.keys(value).forEach(k=>{
             _plan[k] = value[k]
         })
-        $ls.set("plan",JSON.stringify(getLsValue(_plan)))
+        $ls.set("plan",setLsValue(_plan))
     }
     function setOrderStatus(orderId,isPaySuccess){
         _orderStatus.orderId = orderId
@@ -168,14 +174,14 @@ export const useAppStore = defineStore('app', ()=>{
         _tunnelForm.value = value
     }
     function setUserName(data){
-        _userName.value = getStoreValue(data)
+        _userName.value = data
         $ls.set('username',getLsValue(data))
     }
     function setConfigIsLock(data){
         _configIsLock.value=data
     }
     function setPercentage(data){
-        _percentage.value = getStoreValue(data)
+        _percentage.value = data
         $ss.set('percentage',getLsValue(data))
     }
     function setHeaderBtnLoading(data){
@@ -183,6 +189,10 @@ export const useAppStore = defineStore('app', ()=>{
     }
     function setSystemInfo(data){
         Object.assign(_systemInfo,data)
+    }
+    function setAppSetting(data){
+        Object.assign(_appSetting,data)
+        $ls.set("appSetting",setLsValue(data))
     }
 
     return {
@@ -202,6 +212,7 @@ export const useAppStore = defineStore('app', ()=>{
         percentage,
         headerBtnLoading,
         systemInfo,
+        appSetting,
         setUserInfo,
         setToken,
         setPid,
@@ -218,7 +229,8 @@ export const useAppStore = defineStore('app', ()=>{
         setConfigIsLock,
         setPercentage,
         setHeaderBtnLoading,
-        setSystemInfo
+        setSystemInfo,
+        setAppSetting
     }
 })
 export default createPinia()

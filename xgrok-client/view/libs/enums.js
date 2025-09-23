@@ -1,4 +1,4 @@
-import {isEmpty} from "../../src/libs/common";
+import {isEmpty} from "xxweb-util";
 
 export const tunnelType={
     web:1,
