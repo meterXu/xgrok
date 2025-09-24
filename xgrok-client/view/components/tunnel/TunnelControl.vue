@@ -1,8 +1,12 @@
 <script setup>
 import IconParkSolidPlayOne from '~icons/icon-park-solid/play-one';
-import IconParkOutlineDeleteOne from '~icons/icon-park-outline/delete-one?width=14px&height=14px';
+import IconParkOutlineDeleteOne from '~icons/icon-park-outline/delete-one';
+import {useAppStore} from '@/store';
 
+const store = useAppStore();
+const {configIsLock} = store
 const emits = defineEmits(['test', 'del'])
+const props = defineProps(['status'])
 
 function onTest() {
   emits('test')
@@ -15,25 +19,31 @@ function onDel() {
 
 <template>
   <div
-      class="tunnel-control h-42 flex flex-row items-center p-20 bg-(--primary-bg-0) border-b-1 border-(--border-color)">
-    <el-button type="primary" link :icon="IconParkSolidPlayOne" @click="onTest">测试</el-button>
-    <el-button type="danger" link :icon="IconParkOutlineDeleteOne" @click="onDel">删除</el-button>
+      class="tunnel-control h-42 flex flex-row items-center p-20 bg-(--primary-bg-0) border-b-1 border-(--border-color)"
+      :class="status"
+  >
+    <el-button :loading="status==='start'" :icon="IconParkSolidPlayOne" type="primary" link @click="onTest">测试
+    </el-button>
+    <el-button :disabled="configIsLock" type="danger" link :icon="IconParkOutlineDeleteOne" @click="onDel">删除
+    </el-button>
   </div>
 </template>
 
 <style scoped lang="less">
 .tunnel-control {
   position: relative;
+
   &:before {
     position: absolute;
     content: '';
     height: 3px;
     bottom: -2px;
     left: 0;
-    background:linear-gradient(to right, transparent, var(--el-color-success));
+    background: linear-gradient(to right, transparent, var(--el-color-success));
     z-index: 2;
   }
-  &:after{
+
+  &:after {
     position: absolute;
     content: '';
     height: 3px;
@@ -42,35 +52,39 @@ function onDel() {
     z-index: 3;
   }
 }
-.start{
-  &:before{
+
+.start {
+  &:before {
     animation: effect-in linear 1s forwards;
   }
-  &:after{
+
+  &:after {
     animation: effect-in 1s linear 1s infinite,
     color-change 1s linear 1s infinite;
   }
 }
-.success{
-  &:before{
-    animation: effect-complete linear .3s forwards,
-    effect-success .3s linear .3s forwards;
+
+.success {
+  &:before {
+    background: var(--el-color-success);
+    animation: effect-complete linear .2s forwards,
+    color-change linear .2s forwards;
   }
-  &:after{
-    animation: effect-in .3s linear forwards,
-    color-change .3s linear forwards,
-    color-change-complete .3s linear .3s forwards;
+
+  &:after {
+    display: none;
   }
 }
-.failed{
-  &:before{
-    animation: effect-complete linear .3s forwards,
-    effect-failed 1s linear .3s forwards;
+
+.failed {
+  &:before {
+    background: var(--el-color-danger);
+    animation: effect-complete linear .2s forwards,
+    color-change linear .2s forwards;
   }
-  &:after{
-    animation: effect-in .3s linear forwards,
-    color-change .3s linear forwards,
-    color-change-complete .3s linear .3s forwards;
+
+  &:after {
+    display: none;
   }
 }
 
@@ -81,18 +95,6 @@ function onDel() {
   }
   100% {
     width: 80%;
-  }
-}
-@keyframes effect-success {
-  100% {
-    width: 100%;
-    background:var(--el-color-success);
-  }
-}
-@keyframes effect-failed {
-  100% {
-    width: 100%;
-    background:var(--el-color-danger);
   }
 }
 
@@ -112,7 +114,7 @@ function onDel() {
   14% {
     background-color: #2c8af6;
   }
-  28%{
+  28% {
     background-color: #f62ce5;
   }
   42% {
@@ -127,16 +129,8 @@ function onDel() {
   84% {
     background-color: #2cf64e;
   }
-  100%{
+  100% {
     background-color: #52f3aa;
-  }
-}
-@keyframes color-change-complete {
-  0%{
-    visibility: visible;
-  }
-  100%{
-    visibility: hidden;
   }
 }
 </style>

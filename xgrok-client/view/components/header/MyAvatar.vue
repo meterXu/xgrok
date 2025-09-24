@@ -46,7 +46,6 @@ function logout() {
   }).then(() => {
     store.setToken(null)
     store.setUserInfo(null)
-    store.setSelectedServer(null)
     store.setConfigIsLock(false)
     closeWebSocket()
     useGoTo('Login', true)

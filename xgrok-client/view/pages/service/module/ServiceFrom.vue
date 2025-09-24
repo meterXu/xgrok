@@ -10,7 +10,7 @@ import {gotoSubscribe, onFormValidate, useGetDisabled, useGetErrorMsg} from "@/l
 import {showNotification} from "@/libs/message";
 
 const store = useAppStore()
-const {selectedServer, clientId} = store
+const {selectedServer, clientId,configIsLock} = store
 const props = defineProps(['tunnelForm'])
 const emits = defineEmits(['updateSuccess', 'cancel', 'createSuccess'])
 const ruleFormRef = ref('ruleFormRef')
@@ -65,7 +65,9 @@ const rules = {
   ]
 }
 const errorMsg = useGetErrorMsg(validateRes)
-const addBtnDisabled = useGetDisabled(validateRes)
+const addBtnDisabled = computed(() => {
+  return useGetDisabled(validateRes).value||configIsLock.value
+})
 
 watchEffect(() => {
   formData.id = props.tunnelForm?.id

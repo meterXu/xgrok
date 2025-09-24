@@ -21,12 +21,13 @@ import PlusLoading from "@/components/plus-loading/PlusLoading.vue";
 import {showNotification} from "@/libs/message";
 
 const store = useAppStore()
-const {selectedServer, clientId} = store
+const {selectedServer, clientId, configIsLock} = store
 const tunnelWebConfigs = shallowReactive([])
 const tunnelLoading = ref(false)
 const activeId = shallowRef(null)
 const isAdd = ref(false)
 const search = ref('')
+const testStatus = ref('')
 const activeTunnel = computed(() => {
   return tunnelWebConfigs.find(c => c.id === activeId.value)
 })
@@ -36,8 +37,8 @@ const isEmpty = computed(() => {
 const showTunnelCol = computed(() => {
   return !isAdd.value && activeId.value
 })
-const filterTunnelWebConfigs = computed(()=>{
-  return search.value?tunnelWebConfigs.filter(c=>c.name.indexOf(search.value)>-1):tunnelWebConfigs
+const filterTunnelWebConfigs = computed(() => {
+  return search.value ? tunnelWebConfigs.filter(c => c.name.indexOf(search.value) > -1) : tunnelWebConfigs
 })
 
 function loadTunnelData() {
@@ -58,14 +59,15 @@ function loadTunnelData() {
 }
 
 function onAddTunnel() {
-  if (checkPermission(getEnumKey(tunnelType, tunnelType.web), tunnelWebConfigs)) {
+  if (!configIsLock.value && checkPermission(getEnumKey(tunnelType, tunnelType.web), tunnelWebConfigs)) {
     activeId.value = null
     isAdd.value = true
   }
 }
 
-function onChange(id){
+function onChange(id) {
   isAdd.value = false
+  testStatus.value = ''
 }
 
 function httpUrl(tunnelConfig, type) {
@@ -79,7 +81,7 @@ function httpUrl(tunnelConfig, type) {
 
 function onOpenLink(item, type) {
   const link = httpUrl(selectedServer, item, type)
-  window.project.variable.mode !== 'browser' && window.electronAPI.openExternal(link)
+  window.project.variable.mode === 'browser' ? window.open(link, '_blank') : window.electronAPI.openExternal(link)
 }
 
 function onCancel() {
@@ -87,21 +89,28 @@ function onCancel() {
   activeId.value = null
 }
 
-function onDel(){
-  if(activeTunnel.value?.id){
+function onDel() {
+  if (activeTunnel.value?.id) {
     confirm('确定要删除这条配置吗？', null, {
       confirmButtonClass: 'el-button--danger is-plain'
     }).then(() => {
       deleteTunnelWebBatch(activeTunnel.value.id).then((res) => {
         if (res.success) {
-          showNotification(NotificationType.success,'删除成功')
+          showNotification(NotificationType.success, '删除成功')
           loadTunnelData()
         } else {
-          showNotification(NotificationType.error,'删除失败')
+          showNotification(NotificationType.error, '删除失败')
         }
       })
     })
   }
+}
+
+function onTest() {
+  testStatus.value = 'start'
+  setTimeout(() => {
+    testStatus.value = 'success'
+  }, 3000)
 }
 
 onMounted(() => {
@@ -115,7 +124,9 @@ onMounted(() => {
       <div class="h-60 flex items-center justify-between px-20">
         <PageNav></PageNav>
         <div class="flex flex-row items-center gap-16">
-          <IconParkOutlineAdd class="cursor-pointer text-[16px] hover:text-(--el-color-primary)!" @click="onAddTunnel"/>
+          <IconParkOutlineAdd class="text-[16px] hover:text-(--el-color-primary)!"
+                              :class="configIsLock?'cursor-not-allowed':'cursor-pointer'"
+                              @click="onAddTunnel"/>
           <ConfigLockBtn></ConfigLockBtn>
         </div>
       </div>
@@ -129,7 +140,8 @@ onMounted(() => {
                   <span class="overflow-hidden text-ellipsis">{{ useMyTitle(item) }}</span>
                   <span class="w-full flex items-center justify-between">
                 <span class="overflow-hidden text-ellipsis">{{ httpUrl(item, httpType.https) }}</span>
-                <IconParkOutlineEarth @click="onOpenLink(item,httpType.https)" class="hover:text-(--el-color-primary)"/>
+                <IconParkOutlineEarth @click="onOpenLink(item,httpType.https)"
+                                      class="text-[16px] hover:text-(--el-color-primary)"/>
               </span>
                 </TunnelItem>
               </div>
@@ -142,7 +154,7 @@ onMounted(() => {
       <HorizontalHeader :navTitle="false">
         <el-button v-if="isAdd" type="text" :icon="EpArrowLeft" @click="onCancel">返回</el-button>
         <div v-else>
-<!--          ignore-->
+          <!--          ignore-->
         </div>
       </HorizontalHeader>
       <TunnelFormWrap class="flex-1 flex flex-col" @add="onAddTunnel">
@@ -153,7 +165,7 @@ onMounted(() => {
           </template>
         </TunnelEmptyCon>
         <template v-else>
-          <TunnelControl v-if="showTunnelCol" @del="onDel"></TunnelControl>
+          <TunnelControl v-if="showTunnelCol" @del="onDel" @test="onTest" :status="testStatus"></TunnelControl>
           <div class="p-20">
             <WebForm
                 :tunnelForm="activeTunnel"

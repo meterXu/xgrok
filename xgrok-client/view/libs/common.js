@@ -1,5 +1,6 @@
 import {defaultPort, httpType, payPlan} from "@/libs/enums";
 import {ElMessageBox} from "element-plus";
+import {closeAll} from "element-plus/es/components/message/src/method";
 
 export function useMyTitle(tunnelConfig){
     return tunnelConfig.remark?`${tunnelConfig.name}：${tunnelConfig.remark}`:tunnelConfig.name
@@ -50,6 +51,7 @@ export function confirm(msg,title,options){
 }
 
 export function alert(msg,title,options){
+    ElMessageBox.close()
     ElMessageBox.alert(msg, title,Object.assign({
         customClass:'my-messageBox-alert',
         confirmButtonText: '确定',

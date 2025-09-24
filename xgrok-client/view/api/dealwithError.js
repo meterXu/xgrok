@@ -44,10 +44,9 @@ function showConfirm (){
     confirmButtonText:'我要重登',
     callback(){
       const store = useAppStore()
-      store.setSelectedServer(null)
       store.setUserInfo(null)
       store.setToken(null)
-      window.location.reload()
+      window.router.replace('/login')
     }
   })
 }

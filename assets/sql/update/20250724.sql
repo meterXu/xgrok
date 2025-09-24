@@ -194,7 +194,6 @@ create table ng_assets
 (
     id                      varchar(32)   not null
         primary key,
-    category  varchar(100)  not null,
     name                varchar(100)  not null,
     type              varchar(32)   not null,
     size                  varchar(32)  not null,

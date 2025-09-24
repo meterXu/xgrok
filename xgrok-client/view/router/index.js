@@ -136,7 +136,7 @@ const router = createRouter({
     history: createWebHashHistory(),
     routes: normalRoutes
 });
-
+window.router = router;
 router.beforeEach((to, from, next) => {
     if (to.name !== 'Login' || !window.ws) {
         initWebSocket(webSocketHandler)

@@ -131,8 +131,8 @@ export const useAppStore = defineStore('app', ()=>{
         $ls.set(USER_INFO,setLsValue(data))
     }
     function setToken(data){
-        _token.value="Bearer "+data||''
-        $ls.set(ACCESS_TOKEN,setLsValue("Bearer "+data||''))
+        _token.value=data?`Bearer ${data}`:null
+        $ls.set(ACCESS_TOKEN,setLsValue(data?`Bearer ${data}`:null))
     }
     function setPid(data){
         _pid.value=data

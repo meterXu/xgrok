@@ -22,12 +22,13 @@ import {NotificationType, tunnelType} from "@/libs/enums";
 import {showNotification} from "@/libs/message";
 
 const store = useAppStore()
-const {selectedServer, clientId} = store
+const {selectedServer, clientId,configIsLock} = store
 const tunnelServiceConfigs = shallowReactive([])
 const tunnelLoading = ref(false)
 const activeId = shallowRef(null)
 const isAdd = ref(false)
 const search = ref('')
+const testStatus = ref('')
 const activeTunnel = computed(() => {
   return tunnelServiceConfigs.find(c => c.id === activeId.value)
 })
@@ -70,7 +71,7 @@ function onCancel() {
 }
 
 function onAddTunnel() {
-  if (checkPermission(getEnumKey(tunnelType, tunnelType.service), tunnelServiceConfigs)) {
+  if (!configIsLock.value&&checkPermission(getEnumKey(tunnelType, tunnelType.service), tunnelServiceConfigs)) {
     activeId.value = null
     isAdd.value = true
   }
@@ -94,7 +95,10 @@ function onDel() {
 }
 
 function onTest(){
-
+  testStatus.value = 'start'
+  setTimeout(() => {
+    testStatus.value = 'success'
+  }, 3000)
 }
 
 function onChange(id) {
@@ -112,7 +116,9 @@ onMounted(() => {
       <div class="h-60 flex items-center justify-between px-20">
         <PageNav></PageNav>
         <div class="flex flex-row items-center gap-16">
-          <IconParkOutlineAdd class="cursor-pointer text-[16px] hover:text-(--el-color-primary)!" @click="onAddTunnel"/>
+          <IconParkOutlineAdd class="text-[16px] hover:text-(--el-color-primary)!"
+                              :class="configIsLock?'cursor-not-allowed':'cursor-pointer'"
+                              @click="onAddTunnel"/>
           <ConfigLockBtn></ConfigLockBtn>
         </div>
       </div>
@@ -150,7 +156,7 @@ onMounted(() => {
           </template>
         </TunnelEmptyCon>
         <template v-else>
-          <TunnelControl v-if="showTunnelCol" @test="onTest" @del="onDel"></TunnelControl>
+          <TunnelControl v-if="showTunnelCol" :status="testStatus" @test="onTest" @del="onDel"></TunnelControl>
           <div class="p-20">
             <ServiceFrom
                 :tunnelForm="activeTunnel"
