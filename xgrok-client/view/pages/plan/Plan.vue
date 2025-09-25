@@ -73,8 +73,8 @@ function onWillPlanExpiredTime(item) {
   <div class="h-full w-full flex flex-col">
     <HorizontalHeader :hasLock="false"></HorizontalHeader>
     <plus-loading :loading="loading" size="7rem">
-      <div class="mt-32 flex-1 w-full relative px-24 pb-24 flex flex-col gap-16">
-        <div class="grid gap-16 grid-container-0 text-center">
+      <div class="mt-32 flex-1 w-full relative px-24 pb-24 flex flex-col gap-32">
+        <div class="grid gap-32 grid-container-0 text-center">
           <el-card class="cursor-pointer m-[-1px] box-content border hover:border-(--el-color-success)! product-card"
                    :class="{'product-card-active':freeProductionList[0]?.type===plan?.plan?.type}">
             <template #header>
@@ -86,7 +86,7 @@ function onWillPlanExpiredTime(item) {
               <span class="relative">{{ freeProductionList[0]?.price }}</span>
             </div>
             <div class="p-[0_20px_20px_20px]">
-              <ul class="mt-24! inline-flex flex-col items-start justify-start gap-16">
+              <ul class="mt-24! inline-flex flex-col items-start justify-start gap-32">
                 <li class="flex flex-row items-center justify-start gap-4 text-[14px]"
                     v-for="remark in freeProductionList[0]?.remark?.split('\n')">
                   <el-icon class="text-(--el-color-success)!" size="20">
@@ -114,7 +114,7 @@ function onWillPlanExpiredTime(item) {
           </el-card>
         </div>
         <div class="flex flex-1 relative text-center">
-          <div class="absolute w-full grid-container-1 grid gap-16">
+          <div class="absolute w-full grid-container-1 grid gap-32">
             <template v-for="item in tollProductionList" :key="item.id">
               <el-card class="cursor-pointer m-[-1px] box-content border hover:border-(--el-color-success)! product-card"
                        :class="{'product-card-active':item.type===plan?.plan?.type}">
@@ -127,7 +127,7 @@ function onWillPlanExpiredTime(item) {
                   <span class="relative">{{ item.price }}</span>
                 </div>
                 <div class="p-[0_20px_20px_20px]">
-                  <ul class="mt-24! inline-flex flex-col items-start justify-start gap-16">
+                  <ul class="mt-24! inline-flex flex-col items-start justify-start gap-32">
                     <li class="flex flex-row items-center justify-start gap-8 text-[14px]"
                         v-for="remark in item.remark?.split('\n')">
                       <el-icon class="text-(--el-color-success)!" size="20">

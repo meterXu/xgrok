@@ -156,7 +156,7 @@ onMounted(() => {
         </TunnelEmptyCon>
         <template v-else>
           <TunnelControl v-if="showTunnelCol" @del="onDel" @test="onTest" :status="testStatus"></TunnelControl>
-          <div class="p-20">
+          <div class="p-24">
             <WebForm
                 :tunnelForm="activeTunnel"
                 @cancel="onCancel"

@@ -2,6 +2,7 @@
 import {ref, nextTick, watch} from "vue"
 import {useRoute} from 'vue-router'
 import HorizontalHeader from "@/components/header/HorizontalHeader.vue";
+import PlusScrollbar from "@/components/plus-scrollbar/PlusScrollbar.vue";
 
 const route = useRoute()
 const logContent = ref('')
@@ -36,7 +37,7 @@ watch(route, (nv) => {
 <template>
   <div class="w-full h-full flex flex-col">
     <HorizontalHeader :hasLock="false"></HorizontalHeader>
-    <div class="flex-1 flex flex-col gap-12 p-12">
+    <div class="flex-1 flex flex-col gap-16 py-32 px-24">
       <div>
         <el-button plain class="text-[14px]! py-14!" size="small" @click="onRefresh(false)">
           <template #icon>
@@ -46,8 +47,10 @@ watch(route, (nv) => {
         </el-button>
       </div>
       <div ref="logContentRef"
-           class="flex-1 w-full relative text-[14px] overflow-y-auto rounded-2xl p-12 border-1 border-(--el-border-color) bg-(--server-info-bg) text-(--el-color-primary) smooth"
-           v-html="logContent">
+           class="flex-1 w-full relative text-[14px] overflow-y-auto rounded-2xl p-12 pr-2 border-1 border-(--el-border-color) bg-(--server-info-bg) text-(--el-color-primary) smooth">
+        <plus-scrollbar>
+          {{logContent}}
+        </plus-scrollbar>
       </div>
     </div>
   </div>

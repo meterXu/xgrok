@@ -86,7 +86,7 @@ onUnmounted(() => {
 <template>
   <div class="flex-1 h-full flex flex-col">
     <HorizontalHeader ></HorizontalHeader>
-    <div class="flex flex-row gap-32 mt-16 rounded-3xl p-16 items-center justify-center" v-if="selectedServer">
+    <div class="flex flex-row gap-32 mt-16 rounded-3xl py-16 px-24 items-center justify-center" v-if="selectedServer">
       <div class="w-300 relative">
         <ServerConfigs class="absolute" @changeServerConfig="onChangeServerConfig"></ServerConfigs>
       </div>
@@ -105,7 +105,7 @@ onUnmounted(() => {
 <!--        </ServiceSwitch>-->
       </div>
     </div>
-    <div class="flex-1 relative mx-16 mt-16 mb-32">
+    <div class="flex-1 relative mx-24 mt-16 mb-32">
       <div class="absolute w-full h-full bg-(--primary-bg-0) rounded-3xl">
         <div class="w-full h-full relative flex">
          <plus-scrollbar class="relative-scrollbar">

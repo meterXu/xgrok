@@ -17,7 +17,7 @@ watch(appSetting, (nv) => {
     <HorizontalHeader :hasLock="false"></HorizontalHeader>
     <el-form class="flex-1 relative" :model="appSetting" label-width="auto" label-position="left" @submit.prevent>
       <plus-scrollbar>
-        <div class="m-16">
+        <div class="my-32 mx-24">
           <div class="px-14">基础</div>
           <div class="rounded-3xl bg-(--primary-bg-0) px-12 py-16 mt-14">
             <el-form-item label="开启启动" class="justify-between">
