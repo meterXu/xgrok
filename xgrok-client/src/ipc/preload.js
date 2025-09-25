@@ -41,6 +41,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
         type:'checkPort',
         data:data
     }),
+    checkWeb:(data)=>ipcRenderer.invoke('system',{
+        type:'checkWeb',
+        data:data
+    }),
     viewLog:(data)=>ipcRenderer.invoke('system',{
         type:'viewLog',
         data:data

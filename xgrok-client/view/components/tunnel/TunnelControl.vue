@@ -66,9 +66,8 @@ function onDel() {
 
 .success {
   &:before {
-    background: var(--el-color-success);
     animation: effect-complete linear .2s forwards,
-    color-change linear .2s forwards;
+    color-change-success .2s linear .2s forwards;
   }
 
   &:after {
@@ -80,7 +79,7 @@ function onDel() {
   &:before {
     background: var(--el-color-danger);
     animation: effect-complete linear .2s forwards,
-    color-change linear .2s forwards;
+    color-change-failed .2s linear .2s forwards;
   }
 
   &:after {
@@ -109,28 +108,38 @@ function onDel() {
 
 @keyframes color-change {
   0% {
-    background-color: #52f3aa;
+    background: linear-gradient(to right, transparent, #52f3aa);
   }
   14% {
-    background-color: #2c8af6;
+    background: linear-gradient(to right, transparent, #2c8af6);
   }
   28% {
-    background-color: #f62ce5;
+    background: linear-gradient(to right, transparent, #f62ce5);
   }
   42% {
-    background-color: #ea726d;
+    background: linear-gradient(to right, transparent, #ea726d);
   }
   56% {
-    background-color: #f6872c;
+    background: linear-gradient(to right, transparent, #f6872c);
   }
   70% {
-    background-color: #f6ec2c;
+    background: linear-gradient(to right, transparent, #f6ec2c);
   }
   84% {
-    background-color: #2cf64e;
+    background: linear-gradient(to right, transparent, #2cf64e);
   }
   100% {
-    background-color: #52f3aa;
+    background: linear-gradient(to right, transparent, #52f3aa);
+  }
+}
+@keyframes color-change-success {
+  100%{
+    background: linear-gradient(to right, var(--el-color-success),var(--el-color-success));
+  }
+}
+@keyframes color-change-failed {
+  100%{
+    background: linear-gradient(to right, var(--el-color-danger), var(--el-color-danger));
   }
 }
 </style>

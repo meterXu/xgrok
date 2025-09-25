@@ -41,7 +41,9 @@ const url = {
     compliance: {
         queryRange: '/portRange/query',
         checkName: '/user/checkName',
-        checkPort: '/user/checkPort'
+        checkPort: '/user/checkPort',
+        checkWeb: '/user/checkWeb',
+        checkService:'/user/checkService'
     },
     client: {
         query: '/client/query',
@@ -133,6 +135,14 @@ export function queryRange(server_id, type) {
 
 export function checkName(domain, type, port, name, server_id, client_id, id) {
     return getAction(url.compliance.checkName, {domain, type, port, name, server_id, client_id, id})
+}
+
+export function checkWeb(name,domain,port){
+    return getAction(url.compliance.checkWeb, {name,domain,port})
+}
+
+export function checkService(domain,port){
+    return getAction(url.compliance.checkService,{domain,port})
 }
 
 export function checkPort(domain, port, server_id, id, type) {

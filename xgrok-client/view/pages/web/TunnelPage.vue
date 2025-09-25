@@ -6,12 +6,11 @@ import LeftMiddle from "@/components/left-aside/LeftMiddle.vue";
 import TunnelList from "@/components/tunnel/TunnelList.vue";
 import {onMounted, ref} from "vue";
 import {useAppStore} from "@/store";
-import {deleteTunnelWebBatch, queryTunnelWebConfig} from "@/api";
+import {checkWeb, deleteTunnelWebBatch, queryTunnelWebConfig, updateTunnelWeb} from "@/api";
 import WebForm from "@/pages/web/module/WebForm.vue";
 import {checkPermission} from "@/libs/useAction";
-import TunnelItem from '@/components/tunnel/TunnelItem.vue'
-import {useMyTitle, getEnumKey, confirm} from "@/libs/common";
-import {httpType, NotificationType, tunnelType} from "@/libs/enums";
+import {getEnumKey, confirm} from "@/libs/common";
+import {isOnline, NotificationType, tunnelType} from "@/libs/enums";
 import TunnelFormWrap from '@/components/tunnel/TunnelFormWrap.vue'
 import TunnelControl from '@/components/tunnel/TunnelControl.vue'
 import EpArrowLeft from '~icons/ep/arrow-left';
@@ -19,10 +18,11 @@ import PlusScrollbar from "@/components/plus-scrollbar/PlusScrollbar.vue";
 import TunnelEmptyCon from "@/components/tunnel/TunnelEmptyCon.vue";
 import PlusLoading from "@/components/plus-loading/PlusLoading.vue";
 import {showNotification} from "@/libs/message";
+import WebItem from "@/pages/web/module/WebItem.vue";
 
 const store = useAppStore()
 const {selectedServer, clientId, configIsLock} = store
-const tunnelWebConfigs = shallowReactive([])
+const tunnelWebConfigs = reactive([])
 const tunnelLoading = ref(false)
 const activeId = shallowRef(null)
 const isAdd = ref(false)
@@ -70,20 +70,6 @@ function onChange(id) {
   testStatus.value = ''
 }
 
-function httpUrl(tunnelConfig, type) {
-  if (selectedServer) {
-    return type === httpType.https ? `https://${tunnelConfig.name}.${selectedServer.value.domain}:${selectedServer.value.https_port}/`
-        : `http://${tunnelConfig.name}.${selectedServer.value.domain}:${selectedServer.value.http_port}/`
-  } else {
-    return ''
-  }
-}
-
-function onOpenLink(item, type) {
-  const link = httpUrl(selectedServer, item, type)
-  window.project.variable.mode === 'browser' ? window.open(link, '_blank') : window.electronAPI.openExternal(link)
-}
-
 function onCancel() {
   isAdd.value = false
   activeId.value = null
@@ -108,9 +94,21 @@ function onDel() {
 
 function onTest() {
   testStatus.value = 'start'
-  setTimeout(() => {
-    testStatus.value = 'success'
-  }, 3000)
+  Promise.all([
+    window.electronAPI.checkWeb({
+      name: activeTunnel.value.name,
+      domain: selectedServer.value.domain,
+      port: selectedServer.value.http_port
+    }),
+    checkWeb(activeTunnel.value.name, selectedServer.value.domain, selectedServer.value.http_port)
+  ]).then(resArray => {
+    activeTunnel.value.is_online = resArray[0].data && resArray[1].data ? isOnline.online : isOnline.offline
+    testStatus.value = activeTunnel.value.is_online ? 'success' : 'failed'
+    updateTunnelWeb({
+      id: activeTunnel.value.id,
+      is_online: activeTunnel.value.is_online
+    })
+  })
 }
 
 onMounted(() => {
@@ -135,15 +133,7 @@ onMounted(() => {
           <PlusScrollbar>
             <PlusLoading :loading="tunnelLoading">
               <div class="flex flex-col gap-12 mb-12">
-                <TunnelItem class="flex flex-col gap-4 mx-8" v-for="item in filterTunnelWebConfigs" :key="item.id"
-                            :id="item.id">
-                  <span class="overflow-hidden text-ellipsis">{{ useMyTitle(item) }}</span>
-                  <span class="w-full flex items-center justify-between">
-                <span class="overflow-hidden text-ellipsis">{{ httpUrl(item, httpType.https) }}</span>
-                <IconParkOutlineEarth @click="onOpenLink(item,httpType.https)"
-                                      class="text-[16px] hover:text-(--el-color-primary)"/>
-              </span>
-                </TunnelItem>
+                <WebItem v-for="item in filterTunnelWebConfigs" :key="item.id" :item="item"></WebItem>
               </div>
             </PlusLoading>
           </PlusScrollbar>

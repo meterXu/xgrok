@@ -212,3 +212,11 @@ create index ng_assets_name_index
 
 INSERT INTO ng_assets (id, name, type, size, path, sort, creator, editor, status, is_delete, created_time, modified_time) VALUES ('58a29e4f73a1635c42f1369e3c6b6dc6', 'qq_group_qr', 'webp', '30.857', 'https://webspace1.oss-cn-hangzhou.aliyuncs.com/xgrok-client/qq_group_qr.webp', 1, null, null, 1, 0, null, null);
 INSERT INTO ng_assets (id, name, type, size, path, sort, creator, editor, status, is_delete, created_time, modified_time) VALUES ('d1737e18d4cbcdf93219f81c3c0f0119', 'wx_group_qr', 'webp', '53.29', 'https://webspace1.oss-cn-hangzhou.aliyuncs.com/xgrok-client/wx_group_qr.webp', 2, null, null, 1, 0, null, null);
+
+
+alter table ng_tunnel_web
+    add is_online int default -1 null comment '是否在线';
+
+alter table ng_tunnel_service
+    add is_online int default -1 null comment '是否在线';
+

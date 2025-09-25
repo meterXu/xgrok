@@ -6,11 +6,14 @@ import LeftMiddle from "@/components/left-aside/LeftMiddle.vue";
 import TunnelList from "@/components/tunnel/TunnelList.vue";
 import {onMounted, ref} from "vue";
 import {useAppStore} from "@/store";
-import {deleteTunnelServiceBatch, deleteTunnelWebBatch, queryTunnelServiceConfig} from "@/api";
+import {
+  deleteTunnelServiceBatch,
+  queryTunnelServiceConfig,
+  checkService,
+  updateTunnelService
+} from "@/api";
 import ServiceFrom from "./module/ServiceFrom.vue";
-import {useMyTitle, getEnumKey, confirm} from "@/libs/common";
-import TunnelItem from "@/components/tunnel/TunnelItem.vue";
-import {doCopy} from 'xxweb-util'
+import {getEnumKey, confirm} from "@/libs/common";
 import EpArrowLeft from '~icons/ep/arrow-left';
 import TunnelEmptyCon from "@/components/tunnel/TunnelEmptyCon.vue";
 import TunnelControl from "@/components/tunnel/TunnelControl.vue";
@@ -18,12 +21,13 @@ import TunnelFormWrap from "@/components/tunnel/TunnelFormWrap.vue";
 import PlusScrollbar from "@/components/plus-scrollbar/PlusScrollbar.vue";
 import PlusLoading from "@/components/plus-loading/PlusLoading.vue";
 import {checkPermission} from "@/libs/useAction";
-import {NotificationType, tunnelType} from "@/libs/enums";
+import {isOnline, NotificationType, tunnelType} from "@/libs/enums";
 import {showNotification} from "@/libs/message";
+import ServiceItem from "@/pages/service/module/ServiceItem.vue";
 
 const store = useAppStore()
-const {selectedServer, clientId,configIsLock} = store
-const tunnelServiceConfigs = shallowReactive([])
+const {selectedServer, clientId, configIsLock} = store
+const tunnelServiceConfigs = reactive([])
 const tunnelLoading = ref(false)
 const activeId = shallowRef(null)
 const isAdd = ref(false)
@@ -38,8 +42,8 @@ const isEmpty = computed(() => {
 const showTunnelCol = computed(() => {
   return !isAdd.value && activeId.value
 })
-const filterTunnelServiceConfigs = computed(()=>{
-  return search.value?tunnelServiceConfigs.filter(c=>c.name.indexOf(search.value)>-1):tunnelServiceConfigs
+const filterTunnelServiceConfigs = computed(() => {
+  return search.value ? tunnelServiceConfigs.filter(c => c.name.indexOf(search.value) > -1) : tunnelServiceConfigs
 })
 
 function loadTunnelData() {
@@ -59,19 +63,13 @@ function loadTunnelData() {
   })
 }
 
-function onCopy(item) {
-  doCopy(selectedServer.value.domain + ':' + item.remote_port).then(() => {
-    showNotification(NotificationType.success, '复制成功')
-  })
-}
-
 function onCancel() {
   isAdd.value = false
   activeId.value = null
 }
 
 function onAddTunnel() {
-  if (!configIsLock.value&&checkPermission(getEnumKey(tunnelType, tunnelType.service), tunnelServiceConfigs)) {
+  if (!configIsLock.value && checkPermission(getEnumKey(tunnelType, tunnelType.service), tunnelServiceConfigs)) {
     activeId.value = null
     isAdd.value = true
   }
@@ -94,15 +92,24 @@ function onDel() {
   }
 }
 
-function onTest(){
+function onTest() {
   testStatus.value = 'start'
-  setTimeout(() => {
-    testStatus.value = 'success'
-  }, 3000)
+  Promise.all([
+    window.electronAPI.checkPort(activeTunnel.value.port),
+    checkService(selectedServer.value.domain, activeTunnel.value.remote_port)])
+      .then(resArray => {
+        activeTunnel.value.is_online = !resArray[0].data && resArray[1].data ? isOnline.online : isOnline.offline
+        testStatus.value = activeTunnel.value.is_online ? 'success' : 'failed'
+        updateTunnelService({
+          id: activeTunnel.value.id,
+          is_online: activeTunnel.value.is_online
+        })
+      })
 }
 
 function onChange(id) {
   isAdd.value = false
+  testStatus.value = ''
 }
 
 onMounted(() => {
@@ -127,14 +134,7 @@ onMounted(() => {
           <PlusScrollbar>
             <PlusLoading :loading="tunnelLoading">
               <div class="flex flex-col gap-12 mb-12">
-                <TunnelItem class="flex flex-col gap-4 mx-8" v-for="item in filterTunnelServiceConfigs" :key="item.id"
-                            :id="item.id">
-                  <span class="overflow-hidden text-ellipsis">{{ useMyTitle(item) }}</span>
-                  <span class="w-full flex items-center justify-between">
-                  <span class="overflow-hidden text-ellipsis">{{ selectedServer?.domain }}:{{ item.remote_port }}</span>
-                  <IconParkOutlineCopy @click="onCopy(item)" class="text-[12px] hover:text-(--el-color-primary)"/>
-                </span>
-                </TunnelItem>
+                <ServiceItem v-for="item in filterTunnelServiceConfigs" :item="item" :key="item.id"></ServiceItem>
               </div>
             </PlusLoading>
           </PlusScrollbar>
@@ -145,7 +145,7 @@ onMounted(() => {
       <HorizontalHeader :navTitle="false">
         <el-button v-if="isAdd" type="text" :icon="EpArrowLeft" @click="onCancel">返回</el-button>
         <div v-else>
-<!--          ignore-->
+          <!--          ignore-->
         </div>
       </HorizontalHeader>
       <TunnelFormWrap class="flex-1 flex flex-col" @add="onAddTunnel">

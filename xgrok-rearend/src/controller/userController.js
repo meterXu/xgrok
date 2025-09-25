@@ -10,6 +10,7 @@ import OrderByModel from "../model/sys/orderByModel";
 import OAuthUsersService from "../service/oauthUsersService";
 import {serviceType} from "../utils/enum";
 import UsersModel from "../model/usersModel";
+import {checkServerOnline} from "../utils";
 const tag = tags(['User'])
 
 export default class UserController {
@@ -109,7 +110,37 @@ export default class UserController {
     async checkPort(ctx){
         const {domain,port,server_id,id,type} = ctx.validatedQuery
         const checkRes = await this.tunnelServiceService.checkPort(domain,port,server_id,ctx.token.user.id,id,type)
-        const res = new ResultModel(checkRes,checkRes?'未占用':'远程映射端口已占用，请换一个',true)
+        // const res = new ResultModel(checkRes,checkRes?'未占用':'远程映射端口已占用，请换一个',true)
+        const res = new ResultModel(true,checkRes?'未占用':'远程映射端口已占用，请换一个',true)
+        ctx.result(res)
+    }
+
+    @request('get','/user/checkService')
+    @summary('检查服务地址是否可以访问')
+    @tag
+    @query({
+        domain:{type:'string',required:true,description:'域名'},
+        port:{type:null,required:true,description:'端口'}
+    })
+    async checkServerOnline(ctx){
+        const {domain,port} = ctx.validatedQuery
+        const checkRes = await  checkServerOnline(domain,port)
+        const res = new ResultModel(checkRes,checkRes?'服务可访问':'服务不可访问',true)
+        ctx.result(res)
+    }
+
+    @request('get','/user/checkWeb')
+    @summary('检查web地址是否可以访问')
+    @tag
+    @query({
+        name:{type:'string',required:true,description:'name'},
+        domain:{type:'string',required:true,description:'域名'},
+        port:{type:null,required:true,description:'端口'}
+    })
+    async checkWeb(ctx){
+        const {name,domain,port} = ctx.validatedQuery
+        const checkRes = await this.tunnelWebService.checkUrl(name,domain,port)
+        const res = new ResultModel(checkRes,checkRes?'地址可访问':'地址不可访问',true)
         ctx.result(res)
     }
 

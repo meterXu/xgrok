@@ -49,6 +49,7 @@ export default class TunnelWebService {
               status:tunnelWebModel.status,
               is_delete:tunnelWebModel.is_delete,
               is_remote:tunnelWebModel.is_remote,
+              is_online:tunnelWebModel.is_online,
               remark:tunnelWebModel.remark,
             }
         })
@@ -124,7 +125,9 @@ export default class TunnelWebService {
                 }
             }
         })
-
+    }
+    checkUrl(name,domain,port){
+        return checkUrl(name,domain,port,3000)
     }
 
 }

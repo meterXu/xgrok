@@ -19,6 +19,7 @@ export default class TunnelWebModel {
         this.status = body.status
         this.is_delete = body.is_delete
         this.is_remote = body.is_remote
+        this.is_online = body.is_online
         this.remark = body.remark
 
     }
@@ -38,6 +39,7 @@ export default class TunnelWebModel {
     @swaggerProperty({ type: "number",description:"",nullable:true}) status
     @swaggerProperty({ type: "number",description:"",nullable:true}) is_delete
     @swaggerProperty({ type: "number",description:"",nullable:true}) is_remote
+    @swaggerProperty({ type: "number",description:"",nullable:true}) is_online
     @swaggerProperty({ type: "string",description:"",nullable:true}) remark
 
 }

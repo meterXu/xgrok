@@ -1,37 +1,74 @@
 <script setup>
-import {defineProps} from 'vue'
-import {useAppStore} from "@/store";
+import TunnelItem from "@/components/tunnel/TunnelItem.vue";
 import {useMyTitle} from "@/libs/common";
 import {httpType} from "@/libs/enums";
+import {useAppStore} from "@/store";
 
-
-const props=defineProps(['tunnelConfig'])
+const props = defineProps(['item'])
 const store = useAppStore()
-const {selectedServer,isDelete,deleteIds} = store
+const {selectedServer} = store
 
-function colspan(tunnelConfig){
-  return tunnelConfig.type===1?1:3
-}
-function httpUrl(selectedServer,tunnelConfig,type){
-  if(selectedServer){
-    return type===httpType.https?`https://${tunnelConfig.name}.${selectedServer.domain}:${selectedServer.https_port}/`
-        :`http://${tunnelConfig.name}.${selectedServer.domain}:${selectedServer.http_port}/`
-  }else{
+function httpUrl(tunnelConfig, type) {
+  if (selectedServer) {
+    return type === httpType.https ? `https://${tunnelConfig.name}.${selectedServer.value.domain}:${selectedServer.value.https_port}/`
+        : `http://${tunnelConfig.name}.${selectedServer.value.domain}:${selectedServer.value.http_port}/`
+  } else {
     return ''
   }
 }
-function onOpenLink(type){
-  const link  = httpUrl(selectedServer.value,props.tunnelConfig,type)
-  window.electronAPI.openExternal(link)
+
+function onOpenLink(item, type) {
+  const link = httpUrl(selectedServer, item, type)
+  window.project.variable.mode === 'browser' ? window.open(link, '_blank') : window.electronAPI.openExternal(link)
 }
+
 </script>
 
 <template>
-  <div class="bg-(--tunnel-item-bg) px-20 py-12 rounded-4xl overflow-hidden text-ellipsis cursor-pointer">
-    {{useMyTitle(tunnelConfig)}}@{{tunnelConfig.host}}
-  </div>
+  <TunnelItem class="status flex flex-col gap-4 mx-8"
+              :class="`status-${['failed','success'][item.is_online]}`"
+              :id="item.id">
+    <span class="overflow-hidden text-ellipsis">{{ useMyTitle(item) }}</span>
+    <span class="w-full flex items-center justify-between">
+                <span class="overflow-hidden text-ellipsis">{{ httpUrl(item, httpType.https) }}</span>
+                <IconParkOutlineEarth @click="onOpenLink(item,httpType.https)"
+                                      class="text-[16px] hover:text-(--el-color-primary)"/>
+              </span>
+  </TunnelItem>
 </template>
 
-<style lang="less">
-
+<style scoped lang="less">
+.status{
+  position: relative;
+  &:after {
+    position: absolute;
+    display: block;
+    content: '';
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    z-index: 2;
+  }
+}
+.status-success {
+  &:after {
+    animation: show ease-out .5s forwards;
+    background: var(--el-color-success);
+  }
+}
+.status-failed {
+  &:after {
+    animation: show ease-out .5s forwards;
+    background: var(--el-color-danger);
+  }
+}
+@keyframes show {
+  0%{
+    opacity: 0;
+  }
+  100%{
+    opacity: 1;
+  }
+}
 </style>

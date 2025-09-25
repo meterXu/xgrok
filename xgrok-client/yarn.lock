@@ -4700,6 +4700,11 @@ node-html-parser@^5.3.3:
     css-select "^4.2.1"
     he "1.2.0"
 
+node-port-check@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npmmirror.com/node-port-check/-/node-port-check-2.0.1.tgz#72cae367d3ca906b0903b261ce818c297aade11f"
+  integrity sha512-PV1tj5OPbWwxvhPcChXxwCIKl/IfVEdPP4u/gQz2lao/VGoeIUXb/4U72KSHLZpTVBmgTnMm0me7yR0wUsIuPg==
+
 node-releases@^2.0.18:
   version "2.0.18"
   resolved "https://registry.npmjs.org/node-releases/-/node-releases-2.0.18.tgz"
