@@ -21,7 +21,7 @@ async function _task(baseApi,server_id,domain,port){
         self.postMessage({
             type:'checkServer',
             is_online:response.data?1:0,
-            statusClass:`${response.data?'server-status-icon-success server-status-online':'server-status-icon-danger server-status-offline'}`
+            statusClass:`${response.data?'server-status-online':'server-status-offline'}`
         })
     }catch (err){
         self.postMessage({

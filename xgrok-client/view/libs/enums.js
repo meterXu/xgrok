@@ -102,7 +102,7 @@ export function useStatusClass(is_online){
     if(isEmpty(is_online)){
         return 'server-status-checking'
     }else{
-        return is_online===isOnline.online?'server-status-icon-success':'server-status-icon-danger'
+        return is_online===isOnline.online?'server-status-online':'server-status-offline'
     }
 }
 

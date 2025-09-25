@@ -165,7 +165,7 @@ model OAuthUsers {
   id              String     @id @db.VarChar(32)
   username        String     @unique(map: "oauth_users_pk") @db.VarChar(100)
   password        String     @db.VarChar(100)
-  nickName        String?    @db.VarChar(50)
+  nickname        String?    @db.VarChar(50)
   creator         String?    @db.VarChar(50)
   editor          String?    @db.VarChar(50)
   sort            Int?

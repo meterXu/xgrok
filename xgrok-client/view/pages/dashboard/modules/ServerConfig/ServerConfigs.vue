@@ -35,7 +35,7 @@ function onSelectServerConfig(_serverConfig){
 </script>
 
 <template>
-  <ServerConfigItem :serverConfig="selectedServer" :statusClass="selectedServer.statusClass">
+  <ServerConfigItem class="border-none bg-(--primary-bg-0)" :serverConfig="selectedServer" :statusClass="selectedServer.statusClass">
     <el-button @click="showServerConfigDialog" type="primary" plain class="w-24! h-24! p-0!" :disabled="Boolean(pid)">
       <ep-switch class="w-12!"/>
       </el-button>
@@ -47,7 +47,3 @@ function onSelectServerConfig(_serverConfig){
     </template>
   </ConfigDialog>
 </template>
-
-<style lang="less" scoped>
-
-</style>

@@ -220,3 +220,4 @@ alter table ng_tunnel_web
 alter table ng_tunnel_service
     add is_online int default -1 null comment '是否在线';
 
+

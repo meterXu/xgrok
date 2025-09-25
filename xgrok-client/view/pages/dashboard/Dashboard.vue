@@ -14,6 +14,9 @@ import ServiceSwitch from "@/components/control-btns/ServiceSwitch.vue";
 import ConfigRefreshBtn from "@/components/control-btns/ConfigRefreshBtn.vue";
 import {sleep} from "xxweb-util";
 import HorizontalHeader from "@/components/header/HorizontalHeader.vue";
+import LeftMiddle from "@/components/left-aside/LeftMiddle.vue";
+import {ElementPlus} from "@element-plus/icons-vue";
+import PlusScrollbar from "@/components/plus-scrollbar/PlusScrollbar.vue";
 
 const store = useAppStore()
 const tunnelWebConfigs = ref(null)
@@ -36,7 +39,7 @@ if (window.project.variable.mode !== 'browser') {
 }
 
 async function initServerConfigData() {
-  if (selectedServer.value&&selectedServer.value.type===window.project.variable.type) {
+  if (selectedServer.value && selectedServer.value.type === window.project.variable.type) {
     let res = await detailServerConfig(selectedServer.value.id)
     if (res.success) {
       store.setSelectedServer(res.data)
@@ -81,105 +84,58 @@ onUnmounted(() => {
 })
 </script>
 <template>
-  <HorizontalHeader></HorizontalHeader>
-  <div class="ngrok-config-wrap">
-    <el-card class="server-wrap" v-if="selectedServer">
-      <div class="info-wrap">
-        <div class="server-info">
-          <ServerConfigs @changeServerConfig="onChangeServerConfig"></ServerConfigs>
-        </div>
-        <SystemInfo></SystemInfo>
+  <div class="flex-1 h-full flex flex-col">
+    <HorizontalHeader ></HorizontalHeader>
+    <div class="flex flex-row gap-32 mt-16 rounded-3xl p-16 items-center justify-center" v-if="selectedServer">
+      <div class="w-300 relative">
+        <ServerConfigs class="absolute" @changeServerConfig="onChangeServerConfig"></ServerConfigs>
       </div>
-      <div class="flex items-center justify-center">
+      <div class="flex-1 h-full relative">
+        <SystemInfo class="absolute"></SystemInfo>
+      </div>
+      <div class="w-200">
         <ServerProgress :percentage="percentage"></ServerProgress>
+<!--        <ConfigRefreshBtn :loading="serverLoading" @refresh="onRefresh"/>-->
+<!--        <ServiceSwitch ref="serviceSwitch"-->
+<!--                       :tunnel-service-configs="tunnelServiceConfigs"-->
+<!--                       :tunnel-web-configs="tunnelWebConfigs"-->
+<!--                       :percentage="percentage"-->
+<!--                       @serverLoading="(val)=>{serverLoading=val}"-->
+<!--        >-->
+<!--        </ServiceSwitch>-->
       </div>
-    </el-card>
-    <ConfigRefreshBtn :loading="serverLoading" @refresh="onRefresh"/>
-    <ServiceSwitch ref="serviceSwitch"
-                   :tunnel-service-configs="tunnelServiceConfigs"
-                   :tunnel-web-configs="tunnelWebConfigs"
-                   :percentage="percentage"
-                   @serverLoading="(val)=>{serverLoading=val}"
-    >
-    </ServiceSwitch>
+    </div>
+    <div class="flex-1 relative mx-16 mt-16 mb-32">
+      <div class="absolute w-full h-full bg-(--primary-bg-0) rounded-3xl">
+        <div class="w-full h-full relative flex">
+         <plus-scrollbar class="relative-scrollbar">
+           <div class="absolute left-14 top-14 right-14 bottom-14">
+             <div class="server-list">
+               <div class="rounded-4xl" v-for="item in Array.from({length:4})" :key="item">{{item}}</div>
+             </div>
+           </div>
+         </plus-scrollbar>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
-<style lang="less" scoped>
-.ngrok-config-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  flex-flow: column;
-  grid-gap: 0;
-}
-
-.server-wrap, .tunnel-config-wrap {
-  width: 100%;
-}
-
-.server-wrap {
-  border: none;
-  box-shadow: none !important;
-  border-radius: 0;
-}
-
-.server-wrap-border {
-  border: none;
-}
-
-.server-info {
-  width: 320px;
-}
-
-.info-wrap {
-  display: inline-flex;
-  align-items: center;
-  flex-flow: row;
-  justify-content: flex-start;
-  grid-gap: 12px;
+<style scoped lang="less">
+.server-list{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 32px;
+  div{
+    background: var(--server-status-bg);
+    width: 100%;
+    padding-bottom: 56.2%;
+  }
 }
 </style>
 <style lang="less">
-.server-wrap {
-  .el-card__body {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px;
-    grid-gap: 12px;
-  }
-}
-
-.tunnel-config-wrap {
-  border-bottom: none;
-  border-left: none;
-
-  .el-tabs__content {
-    padding: 16px;
-  }
-
-  .el-tabs__header {
-    background-color: var(--server-info-bg);
-  }
-
-  .el-tabs__item:hover, .el-tabs__item.is-active {
-    color: var(--el-color-success) !important;
-  }
-
-  .el-tabs__new-tab {
-    width: fit-content;
-    padding-right: 12px;
-    border: none;
-  }
-
-  .el-tabs__item:hover {
-    padding-left: 20px !important;
-  }
-
-  .el-tabs__nav {
-    .is-icon-close {
-      display: none;
-    }
+.relative-scrollbar{
+  .el-scrollbar__view{
+    position: relative;
   }
 }
 </style>
