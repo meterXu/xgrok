@@ -4,6 +4,7 @@ import {shallowReactive, onMounted} from 'vue'
 import Markdown from 'markdown-it'
 import dayjs from 'dayjs'
 import PlusLoading from "@/components/plus-loading/PlusLoading.vue";
+import PlusScrollbar from "@/components/plus-scrollbar/PlusScrollbar.vue";
 
 const versions = shallowReactive([])
 const md = new Markdown()
@@ -20,15 +21,17 @@ versionList().then(res => {
 </script>
 
 <template>
-  <div class="release p-16 rounded-4xl">
+  <div class="release flex-1 flex flex-col p-16 rounded-4xl gap-32">
     <div class="text-center text-[24px] font-bold">更新日志</div>
-    <div class="min-h-200 mt-32 flex flex-col justify-center">
+    <div class="flex-1 flex flex-col justify-center">
       <plus-loading :loading="versions.length===0" size="7rem" mask-bg-color="transparent" class="flex flex-col gap-32">
-        <div v-for="item in versions" :key="item.id">
-          <div class="text-[18px] font-bold">{{ item.tag_name }} - {{ dayjs(item.created_at).format('YYYY.MM.DD') }}</div>
-          <div class="text-[14px]/[28px] mt-12" v-html="item.body">
+        <plus-scrollbar>
+          <div v-for="item in versions" :key="item.id">
+            <div class="text-[18px] font-bold">{{ item.tag_name }} - {{ dayjs(item.created_at).format('YYYY.MM.DD') }}</div>
+            <div class="text-[14px]/[28px] mt-12" v-html="item.body">
+            </div>
           </div>
-        </div>
+        </plus-scrollbar>
       </plus-loading>
     </div>
   </div>

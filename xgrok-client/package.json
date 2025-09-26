@@ -85,6 +85,7 @@
     "electron-sudo": "^4.0.12",
     "electron-updater": "^6.6.2",
     "element-plus": "^2.5.5",
+    "highlight.js": "^11.11.1",
     "http-proxy": "^1.18.1",
     "js-md5": "^0.8.3",
     "less": "^3.11.1",

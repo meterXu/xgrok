@@ -17,15 +17,11 @@ import LinkGroup from "./module/LinkGroup.vue";
         <Logo class="about-logo" title="XGROK" direction="vertical" size="120px"></Logo>
       </div>
       <div class="flex-1 relative">
-        <div class="absolute h-full py-12 w-full">
-          <plus-scrollbar>
-            <div class="flex flex-col gap-24 px-16">
-              <information/>
-              <LinkGroup/>
-              <Contact/>
-              <release/>
-            </div>
-          </plus-scrollbar>
+        <div class="absolute h-full w-full py-12 px-16 flex flex-col gap-24">
+          <information/>
+          <LinkGroup/>
+          <Contact/>
+          <release/>
         </div>
       </div>
     </div>

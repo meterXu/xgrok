@@ -3,24 +3,38 @@ import {ref, nextTick, watch} from "vue"
 import {useRoute} from 'vue-router'
 import HorizontalHeader from "@/components/header/HorizontalHeader.vue";
 import PlusScrollbar from "@/components/plus-scrollbar/PlusScrollbar.vue";
+import 'highlight.js/styles/atom-one-light.css'
+import hljs from 'highlight.js/lib/core';
+import accesslog from 'highlight.js/lib/languages/accesslog';
 
 const route = useRoute()
 const logContent = ref('')
 const endIndex = ref(0)
-const logContentRef = ref(null)
+const logScrollbarRef = ref(null)
+const logContentRef = ref()
+hljs.registerLanguage('accesslog', accesslog);
 
 function onRefresh(init = false) {
-  if(init){
-    endIndex.value=0
+  if (init) {
+    endIndex.value = 0
   }
-  window.project.variable.mode!=='browser'&&window.electronAPI.getLog({startIndex: endIndex.value, length: 100}).then(res => {
+  window.project.variable.mode !== 'browser' && window.electronAPI.getLog({
+    startIndex: endIndex.value,
+    length: 100
+  }).then(res => {
     if (init) {
-      logContent.value = res.data.records.join('<br/>')
+      logContent.value = res.data.records.map(c=>{
+        return hljs.highlight(c, { language: 'accesslog' }).value
+      }).join('<br/>')
     } else {
-      logContent.value = logContent.value.concat(res.data.records.join('<br/>'))
+      logContent.value = logContent.value.concat(
+          res.data.records.map(c=>{
+            return hljs.highlight(c, { language: 'accesslog' }).value
+          }).join('<br/>')
+      )
     }
     nextTick(() => {
-      logContentRef.value.scrollTop = logContentRef.value.scrollHeight;
+      logScrollbarRef.value.scrollbar.setScrollTop(logContentRef.value.clientHeight);
     })
     endIndex.value = res.data.endIndex + 1
   })
@@ -39,25 +53,21 @@ watch(route, (nv) => {
     <HorizontalHeader :hasLock="false"></HorizontalHeader>
     <div class="flex-1 flex flex-col gap-16 py-32 px-24">
       <div>
-        <el-button plain class="text-[14px]! py-14!" size="small" @click="onRefresh(false)">
+        <el-button type="primary" plain class="text-[14px]! py-14!" size="small" @click="onRefresh(false)">
           <template #icon>
             <ep-refresh/>
           </template>
           刷新
         </el-button>
       </div>
-      <div ref="logContentRef"
-           class="flex-1 w-full relative text-[14px] overflow-y-auto rounded-2xl p-12 pr-2 border-1 border-(--el-border-color) bg-(--server-info-bg) text-(--el-color-primary) smooth">
-        <plus-scrollbar>
-          {{logContent}}
-        </plus-scrollbar>
+      <div class="flex-1 w-full relative text-[14px] overflow-y-auto rounded-4xl
+           border-1 border-(--border-color) bg-(--primary-bg-0)">
+        <div class="absolute w-full h-full p-12">
+          <plus-scrollbar ref="logScrollbarRef">
+            <div ref="logContentRef" v-html="logContent"></div>
+          </plus-scrollbar>
+        </div>
       </div>
     </div>
   </div>
 </template>
-
-<style scoped lang="less">
-.smooth {
-  scroll-behavior: smooth;
-}
-</style>

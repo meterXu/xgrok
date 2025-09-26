@@ -200,6 +200,7 @@ function onWillPlanExpiredTime(item) {
 </style>
 <style lang="less">
 .product-card {
+  border-radius: 8px !important;
   .el-card__header {
     --el-card-padding: 12px;
   }

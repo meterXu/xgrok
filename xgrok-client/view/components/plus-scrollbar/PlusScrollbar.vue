@@ -1,7 +1,18 @@
+<script setup>
+const scrollbar = ref()
+defineExpose({
+  scrollbar
+})
+</script>
 <template>
-  <div class="flex-1 relative w-full h-full">
-    <el-scrollbar class="h-full w-full absolute!">
+  <div class="relative w-full h-full">
+    <el-scrollbar ref="scrollbar" class="h-full w-full absolute!" wrapClass="smooth">
       <slot></slot>
     </el-scrollbar>
   </div>
 </template>
+<style>
+.smooth{
+  scroll-behavior: smooth;
+}
+</style>

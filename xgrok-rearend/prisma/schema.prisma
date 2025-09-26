@@ -95,7 +95,7 @@ model TunnelService {
   is_remote     Int?      @default(0)
   created_time  BigInt?
   modified_time BigInt?
-  is_online     Int?
+  is_online     Int?      @default(dbgenerated("(-(1))"))
   ng_client     ng_client @relation(fields: [client_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ng_tunnel_service_ng_client_id_fk")
   ng_server     Server    @relation(fields: [server_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ng_tunnel_service_ng_server_id_fk")
 
@@ -121,7 +121,7 @@ model TunnelWeb {
   is_remote     Int?      @default(0)
   created_time  BigInt?
   modified_time BigInt?
-  is_online     Int?
+  is_online     Int?      @default(dbgenerated("(-(1))"))
   ng_client     ng_client @relation(fields: [client_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ng_tunnel_web_ng_client_id_fk")
   ng_server     Server    @relation(fields: [server_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ng_tunnel_web_ng_server_id_fk")
 
@@ -165,7 +165,7 @@ model OAuthUsers {
   id              String     @id @db.VarChar(32)
   username        String     @unique(map: "oauth_users_pk") @db.VarChar(100)
   password        String     @db.VarChar(100)
-  nickname        String?    @db.VarChar(50)
+  nickName        String?    @db.VarChar(50)
   creator         String?    @db.VarChar(50)
   editor          String?    @db.VarChar(50)
   sort            Int?
