@@ -10,7 +10,9 @@ const {systemInfo} = useAppStore()
 <template>
 <div class="systemInfo w-full h-full p-16 rounded-4xl bg-(--primary-bg-0) flex flex-col justify-between">
   <div class="text-[14px] font-bold">{{systemInfo?.hostname}}</div>
-  <div class="overflow-hidden whitespace-nowrap text-ellipsis">{{systemInfo?.osVersion}}</div>
+  <el-tooltip effect="dark" :content="systemInfo?.osVersion">
+    <div class="overflow-hidden whitespace-nowrap text-ellipsis">{{systemInfo?.osVersion}}</div>
+  </el-tooltip>
 </div>
 </template>
 <style lang="less" scoped>
