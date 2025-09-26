@@ -4,21 +4,26 @@ const props = defineProps(['serverConfig','statusClass'])
 </script>
 
 <template>
-  <div class="class-config-item w-full border border-(--border-color) rounded-4xl p-16 flex flex-col justify-center gap-16">
+  <div class="class-config-item w-full border border-(--border-color) rounded-4xl p-16 flex flex-col justify-between ">
     <div class="flex flex-row items-center justify-between">
       <span class="text-[14px] font-bold h-20 flex items-center gap-4">
         <span>{{props.serverConfig.name}}</span>
         <span class="inline-flex items-center relative top-2" v-if="serverConfig.is_vip">
-          <el-icon class="vip-icon">
+          <el-icon class="vip-icon" :size="18">
               <icon-park-outline-lightning/>
           </el-icon>
         </span>
       </span>
-      <slot></slot>
+      <slot name="right-top-icon">
+        <img class="w-24 h-24 object-contain" :src="`https://webspace1.oss-cn-hangzhou.aliyuncs.com/xgrok-client/${props.serverConfig.operator}.webp`" :alt="props.serverConfig.operator"/>
+      </slot>
     </div>
+    <slot></slot>
     <div class="flex flex-row items-center justify-between">
-      <div class="text-[14px]">
-        <span>带宽 {{props.serverConfig.up_speed}}</span>，<span>{{props.serverConfig.region}}/{{props.serverConfig.operator||'-'}}</span>
+      <div class="text-[14px] flex gap-4 items-center">
+        <el-tag type="success" effect="plain" size="small">带宽 {{props.serverConfig.up_speed}}</el-tag>
+        <el-tag type="warning" effect="plain" size="small">{{props.serverConfig.region}}</el-tag>
+        <el-tag type="danger" effect="plain" size="small">{{props.serverConfig.operator||'-'}}</el-tag>
       </div>
       <div class="w-24 text-center">
         <span class="server-status relative inline-block w-12 h-12 rounded-full" :class="statusClass"></span>

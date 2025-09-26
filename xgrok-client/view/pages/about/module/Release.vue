@@ -39,6 +39,6 @@ versionList().then(res => {
 
 <style scoped lang="less">
 .release {
-  background: linear-gradient(to left bottom, var(--release-bg-0), var(--release-bg-1));
+  background: linear-gradient(to right top, var(--release-bg-0), var(--release-bg-1));
 }
 </style>

@@ -8,8 +8,13 @@ const {systemInfo} = useAppStore()
 </script>
 
 <template>
-<div class="systemInfo w-full h-full p-16 rounded-4xl bg-(--primary-bg-0) flex flex-col gap-16 justify-center">
+<div class="systemInfo w-full h-full p-16 rounded-4xl bg-(--primary-bg-0) flex flex-col justify-between">
   <div class="text-[14px] font-bold">{{systemInfo?.hostname}}</div>
   <div class="overflow-hidden whitespace-nowrap text-ellipsis">{{systemInfo?.osVersion}}</div>
 </div>
 </template>
+<style lang="less" scoped>
+.systemInfo{
+  background: linear-gradient(to right top, var(--release-bg-0), var(--release-bg-1));
+}
+</style>

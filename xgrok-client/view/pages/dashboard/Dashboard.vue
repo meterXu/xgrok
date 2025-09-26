@@ -4,26 +4,22 @@ import {
   queryServersConfig,
   closeWebSocket
 } from '@/api'
-import {onMounted, onUnmounted, ref, watch} from 'vue'
+import {onMounted, onUnmounted, watch} from 'vue'
 import {useAppStore} from '@/store';
 import ServerConfigs from '@/pages/dashboard/modules/ServerConfig/ServerConfigs.vue'
-import SystemInfo from "@/components/SystemInfo.vue"
+import SystemInfo from "@/pages/dashboard/modules/ServerConfig/SystemInfo.vue"
 import {sendMessage} from '@/worker/mainThread'
 import ServerProgress from "@/components/ServerProgress.vue";
-import ServiceSwitch from "@/components/control-btns/ServiceSwitch.vue";
-import ConfigRefreshBtn from "@/components/control-btns/ConfigRefreshBtn.vue";
 import {sleep} from "xxweb-util";
 import HorizontalHeader from "@/components/header/HorizontalHeader.vue";
-import LeftMiddle from "@/components/left-aside/LeftMiddle.vue";
-import {ElementPlus} from "@element-plus/icons-vue";
 import PlusScrollbar from "@/components/plus-scrollbar/PlusScrollbar.vue";
+import ServerList from "@/pages/dashboard/modules/ServerConfig/ServerList.vue";
+import {payPlan} from "@/libs/enums";
+import {confirm} from "@/libs/common";
 
 const store = useAppStore()
-const tunnelWebConfigs = ref(null)
-const tunnelServiceConfigs = ref(null)
 const serviceSwitch = shallowRef()
-const serverLoading = shallowRef(false)
-const {selectedServer, percentage} = store
+const {selectedServer, percentage,plan} = store
 
 if (window.project.variable.mode !== 'browser') {
   window.electronAPI.onAppQuit(() => {
@@ -52,11 +48,6 @@ async function initServerConfigData() {
   }
 }
 
-function onChangeServerConfig(_serverConfig) {
-  _serverConfig.statusClass = 'server-status-checking'
-  store.setSelectedServer(_serverConfig)
-}
-
 async function onRefresh() {
   let _refresh = async () => {
     await serviceSwitch.value.onSwitchChange(false)
@@ -76,6 +67,7 @@ watch(() => selectedServer?.value?.id, (nv, ov) => {
     port: selectedServer?.value?.port
   })
 }, {immediate: true})
+
 onMounted(async () => {
   await initServerConfigData()
 })
@@ -85,57 +77,46 @@ onUnmounted(() => {
 </script>
 <template>
   <div class="flex-1 h-full flex flex-col">
-    <HorizontalHeader ></HorizontalHeader>
-    <div class="flex flex-row gap-32 mt-16 rounded-3xl py-16 px-24 items-center justify-center" v-if="selectedServer">
-      <div class="w-300 relative">
-        <ServerConfigs class="absolute" @changeServerConfig="onChangeServerConfig"></ServerConfigs>
+    <HorizontalHeader></HorizontalHeader>
+    <div class="h-150 flex flex-row gap-32 mt-16 rounded-3xl py-16 px-24 items-center justify-center" v-if="selectedServer">
+      <div class="w-300 h-full relative">
+        <ServerConfigs class="absolute"></ServerConfigs>
       </div>
       <div class="flex-1 h-full relative">
         <SystemInfo class="absolute"></SystemInfo>
       </div>
       <div class="w-200">
         <ServerProgress :percentage="percentage"></ServerProgress>
-<!--        <ConfigRefreshBtn :loading="serverLoading" @refresh="onRefresh"/>-->
-<!--        <ServiceSwitch ref="serviceSwitch"-->
-<!--                       :tunnel-service-configs="tunnelServiceConfigs"-->
-<!--                       :tunnel-web-configs="tunnelWebConfigs"-->
-<!--                       :percentage="percentage"-->
-<!--                       @serverLoading="(val)=>{serverLoading=val}"-->
-<!--        >-->
-<!--        </ServiceSwitch>-->
+        <!--        <ConfigRefreshBtn :loading="serverLoading" @refresh="onRefresh"/>-->
+        <!--        <ServiceSwitch ref="serviceSwitch"-->
+        <!--                       :tunnel-service-configs="tunnelServiceConfigs"-->
+        <!--                       :tunnel-web-configs="tunnelWebConfigs"-->
+        <!--                       :percentage="percentage"-->
+        <!--                       @serverLoading="(val)=>{serverLoading=val}"-->
+        <!--        >-->
+        <!--        </ServiceSwitch>-->
       </div>
     </div>
     <div class="flex-1 relative mx-24 mt-16 mb-32">
       <div class="absolute w-full h-full bg-(--primary-bg-0) rounded-3xl">
         <div class="w-full h-full relative flex">
-         <plus-scrollbar class="relative-scrollbar">
-           <div class="absolute left-14 top-14 right-14 bottom-14">
-             <div class="server-list">
-               <div class="rounded-4xl" v-for="item in Array.from({length:4})" :key="item">{{item}}</div>
-             </div>
-           </div>
-         </plus-scrollbar>
+          <plus-scrollbar class="relative-scrollbar">
+            <div class="absolute left-16 top-16 right-16 bottom-16">
+              <ServerList @selectServerConfig="onSelectServerConfig">
+              </ServerList>
+            </div>
+          </plus-scrollbar>
         </div>
       </div>
     </div>
   </div>
 </template>
-<style scoped lang="less">
-.server-list{
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 32px;
-  div{
-    background: var(--server-status-bg);
-    width: 100%;
-    padding-bottom: 56.2%;
-  }
-}
-</style>
 <style lang="less">
-.relative-scrollbar{
-  .el-scrollbar__view{
+.relative-scrollbar {
+  .el-scrollbar__view {
     position: relative;
+    width: 100%;
+    height: 100%;
   }
 }
 </style>

@@ -110,8 +110,7 @@ export default class UserController {
     async checkPort(ctx){
         const {domain,port,server_id,id,type} = ctx.validatedQuery
         const checkRes = await this.tunnelServiceService.checkPort(domain,port,server_id,ctx.token.user.id,id,type)
-        // const res = new ResultModel(checkRes,checkRes?'未占用':'远程映射端口已占用，请换一个',true)
-        const res = new ResultModel(true,checkRes?'未占用':'远程映射端口已占用，请换一个',true)
+        const res = new ResultModel(checkRes,checkRes?'未占用':'远程映射端口已占用，请换一个',true)
         ctx.result(res)
     }
 
