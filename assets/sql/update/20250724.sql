@@ -215,9 +215,9 @@ INSERT INTO ng_assets (id, name, type, size, path, sort, creator, editor, status
 
 
 alter table ng_tunnel_web
-    add is_online int default -1 null comment '是否在线';
+    add is_online int default null comment '是否在线';
 
 alter table ng_tunnel_service
-    add is_online int default -1 null comment '是否在线';
+    add is_online int default null comment '是否在线';
 
 

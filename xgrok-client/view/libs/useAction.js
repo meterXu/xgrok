@@ -50,17 +50,17 @@ export async function useGoTo(name,isReplace=false){
     store.setHeaderBtnLoading(false)
 }
 
-export function checkTunnelConfig(selectedServer,tunnelWebConfigs,tunnelServiceConfigs){
+export function checkTunnelConfig(selectedServer,web,service){
     const store = useAppStore()
-    let res = selectedServer && (tunnelWebConfigs?.length > 0 || tunnelServiceConfigs?.length > 0)
+    let res = selectedServer && (web.length > 0 || service.length > 0)
     if(!res){
         ElMessage.warning('没有任何配置，请先添加')
     }
     if(store.plan.value===payPlan.free){
-        if(tunnelServiceConfigs?.length!==0){
+        if(service.length!==0){
             gotoSubscribe('抱歉！免费计划用户无法使用服务隧道')
             res = false
-        } else if(tunnelWebConfigs?.length>1){
+        } else if(web.length>1){
             gotoSubscribe('抱歉！免费计划用户只能添加一个网页隧道！')
             res = false
         }

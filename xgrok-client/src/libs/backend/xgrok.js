@@ -3,7 +3,7 @@ const {execFile} = require("node:child_process");
 const fs = require("node:fs");
 const {stringify} = require('yaml')
 const {killPid, findProcessId,getEnumKey} = require("../util");
-const {serviceType, hostType,httpType, serverType} = require('../enum')
+const {serviceType, hostType,httpType, serverType,runStatusType} = require('../enum')
 const {platform, arch} = require("../util");
 const {shell} = require('electron');
 const http = require('http');
@@ -365,9 +365,6 @@ function initBeat() {
                 pid = await turnOn(_xgrokConf)
                 global.win.webContents.send('view/refreshPid', pid)
                 break;
-            }
-            case 'process': {
-                global.win.webContents.send('view/process', result.data)
             }
         }
     })

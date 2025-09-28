@@ -2,12 +2,12 @@
 import {
   detailServerConfig,
   queryServersConfig,
-  closeWebSocket
+  closeWebSocket, queryTunnelCount, getSystemInfo, queryClient, createClient, updateClient
 } from '@/api'
 import {onMounted, onUnmounted, watch} from 'vue'
 import {useAppStore} from '@/store';
 import ServerConfigs from '@/pages/dashboard/modules/ServerConfig/ServerConfigs.vue'
-import SystemInfo from "@/pages/dashboard/modules/SystemInfo.vue"
+import SystemCard from "@/pages/dashboard/modules/SystemCard.vue"
 import {sendMessage} from '@/worker/mainThread'
 import {sleep} from "xxweb-util";
 import HorizontalHeader from "@/components/header/HorizontalHeader.vue";
@@ -17,7 +17,11 @@ import ServiceSwitch from '@/components/control-btns/ServiceSwitch.vue'
 
 const store = useAppStore()
 const serviceSwitchRef = shallowRef()
-const {selectedServer, percentage, plan} = store
+const {selectedServer,clientId,systemInfo} = store
+const tunnelCount = reactive({
+  web:[],
+  service:[]
+})
 
 if (window.project.variable.mode !== 'browser') {
   window.electronAPI.onAppQuit(() => {
@@ -32,18 +36,50 @@ if (window.project.variable.mode !== 'browser') {
   })
 }
 
-async function initServerConfigData() {
+function initServerConfigData() {
   if (selectedServer.value && selectedServer.value.type === window.project.variable.type) {
-    let res = await detailServerConfig(selectedServer.value.id)
-    if (res.success) {
-      store.setSelectedServer(res.data)
-    }
+    detailServerConfig(selectedServer.value.id).then(res=>{
+      if (res.success) {
+        store.setSelectedServer(res.data)
+      }
+    })
   } else {
-    let res = await queryServersConfig(window.project.variable.type)
-    if (res.success && res.data.records.length > 0) {
-      store.setSelectedServer(res.data.records[0])
-    }
+    queryServersConfig(window.project.variable.type).then(res=>{
+      if (res.success && res.data.records.length > 0) {
+        store.setSelectedServer(res.data.records[0])
+      }
+    })
   }
+}
+
+function initClient() {
+  getSystemInfo().then(res=>{
+    if (res.success) {
+      store.setSystemInfo(res.data)
+      if (!clientId.value) {
+        queryClient(res.data.hostname).then(res1=>{
+          if (res1.success) {
+            if (res1.data.records.length > 0) {
+              store.setClientId(res1.data.records[0].id)
+            } else {
+              createClient({
+                hostname: systemInfo.hostname,
+                osVersion: systemInfo.osVersion
+              }).then(res2=>{
+                res2.success && store.setClientId(res2.data)
+              })
+            }
+          }
+        })
+      } else {
+        updateClient({
+          id: clientId.value,
+          hostname: systemInfo.hostname,
+          osVersion: systemInfo.osVersion
+        })
+      }
+    }
+  })
 }
 
 async function onRefresh() {
@@ -66,8 +102,18 @@ watch(() => selectedServer?.value?.id, (nv, ov) => {
   })
 }, {immediate: true})
 
-onMounted(async () => {
-  await initServerConfigData()
+watchEffect(()=>{
+  if(selectedServer.value?.id&&clientId.value){
+    queryTunnelCount(selectedServer.value?.id,clientId.value).then(res=>{
+      tunnelCount.web.splice(0,tunnelCount.web.length,...res.web)
+      tunnelCount.service.splice(0,tunnelCount.service.length,...res.service)
+    })
+  }
+})
+
+onMounted( () => {
+  initServerConfigData()
+  initClient()
 })
 onUnmounted(() => {
   sendMessage({type: 'closeCheckServer', server_id: selectedServer?.value?.id})
@@ -79,12 +125,12 @@ onUnmounted(() => {
     <div class="h-150 flex flex-row gap-32 mt-16 rounded-3xl py-16 px-24 items-center justify-center"
          v-if="selectedServer">
       <div class="w-300 h-full relative">
-        <ServerConfigs class="absolute"></ServerConfigs>
+        <ServerConfigs class="absolute" :tunnelCount="tunnelCount"></ServerConfigs>
       </div>
       <div class="flex-1 h-full relative">
-        <SystemInfo class="absolute"></SystemInfo>
+        <SystemCard class="absolute"></SystemCard>
       </div>
-      <ServiceSwitch ref="serviceSwitchRef">
+      <ServiceSwitch ref="serviceSwitchRef" :tunnelCount="tunnelCount">
       </ServiceSwitch>
     </div>
     <div class="flex-1 relative mx-24 mt-16 mb-32">

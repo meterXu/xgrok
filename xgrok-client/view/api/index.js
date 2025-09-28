@@ -30,7 +30,8 @@ const url = {
     user: {
         tunnelWebConfig: '/user/tunnelWebConfig',
         tunnelServiceConfig: '/user/tunnelServiceConfig',
-        queryPayPlan: '/user/queryPayPlan'
+        queryPayPlan: '/user/queryPayPlan',
+        queryTunnelCount:'/user/queryTunnelCount'
     },
     tunnel: {
         createWeb: '/tunnelWeb',
@@ -290,4 +291,8 @@ export function versionLatest() {
 
 export function detailAssets(name){
     return getAction(url.assets.detail,{name})
+}
+
+export function queryTunnelCount(serverId,clientId){
+    return getAction(url.user.queryTunnelCount,{serverId,clientId})
 }

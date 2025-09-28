@@ -58,8 +58,6 @@ function loadTunnelData() {
     }
   }).finally(() => {
     tunnelLoading.value = false;
-    store.setIsDeleteAll(false)
-    store.setDeleteIdsAll([])
   })
 }
 

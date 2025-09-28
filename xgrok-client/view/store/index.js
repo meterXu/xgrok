@@ -12,14 +12,6 @@ export const useAppStore = defineStore('app', ()=>{
     const _pid = ref(null)
     const _selectedServer = shallowRef(null)
     const _clientId = ref(null)
-    const _isDelete = shallowReactive({
-        web:false,
-        service:false
-    })
-    const _deleteIds = {
-        web:ref([]),
-        service:ref([])
-    }
     const _plan = reactive({})
     const _orderStatus = shallowReactive({orderId:null,isPaySuccess:null})
     const _tunnelForm = ref(null)
@@ -59,12 +51,6 @@ export const useAppStore = defineStore('app', ()=>{
             _selectedServer.value = alterStoreValue(getLsValue($ls.get("selectedServer")))
         }
         return _selectedServer
-    })
-    const isDelete = computed(()=>{
-        return _isDelete
-    })
-    const deleteIds = computed(()=>{
-        return _deleteIds
     })
     const clientId = computed(()=>{
         if($ls.get("clientId")){
@@ -142,20 +128,6 @@ export const useAppStore = defineStore('app', ()=>{
         _selectedServer.value = data
         $ls.set("selectedServer",setLsValue(data))
     }
-    function setIsDelete(type,value){
-        _isDelete[type]=value
-    }
-    function setDeleteIds(type,value){
-        _deleteIds[type].value=value
-    }
-    function setIsDeleteAll(value){
-        _isDelete.web=value
-        _isDelete.service=value
-    }
-    function setDeleteIdsAll(value){
-        _deleteIds.web.value=value
-        _deleteIds.service.value=value
-    }
     function setClientId(value){
         _clientId.value = value
         $ls.set("clientId",setLsValue(value))
@@ -169,9 +141,6 @@ export const useAppStore = defineStore('app', ()=>{
     function setOrderStatus(orderId,isPaySuccess){
         _orderStatus.orderId = orderId
         _orderStatus.isPaySuccess = isPaySuccess
-    }
-    function setTunnelForm(value){
-        _tunnelForm.value = value
     }
     function setUserName(data){
         _userName.value = data
@@ -200,8 +169,6 @@ export const useAppStore = defineStore('app', ()=>{
         userInfo,
         pid,
         selectedServer,
-        isDelete,
-        deleteIds,
         clientId,
         plan,
         orderStatus,
@@ -217,14 +184,9 @@ export const useAppStore = defineStore('app', ()=>{
         setToken,
         setPid,
         setSelectedServer,
-        setIsDelete,
-        setDeleteIds,
-        setIsDeleteAll,
-        setDeleteIdsAll,
         setClientId,
         setPlan,
         setOrderStatus,
-        setTunnelForm,
         setUserName,
         setConfigIsLock,
         setPercentage,

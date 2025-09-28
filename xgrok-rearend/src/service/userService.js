@@ -44,25 +44,33 @@ export default class UserService {
         return new ResultModel(null,null,true)
     }
 
-    async queryTunnelCount(userId,serverId,client_id){
-        let querySql = `select * from (
-            select a.name,b.hostname,'web' as type from ng_tunnel_web a
+    async queryTunnelCount(userId,serverId,clientId){
+        let where = [
+            `a.status = ${status.enable}`,
+            `a.is_delete = ${isDelete.false}`,
+            `b.status = ${status.enable}`,
+            `b.is_delete = ${isDelete.false}`,
+            userId && `a.creator = '${userId}'`,
+            serverId && `a.server_id = '${serverId}'`,
+            clientId && `a.client_id = '${clientId}'`
+        ].filter(c => c).join(' and ')
+
+        let webQuery = `select a.* from ng_tunnel_web a
+        inner join ng_client b on a.client_id = b.id 
+        ${where ? `where ${where}` : ''} order by b.hostname desc`
+
+        let serviceQuery = `select a.*  from ng_tunnel_service a
         inner join ng_client b on a.client_id = b.id
-        where a.status = ${status.enable} and a.is_delete = ${isDelete.false}
-          and b.status = ${status.enable} and b.is_delete = ${isDelete.false}
-          and a.creator ='${userId}' and a.server_id='${serverId}' and a.client_id='${client_id}'
-        union all
-        select a.name,b.hostname,'service' as type  from ng_tunnel_service a
-        inner join ng_client b on a.client_id = b.id
-        where a.status = ${status.enable} and a.is_delete = ${isDelete.false}
-          and b.status = ${status.enable} and b.is_delete = ${isDelete.false}
-          and a.creator ='${userId}' and a.server_id='${serverId}' and a.client_id='${client_id}'
-                      ) a order by hostname desc`
-        let queryRes = await prisma.$queryRaw(Prisma.raw(querySql))
+        ${where ? `where ${where}` : ''} order by b.hostname desc`
+
+        let queryRes = await prisma.$transaction([
+            prisma.$queryRaw(Prisma.raw(webQuery)),
+            prisma.$queryRaw(Prisma.raw(serviceQuery)),
+        ])
+
         return {
-            web:queryRes.filter(c=>c.type==='web').length,
-            service:queryRes.filter(c=>c.type==='service').length,
-            records:queryRes
+            web:queryRes[0],
+            service:queryRes[1]
         }
     }
 

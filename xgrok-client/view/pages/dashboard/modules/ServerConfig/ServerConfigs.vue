@@ -3,6 +3,7 @@ import ServerConfigItem from "@/components/ServerConfigItem.vue";
 import {useAppStore} from "@/store";
 
 const emits = defineEmits(['change'])
+const props = defineProps(['tunnelCount'])
 const store = useAppStore()
 const {selectedServer} = store
 
@@ -10,6 +11,10 @@ const {selectedServer} = store
 
 <template>
   <ServerConfigItem class="server-configs border-none bg-(--primary-bg-0) h-full" :serverConfig="selectedServer" :statusClass="selectedServer.statusClass">
+    <div class="text-[12px] inline-flex gap-8">
+      <span class="inline-block">网页:{{tunnelCount.web.length}}</span>
+      <span class="inline-block">服务:{{tunnelCount.service.length}}</span>
+    </div>
   </ServerConfigItem>
 </template>
 <style scoped>
