@@ -1,8 +1,9 @@
 <script setup>
-import {isOnline} from "@/libs/enums";
+import {isOnline, NotificationType} from "@/libs/enums";
 import {useAppStore} from '@/store'
 import {checkTunnelConfig} from "@/libs/useAction";
 import {isEmpty} from "xxweb-util";
+import {alert, showNotification} from "@/libs/message";
 const emits = defineEmits(['serverLoading'])
 const store = useAppStore()
 const {pid, selectedServer} = store
@@ -32,6 +33,7 @@ function onSwitchChange() {
 async function onTurnOn() {
   if (checkTunnelConfig(selectedServer?.value,props.tunnelCount.web,props.tunnelCount.service)){
     switchLoading.value = true
+    store.setPid(null)
     store.setConfigIsLock(true)
     let data = {
       server: selectedServer.value,
@@ -45,10 +47,15 @@ async function onTurnOn() {
         let res = await window.electronAPI.turnOn(JSON.parse(JSON.stringify(data)))
         if (res.success) {
           store.setPid(res.data.pid)
+          showNotification(NotificationType.success,'启动成功')
         } else {
-          alert('打开失败，' + res.message)
           store.setPid(0)
           store.setConfigIsLock(false)
+          alert(
+              `<p style="height:20rem;display:flex;align-items:center">${res.data.message}</p>`,'启动失败',{
+                dangerouslyUseHTMLString:true,
+                confirmButtonClass:'el-button--danger is-plain'
+          })
         }
       }finally {
         switchLoading.value = false
@@ -67,8 +74,12 @@ async function onTurnOff() {
       if (res.success) {
         store.setPid(null)
         store.setConfigIsLock(false)
+        showNotification(NotificationType.success,'关闭成功')
       } else {
-        alert('关闭失败')
+        alert(res.data.message,'关闭失败',{
+          dangerouslyUseHTMLString:true,
+          confirmButtonClass:'el-button--danger is-plain'
+        })
       }
     }finally {
       switchLoading.value = false

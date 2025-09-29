@@ -1,5 +1,6 @@
 const {parentPort}= require("worker_threads");
-const {checkProcess,checkUrl,checkServerOnline} = require("../libs/util");
+const {checkProcess} = require("../libs/util");
+
 global.parentPort = parentPort
 parentPort.timerId=null
 parentPort.isAllOnLine = false

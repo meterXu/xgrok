@@ -7,6 +7,7 @@ const path = require("path");
 const {exec} = require('child_process');
 const dgram = require('dgram');
 const {serverType, serviceType} = require("./enum");
+const {isFreePort} = require("node-port-check");
 
 function randomNumber() {
     const random = (min, max) => {
@@ -351,6 +352,33 @@ async function getLineCount(filePath) {
     return lineCount;
 }
 
+function sleep(time = 100) {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve(time);
+        }, time);
+    });
+}
+function waitPortRun(checkPort,checkAddr,count=10){
+    return new Promise(async (resolve, reject) => {
+        let _count =0
+        while (_count<count){
+            const [port,host,isFree]= await isFreePort(checkPort,checkAddr)
+            if(isFree){
+                _count++
+                await sleep(1000)
+            }else{
+                break
+            }
+        }
+        if(_count<10){
+            resolve(true)
+        }else{
+            resolve(false)
+        }
+    })
+}
+
 module.exports = {
     randomNumber,
     randomString,
@@ -369,5 +397,7 @@ module.exports = {
     checkUpdate,
     getEnumKey,
     getLineCount,
-    readLinesInRange
+    readLinesInRange,
+    sleep,
+    waitPortRun
 }

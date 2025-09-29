@@ -63,6 +63,7 @@ function dealWithOption(options) {
     let _options = Object.assign({
         customClass: 'visual-messagebox',
         confirmButtonText: '确定',
+        center: true
     }, options)
     if (_options.callback) {
         let _callback = _options.callback

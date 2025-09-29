@@ -1,4 +1,4 @@
-const {hostname, version,readLinesInRange,getLineCount,checkUrl} = require("../util");
+const {hostname, version,readLinesInRange,getLineCount,checkUrl,sleep} = require("../util");
 const net = require('net');
 const {BrowserWindow, nativeImage}  = require('electron')
 const path = require("node:path");

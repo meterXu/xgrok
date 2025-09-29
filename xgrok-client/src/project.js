@@ -26,6 +26,12 @@ const getProject=function (app,mode){
     if(mode==='development'){
         return {
             viewUrl:"http://localhost:5173/",
+            webServer:{
+                addr:'127.0.0.1',
+                port:7400,
+                user:'xgrok',
+                password:'xgrok'
+            },
             clientRootPath:path.join(appPath,'../execute/',_paltform),
             appPath:appPath,
             appData:getAppData(),
@@ -53,6 +59,12 @@ const getProject=function (app,mode){
     }else{
         return {
             viewUrl:'dist/index.html',
+            webServer:{
+                addr:'127.0.0.1',
+                port:7400,
+                user:'xgrok',
+                password:'xgrok'
+            },
             clientRootPath:path.join(appPath,'../app.asar.unpacked/execute/',_paltform),
             appPath:appPath,
             appData:getAppData(),

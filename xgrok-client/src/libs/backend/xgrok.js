@@ -2,7 +2,7 @@ const path = require("node:path");
 const {execFile} = require("node:child_process");
 const fs = require("node:fs");
 const {stringify} = require('yaml')
-const {killPid, findProcessId,getEnumKey} = require("../util");
+const {killPid, findProcessId,getEnumKey, waitPortRun} = require("../util");
 const {serviceType, hostType,httpType, serverType,runStatusType} = require('../enum')
 const {platform, arch} = require("../util");
 const {shell} = require('electron');
@@ -13,6 +13,7 @@ const {checkPort} = require("./system");
 const {Worker} = require("worker_threads");
 const dgram = require('dgram');
 const serverDetails = require("../../models/xgrokConfModel");
+const {login,apiStatus} = require("../api");
 let serviceNames = null
 let pid = null
 let _xgrokConf = null
@@ -34,17 +35,22 @@ async function turnOn(xgrokConf) {
             }
             pid = await startXgrok(serviceNames,xgrokConf.server.type)
             global.logger.info(`xgrok pid is [${pid}]`)
-            startBeat(pid, xgrokConf.tunnelWebs.map(c => ({
-                    isOnline: false,
-                    params: [c.name, xgrokConf.server.domain, xgrokConf.server.http_port]
-                })),
-                xgrokConf.tunnelServices.map(c => ({
-                    isOnline: false,
-                    params: [xgrokConf.server.domain, c.remote_port,c.type]
-                })))
-            return Promise.resolve(pid)
+            let runStatus = await getTunnelStatus([...xgrokConf.tunnelWebs||[],...xgrokConf.tunnelServices||[]])
+            if(runStatus.length === 0) {
+                return Promise.resolve({
+                    pid:pid,
+                    message:'隧道启动成功'
+                })
+            }else{
+                await turnOff(pid)
+                return Promise.resolve({
+                    pid:0,
+                    message:runStatus.join('<br/>')
+                })
+            }
         }
     } catch (err) {
+        pid&&await turnOff(pid)
         return Promise.reject({message: err.message})
     }
 }
@@ -63,6 +69,31 @@ async function turnOff(pid) {
     }
     global.win.webContents.send('view/process', 0)
     return res
+}
+
+async function getTunnelStatus(tunnels){
+    return new Promise(async (resolve, reject) => {
+        try{
+            let isRun = await waitPortRun(global.project.webServer.port,global.project.webServer.addr)
+            if(isRun){
+                await login()
+                let statusData = (await apiStatus()).data
+                statusData = [...statusData.tcp||[],...statusData.udp||[],...statusData.web||[]]
+                let errArray=[]
+                tunnels.forEach(c=>{
+                    let findStatus = statusData.find(r=>r.name===c.name)
+                    if(findStatus?.status!=='running'){
+                        errArray.push(`${c.name}启动失败，${findStatus.err}`)
+                    }
+                })
+                resolve(errArray)
+            }else{
+                resolve(['无法获取隧道状态'])
+            }
+        }catch (err){
+            reject(err)
+        }
+    })
 }
 
 function startXgrok(names,type) {
@@ -154,6 +185,7 @@ function generateXgrokConf(serverDetail, WebDetails, serviceDetails) {
             log:{
                 to:global.project.logPath
             },
+            webServer:global.project.webServer,
             proxies: [...WebDetails.map(web => {
                 return {
                     name: web.name,
@@ -364,6 +396,10 @@ function initBeat() {
                 // xgrok进程死了,重启进程
                 pid = await turnOn(_xgrokConf)
                 global.win.webContents.send('view/refreshPid', pid)
+                break;
+            }
+            case 'process': {
+                global.win.webContents.send('view/process', result.data)
                 break;
             }
         }

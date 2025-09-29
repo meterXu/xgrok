@@ -95,14 +95,6 @@ export function resetObj(obj, defaultValue) {
     Object.assign(obj, defaultValue)
 }
 
-export const $ss = {
-    get(key){
-        return sessionStorage.getItem(`${window.project.namespace}__${key}`)
-    },
-    set(key,value){
-        sessionStorage.setItem(`${window.project.namespace}__${key}`,value)
-    }
-}
 export function getEnumKey(enumData, value) {
     let find = Object.entries(enumData).find(([key, _value]) => _value === value)
     return find ? find[0] : ''

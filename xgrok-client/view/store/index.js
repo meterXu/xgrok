@@ -2,11 +2,11 @@ import {createPinia,defineStore} from "pinia";
 import {ref, computed, shallowReactive,shallowRef} from 'vue'
 import {USER_INFO, ACCESS_TOKEN, setLsValue, getLsValue, alterStoreValue} from "xxweb-util";
 import {payPlan} from "@/libs/enums";
-import {$ss} from '@/libs/common'
 import dayjs from 'dayjs'
 
 export const useAppStore = defineStore('app', ()=>{
     const $ls = window.app.config.globalProperties.$ls
+    const $ss = window.app.config.globalProperties.$ss
     const _userInfo = shallowRef(null)
     const _token = ref(null)
     const _pid = ref(null)

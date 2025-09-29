@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router';
-import {filter,Ls,GlobalOverride} from 'xxweb-util'
+import {filter,Ls,GlobalOverride,Ss} from 'xxweb-util'
 import 'element-plus/dist/index.css'
 import '@/assets/css/main.less'
 import pinia from '@/store/index.js'
@@ -12,6 +12,7 @@ window.app = app
 app.config.productionTip = false
 app.config.globalProperties.$project = window.project
 app.config.globalProperties.$ls = new Ls(window.project.nameSpace)
+app.config.globalProperties.$ss = new Ss(window.project.nameSpace)
 app.use(pinia)
 app.use(router)
 app.directive('debounce', directives.debounce)

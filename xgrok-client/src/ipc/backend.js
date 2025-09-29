@@ -17,9 +17,10 @@ ipcMain.handle('xgrok', async (event, arg) => {
             case 'turnOn':{
                 const xgrokConf= new xgrokConfModel(arg.data)
                 await xgrokConf.exchangePorts()
-                let pid = await turnOn(xgrokConf)
-                global.xgrokPid=pid
-                res.data = {pid:pid}
+                let turnData = await turnOn(xgrokConf)
+                global.xgrokPid=turnData.pid
+                res.success = !!turnData.pid
+                res.data = turnData
             }break
             case 'turnOff':{
                 res.success = await turnOff(arg.data)
