@@ -12,7 +12,7 @@ import {useRouter} from "vue-router";
 import {showNotification} from "@/libs/message";
 
 const store = useAppStore()
-const {selectedServer, clientId,configIsLock} = store
+const {selectedServer, clientId,configIsLock,pid} = store
 const props = defineProps(['tunnelForm'])
 const emits = defineEmits(['updateSuccess', 'cancel', 'createSuccess'])
 const ruleFormRef = ref('ruleFormRef')
@@ -89,6 +89,12 @@ function onSave() {
   ruleFormRef.value.validate(valid => {
     if (valid) {
       //todo 进行确认更新提示
+      if(pid.value){
+        confirm('服务正在运行过程中，是否继续更新？','',{
+          confirmButtonText: '更新',
+          cancelButtonText: '否',
+        })
+      }
       formData.id ? updateTunnelWeb(formData).then(res => {
         showNotification(res.success ? NotificationType.success : NotificationType.error, res.success ? `${createOrUpdateText.value}成功` : `${createOrUpdateText.value}失败`)
         if (res.success) {
