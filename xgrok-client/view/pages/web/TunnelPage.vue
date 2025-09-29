@@ -19,9 +19,10 @@ import TunnelEmptyCon from "@/components/tunnel/TunnelEmptyCon.vue";
 import PlusLoading from "@/components/plus-loading/PlusLoading.vue";
 import {showNotification} from "@/libs/message";
 import WebItem from "@/pages/web/module/WebItem.vue";
+import {$emit} from "xxweb-util";
 
 const store = useAppStore()
-const {selectedServer, clientId, configIsLock} = store
+const {selectedServer, clientId, configIsLock,pid} = store
 const tunnelWebConfigs = reactive([])
 const tunnelLoading = ref(false)
 const activeId = shallowRef(null)
@@ -109,6 +110,12 @@ function onTest() {
   })
 }
 
+function operateSuccess(type){
+  if(pid.value&&type==='update'){
+    $emit('restart')
+  }
+  loadTunnelData()
+}
 onMounted(() => {
   loadTunnelData()
 })
@@ -158,8 +165,8 @@ onMounted(() => {
             <WebForm
                 :tunnelForm="activeTunnel"
                 @cancel="onCancel"
-                @updateSuccess="loadTunnelData"
-                @createSuccess="loadTunnelData">
+                @updateSuccess="operateSuccess('update')"
+                @createSuccess="operateSuccess('create')">
             </WebForm>
           </div>
         </template>

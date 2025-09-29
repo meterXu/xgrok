@@ -80,12 +80,17 @@ watch(() => formData.host, (nv) => {
   }
 })
 
+const createOrUpdateText = computed(()=>{
+  return formData.id? '更新' : '新增'
+})
+
 function onSave() {
   saveLoading.value = true
   ruleFormRef.value.validate(valid => {
     if (valid) {
+      //todo 进行确认更新提示
       formData.id ? updateTunnelWeb(formData).then(res => {
-        showNotification(res.success ? NotificationType.success : NotificationType.error, res.success ? '更新成功' : '更新失败')
+        showNotification(res.success ? NotificationType.success : NotificationType.error, res.success ? `${createOrUpdateText.value}成功` : `${createOrUpdateText.value}失败`)
         if (res.success) {
           emits('cancel')
           emits('updateSuccess')
@@ -94,11 +99,11 @@ function onSave() {
         saveLoading.value = false
       }) : createTunnelWeb(formData).then(res => {
         if (res.success) {
-          showNotification(NotificationType.success, '创建成功')
+          showNotification(NotificationType.success,  `${createOrUpdateText.value}成功`)
           emits('cancel')
           emits('createSuccess')
         } else {
-          confirm(res.message || '创建失败', null, {
+          confirm(res.message || `${createOrUpdateText.value}失败`, null, {
             confirmButtonText: '去订阅',
             cancelButtonText: '知道了',
             confirmButtonClass: 'el-button--warning is-plain'
