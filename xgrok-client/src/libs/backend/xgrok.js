@@ -78,12 +78,12 @@ async function getTunnelStatus(tunnels){
             if(isRun){
                 await login()
                 let statusData = (await apiStatus()).data
-                statusData = [...statusData.tcp||[],...statusData.udp||[],...statusData.web||[]]
+                statusData = [...statusData.tcp||[],...statusData.udp||[],...statusData.http||[]]
                 let errArray=[]
                 tunnels.forEach(c=>{
                     let findStatus = statusData.find(r=>r.name===c.name)
                     if(findStatus?.status!=='running'){
-                        errArray.push(`${c.name}启动失败，${findStatus.err}`)
+                        errArray.push(`${c.name}启动失败，${findStatus?.err}`)
                     }
                 })
                 resolve(errArray)

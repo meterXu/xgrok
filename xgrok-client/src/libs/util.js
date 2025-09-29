@@ -46,14 +46,18 @@ function isNullOrUndefined(value) {
 // 删除进程
 function killPid(pid) {
     return new Promise((resolve, reject) => {
-        if (checkProcess(pid)) {
-            process.kill(pid, 'SIGTERM');
+        try{
+            if (checkProcess(pid)) {
+                process.kill(pid, 'SIGTERM');
+            }
+            setTimeout(() => {
+                resolve(!checkProcess(pid))
+            }, 1000)
+            closeAllWebServer(global.webServers)
+            closeAllTcpServer(global.tcpServers)
+        }catch (err){
+            reject(err)
         }
-        setTimeout(() => {
-            resolve(!checkProcess(pid))
-        }, 1000)
-        closeAllWebServer(global.webServers)
-        closeAllTcpServer(global.tcpServers)
     })
 }
 

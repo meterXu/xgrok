@@ -2,21 +2,39 @@
 import {defineEmits} from 'vue'
 import ServerConfigItem from "@/components/ServerConfigItem.vue";
 import {useAppStore} from "@/store";
-import {payPlan, useStatusClass} from "@/libs/enums";
+import {isOnline, payPlan, useStatusClass} from "@/libs/enums";
 import {queryServersConfig} from "@/api";
-import {confirm} from "@/libs/common";
+import {confirm,alert} from "@/libs/common";
+import {$emit} from 'xxweb-util'
 
-const emits = defineEmits(['selectServerConfig'])
-const {selectedServer,setSelectedServer,plan} = useAppStore()
+const emits = defineEmits(['selectServerConfig','restart'])
+const {selectedServer,setSelectedServer,plan,pid} = useAppStore()
 const serverConfigs = shallowReactive([])
 
 function onSelectConfigItem(_serverConfig) {
+  if(_serverConfig.id === selectedServer.value.id)
+    return false
   if (plan.value === payPlan.vip || _serverConfig.is_vip === payPlan.free) {
-    _serverConfig.statusClass = 'server-status-checking'
-    setSelectedServer(_serverConfig)
-
+    if(pid.value){
+      if(_serverConfig?.is_online === isOnline.offline){
+        alert('服务不在线，不可热切换','')
+      }else{
+        confirm('服务正在运行中，切换将重启服务，<br/>是否继续','',{
+          dangerouslyUseHTMLString:true,
+          confirmButtonText: '切换',
+          cancelButtonText: '否',
+        }).then(()=>{
+          _serverConfig.statusClass = 'server-status-checking'
+          setSelectedServer(_serverConfig)
+          $emit('restart')
+        })
+      }
+    }else{
+      _serverConfig.statusClass = 'server-status-checking'
+      setSelectedServer(_serverConfig)
+    }
   } else {
-    confirm('免费计划无法使用收费服务器', {
+    confirm('免费计划无法使用收费服务器', '',{
       confirmButtonText: '去订阅',
       cancelButtonText: '知道了',
       confirmButtonClass: 'el-button--warning is-plain'

@@ -199,28 +199,20 @@ ul{
   height: 100%;
   width: 100%;
 }
-.my-messageBox-alert{
+.my-messageBox{
   width: auto;
-  padding: 12px 48px;
+  padding: 14px 48px;
   .el-message-box__title{
     font-size: 14px;
+    font-weight: bold;
+  }
+  .el-message-box__message{
+    min-height:50px;
+    display:flex;
+    align-items:center
   }
   .el-message-box__btns{
     justify-content: center;
-  }
-}
-.my-messageBox-confirm{
-  width: 320px;
-  padding: 32px 16px 24px 16px;
-  &:has(.el-message-box__header){
-    padding:var(--el-messagebox-padding-primary);
-  }
-  .el-message-box__title{
-    font-size: 14px;
-  }
-  .el-message-box__btns{
-    justify-content: center;
-    padding-top: 32px;
   }
 }
 .login-register-form{

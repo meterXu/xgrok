@@ -9,7 +9,6 @@ import {useAppStore} from '@/store';
 import ServerConfigs from '@/pages/dashboard/modules/ServerConfig/ServerConfigs.vue'
 import SystemCard from "@/pages/dashboard/modules/SystemCard.vue"
 import {sendMessage} from '@/worker/mainThread'
-import {sleep} from "xxweb-util";
 import HorizontalHeader from "@/components/header/HorizontalHeader.vue";
 import PlusScrollbar from "@/components/plus-scrollbar/PlusScrollbar.vue";
 import ServerList from "@/pages/dashboard/modules/ServerConfig/ServerList.vue";
@@ -82,14 +81,7 @@ function initClient() {
   })
 }
 
-async function onRefresh() {
-  let _refresh = async () => {
-    await serviceSwitchRef.value.onSwitchChange(false)
-    await sleep(500)
-    await serviceSwitchRef.value.onSwitchChange(true)
-  }
-  await _refresh.debounce()()
-}
+
 
 watch(() => selectedServer?.value?.id, (nv, ov) => {
   sendMessage({type: 'closeCheckServer', server_id: ov})

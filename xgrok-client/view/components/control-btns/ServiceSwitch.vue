@@ -2,7 +2,8 @@
 import {isOnline, NotificationType} from "@/libs/enums";
 import {useAppStore} from '@/store'
 import {checkTunnelConfig} from "@/libs/useAction";
-import {isEmpty} from "xxweb-util";
+import {isEmpty,$on,$off} from "xxweb-util";
+import {onMounted,onUnmounted} from 'vue';
 import {alert, showNotification} from "@/libs/message";
 const emits = defineEmits(['serverLoading'])
 const store = useAppStore()
@@ -22,14 +23,14 @@ const status = computed(()=>{
   }
 })
 
-function onSwitchChange() {
+async function onSwitchChange() {
   if (!pid.value) {
-    selectedServer?.value.is_online === isOnline.online && onTurnOn()
+    await onTurnOn()
   } else {
-    onTurnOff()
+    await onTurnOff()
   }
-
 }
+
 async function onTurnOn() {
   if (checkTunnelConfig(selectedServer?.value,props.tunnelCount.web,props.tunnelCount.service)){
     switchLoading.value = true
@@ -46,13 +47,13 @@ async function onTurnOn() {
       try{
         let res = await window.electronAPI.turnOn(JSON.parse(JSON.stringify(data)))
         if (res.success) {
-          store.setPid(res.data.pid)
+          store.setPid(res.data)
           showNotification(NotificationType.success,'启动成功')
         } else {
           store.setPid(0)
           store.setConfigIsLock(false)
           alert(
-              `<p style="height:20rem;display:flex;align-items:center">${res.data.message}</p>`,'启动失败',{
+              `<p style="height:20rem;display:flex;align-items:center">${res.message}</p>`,'启动失败',{
                 dangerouslyUseHTMLString:true,
                 confirmButtonClass:'el-button--danger is-plain'
           })
@@ -86,8 +87,22 @@ async function onTurnOff() {
     }
   }
 }
-defineExpose({
-  onSwitchChange
+
+
+async function onRestart() {
+  let _refresh = async () => {
+    await onSwitchChange()
+    await onSwitchChange()
+  }
+  await _refresh.debounce()()
+}
+
+onMounted(()=>{
+  $on('restart',onRestart)
+})
+
+onUnmounted(()=>{
+  $off('restart')
 })
 </script>
 
