@@ -142,8 +142,8 @@ export function checkWeb(name,domain,port){
     return getAction(url.compliance.checkWeb, {name,domain,port})
 }
 
-export function checkService(domain,port){
-    return getAction(url.compliance.checkService,{domain,port})
+export function checkService(domain,port,type){
+    return getAction(url.compliance.checkService,{domain,port,type})
 }
 
 export function checkPort(domain, port, server_id, id, type) {

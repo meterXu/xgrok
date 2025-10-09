@@ -124,7 +124,7 @@ export default class TunnelServiceService {
             }else{
                 let service = await this.detailTunnelService({id:id})
                 if(service?.remote_port!==port){
-                    let res = await checkServerOnline(domain,port)
+                    let res = await checkServerOnline(domain,port,type)
                     resolve(!res)
                 }else{
                     resolve(true)

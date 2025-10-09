@@ -59,7 +59,7 @@ ipcMain.handle('system',async (event,arg)=>{
                 res.data = await getSystemInfo(arg.data)
             }break
             case 'checkPort':{
-                let _checkRes = await checkPort(arg.data)
+                let _checkRes = await checkPort(arg.data.host,arg.data.port,arg.data.type)
                 res.data = _checkRes.data
                 res.message = _checkRes.message
             }break

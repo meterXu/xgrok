@@ -98,8 +98,10 @@ function onDel() {
 function onTest() {
   testStatus.value = 'start'
   Promise.all([
-    window.electronAPI.checkPort(activeTunnel.value.port),
-    checkService(selectedServer.value.domain, activeTunnel.value.remote_port)])
+    window.electronAPI.checkPort({
+      host:activeTunnel.value.host,port:activeTunnel.value.port,type:activeTunnel.value.type
+    }),
+    checkService(selectedServer.value.domain, activeTunnel.value.remote_port,activeTunnel.value.type)])
       .then(resArray => {
         activeTunnel.value.is_online = !resArray[0].data && resArray[1].data ? isOnline.online : isOnline.offline
         testStatus.value = activeTunnel.value.is_online ? 'success' : 'failed'

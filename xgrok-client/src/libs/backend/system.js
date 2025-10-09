@@ -1,9 +1,9 @@
 const {hostname, version,readLinesInRange,getLineCount,checkUrl,saveAppCfg, getAppCfg} = require("../util");
 const {BrowserWindow, nativeImage}  = require('electron')
 const path = require("node:path");
-const {isFreePort} = require("node-port-check");
 const AutoLaunch = require('auto-launch');
-const fs = require('node:fs')
+const net = require('node:net')
+const {serviceType} = require("../enum");
 const minecraftAutoLauncher = new AutoLaunch({
     name: 'xgrok',
     path: global.project.appAbsoluteName
@@ -31,18 +31,64 @@ async function checkWeb({name, domain, port}) {
 
 /**
  * 检查指定端口是否被占用
+ * @param {string} host - 要检查的地址
  * @param {number} checkPort - 要检查的端口号
+ * @param {number} type - 要检查的类型
  * @returns {Promise<boolean>} - 如果端口被占用则返回 false，否则返回 true
  */
-async function checkPort(checkPort) {
-    return new Promise((resolve,reject) => {
-        isFreePort(checkPort).then(([port, host, isFree])=>{
-            resolve({
-                data:isFree,
-                message:isFree?'本地代理端口未被占用':'本地代理端口已被其他服务占用，请换一个'
+async function checkPort(host,checkPort,type) {
+    return new Promise((resolve, reject) => {
+        if(type===serviceType.tcp){
+            const socket = new net.Socket();
+            socket.setTimeout(3000); // 设置超时时间，根据需要调整
+            socket.once('connect', () => {
+                console.log(`端口 ${checkPort} 在 ${host} 连接成功。`);
+                // 设置一个延迟来检查连接状态
+                setTimeout(() => {
+                    socket.write('PING', (err) => {
+                        if (err) {
+                            resolve({
+                                data:true,
+                                message:'本地代理端口未被占用'
+                            }); // 远程关闭，视为未被占用
+                        } else {
+                            resolve({
+                                data:false,
+                                message:'本地代理端口已被其他服务占用，请换一个'
+                            }); // 正常连接且可响应
+                        }
+                        socket.destroy();
+                    });
+                }, 1000);
             });
-        })
-    });
+            socket.once('timeout', () => {
+                resolve({
+                    data:true,
+                    message:'本地代理端口未被占用'
+                })
+                socket.destroy();
+            });
+            socket.once('error', (err) => {
+                if (err.code === 'ECONNREFUSED') {
+                    resolve({
+                        data:true,
+                        message:'本地代理端口未被占用'
+                    })
+                } else {
+                    resolve({
+                        data:false,
+                        message:'本地代理端口已被其他服务占用，请换一个'
+                    })
+                }
+            });
+            socket.connect(checkPort, host);
+        }else{//todo udp默认未占用
+            resolve({
+                data:true,
+                message:'本地代理端口未被占用'
+            })
+        }
+    })
 }
 
 async function randomGetPort(){

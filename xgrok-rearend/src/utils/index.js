@@ -1,5 +1,5 @@
 import moment from "moment";
-import {payStatus} from "./enum.js";
+import {payStatus, serviceType} from "./enum.js";
 import {AlipaySdk} from "alipay-sdk";
 import config from "../config.js";
 import fs from "fs";
@@ -108,42 +108,47 @@ export function isEmail(email){
  * 检查服务器端口监听情况
  * @param domain 域名
  * @param port 地址
+ * @param type 类型
  * @returns Promise true被占用，false未占用
  */
-export function checkServerOnline(domain,port){
+export function checkServerOnline(domain,port,type){
     return new Promise((resolve, reject) => {
-        const socket = new net.Socket();
-        socket.setTimeout(3000); // 设置超时时间，根据需要调整
-        socket.once('connect', () => {
-            console.log(`端口 ${port} 在 ${domain} 连接成功。`);
-            // 设置一个延迟来检查连接状态
-            setTimeout(() => {
-                socket.write('PING', (err) => {
-                    if (err) {
-                        console.log(`端口 ${port} 在 ${domain} 上被连接，但被远程关闭。`);
-                        resolve(false); // 远程关闭，视为未被占用
-                    } else {
-                        console.log(`端口 ${port} 在 ${domain} 上正常开启。`);
-                        resolve(true); // 正常连接且可响应
-                    }
-                    socket.destroy();
-                });
-            }, 1000);
-        });
-        socket.once('timeout', () => {
-            console.log(`连接到 ${domain}:${port} 超时。`);
-            resolve(false)
-            socket.destroy();
-        });
-        socket.once('error', (err) => {
-            if (err.code === 'ECONNREFUSED') {
+        if(type===serviceType.tcp){
+            const socket = new net.Socket();
+            socket.setTimeout(3000); // 设置超时时间，根据需要调整
+            socket.once('connect', () => {
+                console.log(`端口 ${port} 在 ${domain} 连接成功。`);
+                // 设置一个延迟来检查连接状态
+                setTimeout(() => {
+                    socket.write('PING', (err) => {
+                        if (err) {
+                            console.log(`端口 ${port} 在 ${domain} 上被连接，但被远程关闭。`);
+                            resolve(false); // 远程关闭，视为未被占用
+                        } else {
+                            console.log(`端口 ${port} 在 ${domain} 上正常开启。`);
+                            resolve(true); // 正常连接且可响应
+                        }
+                        socket.destroy();
+                    });
+                }, 1000);
+            });
+            socket.once('timeout', () => {
+                console.log(`连接到 ${domain}:${port} 超时。`);
                 resolve(false)
-            } else {
-                resolve(true)
-                console.log(`在检查端口时发生错误: ${err.message}`);
-            }
-        });
-        socket.connect(port, domain);
+                socket.destroy();
+            });
+            socket.once('error', (err) => {
+                if (err.code === 'ECONNREFUSED') {
+                    resolve(false)
+                } else {
+                    resolve(true)
+                    console.log(`在检查端口时发生错误: ${err.message}`);
+                }
+            });
+            socket.connect(port, domain);
+        }else{
+            resolve(true);//todo 正常连接且可响应
+        }
     })
 }
 

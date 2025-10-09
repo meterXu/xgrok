@@ -119,11 +119,12 @@ export default class UserController {
     @tag
     @query({
         domain:{type:'string',required:true,description:'域名'},
-        port:{type:null,required:true,description:'端口'}
+        port:{type:'number',required:true,description:'端口'},
+        type:{type:'number',required:true,description:'类型'}
     })
     async checkServerOnline(ctx){
-        const {domain,port} = ctx.validatedQuery
-        const checkRes = await  checkServerOnline(domain,port)
+        const {domain,port,type} = ctx.validatedQuery
+        const checkRes = await  checkServerOnline(domain,port,type)
         const res = new ResultModel(checkRes,checkRes?'服务可访问':'服务不可访问',true)
         ctx.result(res)
     }
