@@ -7,7 +7,7 @@ const {turnOn,turnOff, setXY,
     closeWindow,
     hiddenWindow,
     openExternal} = require("../libs/backend/xgrok");
-const {checkPort,getSystemInfo,openDialog,getLog,checkWeb} = require("../libs/backend/system");
+const {checkPort,getSystemInfo,openDialog,getLog,checkWeb,setAutoLauncher,getAutoLauncher} = require("../libs/backend/system");
 const {checkUpdate} = require("../libs/util");
 const {autoUpdater} = require("electron-updater");
 ipcMain.handle('xgrok', async (event, arg) => {
@@ -83,7 +83,13 @@ ipcMain.handle('system',async (event,arg)=>{
                         detail: '无可用更新，当前已是最新版本！'
                     })
                 })
-            }
+            }break
+            case 'setAutoLauncher':{
+                res.data = setAutoLauncher(arg.data)
+            }break
+            case 'getAutoLauncher':{
+                res.data = await getAutoLauncher()
+            }break
         }
     }catch (err){
         res.success=false

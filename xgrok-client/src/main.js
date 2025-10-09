@@ -8,6 +8,7 @@ logger.initialize()
 global.logger=logger
 const project = getProject(app,process.env.NODE_ENV)
 global.project = project
+global.logger.info('xgrok project:',project)
 require('./ipc/backend')
 const {killPid, findProcessId,checkUpdate} = require("./libs/util");
 global.logger.info(`xgrok is running,version:${app.getVersion()}`)
@@ -110,6 +111,15 @@ if (!gotTheLock) {
 }else {
     findProcessId('xgrok-core').then(pids=>{
         pids&&pids.forEach(pid=>killPid(pid))
+    })
+    app.on('ready', () => {
+        const isStartup = process.argv.includes('--startup');
+        if (isStartup) {
+            global.logger.info('应用是通过开机启动的');
+        } else {
+            global.logger.info('应用是手动启动的');
+        }
+        createWindow();
     })
     // 当运行第二个实例时, 将会聚焦到这个窗口
     app.on('second-instance', (event, commandLine, workingDirectory) => {

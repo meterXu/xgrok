@@ -1481,6 +1481,11 @@ app-builder-lib@26.0.12:
     temp-file "^3.4.0"
     tiny-async-pool "1.3.0"
 
+applescript@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmmirror.com/applescript/-/applescript-1.0.0.tgz#bb87af568cad034a4e48c4bdaf6067a3a2701317"
+  integrity sha512-yvtNHdWvtbYEiIazXAdp/NY+BBb65/DAseqlNiJQjOx9DynuzOYDbVLBJvuc0ve0VL9x6B3OHF6eH52y9hCBtQ==
+
 archiver-utils@^4.0.1:
   version "4.0.1"
   resolved "https://registry.npmjs.org/archiver-utils/-/archiver-utils-4.0.1.tgz"
@@ -1597,6 +1602,17 @@ author-regex@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmmirror.com/author-regex/-/author-regex-1.0.0.tgz#d08885be6b9bbf9439fe087c76287245f0a81450"
   integrity sha512-KbWgR8wOYRAPekEmMXrYYdc7BRyhn2Ftk7KWfMUnQ43hFdojWEFRxhhRUm3/OFEdPa1r0KAvTTg9YQK57xTe0g==
+
+auto-launch@^5.0.6:
+  version "5.0.6"
+  resolved "https://registry.npmmirror.com/auto-launch/-/auto-launch-5.0.6.tgz#ccc238ddc07b2fa84e96a1bc2fd11b581a20cb2d"
+  integrity sha512-OgxiAm4q9EBf9EeXdPBiVNENaWE3jUZofwrhAkWjHDYGezu1k3FRZHU8V2FBxGuSJOHzKmTJEd0G7L7/0xDGFA==
+  dependencies:
+    applescript "^1.0.0"
+    mkdirp "^0.5.1"
+    path-is-absolute "^1.0.0"
+    untildify "^3.0.2"
+    winreg "1.2.4"
 
 autoprefixer@^10.4.21:
   version "10.4.21"
@@ -4604,6 +4620,13 @@ mkdirp@2.1.3:
   resolved "https://registry.npmmirror.com/mkdirp/-/mkdirp-2.1.3.tgz#b083ff37be046fd3d6552468c1f0ff44c1545d1f"
   integrity sha512-sjAkg21peAG9HS+Dkx7hlG9Ztx7HLeKnvB3NQRcu/mltCVmvkF0pisbiTSfDVYTT86XEfZrTUosLdZLStquZUw==
 
+mkdirp@^0.5.1:
+  version "0.5.6"
+  resolved "https://registry.npmmirror.com/mkdirp/-/mkdirp-0.5.6.tgz#7def03d2432dcae4ba1d611445c48396062255f6"
+  integrity sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==
+  dependencies:
+    minimist "^1.2.6"
+
 mkdirp@^1.0.3, mkdirp@^1.0.4:
   version "1.0.4"
   resolved "https://registry.npmmirror.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
@@ -6355,6 +6378,11 @@ unplugin@^2.1.2, unplugin@^2.2.2, unplugin@^2.3.2:
     picomatch "^4.0.2"
     webpack-virtual-modules "^0.6.2"
 
+untildify@^3.0.2:
+  version "3.0.3"
+  resolved "https://registry.npmmirror.com/untildify/-/untildify-3.0.3.tgz#1e7b42b140bcfd922b22e70ca1265bfe3634c7c9"
+  integrity sha512-iSk/J8efr8uPT/Z4eSUywnqyrQU7DSdMfdqK4iWEaUVVmcP5JcnpRqmVMwcwcnmI1ATFNgC5V90u09tBynNFKA==
+
 update-browserslist-db@^1.1.0:
   version "1.1.0"
   resolved "https://registry.npmjs.org/update-browserslist-db/-/update-browserslist-db-1.1.0.tgz"
@@ -6588,6 +6616,11 @@ which@^2.0.1, which@^2.0.2:
   integrity sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==
   dependencies:
     isexe "^2.0.0"
+
+winreg@1.2.4:
+  version "1.2.4"
+  resolved "https://registry.npmmirror.com/winreg/-/winreg-1.2.4.tgz#ba065629b7a925130e15779108cf540990e98d1b"
+  integrity sha512-IHpzORub7kYlb8A43Iig3reOvlcBJGX9gZ0WycHhghHtA65X0LYnMRuJs+aH1abVnMJztQkvQNlltnbPi5aGIA==
 
 word-wrap@~1.2.3:
   version "1.2.5"

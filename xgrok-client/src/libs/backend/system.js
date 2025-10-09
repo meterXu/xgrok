@@ -1,9 +1,13 @@
 const {hostname, version,readLinesInRange,getLineCount,checkUrl,sleep} = require("../util");
-const net = require('net');
 const {BrowserWindow, nativeImage}  = require('electron')
 const path = require("node:path");
 const {isFreePort} = require("node-port-check");
-
+const AutoLaunch = require('auto-launch');
+const minecraftAutoLauncher = new AutoLaunch({
+    name: 'xgrok',
+    path: global.project.appAbsoluteName,
+    args: ['--startup']
+});
 async function getSystemInfo(data){
     return Promise.resolve({
         hostname:hostname(),
@@ -103,11 +107,25 @@ async function getLog(data){
     })
 }
 
+function setAutoLauncher(data){
+    if(data){
+        minecraftAutoLauncher.enable();
+    }else{
+        minecraftAutoLauncher.disable();
+    }
+    return true
+}
+function getAutoLauncher(){
+    return minecraftAutoLauncher.isEnabled()
+}
+
 module.exports={
     getSystemInfo,
     checkPort,
     randomGetPort,
     openDialog,
     getLog,
-    checkWeb
+    checkWeb,
+    setAutoLauncher,
+    getAutoLauncher
 }

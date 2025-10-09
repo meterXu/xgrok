@@ -1,14 +1,26 @@
 <script setup>
 import HorizontalHeader from "@/components/header/HorizontalHeader.vue";
 import PlusScrollbar from "@/components/plus-scrollbar/PlusScrollbar.vue";
-import {watch} from 'vue'
 import {useAppStore} from "@/store";
 
 const store = useAppStore()
 const {appSetting} = store
 
-watch(appSetting, (nv) => {
-  store.setAppSetting(nv)
+function onChangeStartAuto(value){
+  window.electronAPI.setAutoLauncher(value).then(res=>{
+    appSetting.startAuto = res.success?value:false
+    store.setAppSetting(appSetting)
+  })
+}
+
+function onChangeExitInTaskBar(value){
+  appSetting.exitInTaskBar = value
+  store.setAppSetting(appSetting)
+}
+
+window.electronAPI.getAutoLauncher().then(res=>{
+  appSetting.startAuto = res.success?res.data:false
+  store.setAppSetting(appSetting)
 })
 </script>
 
@@ -21,10 +33,10 @@ watch(appSetting, (nv) => {
           <div class="px-14">基础</div>
           <div class="rounded-3xl bg-(--primary-bg-0) px-12 py-16 mt-14">
             <el-form-item label="开启启动" class="justify-between">
-              <el-checkbox v-model="appSetting.startAuto"/>
+              <el-checkbox v-model="appSetting.startAuto" @change="onChangeStartAuto"/>
             </el-form-item>
             <el-form-item label="后台运行" class="justify-between mb-0!">
-              <el-checkbox v-model="appSetting.exitInTaskBar"/>
+              <el-checkbox v-model="appSetting.exitInTaskBar" @change="onChangeExitInTaskBar"/>
             </el-form-item>
           </div>
           <div class="px-14 mt-16">外观</div>

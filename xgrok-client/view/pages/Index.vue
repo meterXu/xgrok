@@ -1,6 +1,5 @@
 <script setup>
 import LeftCon from "@/components/left-aside/LeftCon.vue";
-
 </script>
 
 <template>
