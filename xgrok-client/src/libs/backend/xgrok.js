@@ -37,6 +37,7 @@ async function turnOn(xgrokConf) {
             global.logger.info(`xgrok pid is [${pid}]`)
             let runStatus = await getTunnelStatus([...xgrokConf.tunnelWebs||[],...xgrokConf.tunnelServices||[]])
             if(runStatus.length === 0) {
+                global.pid=pid
                 return Promise.resolve({
                     pid:pid,
                     message:'隧道启动成功'
@@ -57,7 +58,7 @@ async function turnOn(xgrokConf) {
 
 async function turnOff(pid) {
     global.logger.info(`kill xgrok,pid is ${pid}`)
-    fs.existsSync(userXgrokCfgFilePath()) && fs.unlinkSync(userXgrokCfgFilePath())
+    fs.existsSync(global.project.xgrokCfgFilePath) && fs.unlinkSync(global.project.xgrokCfgFilePath)
     stopBeat()
     let res = null
     if (pid) {
@@ -101,10 +102,10 @@ function startXgrok(names,type) {
         global.logger.info(`os arch: ${arch()}`)
         global.logger.info(`os platform: ${platform()}`)
         global.logger.info(`start xgrok, the client root path is ${global.project.clientRootPath}`)
-        global.logger.info(`config:\r\n${readXgrokCfgFile(userXgrokCfgFilePath())}`)
+        global.logger.info(`config:\r\n${readXgrokCfgFile(global.project.xgrokCfgFilePath)}`)
         let xgrok = null
         if(type===serverType.ngrok){
-            xgrok = execFile('./xgrok-core', [`-config=${userXgrokCfgFilePath()}`, 'start', ...names], {
+            xgrok = execFile('./xgrok-core', [`-config=${global.project.xgrokCfgFilePath}`, 'start', ...names], {
                 cwd: global.project.clientRootPath,
                 detached: true
             }, (error, stdout, stderr) => {
@@ -113,7 +114,7 @@ function startXgrok(names,type) {
                 }
             })
         }else{
-            xgrok = execFile('./xgrok-core', ['-c',`${userXgrokCfgFilePath()}`], {
+            xgrok = execFile('./xgrok-core', ['-c',`${global.project.xgrokCfgFilePath}`], {
                 cwd: global.project.clientRootPath,
                 detached: true
             }, (error, stdout, stderr) => {
@@ -132,17 +133,8 @@ function startXgrok(names,type) {
 
 function saveYamlConf(serverDetail, webDetails, serviceDetails) {
     const yamlConf = generateXgrokConf(serverDetail, webDetails, serviceDetails)
-    fs.writeFileSync(userXgrokCfgFilePath(), yamlConf);
+    fs.writeFileSync(global.project.xgrokCfgFilePath, yamlConf);
 
-}
-
-function userXgrokCfgFilePath() {
-    const userFolderPath = global.project.appData;
-    if (!fs.existsSync(userFolderPath)) {
-        fs.mkdirSync(userFolderPath)
-    }
-    const fileName = '.xgrok.cfg';
-    return path.join(userFolderPath, fileName);
 }
 
 function generateXgrokConf(serverDetail, WebDetails, serviceDetails) {

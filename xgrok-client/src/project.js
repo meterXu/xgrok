@@ -1,17 +1,23 @@
 const {platform} = require("./libs/util");
 const path = require("path");
+const fs = require("node:fs");
 const rootPath = path.resolve(__dirname, '..');
 require('dotenv').config({path: `${rootPath}/.env.${process.env.NODE_ENV}`});
 
 function getAppData(){
     try{
+        let _path = ''
         if(process.platform==='darwin'){
-            return path.join(process.env.HOME, 'Library', 'Logs', 'xgrok');
+            _path=path.join(process.env.HOME, 'Library', 'Logs', 'xgrok');
         }else if(process.platform==="win32"){
-            return process.env.APPDATA
+            _path=process.env.APPDATA
         } else if(process.platform==="linux"){
-            return path.join(process.env.HOME, '.config', 'xgrok', 'logs');
+            _path=path.join(process.env.HOME, '.config', 'xgrok', 'logs');
         }
+        if (!fs.existsSync(_path)) {
+            fs.mkdirSync(_path)
+        }
+        return _path
     }catch (err){
         global.logger.error(err.message)
     }
@@ -48,7 +54,9 @@ const getProject=function (app,mode){
             appPath:appPath,
             appAbsoluteName:getAppAbsoluteName(appPath),
             appData:getAppData(),
+            xgrokCfgFilePath:path.join(getAppData(), '.xgrok.cfg'),
             logPath:path.join(getAppData(),'.xgrok-core.log'),
+            isStartupCfg:path.join(getAppData(),'.isStartup.json'),
             auth:{
                 method:'token',
                 token:'xgrok_84hG5!Jk9m',
@@ -82,7 +90,9 @@ const getProject=function (app,mode){
             appPath:appPath,
             appAbsoluteName:getAppAbsoluteName(appPath),
             appData:getAppData(),
+            xgrokCfgFilePath:path.join(getAppData(), '.xgrok.cfg'),
             logPath:path.join(getAppData(),'.xgrok-core.log'),
+            isStartupCfg:path.join(getAppData(),'.isStartup.json'),
             auth:{
                 method:'token',
                 token:'xgrok_84hG5!Jk9m',
