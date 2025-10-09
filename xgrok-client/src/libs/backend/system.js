@@ -1,9 +1,9 @@
-const {hostname, version,readLinesInRange,getLineCount,checkUrl} = require("../util");
+const {hostname, version,readLinesInRange,getLineCount,checkUrl,saveAppCfg, getAppCfg} = require("../util");
 const {BrowserWindow, nativeImage}  = require('electron')
 const path = require("node:path");
 const {isFreePort} = require("node-port-check");
 const AutoLaunch = require('auto-launch');
-const {fs} = require('fs')
+const fs = require('node:fs')
 const minecraftAutoLauncher = new AutoLaunch({
     name: 'xgrok',
     path: global.project.appAbsoluteName
@@ -107,18 +107,20 @@ async function getLog(data){
     })
 }
 
-function setAutoLauncher(data){
-    if(data){
-        minecraftAutoLauncher.enable();
-        global.pid&&fs.writeSync(global.project.isStartupCfg,JSON.stringify({ isStartup: true }))
-    }else{
-        minecraftAutoLauncher.disable();
-        fs.writeSync(global.project.isStartupCfg,JSON.stringify({ isStartup: false }))
-    }
-    return true
+function getXgrokAppCfg(){
+    return getAppCfg()
 }
-function getAutoLauncher(){
-    return minecraftAutoLauncher.isEnabled()
+function setXgrokAppCfg(data){
+    if(data.hasOwnProperty('autoLaunch')){
+        if(data.autoLaunch){
+            minecraftAutoLauncher.enable()
+            data.autoServer = !!global.pid
+        }else{
+            minecraftAutoLauncher.disable()
+            data.autoServer = false
+        }
+    }
+    return saveAppCfg(data)
 }
 
 module.exports={
@@ -128,6 +130,6 @@ module.exports={
     openDialog,
     getLog,
     checkWeb,
-    setAutoLauncher,
-    getAutoLauncher
+    getXgrokAppCfg,
+    setXgrokAppCfg,
 }

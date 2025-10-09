@@ -21,12 +21,7 @@ export const useAppStore = defineStore('app', ()=>{
     const _percentage = ref(0)
     const _headerBtnLoading=ref(false)
     const _systemInfo = shallowReactive({})
-    const _appSetting = shallowReactive({
-        theme: 'system',
-        startAuto: true,
-        exitInTaskBar: true,
-        proxy: ''
-    })
+    const _appSetting = shallowReactive({})
     const _tunnelCount = reactive({
         web:[],
         service:[]
@@ -110,9 +105,11 @@ export const useAppStore = defineStore('app', ()=>{
         return _systemInfo
     })
     const appSetting = computed(()=>{
-        if($ls.get("appSetting")){
-           Object.assign(_appSetting,alterStoreValue(getLsValue($ls.get("appSetting"))))
-        }
+       window.electronAPI.getXgrokAppCfg().then(res=>{
+            if(res.success){
+                Object.assign(_appSetting,res.data)
+            }
+        })
         return _appSetting
     })
     const tunnelCount = computed(()=>{
@@ -169,7 +166,7 @@ export const useAppStore = defineStore('app', ()=>{
     }
     function setAppSetting(data){
         Object.assign(_appSetting,data)
-        $ls.set("appSetting",setLsValue(data))
+        window.electronAPI.setXgrokAppCfg(data)
     }
     function setTunnelCount(data){
         merge(_tunnelCount,data)

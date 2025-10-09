@@ -41,6 +41,16 @@ const getProject=function (app,mode){
     global?.logger?.info(`mode: ${mode}`)
     global?.logger?.info(`appPath: ${appPath}`)
     global?.logger?.info(`appData: ${getAppData()}`)
+    const xgrokAppCfgPath = path.join(getAppData(), `.xgrokApp.json`)
+    if(!fs.existsSync(xgrokAppCfgPath)){
+        fs.writeFileSync(xgrokAppCfgPath,JSON.stringify({
+            theme: 'system',
+            autoLaunch: false,
+            autoServer:false,
+            exitInTaskBar: true,
+            proxy: ''
+        },null, 2),'utf8')
+    }
     if(mode==='development'){
         return {
             viewUrl:"http://localhost:5173/",
@@ -54,9 +64,9 @@ const getProject=function (app,mode){
             appPath:appPath,
             appAbsoluteName:getAppAbsoluteName(appPath),
             appData:getAppData(),
-            xgrokCfgFilePath:path.join(getAppData(), '.xgrok.cfg'),
+            xgrokCoreCfgPath:path.join(getAppData(), '.xgrok.cfg'),
             logPath:path.join(getAppData(),'.xgrok-core.log'),
-            isStartupCfg:path.join(getAppData(),'.isStartup.json'),
+            xgrokAppCfgPath:xgrokAppCfgPath,
             auth:{
                 method:'token',
                 token:'xgrok_84hG5!Jk9m',
@@ -90,9 +100,9 @@ const getProject=function (app,mode){
             appPath:appPath,
             appAbsoluteName:getAppAbsoluteName(appPath),
             appData:getAppData(),
-            xgrokCfgFilePath:path.join(getAppData(), '.xgrok.cfg'),
+            xgrokCoreCfgPath:path.join(getAppData(), '.xgrok.cfg'),
             logPath:path.join(getAppData(),'.xgrok-core.log'),
-            isStartupCfg:path.join(getAppData(),'.isStartup.json'),
+            xgrokAppCfgPath:xgrokAppCfgPath,
             auth:{
                 method:'token',
                 token:'xgrok_84hG5!Jk9m',

@@ -58,7 +58,7 @@ async function turnOn(xgrokConf) {
 
 async function turnOff(pid) {
     global.logger.info(`kill xgrok,pid is ${pid}`)
-    fs.existsSync(global.project.xgrokCfgFilePath) && fs.unlinkSync(global.project.xgrokCfgFilePath)
+    fs.existsSync(global.project.xgrokCoreCfgPath) && fs.unlinkSync(global.project.xgrokCoreCfgPath)
     stopBeat()
     let res = null
     if (pid) {
@@ -102,10 +102,10 @@ function startXgrok(names,type) {
         global.logger.info(`os arch: ${arch()}`)
         global.logger.info(`os platform: ${platform()}`)
         global.logger.info(`start xgrok, the client root path is ${global.project.clientRootPath}`)
-        global.logger.info(`config:\r\n${readXgrokCfgFile(global.project.xgrokCfgFilePath)}`)
+        global.logger.info(`config:\r\n${readXgrokCfgFile(global.project.xgrokCoreCfgPath)}`)
         let xgrok = null
         if(type===serverType.ngrok){
-            xgrok = execFile('./xgrok-core', [`-config=${global.project.xgrokCfgFilePath}`, 'start', ...names], {
+            xgrok = execFile('./xgrok-core', [`-config=${global.project.xgrokCoreCfgPath}`, 'start', ...names], {
                 cwd: global.project.clientRootPath,
                 detached: true
             }, (error, stdout, stderr) => {
@@ -114,7 +114,7 @@ function startXgrok(names,type) {
                 }
             })
         }else{
-            xgrok = execFile('./xgrok-core', ['-c',`${global.project.xgrokCfgFilePath}`], {
+            xgrok = execFile('./xgrok-core', ['-c',`${global.project.xgrokCoreCfgPath}`], {
                 cwd: global.project.clientRootPath,
                 detached: true
             }, (error, stdout, stderr) => {
@@ -133,7 +133,7 @@ function startXgrok(names,type) {
 
 function saveYamlConf(serverDetail, webDetails, serviceDetails) {
     const yamlConf = generateXgrokConf(serverDetail, webDetails, serviceDetails)
-    fs.writeFileSync(global.project.xgrokCfgFilePath, yamlConf);
+    fs.writeFileSync(global.project.xgrokCoreCfgPath, yamlConf);
 
 }
 

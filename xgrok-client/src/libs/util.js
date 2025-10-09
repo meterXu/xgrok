@@ -382,6 +382,15 @@ function waitPortRun(checkPort,checkAddr,count=10){
         }
     })
 }
+function saveAppCfg(saveCfg){
+    let content = JSON.parse(fs.readFileSync(global.project.xgrokAppCfgPath).toString())
+    content = Object.assign(content, saveCfg);
+    fs.writeFileSync(global.project.xgrokAppCfgPath,JSON.stringify(content,null, 2))
+    return true
+}
+function getAppCfg(){
+    return JSON.parse(fs.readFileSync(global.project.xgrokAppCfgPath).toString())
+}
 
 module.exports = {
     randomNumber,
@@ -403,5 +412,7 @@ module.exports = {
     getLineCount,
     readLinesInRange,
     sleep,
-    waitPortRun
+    waitPortRun,
+    saveAppCfg,
+    getAppCfg
 }

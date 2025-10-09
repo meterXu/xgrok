@@ -15,8 +15,8 @@ import ServerList from "@/pages/dashboard/modules/ServerConfig/ServerList.vue";
 import ServiceSwitch from '@/components/control-btns/ServiceSwitch.vue'
 
 const store = useAppStore()
-const serviceSwitchRef = shallowRef()
-const {selectedServer,clientId,systemInfo,tunnelCount,setTunnelCount} = store
+const serviceSwitchRef = ref()
+const {selectedServer,clientId,systemInfo,tunnelCount,setTunnelCount,appSetting,pid} = store
 
 if (window.project.variable.mode !== 'browser') {
   window.electronAPI.onAppQuit(() => {
@@ -96,6 +96,9 @@ watchEffect(()=>{
       tunnelCount.web.splice(0,tunnelCount.web.length,...res.web)
       tunnelCount.service.splice(0,tunnelCount.service.length,...res.service)
       setTunnelCount(tunnelCount)
+      if(!pid.value&&appSetting.autoLaunch&&appSetting.autoServer){
+        serviceSwitchRef.value.onTurnOn()
+      }
     })
   }
 })

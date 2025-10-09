@@ -7,7 +7,7 @@ const {turnOn,turnOff, setXY,
     closeWindow,
     hiddenWindow,
     openExternal} = require("../libs/backend/xgrok");
-const {checkPort,getSystemInfo,openDialog,getLog,checkWeb,setAutoLauncher,getAutoLauncher} = require("../libs/backend/system");
+const {checkPort,getSystemInfo,openDialog,getLog,checkWeb,setXgrokAppCfg,getXgrokAppCfg} = require("../libs/backend/system");
 const {checkUpdate} = require("../libs/util");
 const {autoUpdater} = require("electron-updater");
 ipcMain.handle('xgrok', async (event, arg) => {
@@ -84,11 +84,11 @@ ipcMain.handle('system',async (event,arg)=>{
                     })
                 })
             }break
-            case 'setAutoLauncher':{
-                res.data = setAutoLauncher(arg.data)
+            case 'setXgrokAppCfg':{
+                res.data = setXgrokAppCfg(arg.data)
             }break
-            case 'getAutoLauncher':{
-                res.data = await getAutoLauncher()
+            case 'getXgrokAppCfg':{
+                res.data = getXgrokAppCfg()
             }break
         }
     }catch (err){

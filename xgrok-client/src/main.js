@@ -10,7 +10,7 @@ const project = getProject(app,process.env.NODE_ENV)
 global.project = project
 global.logger.info('xgrok project:',project)
 require('./ipc/backend')
-const {killPid, findProcessId,checkUpdate} = require("./libs/util");
+const {killPid, findProcessId,checkUpdate,getAppCfg} = require("./libs/util");
 global.logger.info(`xgrok is running,version:${app.getVersion()}`)
 global.proxyLocalhost = '127.0.0.1'
 
@@ -88,7 +88,8 @@ function createWindow () {
     // 监听关闭事件
     win.on('close', (event) => {
         global.logger.info(`win close, requireClose:${requireClose}`)
-        if(requireClose){
+        const appCfg = getAppCfg()
+        if(requireClose||!appCfg.exitInTaskBar){
             app.quit();
         }else{
             event.preventDefault();

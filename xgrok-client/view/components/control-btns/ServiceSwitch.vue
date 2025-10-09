@@ -53,6 +53,7 @@ async function onTurnOn() {
         let res = await window.electronAPI.turnOn(JSON.parse(JSON.stringify(data)))
         if (res.success) {
           store.setPid(res.data)
+          store.setAppSetting({autoServer:true})
           showNotification(NotificationType.success,'启动成功')
         } else {
           store.setPid(0)
@@ -80,6 +81,7 @@ async function onTurnOff() {
       if (res.success) {
         store.setPid(null)
         store.setConfigIsLock(false)
+        store.setAppSetting({autoServer:false})
         showNotification(NotificationType.success,'关闭成功')
       } else {
         alert(res.data.message,'关闭失败',{
@@ -108,6 +110,11 @@ onMounted(()=>{
 
 onUnmounted(()=>{
   $off('restart')
+})
+
+defineExpose({
+  onTurnOn,
+  onTurnOff,
 })
 </script>
 
