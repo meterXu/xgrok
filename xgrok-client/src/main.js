@@ -20,7 +20,7 @@ function createWindow () {
     const win = new BrowserWindow(Object.assign(Object.assign({
         title:app.getName(),
         width: 1000,
-        height: 800,
+        height: 700,
         icon: appIcon,
         webPreferences: {
             preload: path.join(__dirname,'ipc', 'preload.js'),

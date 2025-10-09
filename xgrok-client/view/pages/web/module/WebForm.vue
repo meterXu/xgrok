@@ -1,15 +1,16 @@
 <script setup>
 import {reactive, defineEmits, ref, watch} from "vue";
-import {NotificationType, tunnelType} from "@/libs/enums";
+import {isOnline, NotificationType, tunnelType} from "@/libs/enums";
 import {getUrlSchema} from "@/libs/common";
 import {checkName, createTunnelWeb, updateTunnelWeb} from "@/api";
 import {useAppStore} from "@/store";
 import {tipText} from "@/libs/infoText";
 import InfoTip from "@/components/infoTip.vue";
 import {confirm, testName, isLocalHost} from "@/libs/common";
-import {onFormValidate, useGetDisabled, useGetErrorMsg} from "@/libs/useAction";
+import {onFormValidate, operationConfirm, useGetDisabled, useGetErrorMsg} from "@/libs/useAction";
 import {useRouter} from "vue-router";
 import {showNotification} from "@/libs/message";
+import {$emit} from 'xxweb-util'
 
 const store = useAppStore()
 const {selectedServer, clientId,configIsLock,pid} = store
@@ -29,7 +30,8 @@ const formData = reactive({
   is_remote: null,
   server_id: null,
   client_id: null,
-  port: null
+  port: null,
+  is_online: null
 })
 
 watchEffect(() => {
@@ -42,6 +44,7 @@ watchEffect(() => {
   formData.server_id = props.tunnelForm?.server_id || selectedServer.value.id
   formData.client_id = props.tunnelForm?.client_id || clientId.value
   formData.port = props.tunnelForm?.port || 80
+  formData.is_online = isOnline.online
 })
 
 const validateRes = reactive({
@@ -88,36 +91,35 @@ function onSave() {
   saveLoading.value = true
   ruleFormRef.value.validate(valid => {
     if (valid) {
-      //todo 进行确认更新提示
-      if(pid.value){
-        confirm('服务正在运行过程中，是否继续更新？','',{
-          confirmButtonText: '更新',
-          cancelButtonText: '否',
+      operationConfirm().then(()=>{
+        formData.id ? updateTunnelWeb(formData).then(res => {
+          showNotification(res.success ? NotificationType.success : NotificationType.error, res.success ? `${createOrUpdateText.value}成功` : `${createOrUpdateText.value}失败`)
+          if (res.success) {
+            emits('cancel')
+            emits('updateSuccess')
+            pid.value&&$emit('restart')
+          }
+        }).finally(() => {
+          saveLoading.value = false
+        }) : createTunnelWeb(formData).then(res => {
+          if (res.success) {
+            showNotification(NotificationType.success,  `${createOrUpdateText.value}成功`)
+            emits('cancel')
+            emits('createSuccess')
+            pid.value&&$emit('restart')
+          } else {
+            confirm(res.message || `${createOrUpdateText.value}失败`, null, {
+              confirmButtonText: '去订阅',
+              cancelButtonText: '知道了',
+              confirmButtonClass: 'el-button--warning is-plain'
+            }).then(() => {
+              router.push({name: 'Plan'})
+            })
+          }
+        }).finally(() => {
+          saveLoading.value = false
         })
-      }
-      formData.id ? updateTunnelWeb(formData).then(res => {
-        showNotification(res.success ? NotificationType.success : NotificationType.error, res.success ? `${createOrUpdateText.value}成功` : `${createOrUpdateText.value}失败`)
-        if (res.success) {
-          emits('cancel')
-          emits('updateSuccess')
-        }
-      }).finally(() => {
-        saveLoading.value = false
-      }) : createTunnelWeb(formData).then(res => {
-        if (res.success) {
-          showNotification(NotificationType.success,  `${createOrUpdateText.value}成功`)
-          emits('cancel')
-          emits('createSuccess')
-        } else {
-          confirm(res.message || `${createOrUpdateText.value}失败`, null, {
-            confirmButtonText: '去订阅',
-            cancelButtonText: '知道了',
-            confirmButtonClass: 'el-button--warning is-plain'
-          }).then(() => {
-            router.push({name: 'Plan'})
-          })
-        }
-      }).finally(() => {
+      }).catch(()=>{
         saveLoading.value = false
       })
     } else {

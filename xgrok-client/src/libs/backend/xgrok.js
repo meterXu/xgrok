@@ -83,7 +83,7 @@ async function getTunnelStatus(tunnels){
                 tunnels.forEach(c=>{
                     let findStatus = statusData.find(r=>r.name===c.name)
                     if(findStatus?.status!=='running'){
-                        errArray.push(`${c.name}启动失败，${findStatus?.err}`)
+                        errArray.push(`${c.name}启动失败，${findStatus?.err||'-'}`)
                     }
                 })
                 resolve(errArray)

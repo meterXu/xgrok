@@ -54,6 +54,7 @@ export default class TunnelServiceService {
               status:tunnelServiceModel.status,
               is_delete:tunnelServiceModel.is_delete,
               is_remote:tunnelServiceModel.is_remote,
+              is_online:tunnelServiceModel.is_online,
               remark:tunnelServiceModel.remark,
             }
         })

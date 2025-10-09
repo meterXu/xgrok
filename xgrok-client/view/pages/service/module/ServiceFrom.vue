@@ -2,15 +2,16 @@
 import {reactive, defineEmits, ref, watch} from "vue";
 import {checkName, checkPort, createTunnelService, queryRange, updateTunnelService} from "@/api";
 import {useAppStore} from "@/store";
-import {hostType, NotificationType, tunnelType} from "@/libs/enums";
+import {hostType, isOnline, NotificationType, tunnelType} from "@/libs/enums";
 import InfoTip from "@/components/infoTip.vue";
 import {tipText} from "@/libs/infoText";
 import {testName, isLocalHost} from "@/libs/common";
-import {gotoSubscribe, onFormValidate, useGetDisabled, useGetErrorMsg} from "@/libs/useAction";
+import {gotoSubscribe,operationConfirm, useGetDisabled, useGetErrorMsg,onFormValidate} from "@/libs/useAction";
 import {showNotification} from "@/libs/message";
+import {$emit} from "xxweb-util";
 
 const store = useAppStore()
-const {selectedServer, clientId,configIsLock} = store
+const {selectedServer, clientId,configIsLock,pid} = store
 const props = defineProps(['tunnelForm'])
 const emits = defineEmits(['updateSuccess', 'cancel', 'createSuccess'])
 const ruleFormRef = ref('ruleFormRef')
@@ -30,6 +31,7 @@ const formData = reactive({
   port: null,
   remote_port: null,
   is_remote: null,
+  is_online: null
 })
 const validateRes = reactive({
   name: {value: null, valid: true},
@@ -80,6 +82,7 @@ watchEffect(() => {
   formData.port = props.tunnelForm?.port
   formData.remote_port = props.tunnelForm?.remote_port
   formData.is_remote = props.tunnelForm?.is_remote || 0
+  formData.is_online = isOnline.online
 })
 
 watch(() => formData.host, (nv) => {
@@ -90,26 +93,32 @@ function onSave() {
   saveLoading.value = true
   ruleFormRef.value.validate(valid => {
     if (valid) {
-      formData.id ? updateTunnelService(formData).then(res => {
-            showNotification(res.success?NotificationType.success:NotificationType.error, res.success ? '更新成功' : '更新失败')
-            if (res.success) {
-              emits('cancel')
-              emits('updateSuccess')
-            }
-          }).finally(() => {
-            saveLoading.value = false
-          })
-          : createTunnelService(formData).then(res => {
-            if (res.success) {
-              showNotification(NotificationType.success,'创建成功')
-              emits('cancel')
-              emits('createSuccess')
-            } else {
-              gotoSubscribe(res.message || '创建失败')
-            }
-          }).finally(() => {
-            saveLoading.value = false
-          })
+      operationConfirm().then(()=>{
+        formData.id ? updateTunnelService(formData).then(res => {
+              showNotification(res.success?NotificationType.success:NotificationType.error, res.success ? '更新成功' : '更新失败')
+              if (res.success) {
+                emits('cancel')
+                emits('updateSuccess')
+                pid.value&&$emit('restart')
+              }
+            }).finally(() => {
+              saveLoading.value = false
+            })
+            : createTunnelService(formData).then(res => {
+              if (res.success) {
+                showNotification(NotificationType.success,'创建成功')
+                emits('cancel')
+                emits('createSuccess')
+                pid.value&&$emit('restart')
+              } else {
+                gotoSubscribe(res.message || '创建失败')
+              }
+            }).finally(() => {
+              saveLoading.value = false
+            })
+      }).catch(()=>{
+        saveLoading.value = false
+      })
     } else {
       saveLoading.value = false
     }

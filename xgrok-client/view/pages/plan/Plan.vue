@@ -86,7 +86,7 @@ function onWillPlanExpiredTime(item) {
               <span class="relative">{{ freeProductionList[0]?.price }}</span>
             </div>
             <div class="p-[0_20px_20px_20px]">
-              <ul class="mt-24! inline-flex flex-col items-start justify-start gap-32">
+              <ul class="mt-24! inline-flex flex-col items-start justify-start gap-24">
                 <li class="flex flex-row items-center justify-start gap-4 text-[14px]"
                     v-for="remark in freeProductionList[0]?.remark?.split('\n')">
                   <el-icon class="text-(--el-color-success)!" size="20">
@@ -123,11 +123,11 @@ function onWillPlanExpiredTime(item) {
                     <span>{{ item.name }}</span>
                   </div>
                 </template>
-                <div class="text-[24px] font-600 px-20 py-8" v-if="item.type!==0">
+                <div class="text-[24px] font-600 px-20 py-14" v-if="item.type!==0">
                   <span class="relative">{{ item.price }}</span>
                 </div>
                 <div class="p-[0_20px_20px_20px]">
-                  <ul class="mt-24! inline-flex flex-col items-start justify-start gap-32">
+                  <ul class="inline-flex flex-col items-start justify-start gap-24">
                     <li class="flex flex-row items-center justify-start gap-8 text-[14px]"
                         v-for="remark in item.remark?.split('\n')">
                       <el-icon class="text-(--el-color-success)!" size="20">

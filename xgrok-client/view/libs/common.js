@@ -1,6 +1,5 @@
 import {defaultPort, httpType, payPlan} from "@/libs/enums";
 import {ElMessageBox} from "element-plus";
-import {closeAll} from "element-plus/es/components/message/src/method";
 
 export function useMyTitle(tunnelConfig){
     return tunnelConfig.remark?`${tunnelConfig.name}：${tunnelConfig.remark}`:tunnelConfig.name
@@ -37,8 +36,9 @@ export const usePayPlanColor=function (_payPlan){
 }
 
 export function confirm(msg,title,options){
+    ElMessageBox.close()
     return ElMessageBox.confirm(msg, title,Object.assign({
-        customClass:'my-messageBox-confirm',
+        customClass:'my-messageBox',
         buttonSize:'default',
         closeOnClickModal:false,
         showClose:false,
@@ -53,7 +53,7 @@ export function confirm(msg,title,options){
 export function alert(msg,title,options){
     ElMessageBox.close()
     ElMessageBox.alert(msg, title,Object.assign({
-        customClass:'my-messageBox-alert',
+        customClass:'my-messageBox',
         confirmButtonText: '确定',
         showClose:false,
         center:true,

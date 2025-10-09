@@ -8,7 +8,7 @@ import {onMounted, ref} from "vue";
 import {useAppStore} from "@/store";
 import {checkWeb, deleteTunnelWebBatch, queryTunnelWebConfig, updateTunnelWeb} from "@/api";
 import WebForm from "@/pages/web/module/WebForm.vue";
-import {checkPermission} from "@/libs/useAction";
+import {checkPermission, operationConfirm} from "@/libs/useAction";
 import {getEnumKey, confirm} from "@/libs/common";
 import {isOnline, NotificationType, tunnelType} from "@/libs/enums";
 import TunnelFormWrap from '@/components/tunnel/TunnelFormWrap.vue'
@@ -20,6 +20,7 @@ import PlusLoading from "@/components/plus-loading/PlusLoading.vue";
 import {showNotification} from "@/libs/message";
 import WebItem from "@/pages/web/module/WebItem.vue";
 import {$emit} from "xxweb-util";
+import ServiceSwitch from "@/components/control-btns/ServiceSwitch.vue";
 
 const store = useAppStore()
 const {selectedServer, clientId, configIsLock,pid} = store
@@ -79,13 +80,16 @@ function onDel() {
     confirm('确定要删除这条配置吗？', null, {
       confirmButtonClass: 'el-button--danger is-plain'
     }).then(() => {
-      deleteTunnelWebBatch(activeTunnel.value.id).then((res) => {
-        if (res.success) {
-          showNotification(NotificationType.success, '删除成功')
-          loadTunnelData()
-        } else {
-          showNotification(NotificationType.error, '删除失败')
-        }
+      operationConfirm().then(()=>{
+        deleteTunnelWebBatch(activeTunnel.value.id).then((res) => {
+          if (res.success) {
+            showNotification(NotificationType.success, '删除成功')
+            loadTunnelData()
+            pid.value&&$emit('restart')
+          } else {
+            showNotification(NotificationType.error, '删除失败')
+          }
+        })
       })
     })
   }
@@ -173,6 +177,7 @@ onMounted(() => {
       </TunnelFormWrap>
     </div>
   </div>
+  <ServiceSwitch class="invisible"/>
 </template>
 
 <style scoped lang="less">

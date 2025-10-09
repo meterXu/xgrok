@@ -16,11 +16,7 @@ import ServiceSwitch from '@/components/control-btns/ServiceSwitch.vue'
 
 const store = useAppStore()
 const serviceSwitchRef = shallowRef()
-const {selectedServer,clientId,systemInfo} = store
-const tunnelCount = reactive({
-  web:[],
-  service:[]
-})
+const {selectedServer,clientId,systemInfo,tunnelCount,setTunnelCount} = store
 
 if (window.project.variable.mode !== 'browser') {
   window.electronAPI.onAppQuit(() => {
@@ -99,6 +95,7 @@ watchEffect(()=>{
     queryTunnelCount(selectedServer.value?.id,clientId.value).then(res=>{
       tunnelCount.web.splice(0,tunnelCount.web.length,...res.web)
       tunnelCount.service.splice(0,tunnelCount.service.length,...res.service)
+      setTunnelCount(tunnelCount)
     })
   }
 })
@@ -122,7 +119,7 @@ onUnmounted(() => {
       <div class="flex-1 h-full relative">
         <SystemCard class="absolute"></SystemCard>
       </div>
-      <ServiceSwitch ref="serviceSwitchRef" :tunnelCount="tunnelCount">
+      <ServiceSwitch ref="serviceSwitchRef">
       </ServiceSwitch>
     </div>
     <div class="flex-1 relative mx-24 mt-16 mb-32">

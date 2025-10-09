@@ -18,7 +18,7 @@ function httpUrl(tunnelConfig, type) {
 }
 
 function onOpenLink(item, type) {
-  const link = httpUrl(selectedServer, item, type)
+  const link = httpUrl(item, type)
   window.project.variable.mode === 'browser' ? window.open(link, '_blank') : window.electronAPI.openExternal(link)
 }
 

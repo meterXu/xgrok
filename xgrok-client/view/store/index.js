@@ -3,6 +3,7 @@ import {ref, computed, shallowReactive,shallowRef} from 'vue'
 import {USER_INFO, ACCESS_TOKEN, setLsValue, getLsValue, alterStoreValue} from "xxweb-util";
 import {payPlan} from "@/libs/enums";
 import dayjs from 'dayjs'
+import {merge} from 'lodash-es'
 
 export const useAppStore = defineStore('app', ()=>{
     const $ls = window.app.config.globalProperties.$ls
@@ -25,6 +26,10 @@ export const useAppStore = defineStore('app', ()=>{
         startAuto: true,
         exitInTaskBar: true,
         proxy: ''
+    })
+    const _tunnelCount = reactive({
+        web:[],
+        service:[]
     })
 
     //computed
@@ -110,6 +115,9 @@ export const useAppStore = defineStore('app', ()=>{
         }
         return _appSetting
     })
+    const tunnelCount = computed(()=>{
+        return _tunnelCount
+    })
 
     //action
     function setUserInfo(data){
@@ -151,7 +159,7 @@ export const useAppStore = defineStore('app', ()=>{
     }
     function setPercentage(data){
         _percentage.value = data
-        $ss.set('percentage',getLsValue(data))
+        $ss.set('percentage',data)
     }
     function setHeaderBtnLoading(data){
         _headerBtnLoading.value=data
@@ -162,6 +170,9 @@ export const useAppStore = defineStore('app', ()=>{
     function setAppSetting(data){
         Object.assign(_appSetting,data)
         $ls.set("appSetting",setLsValue(data))
+    }
+    function setTunnelCount(data){
+        merge(_tunnelCount,data)
     }
 
     return {
@@ -180,6 +191,7 @@ export const useAppStore = defineStore('app', ()=>{
         headerBtnLoading,
         systemInfo,
         appSetting,
+        tunnelCount,
         setUserInfo,
         setToken,
         setPid,
@@ -192,7 +204,8 @@ export const useAppStore = defineStore('app', ()=>{
         setPercentage,
         setHeaderBtnLoading,
         setSystemInfo,
-        setAppSetting
+        setAppSetting,
+        setTunnelCount
     }
 })
 export default createPinia()

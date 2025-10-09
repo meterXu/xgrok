@@ -108,16 +108,27 @@ export function isEmail(email){
  * 检查服务器端口监听情况
  * @param domain 域名
  * @param port 地址
- * @returns true为没有监听，false为有监听
+ * @returns Promise true被占用，false未占用
  */
 export function checkServerOnline(domain,port){
     return new Promise((resolve, reject) => {
         const socket = new net.Socket();
         socket.setTimeout(3000); // 设置超时时间，根据需要调整
         socket.once('connect', () => {
-            socket.destroy();
-            console.log(`端口 ${port} 在 ${domain} 上被占用。`);
-            resolve(true)
+            console.log(`端口 ${port} 在 ${domain} 连接成功。`);
+            // 设置一个延迟来检查连接状态
+            setTimeout(() => {
+                socket.write('PING', (err) => {
+                    if (err) {
+                        console.log(`端口 ${port} 在 ${domain} 上被连接，但被远程关闭。`);
+                        resolve(false); // 远程关闭，视为未被占用
+                    } else {
+                        console.log(`端口 ${port} 在 ${domain} 上正常开启。`);
+                        resolve(true); // 正常连接且可响应
+                    }
+                    socket.destroy();
+                });
+            }, 1000);
         });
         socket.once('timeout', () => {
             console.log(`连接到 ${domain}:${port} 超时。`);

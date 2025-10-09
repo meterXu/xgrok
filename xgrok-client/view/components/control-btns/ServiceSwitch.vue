@@ -5,10 +5,10 @@ import {checkTunnelConfig} from "@/libs/useAction";
 import {isEmpty,$on,$off} from "xxweb-util";
 import {onMounted,onUnmounted} from 'vue';
 import {alert, showNotification} from "@/libs/message";
+import {queryTunnelCount} from "@/api";
 const emits = defineEmits(['serverLoading'])
 const store = useAppStore()
-const {pid, selectedServer} = store
-const props = defineProps(['tunnelCount'])
+const {pid, selectedServer,tunnelCount,setTunnelCount,clientId} = store
 const switchLoading = ref(false)
 
 const serverAvailability=computed(()=>{
@@ -24,6 +24,11 @@ const status = computed(()=>{
 })
 
 async function onSwitchChange() {
+  queryTunnelCount(selectedServer.value?.id,clientId.value).then(res=>{
+    tunnelCount.web.splice(0,tunnelCount.web.length,...res.web)
+    tunnelCount.service.splice(0,tunnelCount.service.length,...res.service)
+    setTunnelCount(tunnelCount)
+  })
   if (!pid.value) {
     await onTurnOn()
   } else {
@@ -32,14 +37,14 @@ async function onSwitchChange() {
 }
 
 async function onTurnOn() {
-  if (checkTunnelConfig(selectedServer?.value,props.tunnelCount.web,props.tunnelCount.service)){
+  if (checkTunnelConfig(selectedServer?.value,tunnelCount.web,tunnelCount.service)){
     switchLoading.value = true
     store.setPid(null)
     store.setConfigIsLock(true)
     let data = {
       server: selectedServer.value,
-      tunnelWebs: toRaw(props.tunnelCount.web),
-      tunnelServices: toRaw(props.tunnelCount.service)
+      tunnelWebs: toRaw(tunnelCount.web),
+      tunnelServices: toRaw(tunnelCount.service)
     }
     if(window.project.variable.mode==='browser'){
       store.setPid(1)
@@ -53,7 +58,7 @@ async function onTurnOn() {
           store.setPid(0)
           store.setConfigIsLock(false)
           alert(
-              `<p style="height:20rem;display:flex;align-items:center">${res.message}</p>`,'启动失败',{
+              res.message,'启动失败',{
                 dangerouslyUseHTMLString:true,
                 confirmButtonClass:'el-button--danger is-plain'
           })
@@ -92,7 +97,7 @@ async function onTurnOff() {
 async function onRestart() {
   let _refresh = async () => {
     await onSwitchChange()
-    await onSwitchChange()
+    !pid.value && await onSwitchChange()
   }
   await _refresh.debounce()()
 }

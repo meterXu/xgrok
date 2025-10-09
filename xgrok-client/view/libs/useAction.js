@@ -1,9 +1,10 @@
 import {computed, reactive} from "vue";
 import router from "@/router";
-import {payPlan} from "@/libs/enums";
+import {NotificationType, payPlan} from "@/libs/enums";
 import {confirm} from "@/libs/common";
 import {useAppStore} from '@/store'
 import {ElMessage} from "element-plus";
+import {showNotification} from "@/libs/message";
 
 export function useGetValidateRes(form){
     const obj={}
@@ -54,7 +55,7 @@ export function checkTunnelConfig(selectedServer,web,service){
     const store = useAppStore()
     let res = selectedServer && (web.length > 0 || service.length > 0)
     if(!res){
-        ElMessage.warning('没有任何配置，请先添加')
+        showNotification(NotificationType.warning,'请先添加一个隧道再启动服务！')
     }
     if(store.plan.value===payPlan.free){
         if(service.length!==0){
@@ -92,4 +93,16 @@ export function gotoSubscribe(message){
     }).then(()=>{
         router.push({name:'Plan'})
     }).catch(()=>{})
+}
+
+export function operationConfirm(){
+    const {pid} = useAppStore()
+    if(pid.value){
+        return confirm('服务正在运中，是否继续操作？','',{
+            confirmButtonText: '继续',
+            cancelButtonText: '取消',
+        })
+    }else{
+        return Promise.resolve()
+    }
 }
