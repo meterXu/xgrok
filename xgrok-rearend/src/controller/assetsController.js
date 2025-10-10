@@ -1,10 +1,9 @@
-import AssetsService from "../service/AssetsService";
+import AssetsService from "../service/assetsService";
 import {query, request, summary, tags} from "koa-swagger-decorator";
 import PaginationModel from "../model/sys/paginationModel";
 import OrderByModel from "../model/sys/orderByModel";
 import AssetsModel from "../model/assetsModel";
 import ResultModel from "../model/sys/resultModel";
-import ServerModel from "../model/serverModel";
 
 const tag = tags(['Assets'])
 
