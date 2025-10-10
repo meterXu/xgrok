@@ -24,8 +24,9 @@ const searchForm = reactive({
   trade_no: '',
   username: '',
   created_time: [] as Date[],
-  pay_status: null,
-  status: null,
+  pay_status: 1,
+  status: 1,
+  is_delete:0,
   is_manage: 1
 })
 const payStatusDict = shallowReactive<DictItemType[]>([])
@@ -53,7 +54,7 @@ function handleQuery(pageNumber: number = page.pageNumber, pageSize: number = pa
 }
 
 function handleReset() {
-  resetObj(searchForm)
+  resetObj(searchForm,{status: 1, is_delete:0, is_manage: 1,  pay_status: 1})
   handleQuery(1, 20)
 }
 
@@ -119,7 +120,7 @@ onMounted(() => {
             <el-form-item label="支付状态">
               <el-select class="w-150!" v-model="searchForm.pay_status" clearable @change="()=>{handleQuery()}">
                 <el-option v-for="item in payStatusDict" :key="item.code" :label="item.chn_value"
-                           :value="item.code"></el-option>
+                           :value="parseInt(item.code)"></el-option>
               </el-select>
             </el-form-item>
           </div>
@@ -127,6 +128,16 @@ onMounted(() => {
             <el-form-item label="购买人">
               <el-input class="w-150!" v-model="searchForm.username" clearable @keydown.enter="()=>{handleQuery()}">
               </el-input>
+            </el-form-item>
+            <el-form-item label="是否启用">
+              <el-select class="w-150!" v-model="searchForm.status" clearable @change="()=>{handleQuery()}">
+                <el-option v-for="item in statusDict" :label="item.chn_value" :value="parseInt(item.code)"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="是否删除">
+              <el-select class="w-150!" v-model="searchForm.is_delete" clearable @change="()=>{handleQuery()}">
+                <el-option v-for="item in isDeleteDict" :label="item.chn_value" :value="parseInt(item.code)"></el-option>
+              </el-select>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="()=>{handleQuery()}" :icon="Search">查询</el-button>

@@ -16,8 +16,8 @@ const page = usePage()
 const dialogVisible = ref(false)
 const searchForm = shallowReactive({
   username:'',
-  status:null,
-  is_delete:null
+  status:1,
+  is_delete:0
 })
 const statusDict = shallowReactive<DictItemType[]>([])
 const isDeleteDict = shallowReactive<DictItemType[]>([])
@@ -40,7 +40,7 @@ function handleQuery(pageNumber:number=1,pageSize:number=20){
   useQuery(queryData,Object.assign({},page,searchForm),(res:ResultType<PaginationDataType<UserType>>)=>{useQueryCallback(res,tableData,page)})
 }
 function handleReset(){
-  resetObj(searchForm)
+  resetObj(searchForm,{status:1, is_delete:0})
   handleQuery(1,20)
 }
 
@@ -105,12 +105,12 @@ onMounted(()=>{
       </el-form-item>
       <el-form-item label="是否启用">
         <el-select class="w-120!" v-model="searchForm.status" clearable @change="()=>{handleQuery()}">
-          <el-option v-for="item in statusDict" :label="item.chn_value" :value="item.code"></el-option>
+          <el-option v-for="item in statusDict" :label="item.chn_value" :value="parseInt(item.code)"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="是否删除">
         <el-select class="w-120!" v-model="searchForm.is_delete" clearable @change="()=>{handleQuery()}">
-          <el-option v-for="item in isDeleteDict" :label="item.chn_value" :value="item.code"></el-option>
+          <el-option v-for="item in isDeleteDict" :label="item.chn_value" :value="parseInt(item.code)"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
