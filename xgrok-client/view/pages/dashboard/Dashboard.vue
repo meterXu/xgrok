@@ -16,7 +16,7 @@ import ServiceSwitch from '@/components/control-btns/ServiceSwitch.vue'
 
 const store = useAppStore()
 const serviceSwitchRef = ref()
-const {selectedServer,clientId,systemInfo,tunnelCount,setTunnelCount,appSetting,pid} = store
+const {selectedServer, clientId, systemInfo, tunnelCount, setTunnelCount, appSetting, pid} = store
 
 if (window.project.variable.mode !== 'browser') {
   window.electronAPI.onAppQuit(() => {
@@ -33,13 +33,13 @@ if (window.project.variable.mode !== 'browser') {
 
 function initServerConfigData() {
   if (selectedServer.value && selectedServer.value.type === window.project.variable.type) {
-    detailServerConfig(selectedServer.value.id).then(res=>{
+    detailServerConfig(selectedServer.value.id).then(res => {
       if (res.success) {
         store.setSelectedServer(res.data)
       }
     })
   } else {
-    queryServersConfig(window.project.variable.type).then(res=>{
+    queryServersConfig(window.project.variable.type).then(res => {
       if (res.success && res.data.records.length > 0) {
         store.setSelectedServer(res.data.records[0])
       }
@@ -48,11 +48,11 @@ function initServerConfigData() {
 }
 
 function initClient() {
-  getSystemInfo().then(res=>{
+  getSystemInfo().then(res => {
     if (res.success) {
       store.setSystemInfo(res.data)
       if (!clientId.value) {
-        queryClient(res.data.hostname).then(res1=>{
+        queryClient(res.data.hostname).then(res1 => {
           if (res1.success) {
             if (res1.data.records.length > 0) {
               store.setClientId(res1.data.records[0].id)
@@ -60,7 +60,7 @@ function initClient() {
               createClient({
                 hostname: systemInfo.hostname,
                 osVersion: systemInfo.osVersion
-              }).then(res2=>{
+              }).then(res2 => {
                 res2.success && store.setClientId(res2.data)
               })
             }
@@ -78,7 +78,6 @@ function initClient() {
 }
 
 
-
 watch(() => selectedServer?.value?.id, (nv, ov) => {
   sendMessage({type: 'closeCheckServer', server_id: ov})
   sendMessage({
@@ -90,20 +89,20 @@ watch(() => selectedServer?.value?.id, (nv, ov) => {
   })
 }, {immediate: true})
 
-watchEffect(()=>{
-  if(selectedServer.value?.id&&clientId.value){
-    queryTunnelCount(selectedServer.value?.id,clientId.value).then(res=>{
-      tunnelCount.web.splice(0,tunnelCount.web.length,...res.web)
-      tunnelCount.service.splice(0,tunnelCount.service.length,...res.service)
+watchEffect(() => {
+  if (selectedServer.value?.id && clientId.value) {
+    queryTunnelCount(selectedServer.value?.id, clientId.value).then(res => {
+      tunnelCount.web.splice(0, tunnelCount.web.length, ...res.web)
+      tunnelCount.service.splice(0, tunnelCount.service.length, ...res.service)
       setTunnelCount(tunnelCount)
-      if(!pid.value&&appSetting.autoLaunch&&appSetting.autoServer){
+      if (!pid.value && appSetting.autoLaunch && appSetting.autoServer) {
         serviceSwitchRef.value.onTurnOn()
       }
     })
   }
 })
 
-onMounted( () => {
+onMounted(() => {
   initServerConfigData()
   initClient()
 })

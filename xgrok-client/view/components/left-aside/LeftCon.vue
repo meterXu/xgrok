@@ -18,5 +18,6 @@ function onChick(){
 <style scoped lang="less">
 .aside{
   background: linear-gradient(to right bottom, var(--aside-bg), var(--aside-bg2));
+  border-right:1px solid var(--aside-border);
 }
 </style>

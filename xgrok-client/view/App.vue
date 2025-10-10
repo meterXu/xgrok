@@ -3,8 +3,11 @@ import HeaderToolBar from "@/components/HeaderToolBar.vue";
 import {deviceType} from "@/libs/common";
 import bus from "@/libs/bus";
 import {resizeFontSize} from "xxweb-util";
+import {useAppStore} from '@/store'
 
 const router = useRouter()
+const {appSetting} = useAppStore()
+
 window.onresize = ()=>{
   resizeFontSize(1000,4,0,(width)=>{
     if(width<800){
@@ -21,6 +24,10 @@ window.onresize = ()=>{
 
 window.project.variable.mode!=='browser'&&window.electronAPI.onRoute((data)=>{
   router.push({name:data.name})
+})
+
+watchEffect(()=>{
+  document.querySelector('html').setAttribute('theme',appSetting.theme)
 })
 </script>
 

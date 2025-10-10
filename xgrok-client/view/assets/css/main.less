@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import url('./mixin.less');
 @import url('../fonts/font.less');
-:root{
+html[theme='light']:root{
   --text-color:#242b3a;
   --text-color-2:#565656;
   --header-bg:#EBEBEB;
@@ -28,6 +28,7 @@
   --el-color-disabled:var(--el-text-color-disabled);
   --aside-bg:#324149;
   --aside-bg2:#222a39;
+  --aside-border:#f8fafd;
   --aside-menu-text:#86929a;
   --aside-menu-text-hover:#fff;
   --tunnel-item-bg:#f1f8fc;
@@ -40,6 +41,78 @@
   --power-switch-shadow:rgba(0,0,0,0.12);
   --power-switch-shadow-success:var(--el-color-success-light-5);
   --power-switch-shadow-danger:var(--el-color-danger-light-5);
+
+}
+html[theme='dark']:root{
+  --text-color:#fff;
+  --text-color-2:#f0f0f0;
+  --header-bg:#EBEBEB;
+  --container-bg:#212223;
+  --primary-bg-0:#212223;
+  --primary-bg-1:#F1F1F1;
+  --primary-bg-2:#F5F5F5;
+  --primary-btn-bg:#F1F1F1;
+  --primary-btn-hover-bg:#C6C6C6;
+  --primary--login-bg:#FFFF;
+  --server-info-bg:#f5f5f5;
+  --border-color: rgba(229, 232, 240);
+  --border-color-2: rgba(229, 232, 240,0.75);
+  --scrollbar-track-color:rgb(136, 136, 136);
+  --scrollbar-thumb-color:rgb(179, 177, 177);
+  --scrollbar-thumb-hover-color:rgb(100, 100, 100);
+  --scrollbar-thumb-active-color:rgb(68, 68, 68);
+  --edit-icon-color: #979797;
+  --light-border-color:rgba(220, 223, 230, 0.8);
+  --el-color-primary:#3bd989;
+  --el-color-success:#3bd989;
+  --el-color-success-2: rgba(59, 217, 137, 0.25);
+  --el-color-danger-2: rgba(245, 108, 108, 0.25);
+  --el-color-disabled:var(--el-text-color-disabled);
+  --aside-bg:#212223;
+  --aside-bg2:#212223;
+  --aside-border:#2f2f2f;
+  --aside-menu-text:#86929a;
+  --aside-menu-text-hover:#fff;
+  --tunnel-item-bg:#f1f8fc;
+  --link-bg:#eaf2fb;
+  --link-icon:#2a3f48;
+  --release-bg-0:#e2f9fb;
+  --release-bg-1:#e9ecfd;
+  --server-status-bg:rgb(179, 177, 177);
+  --power-switch-bg:rgba(255, 255, 255, 0.5);
+  --power-switch-shadow:rgba(0,0,0,0.12);
+  --power-switch-shadow-success:var(--el-color-success-light-5);
+  --power-switch-shadow-danger:var(--el-color-danger-light-5);
+
+}
+.my-btn-disabled{
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.el-button:focus-visible{
+  outline: none;
+}
+
+.my-info-btn-group.el-button-group .el-button--info:first-child{
+  border-right: 1px solid var(--border-color);
+}
+.my-info-btn-group.el-button-group .el-button--info:last-child{
+  border-left: 1px solid var(--border-color);
+}
+.no-border{
+  border:none;
+}
+body,html{
+  font-size: 4px;
+}
+#app{
+  background-color: var(--primary-bg-0);
+  font-family: "source han sans";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: left;
+  color: var(--text-color);
+  font-size: 14px;
   .el-input,.el-textarea{
     --el-input-focus-border-color:var(--el-color-primary);
   }
@@ -104,39 +177,6 @@
     --el-button-disabled-bg-color: rgba(59, 217, 137, 0.5);
     --el-button-disabled-border-color:rgba(59, 217, 137, 0.5);
   }
-  html[theme="dark"] {
-    --el-color-primary:#30a44b;
-    --el-color-success:#30a44b;
-  }
-}
-.my-btn-disabled{
-  cursor: not-allowed;
-  pointer-events: none;
-}
-.el-button:focus-visible{
-  outline: none;
-}
-
-.my-info-btn-group.el-button-group .el-button--info:first-child{
-  border-right: 1px solid var(--border-color);
-}
-.my-info-btn-group.el-button-group .el-button--info:last-child{
-  border-left: 1px solid var(--border-color);
-}
-.no-border{
-  border:none;
-}
-body,html{
-  font-size: 4px;
-}
-#app{
-  background-color: var(--primary-bg-0);
-  font-family: "source han sans";
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: left;
-  color: var(--text-color);
-  font-size: 14px;
 }
 #nprogress {
   display: none;
