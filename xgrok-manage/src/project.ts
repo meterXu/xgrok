@@ -24,7 +24,7 @@ export default function (mode:string){
             logo: './assets/img/icon.webp',
             sideMenu:{
                 title:'xgrok后台管理',
-                width: '75rem',
+                width: '50rem',
             }
         }
     }

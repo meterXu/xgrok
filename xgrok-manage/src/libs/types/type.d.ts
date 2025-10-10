@@ -43,7 +43,7 @@ interface UserType extends BaseType{
     username:string,
     password:string,
     confirmPassword:string,
-    nickname:string,
+    nickName:string,
 }
 interface OrderType extends BaseType{
     id:string,

@@ -6,7 +6,7 @@ alter table oauth_users
 INSERT INTO xgrok.ng_sys_dict (id, `key`, code, chn_value, eng_value, sort, creator, editor, created_time, modified_time, status, is_delete) VALUES ('07abd333cbb7e56177ae73317136ac21', 'host_type', '0', '本地', 'local', 1, null, null, null, null, default, default);
 INSERT INTO xgrok.ng_sys_dict (id, `key`, code, chn_value, eng_value, sort, creator, editor, created_time, modified_time, status, is_delete) VALUES ('fa8b0494165c4422cce5d474a15d44a8', 'host_type', '1', '远程', 'remote', 2, null, null, null, null, default, default);
 
---待更新
+-- 已更新
 -- ng_order
 alter table ng_order add column _expired_time bigint;
 alter table ng_order add column _payed_time bigint;
@@ -219,5 +219,3 @@ alter table ng_tunnel_web
 
 alter table ng_tunnel_service
     add is_online int default null comment '是否在线';
-
-
