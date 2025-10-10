@@ -20,7 +20,7 @@ export default class TunnelServiceModel {
         this.status = body.status
         this.is_delete = body.is_delete
         this.is_remote = body.is_remote
-        this.is_online = body.is_online
+        this.is_online = body.is_online||1
         this.remark = body.remark
 
     }
