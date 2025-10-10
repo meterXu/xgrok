@@ -2,18 +2,26 @@
 import IconParkSolidPlayOne from '~icons/icon-park-solid/play-one';
 import IconParkOutlineDeleteOne from '~icons/icon-park-outline/delete-one';
 import {useAppStore} from '@/store';
+import {statusType} from "@/libs/enums";
 
 const store = useAppStore();
 const {configIsLock} = store
 const emits = defineEmits(['test', 'del'])
-const props = defineProps(['status'])
+const props = defineProps(['status', 'tunnelStatus'])
 
+const isDisabled = computed(() => {
+  return configIsLock||props.tunnelStatus === statusType.disable
+})
 function onTest() {
   emits('test')
 }
 
 function onDel() {
   emits('del')
+}
+
+function onToggleStatus(value) {
+  emits('toggleStatus', value)
 }
 </script>
 
@@ -22,10 +30,12 @@ function onDel() {
       class="tunnel-control h-42 flex flex-row items-center p-20 bg-(--primary-bg-0) border-b-1 border-(--border-color)"
       :class="status"
   >
-    <el-button :loading="status==='start'" :icon="IconParkSolidPlayOne" type="primary" link @click="onTest">测试
+    <el-button :disabled="isDisabled" :loading="status==='start'" :icon="IconParkSolidPlayOne" type="primary" link @click="onTest">测试
     </el-button>
-    <el-button :disabled="configIsLock" type="danger" link :icon="IconParkOutlineDeleteOne" @click="onDel">删除
+    <el-button :disabled="isDisabled" type="danger" link :icon="IconParkOutlineDeleteOne" @click="onDel">删除
     </el-button>
+    <el-switch class="ml-12" size="small" :model-value="tunnelStatus" :active-value="1" :inactive-value="0"
+               @change="onToggleStatus"></el-switch>
   </div>
 </template>
 
@@ -132,13 +142,15 @@ function onDel() {
     background: linear-gradient(to right, transparent, #52f3aa);
   }
 }
+
 @keyframes color-change-success {
-  100%{
-    background: linear-gradient(to right, var(--el-color-success),var(--el-color-success));
+  100% {
+    background: linear-gradient(to right, var(--el-color-success), var(--el-color-success));
   }
 }
+
 @keyframes color-change-failed {
-  100%{
+  100% {
     background: linear-gradient(to right, var(--el-color-danger), var(--el-color-danger));
   }
 }

@@ -20,7 +20,7 @@ export default class UserService {
     async queryTunnelWebConfig(serverId,userId,clientId){
         let querySql = `
         select a.* from ng_tunnel_web a
-        where a.creator='${userId}' and server_id='${serverId}' and client_id='${clientId}' and a.is_delete=${isDelete.false} and a.status=${status.enable}
+        where a.creator='${userId}' and server_id='${serverId}' and client_id='${clientId}' and a.is_delete=${isDelete.false}
         order by created_time desc,sort asc`
         return prisma.$queryRaw(Prisma.raw(querySql))
     }
@@ -28,7 +28,7 @@ export default class UserService {
     async queryTunnelServiceConfig(serverId,userId,clientId){
         let querySql = `
         select a.* from ng_tunnel_service a
-        where a.creator='${userId}' and server_id='${serverId}' and client_id='${clientId}' and a.is_delete=${isDelete.false} and a.status=${status.enable}
+        where a.creator='${userId}' and server_id='${serverId}' and client_id='${clientId}' and a.is_delete=${isDelete.false}
         order by created_time desc,sort asc`
         return prisma.$queryRaw(Prisma.raw(querySql))
     }

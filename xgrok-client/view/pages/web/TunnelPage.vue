@@ -114,6 +114,22 @@ function onTest() {
   })
 }
 
+function onToggleStatus(value){
+  operationConfirm().then(()=>{
+    updateTunnelWeb({
+      id: activeTunnel.value.id,
+      status: value
+    }).then(res=>{
+      const operation = value?'启用':'禁用'
+      showNotification(res.success?NotificationType.success:NotificationType.error,  res.success?`${operation}成功`:res.message||`${operation}失败`)
+      if(res.success){
+        activeTunnel.value.status = value
+        pid.value&&$emit('restart')
+      }
+    })
+  })
+}
+
 function operateSuccess(type){
   if(pid.value&&type==='update'){
     $emit('restart')
@@ -164,7 +180,11 @@ onMounted(() => {
           </template>
         </TunnelEmptyCon>
         <template v-else>
-          <TunnelControl v-if="showTunnelCol" @del="onDel" @test="onTest" :status="testStatus"></TunnelControl>
+          <TunnelControl v-if="showTunnelCol"
+                         @del="onDel"
+                         @test="onTest"
+                         @toggleStatus="onToggleStatus"
+                         :status="testStatus" :tunnelStatus="activeTunnel.status"></TunnelControl>
           <div class="p-24">
             <WebForm
                 :tunnelForm="activeTunnel"

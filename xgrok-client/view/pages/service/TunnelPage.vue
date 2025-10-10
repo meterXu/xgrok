@@ -112,6 +112,22 @@ function onTest() {
       })
 }
 
+function onToggleStatus(value){
+  operationConfirm().then(()=>{
+    updateTunnelService({
+      id: activeTunnel.value.id,
+      status: value
+    }).then(res=>{
+      const operation = value?'启用':'禁用'
+      showNotification(res.success?NotificationType.success:NotificationType.error,  res.success?`${operation}成功`:res.message||`${operation}失败`)
+      if(res.success){
+        activeTunnel.value.status = value
+        pid.value&&$emit('restart')
+      }
+    })
+  })
+}
+
 function onChange(id) {
   isAdd.value = false
   testStatus.value = ''
@@ -161,7 +177,11 @@ onMounted(() => {
           </template>
         </TunnelEmptyCon>
         <template v-else>
-          <TunnelControl v-if="showTunnelCol" :status="testStatus" @test="onTest" @del="onDel"></TunnelControl>
+          <TunnelControl v-if="showTunnelCol" :status="testStatus" :tunnelStatus="activeTunnel.status"
+                         @test="onTest"
+                         @del="onDel"
+                         @toggleStatus="onToggleStatus"
+          ></TunnelControl>
           <div class="p-24">
             <ServiceFrom
                 :tunnelForm="activeTunnel"

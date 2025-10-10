@@ -105,7 +105,7 @@ export const useAppStore = defineStore('app', ()=>{
         return _systemInfo
     })
     const appSetting = computed(()=>{
-       window.electronAPI.getXgrokAppCfg().then(res=>{
+        window.project.variable.mode!=='browser'&&window.electronAPI.getXgrokAppCfg().then(res=>{
             if(res.success){
                 Object.assign(_appSetting,res.data)
             }
