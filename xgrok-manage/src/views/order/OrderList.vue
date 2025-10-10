@@ -106,7 +106,7 @@ onMounted(() => {
             <el-form-item label="订单状态">
               <el-select class="w-150!" v-model="searchForm.status" clearable @change="()=>{handleQuery()}">
                 <el-option v-for="item in statusDict" :key="item.code" :label="item.chn_value"
-                           :value="item.code"></el-option>
+                           :value="parseInt(item.code)"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="创建日期">
