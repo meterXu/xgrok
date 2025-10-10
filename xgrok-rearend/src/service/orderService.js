@@ -40,7 +40,7 @@ export default class OrderService {
             orderModel.creator && `a.creator = '${orderModel.creator}'`,
             orderModel.username && `c.username like '%${orderModel.username}%'`,
             orderModel.is_manage===1?!isNullOrUndefined(orderModel.status)&&`a.status = ${orderModel.status}`:`a.status = ${status.enable}`,
-            orderModel.is_manage===1?'':`a.is_delete=${isDelete.false}`
+            orderModel.is_manage===1?!isNullOrUndefined(orderModel.is_delete)&&`a.is_delete=${orderModel.is_delete}`:`a.is_delete=${isDelete.false}`
         ].filter(c => c).join(' and ')
         const totalSql =`
         select count(*) _all from ng_order a
