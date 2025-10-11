@@ -6,7 +6,7 @@ import {resizeFontSize} from "xxweb-util";
 import {useAppStore} from '@/store'
 
 const router = useRouter()
-const {appSetting} = useAppStore()
+const {appSetting,setAppSetting} = useAppStore()
 
 window.onresize = ()=>{
   resizeFontSize(1000,4,0,(width)=>{
@@ -29,8 +29,10 @@ window.project.variable.mode!=='browser'&&window.electronAPI.onRoute((data)=>{
 watchEffect(()=>{
   if(appSetting.theme==='system'){
     const theme = getSystemTheme((theme)=>{
-      appSetting.theme==='system'&&document.querySelector('html').setAttribute('theme',theme)
-      appSetting.theme==='system'&&document.querySelector('html').setAttribute('class',theme)
+      if(appSetting.theme==='system'){
+        document.querySelector('html').setAttribute('theme',theme)
+        document.querySelector('html').setAttribute('class',theme)
+      }
     })
     document.querySelector('html').setAttribute('theme',theme)
     document.querySelector('html').setAttribute('class',theme)

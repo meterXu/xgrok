@@ -16,7 +16,9 @@ const props = defineProps({
   }
 })
 const emits = defineEmits(['chick'])
-
+const logoSrc = computed(()=>{
+  return `../../public/assets/icon${appSetting.theme==='dark'?'_dark':''}.png`
+})
 function onClick(){
   emits('chick')
 }
@@ -26,7 +28,7 @@ function onClick(){
   <div class="flex items-center gap-4"
        :class="direction==='horizontal'?'flex-row':'flex-col'"
        :style="{'--size':size}" @click="onClick">
-    <img class="logo" :src="`../../public/assets/icon${appSetting.theme==='dark'?'_dark':''}.png`" alt="logo"/>
+    <img class="logo" :src="logoSrc" alt="logo"/>
     <span class="font-bold text-[20px]">{{title}}</span>
   </div>
 </template>
