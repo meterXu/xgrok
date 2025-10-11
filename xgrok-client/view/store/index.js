@@ -26,6 +26,7 @@ export const useAppStore = defineStore('app', ()=>{
         web:[],
         service:[]
     })
+    const _theme=ref(null)
 
     //computed
     const userInfo = computed(()=>{
