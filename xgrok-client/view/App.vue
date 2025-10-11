@@ -1,6 +1,6 @@
 <script setup>
 import HeaderToolBar from "@/components/HeaderToolBar.vue";
-import {deviceType} from "@/libs/common";
+import {deviceType, getSystemTheme} from "@/libs/common";
 import bus from "@/libs/bus";
 import {resizeFontSize} from "xxweb-util";
 import {useAppStore} from '@/store'
@@ -27,8 +27,18 @@ window.project.variable.mode!=='browser'&&window.electronAPI.onRoute((data)=>{
 })
 
 watchEffect(()=>{
-  document.querySelector('html').setAttribute('theme',appSetting.theme)
-  document.querySelector('html').setAttribute('class',appSetting.theme)
+  if(appSetting.theme==='system'){
+    const theme = getSystemTheme((theme)=>{
+      appSetting.theme==='system'&&document.querySelector('html').setAttribute('theme',theme)
+      appSetting.theme==='system'&&document.querySelector('html').setAttribute('class',theme)
+    })
+    document.querySelector('html').setAttribute('theme',theme)
+    document.querySelector('html').setAttribute('class',theme)
+  }else{
+    document.querySelector('html').setAttribute('theme',appSetting.theme)
+    document.querySelector('html').setAttribute('class',appSetting.theme)
+  }
+
 })
 </script>
 

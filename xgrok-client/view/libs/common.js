@@ -99,3 +99,11 @@ export function getEnumKey(enumData, value) {
     let find = Object.entries(enumData).find(([key, _value]) => _value === value)
     return find ? find[0] : ''
 }
+
+export function getSystemTheme(callback) {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    mediaQuery.addEventListener('change', (event)=>{
+        callback(event?.matches ? 'dark' : 'light')
+    });
+    return mediaQuery?.matches ? 'dark' : 'light'
+}
