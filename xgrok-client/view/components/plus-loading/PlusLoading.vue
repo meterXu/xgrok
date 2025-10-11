@@ -11,7 +11,7 @@ const props = defineProps({
   },
   maskBgColor:{
     type:String,
-    default:'rgba(255,255,255,0.9)'
+    default:'var(--mask-bg-Color)'
   }
 })
 </script>

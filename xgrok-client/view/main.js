@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router';
 import {filter,Ls,GlobalOverride,Ss} from 'xxweb-util'
 import 'element-plus/dist/index.css'
+import 'element-plus/theme-chalk/dark/css-vars.css'
 import '@/assets/css/main.less'
 import pinia from '@/store/index.js'
 import directives from "@/libs/directives";

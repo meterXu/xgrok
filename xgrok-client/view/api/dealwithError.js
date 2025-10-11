@@ -2,6 +2,8 @@ import {getErrorText} from "xxweb-util";
 import { ElMessage } from 'element-plus'
 import {alert} from "@/libs/common";
 import { useAppStore } from '../store/index'
+import {showNotification} from "@/libs/message";
+import {NotificationType} from "@/libs/enums";
 
 export function dealWithError(error){
   try{
@@ -23,17 +25,11 @@ export function dealWithError(error){
           break
         }
         default:
-          ElMessage({
-            message:data.message||'网络错误',
-            type:'error'
-          })
+          showNotification(NotificationType.error,data.message||'网络错误')
           break
       }
     }else{
-      ElMessage({
-        message:data.message||'网络错误',
-        type:'error'
-      })
+      showNotification(NotificationType.error,data.message||'网络错误')
     }
   }catch (err){}
   return error;

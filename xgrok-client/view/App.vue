@@ -28,6 +28,7 @@ window.project.variable.mode!=='browser'&&window.electronAPI.onRoute((data)=>{
 
 watchEffect(()=>{
   document.querySelector('html').setAttribute('theme',appSetting.theme)
+  document.querySelector('html').setAttribute('class',appSetting.theme)
 })
 </script>
 

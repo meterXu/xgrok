@@ -19,7 +19,6 @@ provide('initSelect',props.initSelect);
 
 bus.$on('tunnel:Item:click', (id) => {
   model.value = id
-  bus.$emit('change', id)
   emits('change',id)
 })
 

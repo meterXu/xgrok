@@ -7,7 +7,7 @@ const props = defineProps(['id', 'online', 'status']);
 const activeId = inject('activeId');
 const initSelect = inject('initSelect');
 const isActive = computed(() => {
-  return activeId && props.id && activeId === props.id && props.status === statusType.enable
+  return activeId.value && props.id && activeId.value === props.id && props.status === statusType.enable
 })
 
 function onClick() {

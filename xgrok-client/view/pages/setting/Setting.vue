@@ -31,7 +31,7 @@ function onChange(type,value){
           <div class="px-14 mt-16">外观</div>
           <div class="rounded-3xl bg-(--primary-bg-0) px-12 py-16 mt-14">
             <el-form-item label="界面主题" class="justify-between mb-0!">
-              <el-radio-group v-model="appSetting.theme" size="small" @change="(value)=>{onChange('theme',value)}">
+              <el-radio-group v-model="appSetting.theme" @change="(value)=>{onChange('theme',value)}">
                 <el-radio-button label="亮色" value="light"/>
                 <el-radio-button label="暗黑" value="dark"/>
                 <el-radio-button label="跟随系统" value="system"/>

@@ -2,7 +2,6 @@
 import {useRouter} from 'vue-router'
 import {reactive, ref} from "vue";
 import {login, queryPayPlan} from "@/api";
-import {ElMessage} from "element-plus";
 import {useAppStore} from "@/store";
 import {
   onFormValidate,
@@ -11,6 +10,8 @@ import {
   useGetTermsOfServiceUrl, usePrivacyAgreementUrl
 } from "@/libs/useAction";
 import Logo from "@/components/Logo.vue";
+import {showNotification} from "@/libs/message";
+import {NotificationType} from "@/libs/enums";
 
 const store = useAppStore()
 const {userName} = store
@@ -49,7 +50,7 @@ function onSubmit(){
             name:'Dashboard'
           })
         }else{
-          ElMessage.error(res.message)
+          showNotification(NotificationType.error,res.message)
         }
       }).finally(()=>{
         loginLoading.value = false
@@ -68,10 +69,6 @@ function onOpenLink(link){
   <div class="center-container login-register-form">
     <div class="form-wrap">
       <div class="main">
-<!--        <h1 class="title">-->
-<!--          <img src="../../public/assets/icon.png" alt="logo" class="logo"/>-->
-<!--          <span class="text-[28px] font-bold">xgrok</span>-->
-<!--        </h1>-->
         <div class="flex flex-row items-center justify-center mb-12">
           <Logo/>
         </div>

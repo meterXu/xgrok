@@ -53,14 +53,14 @@ watch(route, (nv) => {
     <HorizontalHeader :hasLock="false"></HorizontalHeader>
     <div class="flex-1 flex flex-col gap-16 py-32 px-24">
       <div>
-        <el-button type="primary" plain class="text-[14px]! py-14!" size="small" @click="onRefresh(false)">
+        <el-button type="primary" plain @click="onRefresh(false)">
           <template #icon>
             <ep-refresh/>
           </template>
           刷新
         </el-button>
       </div>
-      <div class="flex-1 w-full relative text-[14px] overflow-y-auto rounded-4xl
+      <div class="flex-1 w-full relative text-[16px] overflow-y-auto rounded-4xl
            border-1 border-(--border-color) bg-(--primary-bg-0)">
         <div class="absolute w-full h-full p-12">
           <plus-scrollbar ref="logScrollbarRef">

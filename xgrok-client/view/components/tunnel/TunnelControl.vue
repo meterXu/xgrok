@@ -10,7 +10,7 @@ const emits = defineEmits(['test', 'del'])
 const props = defineProps(['status', 'tunnelStatus'])
 
 const isDisabled = computed(() => {
-  return configIsLock||props.tunnelStatus === statusType.disable
+  return configIsLock.value||props.tunnelStatus === statusType.disable
 })
 function onTest() {
   emits('test')
@@ -27,7 +27,7 @@ function onToggleStatus(value) {
 
 <template>
   <div
-      class="tunnel-control h-42 flex flex-row items-center p-20 bg-(--primary-bg-0) border-b-1 border-(--border-color)"
+      class="tunnel-control h-42 flex flex-row items-center p-20 bg-(--primary-bg-3) border-b-1 border-(--border-color)"
       :class="status"
   >
     <el-button :disabled="isDisabled" :loading="status==='start'" :icon="IconParkSolidPlayOne" type="primary" link @click="onTest">测试

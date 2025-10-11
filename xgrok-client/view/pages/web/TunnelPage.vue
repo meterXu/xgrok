@@ -142,7 +142,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="h-full flex flex-row justify-start items-start">
+  <div class="h-full flex flex-row justify-start items-start overflow-x-hidden">
     <LeftMiddle>
       <div class="h-60 flex items-center justify-between px-20">
         <PageNav></PageNav>

@@ -2,9 +2,11 @@
 import IconParkOutlineHomeTwo from '~icons/icon-park-outline/home-two';
 import IconParkOutlinePlanet from '~icons/icon-park-outline/planet';
 import IconParkOutlineWholeSiteAccelerator from '~icons/icon-park-outline/whole-site-accelerator';
-import IconParkOutlineLinkThree from '~icons/icon-park-outline/link-three';
 import IconParkOutlineSettingTwo from '~icons/icon-park-outline/setting-two';
 import IconParkOutlineInfo from '~icons/icon-park-outline/info';
+import {useAppStore} from "@/store";
+
+const {appSetting} = useAppStore()
 
 const menuList = [
   {
@@ -48,6 +50,8 @@ const menuList = [
     name: 'About',
   }
 ]
+
+
 </script>
 <template>
   <ul class="w-full flex flex-col items-center justify-start gap-28">
@@ -60,7 +64,7 @@ const menuList = [
               hover:text-(--aside-menu-text-hover)"
           @click="navigate">
         <el-tooltip
-            effect="dark"
+            :effect="appSetting.theme"
             class="box-item"
             placement="bottom-end"
             :content="item.title"

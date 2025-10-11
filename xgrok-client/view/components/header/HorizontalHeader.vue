@@ -15,7 +15,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <el-header class="p-0 border-b-1 border-solid bg-(--primary-bg-0) border-(--border-color)">
+  <el-header class="p-0 border-b-1 border-solid bg-(--primary-bg-3) border-(--border-color)">
     <div class="h-full px-0 py-16 flex items-center justify-between">
       <slot>
         <PageNav></PageNav>

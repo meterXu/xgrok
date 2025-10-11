@@ -5,8 +5,9 @@ import QRious from 'qrious'
 import {useRouter} from "vue-router";
 import {ElMessage} from 'element-plus'
 import {useAppStore} from "@/store";
-import {useSysPayStatusToPayRes} from "@/libs/enums";
+import {NotificationType, useSysPayStatusToPayRes} from "@/libs/enums";
 import {confirm} from "@/libs/common";
+import {showNotification} from "@/libs/message";
 
 const props = defineProps(['productId','payNum'])
 const qrcodeImg = ref(null)
@@ -88,7 +89,7 @@ function finishOrder(){
       if(res.success){
         payRes.value = useSysPayStatusToPayRes(res.data)
         if(payRes.value===null){
-          ElMessage.info('未进行支付，请支付后再点击检查')
+          showNotification(NotificationType.info,'未进行支付，请支付后再点击检查')
         }else {
           store.setOrderStatus(orderId.value,payRes.value)
           queryPayPlan().then(res=>{
@@ -98,7 +99,7 @@ function finishOrder(){
           })
         }
       }else{
-        ElMessage.warning('检查出错了')
+        showNotification(NotificationType.warning,'检查出错了')
       }
     })
   }
@@ -316,6 +317,7 @@ onUnmounted(()=>{
   .el-loading-spinner .path{
     stroke: var(--el-border-color);;
   }
+  background-color: transparent !important;
 }
 .pay-result{
   .el-result__icon{
