@@ -6,6 +6,7 @@ import {useRouter} from "vue-router";
 import md5 from "js-md5"
 import {onFormValidate, useGetDisabled, useGetErrorMsg, useGetValidateRes} from "@/libs/useAction";
 import {alert} from "@/libs/common";
+import Logo from "@/components/Logo.vue";
 
 const expireCount = 120
 const sendCodeLoading = ref(false)
@@ -132,10 +133,9 @@ function clearSendCodeTimer(){
   <div class="center-container login-register-form">
     <div class="form-wrap">
       <div class="main">
-        <h1 class="title text-[24px] font-bold">
-          <img src="../../public/assets/icon.png" alt="logo" class="logo"/>
-          忘记密码
-        </h1>
+        <div class="flex justify-center text-[24px]">
+          <Logo size="12rem" title="忘记密码"/>
+        </div>
         <ul v-show="errorMsg.length>0" class="error-msg">
           <li v-for="item in errorMsg" :key="item">
             {{item}}

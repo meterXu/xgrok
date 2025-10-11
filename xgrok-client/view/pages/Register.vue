@@ -13,6 +13,7 @@ import {
 } from "@/libs/useAction";
 import {alert} from '@/libs/common'
 import {useAppStore} from "@/store";
+import Logo from "@/components/Logo.vue";
 
 const expireCount = 120
 const sendCodeLoading = ref(false)
@@ -152,10 +153,9 @@ function onOpenLink(link){
   <div class="center-container login-register-form">
     <div class="form-wrap">
       <div class="main">
-        <h1 class="title text-[24px] font-bold">
-          <img src="../../public/assets/icon.png" alt="logo" class="logo"/>
-          欢迎注册
-        </h1>
+        <div class="flex justify-center text-[24px]">
+          <Logo size="12rem" title="欢迎注册"/>
+        </div>
         <ul v-show="errorMsg.length>0" class="error-msg">
           <li v-for="item in errorMsg" :key="item">
             {{item}}

@@ -1,15 +1,13 @@
 <script setup>
 import {defineProps,defineEmits} from 'vue'
-import {useAppStore} from "@/store";
-
-const {appSetting} = useAppStore();
+import {getTheme} from "@/libs/common";
 
 const props = defineProps({
   title:{
     default:''
   },
   size:{
-    default:'64px'
+    default:'16rem'
   },
   direction:{
     default:'horizontal'
@@ -17,7 +15,7 @@ const props = defineProps({
 })
 const emits = defineEmits(['chick'])
 const logoSrc = computed(()=>{
-  return `../../public/assets/icon${appSetting.theme==='dark'?'_dark':''}.png`
+  return `../../public/assets/icon_${getTheme()}.png`
 })
 function onClick(){
   emits('chick')

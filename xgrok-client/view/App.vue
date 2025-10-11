@@ -1,12 +1,12 @@
 <script setup>
 import HeaderToolBar from "@/components/HeaderToolBar.vue";
-import {deviceType, getSystemTheme} from "@/libs/common";
+import {deviceType, getTheme, systemThemeChangeEvent} from "@/libs/common";
 import bus from "@/libs/bus";
 import {resizeFontSize} from "xxweb-util";
 import {useAppStore} from '@/store'
 
 const router = useRouter()
-const {appSetting,setAppSetting} = useAppStore()
+const {setSystemTheme} = useAppStore()
 
 window.onresize = ()=>{
   resizeFontSize(1000,4,0,(width)=>{
@@ -27,20 +27,12 @@ window.project.variable.mode!=='browser'&&window.electronAPI.onRoute((data)=>{
 })
 
 watchEffect(()=>{
-  if(appSetting.theme==='system'){
-    const theme = getSystemTheme((theme)=>{
-      if(appSetting.theme==='system'){
-        document.querySelector('html').setAttribute('theme',theme)
-        document.querySelector('html').setAttribute('class',theme)
-      }
-    })
-    document.querySelector('html').setAttribute('theme',theme)
-    document.querySelector('html').setAttribute('class',theme)
-  }else{
-    document.querySelector('html').setAttribute('theme',appSetting.theme)
-    document.querySelector('html').setAttribute('class',appSetting.theme)
-  }
+  document.querySelector('html').setAttribute('theme',getTheme())
+  document.querySelector('html').setAttribute('class',getTheme())
+})
 
+systemThemeChangeEvent((_theme)=>{
+  setSystemTheme(_theme)
 })
 </script>
 

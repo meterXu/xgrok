@@ -4,6 +4,7 @@ import {USER_INFO, ACCESS_TOKEN, setLsValue, getLsValue, alterStoreValue} from "
 import {payPlan} from "@/libs/enums";
 import dayjs from 'dayjs'
 import {merge} from 'lodash-es'
+import {getSystemTheme} from "@/libs/common";
 
 export const useAppStore = defineStore('app', ()=>{
     const $ls = window.app.config.globalProperties.$ls
@@ -26,7 +27,7 @@ export const useAppStore = defineStore('app', ()=>{
         web:[],
         service:[]
     })
-    const _theme=ref(null)
+    const _systemTheme = ref(null)
 
     //computed
     const userInfo = computed(()=>{
@@ -116,6 +117,10 @@ export const useAppStore = defineStore('app', ()=>{
     const tunnelCount = computed(()=>{
         return _tunnelCount
     })
+    const systemTheme = computed(()=>{
+        _systemTheme.value = _systemTheme.value||getSystemTheme()
+        return _systemTheme
+    })
 
     //action
     function setUserInfo(data){
@@ -172,6 +177,9 @@ export const useAppStore = defineStore('app', ()=>{
     function setTunnelCount(data){
         merge(_tunnelCount,data)
     }
+    function setSystemTheme(data){
+        _systemTheme.value = data
+    }
 
     return {
         token,
@@ -190,6 +198,7 @@ export const useAppStore = defineStore('app', ()=>{
         systemInfo,
         appSetting,
         tunnelCount,
+        systemTheme,
         setUserInfo,
         setToken,
         setPid,
@@ -203,7 +212,8 @@ export const useAppStore = defineStore('app', ()=>{
         setHeaderBtnLoading,
         setSystemInfo,
         setAppSetting,
-        setTunnelCount
+        setTunnelCount,
+        setSystemTheme
     }
 })
 export default createPinia()

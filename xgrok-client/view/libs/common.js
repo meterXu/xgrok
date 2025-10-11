@@ -1,5 +1,6 @@
 import {defaultPort, httpType, payPlan} from "@/libs/enums";
 import {ElMessageBox} from "element-plus";
+import {useAppStore} from "@/store";
 
 export function useMyTitle(tunnelConfig){
     return tunnelConfig.remark?`${tunnelConfig.name}：${tunnelConfig.remark}`:tunnelConfig.name
@@ -100,10 +101,22 @@ export function getEnumKey(enumData, value) {
     return find ? find[0] : ''
 }
 
-export function getSystemTheme(callback) {
+export function getSystemTheme() {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    mediaQuery.addEventListener('change', (event)=>{
-        callback(event?.matches ? 'dark' : 'light')
-    });
     return mediaQuery?.matches ? 'dark' : 'light'
+}
+
+export function systemThemeChangeEvent(callback){
+    callback&&(()=>{
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        mediaQuery.addEventListener('change', (event)=>{
+            callback(event?.matches ? 'dark' : 'light')
+        });
+    })()
+}
+
+export function getTheme(){
+    const store = useAppStore()
+    return store.appSetting.theme==='system'?store.systemTheme.value:store.appSetting.theme;
+
 }
