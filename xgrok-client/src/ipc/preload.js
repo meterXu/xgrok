@@ -14,10 +14,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
     checkWeb:(data)=>ipcRenderer.invoke('system',{type:'checkWeb', data:data}),
     viewLog:(data)=>ipcRenderer.invoke('system',{type:'viewLog', data:data}),
     getLog:(data)=>ipcRenderer.invoke('system',{type:'getLog', data:data}),
+    checkUpdate:(data)=>ipcRenderer.invoke('system',{type:'checkUpdate',data:data}),
     setXgrokAppCfg:(data)=>ipcRenderer.invoke('system',{type:'setXgrokAppCfg', data:data}),
     getXgrokAppCfg:()=>ipcRenderer.invoke('system',{type:'getXgrokAppCfg'}),
     onAppQuit:(callback)=>ipcRenderer.on('view/appQuit',(_event, value) => callback(value)),
     onRefreshPid:(callback)=>ipcRenderer.on('view/refreshPid',(_event, value) => callback(value)),
     onProcess:(callback)=>ipcRenderer.on('view/process',(_event, value) => callback(value)),
-    onRoute:(callback)=>ipcRenderer.on('view/route',(_event, value) => callback(value))
+    onRoute:(callback)=>ipcRenderer.on('view/route',(_event, value) => callback(value)),
 })
