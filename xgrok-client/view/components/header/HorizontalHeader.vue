@@ -1,6 +1,7 @@
 <script setup>
 import MyAvatar from "@/components/header/MyAvatar.vue";
 import PageNav from "@/components/header/PageNav.vue";
+import PlanTag from "@/components/header/PlanTag.vue";
 
 const props = defineProps({
   navTitle:{
@@ -20,7 +21,10 @@ const props = defineProps({
       <slot>
         <PageNav></PageNav>
       </slot>
-      <MyAvatar></MyAvatar>
+      <div class="flex items-center justify-center gap-12">
+        <PlanTag></PlanTag>
+        <MyAvatar></MyAvatar>
+      </div>
     </div>
   </el-header>
 </template>

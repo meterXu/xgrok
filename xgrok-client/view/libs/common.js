@@ -118,5 +118,4 @@ export function systemThemeChangeEvent(callback){
 export function getTheme(){
     const store = useAppStore()
     return store.appSetting.theme==='system'?store.systemTheme.value:store.appSetting.theme;
-
 }

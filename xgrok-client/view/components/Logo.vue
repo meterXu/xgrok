@@ -23,7 +23,8 @@ function onClick(){
   <div class="flex items-center gap-4"
        :class="direction==='horizontal'?'flex-row':'flex-col'"
        :style="{'--size':size}" @click="onClick">
-    <img class="logo" :src="`../../public/assets/icon_${getTheme()}.png`" alt="logo"/>
+    <img v-show="getTheme()==='light'" class="logo" src="../../public/assets/icon_light.png" alt="logo"/>
+    <img v-show="getTheme()==='dark'" class="logo" src="../../public/assets/icon_dark.png" alt="logo"/>
     <span class="font-bold text-[20px]">{{title}}</span>
   </div>
 </template>

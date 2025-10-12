@@ -33,14 +33,6 @@ function onClose(){
   justify-content: flex-end;
   -webkit-app-region: drag
 }
-.logo{
-  width: 16px;
-  height: 16px;
-  background: url("../../public/assets/icon.png") no-repeat center center;
-  background-size: contain;
-  margin-left: 4px;
-  padding-left: 24px;
-}
 .header-toolbar{
   display: inline-flex;
   align-items: center;
