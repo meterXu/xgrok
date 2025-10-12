@@ -58,8 +58,8 @@ export function checkTunnelConfig(selectedServer,web,service){
         showNotification(NotificationType.warning,'请先添加一个隧道再启动服务！')
     }
     if(store.plan.value===payPlan.free){
-        if(service.length!==0){
-            gotoSubscribe('抱歉！免费计划用户无法使用服务隧道')
+        if(service.length>1){
+            gotoSubscribe('抱歉！免费计划用户只能添加一个服务隧道！')
             res = false
         } else if(web.length>1){
             gotoSubscribe('抱歉！免费计划用户只能添加一个网页隧道！')
@@ -72,8 +72,8 @@ export function checkTunnelConfig(selectedServer,web,service){
 export function checkPermission(tunnelType,tunnelConfigs=[]){
     const store = useAppStore()
     if(store.plan.value===payPlan.free){
-        if(tunnelType==='service'){
-            gotoSubscribe('抱歉！免费计划用户无法使用服务隧道')
+        if(tunnelType==='service'&&tunnelConfigs.length>=1){
+            gotoSubscribe('抱歉！免费计划用户只能添加一个服务隧道！')
             return false
         }if(tunnelType==='web'&&tunnelConfigs.length>=1){
             gotoSubscribe('抱歉！免费计划用户只能添加一个网页隧道！')
