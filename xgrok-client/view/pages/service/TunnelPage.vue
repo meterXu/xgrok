@@ -193,7 +193,7 @@ onMounted(() => {
       </TunnelFormWrap>
     </div>
   </div>
-  <ServiceSwitch class="invisible"/>
+  <ServiceSwitch class="invisible absolute top-0 -z-10"/>
 </template>
 
 <style scoped lang="less">

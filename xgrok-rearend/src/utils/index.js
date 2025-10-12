@@ -147,7 +147,7 @@ export function checkServerOnline(domain,port,type){
             });
             socket.connect(port, domain);
         }else{
-            resolve(true);//todo 正常连接且可响应
+            resolve(false);//todo 视为未被占用
         }
     })
 }
