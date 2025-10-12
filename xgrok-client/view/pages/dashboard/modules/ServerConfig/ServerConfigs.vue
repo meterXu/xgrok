@@ -10,7 +10,7 @@ const {selectedServer} = store
 </script>
 
 <template>
-  <ServerConfigItem class="server-configs border-none bg-(--primary-bg-0) h-full" :serverConfig="selectedServer" :statusClass="selectedServer.statusClass">
+  <ServerConfigItem class="server-configs border-none bg-(--primary-bg-0) h-full" :serverConfig="selectedServer">
     <div class="text-[12px] inline-flex gap-8">
       <span class="inline-block">网页:{{tunnelCount.web.length}}</span>
       <span class="inline-block">服务:{{tunnelCount.service.length}}</span>

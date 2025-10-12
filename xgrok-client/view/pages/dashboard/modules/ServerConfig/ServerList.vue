@@ -48,6 +48,9 @@ function loadServersConfig() {
   queryServersConfig(window.project.variable.type).then(res => {
     if (res.success) {
       serverConfigs.splice(0, serverConfigs.length, ...res.data.records)
+      if(!selectedServer.value.id&&serverConfigs[0]){
+        setSelectedServer(serverConfigs[0])
+      }
     }
   })
 }

@@ -1,6 +1,7 @@
 <script setup>
 import {defineProps} from 'vue'
-const props = defineProps(['serverConfig','statusClass'])
+import {useStatusClass} from "@/libs/enums";
+const props = defineProps(['serverConfig'])
 </script>
 
 <template>
@@ -26,7 +27,7 @@ const props = defineProps(['serverConfig','statusClass'])
         <el-tag type="danger" effect="plain" size="small">{{props.serverConfig.operator||'-'}}</el-tag>
       </div>
       <div class="w-24 text-center">
-        <span class="server-status relative inline-block w-12 h-12 rounded-full" :class="statusClass"></span>
+        <span class="server-status relative inline-block w-12 h-12 rounded-full" :class="useStatusClass(serverConfig.is_online)"></span>
       </div>
     </div>
   </div>

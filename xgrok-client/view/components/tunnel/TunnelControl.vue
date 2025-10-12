@@ -30,7 +30,7 @@ function onToggleStatus(value) {
       class="tunnel-control h-42 flex flex-row items-center p-20 bg-(--primary-bg-3) border-b-1 border-(--border-color)"
       :class="status"
   >
-    <el-button :disabled="isDisabled" :loading="status==='start'" :icon="IconParkSolidPlayOne" type="primary" link @click="onTest">测试
+    <el-button :disabled="props.tunnelStatus === statusType.disable" :loading="status==='start'" :icon="IconParkSolidPlayOne" type="primary" link @click="onTest">测试
     </el-button>
     <el-button :disabled="isDisabled" type="danger" link :icon="IconParkOutlineDeleteOne" @click="onDel">删除
     </el-button>

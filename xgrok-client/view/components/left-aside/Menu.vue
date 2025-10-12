@@ -5,6 +5,7 @@ import IconParkOutlineWholeSiteAccelerator from '~icons/icon-park-outline/whole-
 import IconParkOutlineSettingTwo from '~icons/icon-park-outline/setting-two';
 import IconParkOutlineInfo from '~icons/icon-park-outline/info';
 import {useAppStore} from "@/store";
+import {getTheme} from "@/libs/common";
 
 const {appSetting} = useAppStore()
 
@@ -64,7 +65,7 @@ const menuList = [
               hover:text-(--aside-menu-text-hover)"
           @click="navigate">
         <el-tooltip
-            :effect="appSetting.theme"
+            :effect="getTheme()"
             class="box-item"
             placement="bottom-end"
             :content="item.title"

@@ -4,11 +4,10 @@ import {
   queryServersConfig,
   closeWebSocket, queryTunnelCount, getSystemInfo, queryClient, createClient, updateClient
 } from '@/api'
-import {onMounted, onUnmounted, watch} from 'vue'
+import {onMounted} from 'vue'
 import {useAppStore} from '@/store';
 import ServerConfigs from '@/pages/dashboard/modules/ServerConfig/ServerConfigs.vue'
 import SystemCard from "@/pages/dashboard/modules/SystemCard.vue"
-import {sendMessage} from '@/worker/mainThread'
 import HorizontalHeader from "@/components/header/HorizontalHeader.vue";
 import PlusScrollbar from "@/components/plus-scrollbar/PlusScrollbar.vue";
 import ServerList from "@/pages/dashboard/modules/ServerConfig/ServerList.vue";
@@ -77,18 +76,6 @@ function initClient() {
   })
 }
 
-
-watch(() => selectedServer?.value?.id, (nv, ov) => {
-  sendMessage({type: 'closeCheckServer', server_id: ov})
-  sendMessage({
-    type: 'openCheckServer',
-    baseApi: window.project.variable.baseApi,
-    server_id: nv,
-    domain: selectedServer?.value?.domain,
-    port: selectedServer?.value?.port
-  })
-}, {immediate: true})
-
 watchEffect(() => {
   if (selectedServer.value?.id && clientId.value) {
     queryTunnelCount(selectedServer.value?.id, clientId.value).then(res => {
@@ -105,9 +92,6 @@ watchEffect(() => {
 onMounted(() => {
   initServerConfigData()
   initClient()
-})
-onUnmounted(() => {
-  sendMessage({type: 'closeCheckServer', server_id: selectedServer?.value?.id})
 })
 </script>
 <template>
