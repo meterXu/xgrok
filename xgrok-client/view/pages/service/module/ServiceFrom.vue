@@ -2,16 +2,16 @@
 import {reactive, defineEmits, ref, watch} from "vue";
 import {checkName, checkPort, createTunnelService, queryRange, updateTunnelService} from "@/api";
 import {useAppStore} from "@/store";
-import {hostType, isOnline, NotificationType, tunnelType} from "@/libs/enums";
+import {hostType, isOnline, NotificationType, payPlan, serviceType, tunnelType} from "@/libs/enums";
 import InfoTip from "@/components/infoTip.vue";
 import {tipText} from "@/libs/infoText";
-import {testName, isLocalHost} from "@/libs/common";
+import {testName, isLocalHost,confirm} from "@/libs/common";
 import {gotoSubscribe,operationConfirm, useGetDisabled, useGetErrorMsg,onFormValidate} from "@/libs/useAction";
 import {showNotification} from "@/libs/message";
 import {$emit} from "xxweb-util";
 
 const store = useAppStore()
-const {selectedServer, clientId,configIsLock,pid} = store
+const {selectedServer, clientId,configIsLock,pid,plan} = store
 const props = defineProps(['tunnelForm'])
 const emits = defineEmits(['updateSuccess', 'cancel', 'createSuccess'])
 const ruleFormRef = ref('ruleFormRef')
@@ -177,6 +177,23 @@ function queryRangeByType() {
   })
 }
 
+function onChangeType(value){
+  if(value===serviceType.UDP&&plan.value!==payPlan.vip){
+    confirm('免费用户无法创建UDP隧道', null,{
+      confirmButtonText:'去订阅',
+      cancelButtonText:'知道了',
+      confirmButtonClass:'el-button--warning is-plain'
+    }).then(()=>{
+      router.push({name:'Plan'})
+    }).catch(()=>{
+      formData.type=serviceType.TCP
+    })
+  }else{
+    queryRangeByType()
+    ruleFormRef.value.validateField('remote_port')
+  }
+}
+
 created()
 </script>
 
@@ -209,7 +226,7 @@ created()
     </el-form-item>
     <el-form-item label="代理类型" prop="type">
       <el-badge value="new" :offset="[-3, 5]">
-        <el-radio-group v-model="formData.type">
+        <el-radio-group v-model="formData.type" @change="onChangeType">
           <el-radio-button label="TCP" :value="1"/>
           <el-radio-button label="UDP" :value="2"/>
         </el-radio-group>
