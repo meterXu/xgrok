@@ -26,6 +26,7 @@ import {showNotification} from "@/libs/message";
 import ServiceItem from "@/pages/service/module/ServiceItem.vue";
 import ServiceSwitch from "@/components/control-btns/ServiceSwitch.vue";
 import {$emit} from "xxweb-util";
+import AddTunnelBtn from "@/components/control-btns/AddTunnelBtn.vue";
 
 const store = useAppStore()
 const {selectedServer, clientId, configIsLock,pid} = store
@@ -144,9 +145,7 @@ onMounted(() => {
       <div class="h-60 flex items-center justify-between px-20">
         <PageNav></PageNav>
         <div class="flex flex-row items-center gap-16">
-          <IconParkOutlineAdd class="text-[16px] hover:text-(--el-color-primary)!"
-                              :class="configIsLock?'cursor-not-allowed':'cursor-pointer'"
-                              @click="onAddTunnel"/>
+          <AddTunnelBtn @addTunnel="onAddTunnel"></AddTunnelBtn>
           <ConfigLockBtn></ConfigLockBtn>
         </div>
       </div>

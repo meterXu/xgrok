@@ -30,8 +30,10 @@ function onOpenLink(item, type) {
     <span class="overflow-hidden text-ellipsis">{{ useMyTitle(item) }}</span>
     <span class="w-full flex items-center justify-between">
                 <span class="overflow-hidden text-ellipsis">{{ httpUrl(item, httpType.https) }}</span>
-                <IconParkOutlineEarth @click="onOpenLink(item,httpType.https)"
-                                      class="text-[16px] hover:text-(--el-color-primary)"/>
+                <el-tooltip content="点击访问">
+                  <IconParkOutlineEarth @click="onOpenLink(item,httpType.https)"
+                                        class="text-[16px] hover:text-(--el-color-primary)"/>
+                </el-tooltip>
               </span>
   </TunnelItem>
 </template>

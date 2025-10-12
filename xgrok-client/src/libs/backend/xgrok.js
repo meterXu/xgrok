@@ -4,7 +4,7 @@ const fs = require("node:fs");
 const {stringify} = require('yaml')
 const {killPid, findProcessId,getEnumKey, waitPortRun} = require("../util");
 const {serviceType, hostType,httpType, serverType,runStatusType} = require('../enum')
-const {platform, arch} = require("../util");
+const {platform, arch,sleep} = require("../util");
 const {shell} = require('electron');
 const http = require('http');
 const httpProxy = require('http-proxy');
@@ -78,15 +78,31 @@ async function getTunnelStatus(tunnels){
             let isRun = await waitPortRun(global.project.webServer.port,global.project.webServer.addr)
             if(isRun){
                 await login()
+
                 let statusData = (await apiStatus()).data
                 statusData = [...statusData.tcp||[],...statusData.udp||[],...statusData.http||[]]
                 let errArray=[]
-                tunnels.forEach(c=>{
+                let step=0
+                const loopCheck = async (c)=>{
+                    if(step===3){
+                        errArray.push(`${c.name}启动失败，超时`)
+                        return
+                    }
+                    step++
                     let findStatus = statusData.find(r=>r.name===c.name)
-                    if(findStatus?.status!=='running'){
+                    if(findStatus?.status==='wait start'){
+                        await sleep(1000)
+                        statusData = (await apiStatus()).data
+                        statusData = [...statusData.tcp||[],...statusData.udp||[],...statusData.http||[]]
+                        await loopCheck(c)
+                    }
+                    if(findStatus?.status.indexOf('error')>-1){
                         errArray.push(`${c.name}启动失败，${findStatus?.err||'-'}`)
                     }
-                })
+                }
+                for(let c of tunnels){
+                    await loopCheck(c)
+                }
                 resolve(errArray)
             }else{
                 resolve(['无法获取隧道状态'])

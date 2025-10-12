@@ -34,8 +34,10 @@ function onToggleStatus(value) {
     </el-button>
     <el-button :disabled="isDisabled" type="danger" link :icon="IconParkOutlineDeleteOne" @click="onDel">删除
     </el-button>
-    <el-switch class="ml-12" size="small" :model-value="tunnelStatus" :active-value="1" :inactive-value="0"
-               @change="onToggleStatus"></el-switch>
+    <el-tooltip content="启用/禁用隧道">
+      <el-switch class="ml-12" size="small" :model-value="tunnelStatus" :active-value="1" :inactive-value="0"
+                 @change="onToggleStatus"></el-switch>
+    </el-tooltip>
   </div>
 </template>
 
