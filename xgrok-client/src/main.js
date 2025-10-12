@@ -19,7 +19,7 @@ function createWindow () {
     const trayIcon = nativeImage.createFromPath(project.trayIcon[process.platform])
     const appIcon = nativeImage.createFromPath(project.appIcon[process.platform])
     const win = new BrowserWindow(Object.assign(Object.assign({
-        title:app.getName(),
+        title:'',
         width: 1000,
         height: 700,
         icon: appIcon,
