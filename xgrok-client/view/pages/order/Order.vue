@@ -327,6 +327,7 @@ onUnmounted(()=>{
   .el-result__title,.el-result__subtitle{
     p{
       font-weight: bold;
+      color: var(--pay-result-text);
     }
   }
 }

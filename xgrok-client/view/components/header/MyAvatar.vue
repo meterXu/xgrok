@@ -6,6 +6,8 @@ import {confirm} from "@/libs/common";
 import {ElMessage} from "element-plus";
 import {closeWebSocket} from "@/api";
 import {useGoTo} from "@/libs/useAction";
+import {showNotification} from "@/libs/message";
+import {NotificationType} from "@/libs/enums";
 const store = useAppStore()
 const {userInfo,pid} = store
 const router = useRouter()
@@ -28,11 +30,20 @@ function logout() {
           instance.confirmButtonText = '退出中...'
           instance.cancelButtonClass = instance.cancelButtonClass + ' my-btn-disabled'
           if (pid.value) {
-            await window.electronAPI.turnOff(pid.value)
-            store.setPid(null)
+            const res = await window.electronAPI.turnOff(pid.value)
+            instance.confirmButtonLoading = false
+            if (res.success) {
+              store.setPid(null)
+              store.setConfigIsLock(false)
+              store.setAppSetting({autoServer:false})
+              done()
+            }else{
+              showNotification(NotificationType.error,res.message||'退出失败')
+            }
+          }else{
+            done()
+            instance.confirmButtonLoading = false
           }
-          done()
-          instance.confirmButtonLoading = false
         } else {
           done()
         }
