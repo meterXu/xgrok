@@ -6,6 +6,8 @@
 
 官网：https://www.xdo.icu/
 
+![poster.webp](assets%2F%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2%2Fposter.webp)
+
 ## 一、安装
 ### Windows
 直接官网下载exe文件进行安装。
@@ -26,15 +28,17 @@ sudo xattr -r -d com.apple.quarantine /Applications/xgrok.app
 ## 二、软件截图
 
 
-![c0.png](assets%2F%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2%2Fc0.webp)
+![c0.webp](assets%2F%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2%2Fc0.webp)
 
-![c1.png](assets%2F%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2%2Fc1.webp)
+![c1.webp](assets%2F%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2%2Fc1.webp)
 
-![c2.png](assets%2F%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2%2Fc2.webp)
+![c2.webp](assets%2F%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2%2Fc2.webp)
 
-![c3.png](assets%2F%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2%2Fc3.webp)
+![c3.webp](assets%2F%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2%2Fc3.webp)
 
-![c4.png](assets%2F%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2%2Fc4.webp)
+![c4.webp](assets%2F%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2%2Fc4.webp)
+
+![c10.webp](assets%2F%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2%2Fc10.webp)
 
 
 ## 三、计划清单
