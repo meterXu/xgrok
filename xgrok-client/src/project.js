@@ -23,20 +23,6 @@ function getAppData(){
     }
 }
 
-function getAppAbsoluteName(appPath){
-    try{
-        if(process.platform==='darwin'){
-            return appPath.substring(0,appPath.indexOf('.app')+4)
-        }else if(process.platform==='win32'){
-            return process.execPath;
-        }else{
-            return appPath;
-        }
-    }catch (err){
-        return appPath;
-    }
-}
-
 const getProject=function (app,mode){
     const appPath = app?.getAppPath()||''
     const _paltform = platform()
@@ -64,7 +50,7 @@ const getProject=function (app,mode){
             },
             clientRootPath:path.join(appPath,'../execute/',_paltform),
             appPath:appPath,
-            appAbsoluteName:getAppAbsoluteName(appPath),
+            appAbsoluteName:process.execPath,
             appData:getAppData(),
             xgrokCoreCfgPath:path.join(getAppData(), '.xgrok.cfg'),
             logPath:path.join(getAppData(),'.xgrok-core.log'),
@@ -100,7 +86,7 @@ const getProject=function (app,mode){
             },
             clientRootPath:path.join(appPath,'../app.asar.unpacked/execute/',_paltform),
             appPath:appPath,
-            appAbsoluteName:getAppAbsoluteName(appPath),
+            appAbsoluteName:process.execPath,
             appData:getAppData(),
             xgrokCoreCfgPath:path.join(getAppData(), '.xgrok.cfg'),
             logPath:path.join(getAppData(),'.xgrok-core.log'),
