@@ -12,7 +12,7 @@ const store = useAppStore()
 const {selectedServer} = store
 
 function onCopy(item) {
-  doCopy(selectedServer.value.domain + ':' + item.remote_port).then(() => {
+  doCopy(selectedServer.domain + ':' + item.remote_port).then(() => {
     showNotification(NotificationType.success, '复制成功')
   })
 }

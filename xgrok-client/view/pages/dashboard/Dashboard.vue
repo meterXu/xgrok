@@ -31,8 +31,8 @@ if (window.project.variable.mode !== 'browser') {
 }
 
 function initServerConfigData() {
-  if (selectedServer.value && selectedServer.value.type === window.project.variable.type) {
-    detailServerConfig(selectedServer.value.id).then(res => {
+  if (selectedServer && selectedServer.type === window.project.variable.type) {
+    detailServerConfig(selectedServer.id).then(res => {
       if (res.success) {
         store.setSelectedServer(res.data)
       }
@@ -77,8 +77,8 @@ function initClient() {
 }
 
 watchEffect(() => {
-  if (selectedServer.value?.id && clientId.value) {
-    queryTunnelCount(selectedServer.value?.id, clientId.value).then(res => {
+  if (selectedServer?.id && clientId.value) {
+    queryTunnelCount(selectedServer?.id, clientId.value).then(res => {
       tunnelCount.web.splice(0, tunnelCount.web.length, ...res.web)
       tunnelCount.service.splice(0, tunnelCount.service.length, ...res.service)
       setTunnelCount(tunnelCount)

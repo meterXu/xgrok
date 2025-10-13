@@ -10,8 +10,8 @@ const {selectedServer} = store
 
 function httpUrl(tunnelConfig, type) {
   if (selectedServer) {
-    return type === httpType.https ? `https://${tunnelConfig.name}.${selectedServer.value.domain}:${selectedServer.value.https_port}/`
-        : `http://${tunnelConfig.name}.${selectedServer.value.domain}:${selectedServer.value.http_port}/`
+    return type === httpType.https ? `https://${tunnelConfig.name}.${selectedServer.domain}:${selectedServer.https_port}/`
+        : `http://${tunnelConfig.name}.${selectedServer.domain}:${selectedServer.http_port}/`
   } else {
     return ''
   }

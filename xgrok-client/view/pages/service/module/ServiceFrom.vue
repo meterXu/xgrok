@@ -77,7 +77,7 @@ watchEffect(() => {
   formData.remark = props.tunnelForm?.remark
   formData.type = props.tunnelForm?.type || 1
   formData.host = props.tunnelForm?.host || '127.0.0.1'
-  formData.server_id = props.tunnelForm?.server_id || selectedServer.value.id
+  formData.server_id = props.tunnelForm?.server_id || selectedServer.id
   formData.client_id = props.tunnelForm?.client_id || clientId.value
   formData.port = props.tunnelForm?.port
   formData.remote_port = props.tunnelForm?.remote_port
@@ -136,7 +136,7 @@ function validateName(rule, value, callback) {
     callback(new Error('名称不符合格式'))
   } else {
     validateNameLoading.value = true
-    checkName.debounce()(selectedServer.value.domain, tunnelType.service, selectedServer.value.http_port, value, selectedServer.value.id, clientId.value, formData.id || '').then(res => {
+    checkName.debounce()(selectedServer.domain, tunnelType.service, selectedServer.http_port, value, selectedServer.id, clientId.value, formData.id || '').then(res => {
       if (res.success) {
         validateNameLoading.value = false
         callback(res.data ? undefined : new Error(res.message))
@@ -150,7 +150,7 @@ function validatePort(rule, value, callback) {
     callback(new Error('请输入名称'))
   } else {
     validateRemotePortLoading.value = true
-    checkPort.debounce()(selectedServer.value.domain, value, selectedServer.value.id, formData.id || '', formData.type).then(res => {
+    checkPort.debounce()(selectedServer.domain, value, selectedServer.id, formData.id || '', formData.type).then(res => {
       if (res.success) {
         callback(res.data ? undefined : new Error(res.message))
       }
@@ -168,7 +168,7 @@ function onCancel() {
 }
 
 function queryRangeByType() {
-  queryRange(selectedServer.value.id, formData.type).then(res => {
+  queryRange(selectedServer.id, formData.type).then(res => {
     if (res.success) {
       portRange.value = res.data.records.map(c => {
         return `${c.min_port}-${c.max_port}`

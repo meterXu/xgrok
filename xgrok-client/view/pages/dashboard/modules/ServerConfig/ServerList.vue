@@ -12,7 +12,7 @@ const {selectedServer,setSelectedServer,plan,pid} = useAppStore()
 const serverConfigs = shallowReactive([])
 
 function onSelectConfigItem(_serverConfig) {
-  if(_serverConfig.id === selectedServer.value.id)
+  if(_serverConfig.id === selectedServer.id)
     return false
   if (plan.value === payPlan.vip || _serverConfig.is_vip === payPlan.free) {
     if(pid.value){
@@ -48,7 +48,7 @@ function loadServersConfig() {
   queryServersConfig(window.project.variable.type).then(res => {
     if (res.success) {
       serverConfigs.splice(0, serverConfigs.length, ...res.data.records)
-      if(!selectedServer.value.id&&serverConfigs[0]){
+      if(!selectedServer.id&&serverConfigs[0]){
         setSelectedServer(serverConfigs[0])
       }
     }

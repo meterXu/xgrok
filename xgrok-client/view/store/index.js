@@ -12,7 +12,7 @@ export const useAppStore = defineStore('app', ()=>{
     const _userInfo = shallowRef(null)
     const _token = ref(null)
     const _pid = ref(null)
-    const _selectedServer = shallowRef(null)
+    const _selectedServer = shallowReactive({})
     const _clientId = ref(null)
     const _plan = reactive({})
     const _orderStatus = shallowReactive({orderId:null,isPaySuccess:null})
@@ -50,7 +50,7 @@ export const useAppStore = defineStore('app', ()=>{
     })
     const selectedServer = computed(()=>{
         if($ls.get("selectedServer")){
-            _selectedServer.value = alterStoreValue(getLsValue($ls.get("selectedServer")))
+            Object.assign(_selectedServer,alterStoreValue(getLsValue($ls.get("selectedServer"))))
         }
         return _selectedServer
     })
@@ -136,7 +136,7 @@ export const useAppStore = defineStore('app', ()=>{
         $ss.set("pid",setLsValue(data))
     }
     function setSelectedServer(data){
-        _selectedServer.value = data
+        Object.assign(_selectedServer,data)
         $ls.set("selectedServer",setLsValue(data))
     }
     function setClientId(value){

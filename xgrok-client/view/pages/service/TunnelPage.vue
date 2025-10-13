@@ -50,11 +50,11 @@ const filterTunnelServiceConfigs = computed(() => {
 })
 
 function loadTunnelData() {
-  if (!selectedServer.value || !clientId.value) {
+  if (!selectedServer || !clientId.value) {
     return false
   }
   tunnelLoading.value = true
-  queryTunnelServiceConfig(selectedServer.value.id, clientId.value).then(res => {
+  queryTunnelServiceConfig(selectedServer.id, clientId.value).then(res => {
     if (res.success) {
       tunnelServiceConfigs.splice(0, tunnelServiceConfigs.length, ...res.data)
       activeId.value = null
@@ -102,7 +102,7 @@ function onTest() {
     window.electronAPI.checkPort({
       host:activeTunnel.value.host,port:activeTunnel.value.port,type:activeTunnel.value.type
     }),
-    checkService(selectedServer.value.domain, activeTunnel.value.remote_port,activeTunnel.value.type)])
+    checkService(selectedServer.domain, activeTunnel.value.remote_port,activeTunnel.value.type)])
       .then(resArray => {
         activeTunnel.value.is_online = !resArray[0].data && resArray[1].data ? isOnline.online : isOnline.offline
         testStatus.value = activeTunnel.value.is_online ? 'success' : 'failed'

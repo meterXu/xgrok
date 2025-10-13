@@ -24,7 +24,7 @@ const status = computed(()=>{
 })
 
 async function onSwitchChange() {
-  queryTunnelCount(selectedServer.value?.id,clientId.value).then(res=>{
+  queryTunnelCount(selectedServer?.id,clientId.value).then(res=>{
     tunnelCount.web.splice(0,tunnelCount.web.length,...res.web)
     tunnelCount.service.splice(0,tunnelCount.service.length,...res.service)
     setTunnelCount(tunnelCount)
@@ -37,12 +37,12 @@ async function onSwitchChange() {
 }
 
 async function onTurnOn() {
-  if (checkTunnelConfig(selectedServer?.value,tunnelCount.web,tunnelCount.service)){
+  if (checkTunnelConfig(selectedServer,tunnelCount.web,tunnelCount.service)){
     switchLoading.value = true
     store.setPid(null)
     store.setConfigIsLock(true)
     let data = {
-      server: selectedServer.value,
+      server: selectedServer,
       tunnelWebs: toRaw(tunnelCount.web),
       tunnelServices: toRaw(tunnelCount.service)
     }

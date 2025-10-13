@@ -45,11 +45,11 @@ const filterTunnelWebConfigs = computed(() => {
 })
 
 function loadTunnelData() {
-  if (!selectedServer.value || !clientId.value) {
+  if (!selectedServer || !clientId.value) {
     return false
   }
   tunnelLoading.value = true
-  queryTunnelWebConfig(selectedServer.value.id, clientId.value).then(res => {
+  queryTunnelWebConfig(selectedServer.id, clientId.value).then(res => {
     if (res.success) {
       tunnelWebConfigs.splice(0, tunnelWebConfigs.length, ...res.data)
       activeId.value = null
@@ -101,10 +101,10 @@ function onTest() {
   Promise.all([
     window.electronAPI.checkWeb({
       name: activeTunnel.value.name,
-      domain: selectedServer.value.domain,
-      port: selectedServer.value.http_port
+      domain: selectedServer.domain,
+      port: selectedServer.http_port
     }),
-    checkWeb(activeTunnel.value.name, selectedServer.value.domain, selectedServer.value.http_port)
+    checkWeb(activeTunnel.value.name, selectedServer.domain, selectedServer.http_port)
   ]).then(resArray => {
     activeTunnel.value.is_online = resArray[0].data && resArray[1].data ? isOnline.online : isOnline.offline
     testStatus.value = activeTunnel.value.is_online ? 'success' : 'failed'

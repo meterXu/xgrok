@@ -41,7 +41,7 @@ watchEffect(() => {
   formData.type = props.tunnelForm?.type || 0
   formData.host = props.tunnelForm?.host || 'http://localhost'
   formData.is_remote = props.tunnelForm?.is_remote || 0
-  formData.server_id = props.tunnelForm?.server_id || selectedServer.value.id
+  formData.server_id = props.tunnelForm?.server_id || selectedServer.id
   formData.client_id = props.tunnelForm?.client_id || clientId.value
   formData.port = props.tunnelForm?.port || 80
   formData.is_online = isOnline.online
@@ -140,7 +140,7 @@ function validateName(rule, value, callback) {
     callback(new Error('名称不符合格式'))
   } else {
     validateNameLoading.value = true
-    checkName.debounce()(selectedServer.value.domain, tunnelType.web, selectedServer.value.http_port, value, selectedServer.value.id, clientId.value, formData.id || '').then(res => {
+    checkName.debounce()(selectedServer.domain, tunnelType.web, selectedServer.http_port, value, selectedServer.id, clientId.value, formData.id || '').then(res => {
       if (res.success) {
         callback(res.data ? undefined : new Error(res.message))
       }
