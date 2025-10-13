@@ -27,6 +27,8 @@ function getAppAbsoluteName(appPath){
     try{
         if(process.platform==='darwin'){
             return appPath.substring(0,appPath.indexOf('.app')+4)
+        }else if(process.platform==='win32'){
+            return process.execPath;
         }else{
             return appPath;
         }
