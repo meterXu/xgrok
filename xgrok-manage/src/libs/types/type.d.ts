@@ -52,7 +52,7 @@ interface OrderType extends BaseType{
     remark:string,
     pay_price:string,
     pay_num:number,
-    pay_total_amount:number,
+    pay_total_amount:string,
     payed_time:string,
     pay_time_start:string,
     pay_time_end:string,

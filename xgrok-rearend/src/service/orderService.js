@@ -83,7 +83,7 @@ export default class OrderService {
     async addOrder(orderModel,userId,isManual = false) {
         const productModel = await this.productService.detailProduct({id:orderModel.product_id})
         const out_trade_no = new moment().format('yyyyMMDDHHmmssms').toString()
-        const pay_total_amount = (parseFloat(productModel.price)*orderModel.pay_num).toString()
+        const pay_total_amount = orderModel.pay_total_amount||(parseFloat(productModel.pay_price)*orderModel.pay_num).toString()
         const subject = getSubjectName(productModel.name,orderModel.pay_num)
         const nowPlan = await this.queryPayPlan(userId)
         let alipayRes = {}
@@ -133,6 +133,7 @@ export default class OrderService {
 
     async editOrder(orderModel) {
         orderModel.modified_time = orderModel.modified_time || new Date().valueOf()
+        orderModel.pay_total_amount = orderModel.pay_total_amount||(parseFloat(orderModel.pay_price)*orderModel.pay_num).toString()
         let res = await prisma.ng_order.update({where: {id: orderModel.id}, data: orderModel});
         return res
     }

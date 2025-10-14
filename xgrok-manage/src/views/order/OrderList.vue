@@ -25,7 +25,7 @@ const searchForm = reactive({
   username: '',
   created_time: [] as Date[],
   pay_status: 1,
-  status: 1,
+  status: null,
   is_delete:0,
   is_manage: 1
 })
@@ -54,7 +54,7 @@ function handleQuery(pageNumber: number = page.pageNumber, pageSize: number = pa
 }
 
 function handleReset() {
-  resetObj(searchForm,{status: 1, is_delete:0, is_manage: 1,  pay_status: 1})
+  resetObj(searchForm,{status: null, is_delete:0, is_manage: 1,  pay_status: 1})
   handleQuery(1, 20)
 }
 

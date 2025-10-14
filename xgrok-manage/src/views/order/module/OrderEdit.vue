@@ -17,7 +17,6 @@ const rules = reactive({
   product_id:[{required: true, message: '请选择购买的产品', trigger: 'blur'}],
   pay_price:[{required: true, message: '请输入商品单价', trigger: 'blur'}],
   pay_num:[{required: true, message: '请输入购买数量', trigger: 'blur'}],
-  pay_total_amount:[{required: true, message: '请输入商品总价', trigger: 'blur'}],
   pay_status: [{required: true, message: '请选择支付状态', trigger: 'blur'}],
   payed_time: [{required: true, message: '请选择支付时间', trigger: 'blur'}],
   refund_time: [{required: true, message: '请选择退款时间', trigger: 'blur'}],
@@ -54,6 +53,7 @@ function handleOk() {
         props.formData.pay_price = props.formData.pay_price.toString()
         props.formData.payed_time = props.formData.payed_time.valueOf()
         props.formData.expired_time = props.formData.expired_time.valueOf()
+        props.formData.pay_total_amount = props.formData.pay_total_amount?.toString()||''
         let res = props.formData.id?await editOrder(props.formData as OrderType):await addOrder(props.formData as OrderType)
         useSaveOrUpdate(res,props.formData.id).then(()=>{
           handleCancel()
@@ -136,6 +136,11 @@ onMounted(() => {
       <el-form-item label="购买数量" prop="pay_num">
         <el-col :span="21">
           <el-input-number v-model="formData.pay_num" placeholder="请输入购买数量"></el-input-number>
+        </el-col>
+      </el-form-item>
+      <el-form-item label="支付金额">
+        <el-col :span="21">
+          <el-input-number v-model="formData.pay_total_amount" placeholder="请输入支付金额"></el-input-number>
         </el-col>
       </el-form-item>
       <el-form-item label="购买人" prop="creator">
