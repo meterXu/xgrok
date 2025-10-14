@@ -1,4 +1,5 @@
-<title>xgrok-您的应用代理访问工具</title>
+<title>XGROK</title>
+<meta name="description" content="XGROK是一款内网穿透软件，旨在为普通用户提供简单快捷的网络穿透体验。">
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css"/>
 <script>
     let {data} = $props();
@@ -45,7 +46,7 @@
         <div class="header">
             <div class="logo-container">
                 <div class="logo-icon"></div>
-                <div class="logo-title">xgrok</div>
+                <div class="logo-title">XGROK</div>
             </div>
         </div>
         <div class="title-container">

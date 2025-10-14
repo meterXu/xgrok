@@ -1,0 +1,3 @@
+# 允许所有爬虫
+User-agent: *
+Disallow:
