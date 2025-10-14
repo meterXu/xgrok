@@ -3,6 +3,7 @@ import utc from 'dayjs/plugin/utc';
 import type {ShallowReactive} from "vue";
 import {NotificationTypeEnum} from '@/libs/enum'
 import {showNotification, confirm, message} from "@/libs/utils/message.ts";
+import {isEmpty} from 'xxweb-util'
 
 export function useFormatDateTime(dateTime?: string): string | null {
     dayjs.extend(utc);
@@ -26,8 +27,8 @@ export function mappingDic(promiseArray: Promise<ResultType<any>>[], dest: Shall
 }
 
 export function useFormatDic(dicData?: DictItemType[], code?: string): string {
-    if (dicData && code) {
-        return dicData.find(c => c.code === code)?.chn_value || ''
+    if (dicData && !isEmpty(code)) {
+        return dicData.find(c => c.code == code)?.chn_value || ''
     } else {
         return ''
     }
