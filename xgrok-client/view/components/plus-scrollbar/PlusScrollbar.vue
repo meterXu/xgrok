@@ -1,12 +1,13 @@
 <script setup>
 const scrollbar = ref()
+const props = defineProps(['viewClass'])
 defineExpose({
   scrollbar
 })
 </script>
 <template>
   <div class="relative w-full h-full">
-    <el-scrollbar ref="scrollbar" class="h-full w-full absolute!" wrapClass="smooth">
+    <el-scrollbar ref="scrollbar" class="h-full w-full absolute!" wrapClass="smooth" :viewClass="viewClass">
       <slot></slot>
     </el-scrollbar>
   </div>

@@ -24,8 +24,8 @@ versionList().then(res => {
   <div class="release flex-1 flex flex-col p-16 rounded-4xl gap-32">
     <div class="text-center text-[24px] font-bold">更新日志</div>
     <div class="flex-1 flex flex-col justify-center">
-      <plus-loading :loading="versions.length===0" size="7rem" mask-bg-color="transparent" class="flex flex-col gap-32">
-        <plus-scrollbar>
+      <plus-loading :loading="versions.length===0" size="7rem" mask-bg-color="transparent">
+        <plus-scrollbar viewClass="flex flex-col gap-32">
           <div v-for="item in versions" :key="item.id">
             <div class="text-[18px] font-bold">{{ item.tag_name }} - {{ dayjs(item.created_at).format('YYYY.MM.DD') }}</div>
             <div class="text-[14px]/[28px] mt-12" v-html="item.body">
