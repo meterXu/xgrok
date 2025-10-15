@@ -2,6 +2,7 @@
 import {defineProps} from 'vue'
 import {useStatusClass} from "@/libs/enums";
 const props = defineProps(['serverConfig'])
+const cdn = window.project.variable.cdn
 </script>
 
 <template>
@@ -16,7 +17,7 @@ const props = defineProps(['serverConfig'])
         </span>
       </span>
       <slot name="right-top-icon">
-        <img class="w-24 h-24 object-contain" :src="`https://webspace1.oss-cn-hangzhou.aliyuncs.com/xgrok-client/${props.serverConfig.operator}.webp`" :alt="props.serverConfig.operator"/>
+        <img class="w-24 h-24 object-contain" :src="`${cdn}/xgrok-client/${props.serverConfig.operator}.webp`" :alt="props.serverConfig.operator"/>
       </slot>
     </div>
     <slot></slot>

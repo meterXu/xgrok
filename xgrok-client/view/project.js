@@ -14,6 +14,7 @@ const project = function (mode) {
             tokenKey: env.VITE_APP_tokenKey,
             wsUrl:env.VITE_APP_wsUrl,
             website:env.VITE_APP_website,
+            cdn:env.VITE_APP_cdn,
             type:parseInt(env.VITE_APP_type)
         },
         redirect: {
