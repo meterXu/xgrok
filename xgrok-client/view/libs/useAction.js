@@ -3,7 +3,6 @@ import router from "@/router";
 import {NotificationType, payPlan} from "@/libs/enums";
 import {confirm} from "@/libs/common";
 import {useAppStore} from '@/store'
-import {ElMessage} from "element-plus";
 import {showNotification} from "@/libs/message";
 
 export function useGetValidateRes(form){
@@ -31,6 +30,12 @@ export function useGetDisabled(validateRes){
 export function onFormValidate(validateRes,validObj){
     validateRes[validObj.prop].valid = validObj.valid
     validateRes[validObj.prop].value = validObj.value
+}
+
+export function resetFormValidate(validateRes){
+    Object.entries(validateRes).forEach(([key,value])=>{
+        validateRes[key].value = null
+    })
 }
 
 export function useGetTermsOfServiceUrl(){

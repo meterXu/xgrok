@@ -4,13 +4,13 @@ import {ElMessage} from 'element-plus'
 import {changePwd, checkUserIsExist, sendValidateCode, validateCode} from "@/api";
 import {useRouter} from "vue-router";
 import md5 from "js-md5"
-import {onFormValidate, useGetDisabled, useGetErrorMsg, useGetValidateRes} from "@/libs/useAction";
-import {alert} from "@/libs/common";
+import {onFormValidate, resetFormValidate, useGetDisabled, useGetErrorMsg, useGetValidateRes} from "@/libs/useAction";
+import {alert, resetObj} from "@/libs/common";
 import Logo from "@/components/Logo.vue";
 
 const expireCount = 120
 const sendCodeLoading = ref(false)
-const registerLoading = ref(false)
+const forgotLoading = ref(false)
 const ruleForm = ref(null)
 const sendCodeTime = ref(expireCount)
 const sendCodeTimer = ref(null)
@@ -69,7 +69,7 @@ const validateRes = useGetValidateRes(form)
 const registerDisable = useGetDisabled(validateRes)
 const errorMsg = useGetErrorMsg(validateRes)
 function onSubmit(){
-  registerLoading.value = true
+  forgotLoading.value = true
   ruleForm.value.validate(valid=>{
     if(valid){
       const changePwdData = JSON.parse(JSON.stringify(form))
@@ -84,7 +84,7 @@ function onSubmit(){
           alert(res.message||'修改失败')
         }
       }).finally(()=>{
-        registerLoading.value = false
+        forgotLoading.value = false
       })
     }
   })
@@ -127,6 +127,14 @@ function clearSendCodeTimer(){
   sendCodeTimer.value = null
 }
 
+onBeforeRouteLeave(()=>{
+  sendCodeLoading.value = false
+  forgotLoading.value = false
+  ruleForm.value.resetFields()
+  resetFormValidate(validateRes)
+  clearSendCodeTimer()
+})
+
 </script>
 
 <template>
@@ -165,7 +173,7 @@ function clearSendCodeTimer(){
             <el-input size="default" type="password" v-model="form.confirmPassword" @keydown.enter="onSubmit"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button size="default" class="btn" type="success" :loading="registerLoading" :disabled="registerDisable" @click="onSubmit">修改</el-button>
+            <el-button size="default" class="btn" type="success" :loading="forgotLoading" :disabled="registerDisable" @click="onSubmit">修改</el-button>
           </el-form-item>
         </el-form>
       </div>

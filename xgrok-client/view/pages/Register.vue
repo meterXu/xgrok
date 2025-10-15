@@ -1,17 +1,17 @@
 <script setup>
 import {reactive, ref} from 'vue'
 import {ElMessage} from 'element-plus'
-import {checkUserIsExist, register, sendValidateCode, validateCode} from "@/api";
+import {checkUserIsExist, queryPayPlan, register, sendValidateCode, validateCode} from "@/api";
 import {useRouter} from "vue-router";
 import md5 from "js-md5"
 import {
-  onFormValidate,
+  onFormValidate, resetFormValidate,
   useGetDisabled,
   useGetErrorMsg,
   useGetTermsOfServiceUrl,
   useGetValidateRes, usePrivacyAgreementUrl
 } from "@/libs/useAction";
-import {alert} from '@/libs/common'
+import {alert,resetObj} from '@/libs/common'
 import {useAppStore} from "@/store";
 import Logo from "@/components/Logo.vue";
 
@@ -89,9 +89,12 @@ function onSubmit(){
       registerData.confirmPassword = null
       register(registerData).then(res=>{
         if(res.success){
-          alert('注册成功','',{callback(){
+          alert('注册成功','',{async callback(){
+              store.setUserName(form.username)
               store.setUserInfo(res.data)
               store.setToken(res.data.accessToken)
+              const plan = await queryPayPlan()
+              plan.success && store.setPlan(plan.data)
               router.push({
                 name:'Dashboard'
               })
@@ -147,6 +150,13 @@ function onOpenLink(link){
   window.electronAPI.openExternal(link)
 }
 
+onBeforeRouteLeave(()=>{
+  sendCodeLoading.value = false
+  registerLoading.value = false
+  ruleForm.value.resetFields()
+  resetFormValidate(validateRes)
+  clearSendCodeTimer()
+})
 </script>
 
 <template>
