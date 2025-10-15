@@ -121,7 +121,7 @@ defineExpose({
 <template>
   <div class="service-switch-wrap rounded-4xl w-160 h-full p-14">
     <div class="w-full h-full relative">
-      <el-tooltip :disabled="!serverAvailability" effect="dark" content="服务不可用">
+      <el-tooltip :disabled="serverAvailability" effect="dark" content="服务不可用">
         <div class="switch absolute rounded-2xl bg-(--power-switch-bg) cursor-pointer flex flex-col items-center justify-center font-bold gap-4"
              :class="`power-${status}`"
              v-debounce:click="onSwitchChange">
