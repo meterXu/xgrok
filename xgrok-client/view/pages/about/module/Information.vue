@@ -1,9 +1,10 @@
-<script setup lang="ts">
-
+<script setup>
+import {version} from '../../../../package.json'
+const _version  = version
 </script>
 
 <template>
-  <span class="text-[24px] font-bold mt-40">版本：V1.1.4</span>
+  <span class="text-[24px] font-bold mt-40">版本：v{{_version}}</span>
   <div class="text-(--text-color-2)">XGROK是一款内网穿透软件，旨在为普通用户提供简单快捷的网络穿透体验。</div>
 </template>
 
