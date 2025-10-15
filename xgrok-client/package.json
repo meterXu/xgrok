@@ -1,6 +1,6 @@
 {
   "name": "xgrok",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "xgrok客户端",
   "main": "frame/main.js",
   "scripts": {
@@ -54,13 +54,13 @@
         {
           "target": "dmg",
           "arch": [
-            "arm64"
+            "x64"
           ]
         },
         {
           "target": "zip",
           "arch": [
-            "arm64"
+            "x64"
           ]
         }
       ]
