@@ -57,9 +57,9 @@ sudo xattr -r -d com.apple.quarantine /Applications/xgrok.app
 - [x] 隐私策略
 - [x] 开发反向代理
 - [x] 应用打开检测进程是否在运行
-- [ ] 开发开机自启动
+- [x] 开发开机自启动
 - [x] 开发使用proxy进行代理访问
-- [ ] UI重构，默认深色模式
+- [x] UI重构，默认深色模式
 - [x] 开发穿透状态
 - [ ] 开发linux版本
 - [ ] 开发web管理端
