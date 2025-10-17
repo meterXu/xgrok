@@ -118,7 +118,6 @@ function startXgrok(names,type) {
         global.logger.info(`os arch: ${arch()}`)
         global.logger.info(`os platform: ${platform()}`)
         global.logger.info(`start xgrok, the client root path is ${global.project.clientRootPath}`)
-        global.logger.info(`config:\r\n${readXgrokCfgFile(global.project.xgrokCoreCfgPath)}`)
         let xgrok = null
         if(type===serverType.ngrok){
             xgrok = execFile('./xgrok-core', [`-config=${global.project.xgrokCoreCfgPath}`, 'start', ...names], {
