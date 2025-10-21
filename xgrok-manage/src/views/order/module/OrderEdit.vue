@@ -130,7 +130,7 @@ onMounted(() => {
       </el-form-item>
       <el-form-item label="商品单价" prop="pay_price">
         <el-col :span="21">
-          <el-input-number v-model="formData.pay_price" placeholder="请输入商品单价"></el-input-number>
+          <el-input-number readonly v-model="formData.pay_price" placeholder="请输入商品单价"></el-input-number>
         </el-col>
       </el-form-item>
       <el-form-item label="购买数量" prop="pay_num">
