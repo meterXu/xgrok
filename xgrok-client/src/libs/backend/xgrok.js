@@ -37,6 +37,7 @@ async function turnOn(xgrokConf) {
             pid = await startXgrok(serviceNames,xgrokConf.server.type)
             global.logger.info(`xgrok pid is [${pid}]`)
             let runStatus = await getTunnelStatus([...xgrokConf.tunnelWebs||[],...xgrokConf.tunnelServices||[]])
+            global.logger.info(`xgrok tunnels status: ${JSON.stringify(runStatus)}`)
             if(runStatus.length === 0) {
                 global.pid=pid
                 return Promise.resolve({
@@ -214,6 +215,7 @@ async function generateXgrokConf(serverDetail, WebDetails, serviceDetails) {
                 })]
         }
         config.webServer.port = await nextAvailable(global.project.startWebServerProt, global.project.webServer.addr)
+        global.logger.info(`xgrok admin port start with [${global.project.startWebServerProt}],run with [${config.webServer.port}]`)
         return stringify(config)
     }
 }

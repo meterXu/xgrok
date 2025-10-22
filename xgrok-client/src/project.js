@@ -81,6 +81,7 @@ const getProject=function (app,mode){
         return {
             viewUrl:'dist/index.html',
             serverPort:4446,
+            startWebServerProt:7400,
             auth:{
                 method:'token',
                 token:'xgrok_84hG5!Jk9m',
