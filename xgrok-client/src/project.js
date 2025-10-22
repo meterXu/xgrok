@@ -42,6 +42,12 @@ const getProject=function (app,mode){
     if(mode==='development'){
         return {
             viewUrl:"http://localhost:5173/",
+            serverPort:4446,
+            startWebServerProt:7400,
+            auth:{
+                method:'token',
+                token:'xgrok_84hG5!Jk9m',
+            },
             webServer:{
                 addr:'127.0.0.1',
                 port:7400,
@@ -55,10 +61,6 @@ const getProject=function (app,mode){
             xgrokCoreCfgPath:path.join(getAppData(), '.xgrok.cfg'),
             logPath:path.join(getAppData(),'.xgrok-core.log'),
             xgrokAppCfgPath:xgrokAppCfgPath,
-            auth:{
-                method:'token',
-                token:'xgrok_84hG5!Jk9m',
-            },
             appIcon:{
                 darwin:path.join(appPath||__dirname,'../','public/assets/icon.icns'),
                 win32:path.join(appPath||__dirname,'../','public/assets/icon.ico'),
@@ -78,6 +80,11 @@ const getProject=function (app,mode){
     }else{
         return {
             viewUrl:'dist/index.html',
+            serverPort:4446,
+            auth:{
+                method:'token',
+                token:'xgrok_84hG5!Jk9m',
+            },
             webServer:{
                 addr:'127.0.0.1',
                 port:7400,
@@ -91,10 +98,6 @@ const getProject=function (app,mode){
             xgrokCoreCfgPath:path.join(getAppData(), '.xgrok.cfg'),
             logPath:path.join(getAppData(),'.xgrok-core.log'),
             xgrokAppCfgPath:xgrokAppCfgPath,
-            auth:{
-                method:'token',
-                token:'xgrok_84hG5!Jk9m',
-            },
             appIcon:{
                 darwin:path.join(appPath||__dirname,appPath?'/':'../','public/assets/icon.icns'),
                 win32:path.join(appPath||__dirname,appPath?'/':'../','public/assets/icon.ico'),

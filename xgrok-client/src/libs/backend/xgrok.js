@@ -12,6 +12,7 @@ const net = require('net')
 const {checkPort} = require("./system");
 const {Worker} = require("worker_threads");
 const dgram = require('dgram');
+const {nextAvailable} = require('node-port-check');
 const serverDetails = require("../../models/xgrokConfModel");
 const {login,apiStatus} = require("../api");
 let serviceNames = null
@@ -27,7 +28,7 @@ async function turnOn(xgrokConf) {
         if (xgrokConf.tunnelWebs.length === 0 && xgrokConf.tunnelServices.length === 0) {
             return Promise.reject({message: '配置为空'})
         } else {
-            saveYamlConf(xgrokConf.server, xgrokConf.tunnelWebs, xgrokConf.tunnelServices)
+            await saveYamlConf(xgrokConf.server, xgrokConf.tunnelWebs, xgrokConf.tunnelServices)
             serviceNames = xgrokConf.tunnelWebs.map(c => c.name).concat(xgrokConf.tunnelServices.map(c => c.name))
             let proxyWebs = xgrokConf.tunnelWebs.filter(c => c.is_remote === hostType.remote)
             if (proxyWebs.length > 0) {
@@ -78,14 +79,12 @@ async function getTunnelStatus(tunnels){
             let isRun = await waitPortRun(global.project.webServer.port,global.project.webServer.addr)
             if(isRun){
                 await login()
-
                 let statusData = (await apiStatus()).data
                 statusData = [...statusData.tcp||[],...statusData.udp||[],...statusData.http||[]]
                 let errArray=[]
                 let step=0
                 const loopCheck = async (c)=>{
-                    if(step===3){
-                        errArray.push(`${c.name}启动失败，超时`)
+                    if(step===3){//3s后仍未检测到结果则视为启动成功
                         return
                     }
                     step++
@@ -149,13 +148,13 @@ function startXgrok(names,type) {
 
 }
 
-function saveYamlConf(serverDetail, webDetails, serviceDetails) {
-    const yamlConf = generateXgrokConf(serverDetail, webDetails, serviceDetails)
+async function saveYamlConf(serverDetail, webDetails, serviceDetails) {
+    const yamlConf = await generateXgrokConf(serverDetail, webDetails, serviceDetails)
     fs.writeFileSync(global.project.xgrokCoreCfgPath, yamlConf);
 
 }
 
-function generateXgrokConf(serverDetail, WebDetails, serviceDetails) {
+async function generateXgrokConf(serverDetail, WebDetails, serviceDetails) {
     if (serverDetails.type === serverType.ngrok) {
         let webTunnels = WebDetails.map(web => {
             return {[web.name]: {proto: {http: web.port}}}
@@ -187,7 +186,7 @@ function generateXgrokConf(serverDetail, WebDetails, serviceDetails) {
     } else {
         const config = {
             serverAddr: serverDetail.domain,
-            serverPort: 4446,
+            serverPort: global.project.serverPort,
             auth: {
                 method: global.project.auth.method,
                 token: global.project.auth.token,
@@ -214,6 +213,7 @@ function generateXgrokConf(serverDetail, WebDetails, serviceDetails) {
                     }
                 })]
         }
+        config.webServer.port = await nextAvailable(global.project.startWebServerProt, global.project.webServer.addr)
         return stringify(config)
     }
 }

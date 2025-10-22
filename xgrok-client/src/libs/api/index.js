@@ -5,13 +5,11 @@ const urls={
         status:'/api/status'
     }
 }
-const service = axios.create({
-    baseURL:`http://${global.project.webServer.addr}:${global.project.webServer.port}`
-})
+const service = axios.create()
 
 function login(){
     return service({
-        url:urls.api.login,
+        url:`http://${global.project.webServer.addr}:${global.project.webServer.port}${urls.api.login}`,
         method:'get',
         headers: {
             Authorization: 'Basic ' + btoa(`${global.project.webServer.user}:${global.project.webServer.password}`)
@@ -21,7 +19,7 @@ function login(){
 
 function apiStatus(){
     return service({
-        url:urls.api.status,
+        url:`http://${global.project.webServer.addr}:${global.project.webServer.port}${urls.api.status}`,
         headers:{
             Authorization: 'Basic ' + btoa(`${global.project.webServer.user}:${global.project.webServer.password}`)
         }
