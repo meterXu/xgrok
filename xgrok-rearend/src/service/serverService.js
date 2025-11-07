@@ -47,6 +47,7 @@ export default class ServerService {
               ssl_expired_time:serverModel.ssl_expired_time,
               up_speed:serverModel.up_speed,
               down_speed:serverModel.down_speed,
+              is_vip:serverModel.is_vip,
               sort:serverModel.sort,
               creator:serverModel.creator,
               editor:serverModel.editor,

@@ -5,7 +5,8 @@ import {batchDelServer, detailServer, getDict, serverQuery} from "@/api";
 import {useGetIndexMethod, usePage, useQuery, useQueryCallback} from "@/libs/use-curd";
 import {mappingDic, resetObj, useBatchDelConfirm, useDel, useFormatDic} from "@/libs/utils";
 import {showNotification} from "@/libs/utils/message";
-import {NotificationTypeEnum} from "@/libs/enum";
+import ServerEdit from "@/views/server/module/ServerEdit.vue";
+import {IsDeleteEnum, NotificationTypeEnum, StatusEnum} from "@/libs/enum";
 import {Search, RefreshLeft, Plus, Delete} from "@element-plus/icons-vue";
 import type {TableInstance} from "element-plus";
 
@@ -15,8 +16,8 @@ const page = usePage()
 const searchForm = shallowReactive({
   name: null,
   type: null,
-  status: '1',
-  is_delete: null
+  status: StatusEnum.enable,
+  is_delete: IsDeleteEnum.false
 })
 const serverTypeDict = shallowReactive<DictItemType[]>([])
 const statusDict = shallowReactive<DictItemType[]>([])
@@ -38,7 +39,7 @@ function handleQuery(pageNumber: number = 1, pageSize: number = 20) {
   page.pageNumber = pageNumber
   page.pageSize = pageSize
   useQuery(queryData, Object.assign({
-    orderBy: JSON.stringify([{type: 'asc'}])
+    orderBy: JSON.stringify([{type: 'asc'},{created_time:'desc'}])
   }, page, searchForm), (res: ResultType<PaginationDataType<ServerType>>) => {
     tableRef.value?.clearSelection()
     useQueryCallback(res, tableData, page)
@@ -46,7 +47,7 @@ function handleQuery(pageNumber: number = 1, pageSize: number = 20) {
 }
 
 function handleReset() {
-  resetObj(searchForm, {status: '1'})
+  resetObj(searchForm, {status: StatusEnum.enable, is_delete:IsDeleteEnum.false})
   handleQuery(1, 20)
 }
 
@@ -62,12 +63,24 @@ function onDetailServer(id: string, status: number, is_delete: number, is_vip: n
   })
 }
 
-function onConfigProt(val: ServerType) {
-  console.log(val)
+function onConfigProt(row: ServerType) {
+
 }
 
 function onAdd() {
-  resetObj(formData, {username: undefined, pay_num: 1})
+  resetObj(formData, {
+    name:'',
+    port: 4446,
+    http_port:80,
+    https_port:443,
+    up_speed:'',
+    down_speed:'',
+    is_vip:1,
+    is_online:1,
+    has_ssl:1,
+    status:StatusEnum.enable,
+    is_delete:IsDeleteEnum.false
+  })
   dialogVisible.value = true
 }
 
@@ -81,6 +94,11 @@ function onDelete() {
 
 function onSelectionChange(val: OrderType[]) {
   multipleSelection.value = val.map(c => c.id)
+}
+
+function onEdit(row:any){
+  Object.assign(formData,row)
+  dialogVisible.value = true
 }
 
 onMounted(() => {
@@ -101,17 +119,17 @@ onMounted(() => {
         </el-form-item>
         <el-form-item label="类型">
           <el-select class="w-120!" v-model="searchForm.type" clearable @change="()=>{handleQuery()}">
-            <el-option v-for="item in serverTypeDict" :label="item.chn_value" :value="item.code"></el-option>
+            <el-option v-for="item in serverTypeDict" :label="item.chn_value" :value="parseInt(item.code)"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="是否启用">
           <el-select class="w-120!" v-model="searchForm.status" clearable @change="()=>{handleQuery()}">
-            <el-option v-for="item in statusDict" :label="item.chn_value" :value="item.code"></el-option>
+            <el-option v-for="item in statusDict" :label="item.chn_value" :value="parseInt(item.code)"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="是否删除">
           <el-select class="w-120!" v-model="searchForm.is_delete" clearable @change="()=>{handleQuery()}">
-            <el-option v-for="item in isDeleteDict" :label="item.chn_value" :value="item.code"></el-option>
+            <el-option v-for="item in isDeleteDict" :label="item.chn_value" :value="parseInt(item.code)"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -132,11 +150,12 @@ onMounted(() => {
                     header-row-class-name="table-header"
                     row-key="id" height="100%"
                     @selection-change="onSelectionChange">
-            <el-table-column fixed type="selection" width="45"/>
+            <el-table-column fixed type="selection" width="18"/>
             <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod"
                              width="55"></el-table-column>
             <el-table-column prop="name" label="名称" align="left"></el-table-column>
             <el-table-column prop="domain" label="域名" align="left"></el-table-column>
+            <el-table-column prop="port" label="端口" align="left"></el-table-column>
             <el-table-column prop="type" label="类型" align="left">
               <template #default="{row}">
                 {{ useFormatDic(serverTypeDict, row.type.toString()) }}
@@ -167,6 +186,7 @@ onMounted(() => {
             </el-table-column>
             <el-table-column prop="id" label="操作" align="center" width="100">
               <template #default="{row}">
+                <el-button type="text" @click="onEdit(row)">编辑</el-button>
                 <el-button type="text" @click="onConfigProt(row)">端口配置</el-button>
               </template>
             </el-table-column>
@@ -187,6 +207,7 @@ onMounted(() => {
       </div>
     </div>
   </div>
+  <ServerEdit v-model="dialogVisible" :formData="formData" @close="handleQuery"></ServerEdit>
 </template>
 
 <style scoped lang="less">

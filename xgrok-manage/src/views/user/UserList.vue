@@ -138,7 +138,7 @@ onMounted(()=>{
                   header-row-class-name="table-header"
                   row-key="id"
                   @selection-change="onSelectionChange">
-          <el-table-column fixed type="selection" width="45" />
+          <el-table-column fixed type="selection" width="18" />
           <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod" width="55"></el-table-column>
           <el-table-column prop="username" label="用户名" width="160" show-overflow-tooltip align="left"></el-table-column>
           <el-table-column prop="nickname" label="昵称" width="160" show-overflow-tooltip align="left"></el-table-column>

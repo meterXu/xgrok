@@ -96,8 +96,12 @@ export function serverQuery(data: any): Promise<ResultType<PaginationDataType<Se
     return getAction(url.server.query, data)
 }
 
-export function detailServer(data: any): Promise<ResultType<any>> {
+export function detailServer(data: Partial<ServerType>): Promise<ResultType<any>> {
     return putAction(url.server.modify, data)
+}
+
+export function addServer(data:Partial<ServerType>):Promise<ResultType<any>>{
+    return postAction(url.server.modify, data)
 }
 
 export function productQuery(data:any):Promise<ResultType<PaginationDataType<ProductType>>> {

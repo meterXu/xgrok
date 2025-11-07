@@ -5,13 +5,13 @@ import {useAppStore} from "@/store";
 import {hostType, isOnline, NotificationType, payPlan, serviceType, tunnelType} from "@/libs/enums";
 import InfoTip from "@/components/infoTip.vue";
 import {tipText} from "@/libs/infoText";
-import {testName, isLocalHost,confirm} from "@/libs/common";
-import {gotoSubscribe,operationConfirm, useGetDisabled, useGetErrorMsg,onFormValidate} from "@/libs/useAction";
+import {testName, isLocalHost, confirm} from "@/libs/common";
+import {gotoSubscribe, operationConfirm, useGetDisabled, useGetErrorMsg, onFormValidate} from "@/libs/useAction";
 import {showNotification} from "@/libs/message";
 import {$emit} from "xxweb-util";
 
 const store = useAppStore()
-const {selectedServer, clientId,configIsLock,pid,plan} = store
+const {selectedServer, clientId, configIsLock, pid, plan} = store
 const props = defineProps(['tunnelForm'])
 const emits = defineEmits(['updateSuccess', 'cancel', 'createSuccess'])
 const ruleFormRef = ref('ruleFormRef')
@@ -54,7 +54,7 @@ const rules = {
       required: true,
       message: '请输入代理地址',
       trigger: 'change',
-      regexp: /^((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))|(?=^.{3,255}$)[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+$/g
+      pattern: /^((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))|(?=^.{3,255}$)[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+$/g
     },
     {max: 200, message: '最多200个字', trigger: 'change'}
   ],
@@ -68,7 +68,7 @@ const rules = {
 }
 const errorMsg = useGetErrorMsg(validateRes)
 const addBtnDisabled = computed(() => {
-  return useGetDisabled(validateRes).value||configIsLock.value
+  return useGetDisabled(validateRes).value || configIsLock.value
 })
 
 watchEffect(() => {
@@ -93,30 +93,30 @@ function onSave() {
   saveLoading.value = true
   ruleFormRef.value.validate(valid => {
     if (valid) {
-      operationConfirm().then(()=>{
+      operationConfirm().then(() => {
         formData.id ? updateTunnelService(formData).then(res => {
-              showNotification(res.success?NotificationType.success:NotificationType.error, res.success ? '更新成功' : '更新失败')
+              showNotification(res.success ? NotificationType.success : NotificationType.error, res.success ? '更新成功' : '更新失败')
               if (res.success) {
                 emits('cancel')
                 emits('updateSuccess')
-                pid.value&&$emit('restart')
+                pid.value && $emit('restart')
               }
             }).finally(() => {
               saveLoading.value = false
             })
             : createTunnelService(formData).then(res => {
               if (res.success) {
-                showNotification(NotificationType.success,'创建成功')
+                showNotification(NotificationType.success, '创建成功')
                 emits('cancel')
                 emits('createSuccess')
-                pid.value&&$emit('restart')
+                pid.value && $emit('restart')
               } else {
                 gotoSubscribe(res.message || '创建失败')
               }
             }).finally(() => {
               saveLoading.value = false
             })
-      }).catch(()=>{
+      }).catch(() => {
         saveLoading.value = false
       })
     } else {
@@ -177,18 +177,18 @@ function queryRangeByType() {
   })
 }
 
-function onChangeType(value){
-  if(value===serviceType.UDP&&plan.value!==payPlan.vip){
-    confirm('免费用户无法创建UDP隧道', null,{
-      confirmButtonText:'去订阅',
-      cancelButtonText:'知道了',
-      confirmButtonClass:'el-button--warning is-plain'
-    }).then(()=>{
-      router.push({name:'Plan'})
-    }).catch(()=>{
-      formData.type=serviceType.TCP
+function onChangeType(value) {
+  if (value === serviceType.UDP && plan.value !== payPlan.vip) {
+    confirm('免费用户无法创建UDP隧道', null, {
+      confirmButtonText: '去订阅',
+      cancelButtonText: '知道了',
+      confirmButtonClass: 'el-button--warning is-plain'
+    }).then(() => {
+      router.push({name: 'Plan'})
+    }).catch(() => {
+      formData.type = serviceType.TCP
     })
-  }else{
+  } else {
     queryRangeByType()
     ruleFormRef.value.validateField('remote_port')
   }
@@ -258,7 +258,7 @@ created()
       <template #icon>
         <ep-check/>
       </template>
-      {{formData.id?'更新':'新增'}}
+      {{ formData.id ? '更新' : '新增' }}
     </el-button>
     <el-button type="info" plain :disabled="saveLoading" @click="onCancel">
       <template #icon>
