@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref, reactive, shallowReactive, shallowRef} from "vue";
+import {onMounted, ref, reactive, shallowReactive, shallowRef, useTemplateRef} from "vue";
 import {batchDelOrder, getDict, orderQuery} from "@/api";
 import {useGetIndexMethod, usePage, useQuery, useQueryCallback} from "@/libs/use-curd";
 import {
@@ -14,6 +14,7 @@ import {
 import {Search, RefreshLeft, Delete, Plus} from "@element-plus/icons-vue";
 import OrderEdit from "@/views/order/module/OrderEdit.vue";
 import {IsDeleteEnum, StatusEnum} from "@/libs/enum";
+import type {TableInstance} from "element-plus";
 
 const loading = shallowRef(false)
 const tableData = shallowReactive([] as any[])
@@ -33,6 +34,7 @@ const payStatusDict = shallowReactive<DictItemType[]>([])
 const statusDict = shallowReactive<DictItemType[]>([])
 const isDeleteDict = shallowReactive<DictItemType[]>([])
 const multipleSelection = ref<string[]>([])
+const tableRef = useTemplateRef<TableInstance>('tableRef')
 
 function queryData(params: any): Promise<ResultType<PaginationDataType<OrderType>>> {
   loading.value = true
@@ -49,6 +51,7 @@ function handleQuery(pageNumber: number = page.pageNumber, pageSize: number = pa
     created_time_start: searchForm.created_time[0]?.valueOf(),
     created_time_end: searchForm.created_time[1]?.valueOf(),
   }), (res: ResultType<PaginationDataType<OrderType>>) => {
+    tableRef.value?.clearSelection()
     useQueryCallback(res, tableData, page)
   })
 }

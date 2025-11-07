@@ -1,7 +1,8 @@
 import ResultModel from "../model/sys/resultModel.js";
 import {randomUUID} from "../utils/index.js";
-import {isDelete,status} from "../utils/enum.js";
+import {isDelete} from "../utils/enum.js";
 import ServerModel from "../model/serverModel.js";
+
 const {PrismaClient} = require("@prisma/client");
 const prisma = new PrismaClient();
 
@@ -71,17 +72,15 @@ export default class ServerService {
         return new ResultModel(res.id,null,true)
     }
 
-    async delServer(ctx) {
-        let id = ctx.request.query.id;
-        const res = await prisma.Server.update({
-              data:{
-                  is_delete: isDelete.true,
-              },
-              where: {
-                  id: id
-              }
+    delServer(ids) {
+        return prisma.Server.updateMany({
+            data: {
+                is_delete: isDelete.true,
+            },
+            where: {
+                id: {in: ids}
+            }
         })
-        return new ResultModel(id,null,true)
     }
 
 }

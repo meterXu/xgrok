@@ -71,7 +71,9 @@ export default class ServerController {
         id: {type: "string", required: true, description: 'id'}
     })
     async delServer(ctx) {
-       const res = await this.serverService.delServer(ctx)
+        let id = ctx.validatedQuery.id;
+        const delRes = await this.serverService.delServer(id.split(','))
+        const res = new ResultModel(id, null, !!delRes)
         ctx.result(res)
     }
 

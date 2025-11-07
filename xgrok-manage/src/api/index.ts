@@ -26,6 +26,7 @@ const url = {
     server: {
         query: '/api/server/query',
         modify: '/api/server',
+        delete: '/api/server'
     },
     product: {
         query: '/api/product/query'
@@ -85,6 +86,10 @@ export function batchDelOrder(ids:string[]): Promise<ResultType<any>> {
 
 export function batchDelUser(ids:string[],isPhysics:boolean=false): Promise<ResultType<any>> {
     return deleteAction(url.user.delete, {id:ids.join(','),isPhysics});
+}
+
+export function batchDelServer(ids:string[]):Promise<ResultType<any>>{
+    return deleteAction(url.server.delete, {id:ids.join(',')});
 }
 
 export function serverQuery(data: any): Promise<ResultType<PaginationDataType<ServerType>>> {

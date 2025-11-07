@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {onMounted, ref, shallowReactive, shallowRef} from "vue";
+import {onMounted, ref, shallowReactive, shallowRef, useTemplateRef} from "vue";
 import {batchDelUser, editUser, getDict, userQuery} from "@/api";
 import {useGetIndexMethod, usePage, useQuery, useQueryCallback} from "@/libs/use-curd";
 import {mappingDic, resetObj, useBatchDelConfirm, useDel, useFormatDateTime} from "@/libs/utils";
@@ -9,6 +9,7 @@ import {IsDeleteEnum, NotificationTypeEnum, StatusEnum} from "@/libs/enum";
 import {Search, RefreshLeft, Plus, Delete} from "@element-plus/icons-vue";
 import UserEdit from "./module/UserEdit.vue";
 import UserTunnelDrawer from "@/views/user/module/UserTunnelDrawer.vue";
+import type {TableInstance} from "element-plus";
 
 const loading = shallowRef(false)
 const tableData = shallowReactive([] as any[])
@@ -25,6 +26,7 @@ const formData = shallowReactive<UserType>({} as UserType)
 const multipleSelection = ref<string[]>([])
 const selectedUser = shallowReactive<UserType>({} as UserType)
 const drawerVisible = ref(false)
+const tableRef = useTemplateRef<TableInstance>('tableRef')
 
 function queryData(params: any): Promise<ResultType<PaginationDataType<UserType>>> {
   loading.value = true
@@ -37,7 +39,9 @@ function queryData(params: any): Promise<ResultType<PaginationDataType<UserType>
 function handleQuery(pageNumber:number=1,pageSize:number=20){
   page.pageNumber = pageNumber
   page.pageSize = pageSize
-  useQuery(queryData,Object.assign({},page,searchForm),(res:ResultType<PaginationDataType<UserType>>)=>{useQueryCallback(res,tableData,page)})
+  useQuery(queryData,Object.assign({},page,searchForm),(res:ResultType<PaginationDataType<UserType>>)=>{
+    tableRef.value?.clearSelection()
+    useQueryCallback(res,tableData,page)})
 }
 function handleReset(){
   resetObj(searchForm,{status:1, is_delete:0})
@@ -128,7 +132,7 @@ onMounted(()=>{
     <!--  表格  -->
     <div class="flex-1 w-full relative">
       <div class="absolute w-full h-full">
-        <el-table v-loading="loading" :data="tableData"
+        <el-table ref="tableRef" v-loading="loading" :data="tableData"
                   class="rounded-2xl!"
                   height="100%"
                   header-row-class-name="table-header"

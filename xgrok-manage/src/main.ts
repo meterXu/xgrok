@@ -18,8 +18,6 @@ window.onresize = ()=>{
             return 1920
         }
         return width
-    }).then(width=>{
-        console.log(width)
     })
 }
 //@ts-ignore
