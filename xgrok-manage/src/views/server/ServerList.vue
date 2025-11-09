@@ -9,6 +9,7 @@ import ServerEdit from "@/views/server/module/ServerEdit.vue";
 import {IsDeleteEnum, NotificationTypeEnum, StatusEnum} from "@/libs/enum";
 import {Search, RefreshLeft, Plus, Delete} from "@element-plus/icons-vue";
 import type {TableInstance} from "element-plus";
+import PortRangeDrawer from "@/views/server/module/PortRangeDrawer.vue";
 
 const loading = shallowRef(false)
 const tableData = shallowReactive<any[]>([])
@@ -24,6 +25,7 @@ const statusDict = shallowReactive<DictItemType[]>([])
 const isDeleteDict = shallowReactive<DictItemType[]>([])
 const formData = shallowReactive<Partial<ServerType>>({})
 const dialogVisible = ref(false)
+const portRangeVisible = ref(false)
 const multipleSelection = ref<string[]>([])
 const tableRef = useTemplateRef<TableInstance>('tableRef')
 
@@ -64,7 +66,7 @@ function onDetailServer(id: string, status: number, is_delete: number, is_vip: n
 }
 
 function onConfigProt(row: ServerType) {
-
+  portRangeVisible.value = true
 }
 
 function onAdd() {
@@ -208,6 +210,7 @@ onMounted(() => {
     </div>
   </div>
   <ServerEdit v-model="dialogVisible" :formData="formData" @close="handleQuery"></ServerEdit>
+  <PortRangeDrawer v-model="portRangeVisible" :server="{}"></PortRangeDrawer>
 </template>
 
 <style scoped lang="less">
