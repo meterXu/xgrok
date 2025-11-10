@@ -4,10 +4,12 @@ import FillHeightContainer from "@/components/FillHeightContainer.vue";
 import {onMounted, reactive, shallowReactive, watch,ref} from "vue";
 import {getDict, queryTunnelWebConfig, tunnelServiceConfig} from "@/api";
 import {mappingDic, useFormatDic} from "@/libs/utils";
-import DrawerSubTitle from "@/views/user/module/DrawerSubTitle.vue";
+import DrawerSubTitle from "@/components/DrawerSubTitle.vue";
 
 const isVisible = defineModel()
-const props = defineProps(['user'])
+const props = defineProps<{
+  user:UserType
+}>()
 const tunnelWebConfigData = reactive([] as any[])
 const tunnelServiceConfigData = reactive([] as any[])
 const tunnelWebPage = usePage()

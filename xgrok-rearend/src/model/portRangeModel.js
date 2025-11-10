@@ -49,9 +49,9 @@ export default class PortRangeModel {
 
     @swaggerProperty({ type: "number",description:"",nullable:true}) modified_time
 
-    @swaggerProperty({ type: "number",description:"",nullable:true,default:1}) status
+    @swaggerProperty({ type: "number",description:"",nullable:true}) status
 
-    @swaggerProperty({ type: "number",description:"",nullable:true,default:0}) is_delete
+    @swaggerProperty({ type: "number",description:"",nullable:true}) is_delete
 
     @swaggerProperty({ type: "number",description:"",nullable:true,default:1}) type
 }

@@ -9,7 +9,7 @@ import ServerEdit from "@/views/server/module/ServerEdit.vue";
 import {IsDeleteEnum, NotificationTypeEnum, StatusEnum} from "@/libs/enum";
 import {Search, RefreshLeft, Plus, Delete} from "@element-plus/icons-vue";
 import type {TableInstance} from "element-plus";
-import PortRangeDrawer from "@/views/server/module/PortRangeDrawer.vue";
+import ServerPortDrawer from "./module/ServerPortDrawer.vue";
 
 const loading = shallowRef(false)
 const tableData = shallowReactive<any[]>([])
@@ -66,6 +66,7 @@ function onDetailServer(id: string, status: number, is_delete: number, is_vip: n
 }
 
 function onConfigProt(row: ServerType) {
+  Object.assign(formData,row)
   portRangeVisible.value = true
 }
 
@@ -210,7 +211,7 @@ onMounted(() => {
     </div>
   </div>
   <ServerEdit v-model="dialogVisible" :formData="formData" @close="handleQuery"></ServerEdit>
-  <PortRangeDrawer v-model="portRangeVisible" :server="{}"></PortRangeDrawer>
+  <ServerPortDrawer v-model="portRangeVisible" :server="formData"></ServerPortDrawer>
 </template>
 
 <style scoped lang="less">

@@ -88,3 +88,10 @@ interface ServerType extends BaseType{
     month_used_traffic:number,
     type:number
 }
+interface PortRangeType extends BaseType{
+    id:string,
+    server_id:string,
+    min_port:number,
+    max_port:number,
+    type:number
+}

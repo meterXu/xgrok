@@ -30,6 +30,10 @@ const url = {
     },
     product: {
         query: '/api/product/query'
+    },
+    portRange:{
+        query:'/api/portRange/query',
+        modify:'/api/portRange'
     }
 }
 
@@ -114,4 +118,16 @@ export function queryTunnelWebConfig(data:any):Promise<ResultType<PaginationData
 
 export function tunnelServiceConfig(data:any):Promise<ResultType<PaginationDataType<any>>> {
     return getAction(url.user.tunnelServiceConfig, data)
+}
+
+export function queryPortRange(data:any):Promise<ResultType<PaginationDataType<any>>> {
+    return getAction(url.portRange.query, data)
+}
+
+export function editPortRange(data:Partial<PortRangeType>):Promise<ResultType<any>> {
+    return putAction(url.portRange.modify, data)
+}
+
+export function addPortRange(data:Partial<PortRangeType>):Promise<ResultType<any>> {
+    return postAction(url.portRange.modify, data)
 }
