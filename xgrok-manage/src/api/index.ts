@@ -33,7 +33,8 @@ const url = {
     },
     portRange:{
         query:'/api/portRange/query',
-        modify:'/api/portRange'
+        modify:'/api/portRange',
+        delete:'/api/portRange'
     }
 }
 
@@ -130,4 +131,8 @@ export function editPortRange(data:Partial<PortRangeType>):Promise<ResultType<an
 
 export function addPortRange(data:Partial<PortRangeType>):Promise<ResultType<any>> {
     return postAction(url.portRange.modify, data)
+}
+
+export function batchDelPortRange(ids:string[]):Promise<ResultType<any>>{
+    return deleteAction(url.portRange.delete, {id:ids.join(',')});
 }

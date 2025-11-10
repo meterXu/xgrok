@@ -62,7 +62,8 @@ export default class PortRangeController {
         id: {type: "string", required: true, description: 'id'}
     })
     async delPortRange(ctx) {
-       const res = await this.portRangeService.delPortRange(ctx)
+        const ids = ctx.validatedQuery.id.split(',')
+       const res = await this.portRangeService.delPortRange(ids)
         ctx.result(res)
     }
 

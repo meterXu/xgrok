@@ -2,7 +2,7 @@
 import {reactive, computed, ref, watch, onMounted, shallowReactive} from 'vue'
 import type {FormInstance} from 'element-plus'
 import {mappingDic, useSaveOrUpdate} from "@/libs/utils/index.js";
-import {addOrder, addServer, detailServer, detailUser, editOrder, getDict, productQuery, userQuery} from "@/api";
+import {addServer, detailServer, detailUser, getDict, productQuery, userQuery} from "@/api";
 import {StatusEnum} from "@/libs/enum";
 
 interface Props {

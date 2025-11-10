@@ -53,5 +53,5 @@ export default class PortRangeModel {
 
     @swaggerProperty({ type: "number",description:"",nullable:true}) is_delete
 
-    @swaggerProperty({ type: "number",description:"",nullable:true,default:1}) type
+    @swaggerProperty({ type: "number",description:"",nullable:true}) type
 }

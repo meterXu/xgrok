@@ -30,63 +30,29 @@ export default class PortRangeService {
     }
 
     async detailPortRange(portRangeModel) {
-        let res = await prisma.PortRange.findUnique({
+        return prisma.PortRange.findUnique({
             where: {
                id: portRangeModel.id
             }
         })
-        return res
     }
 
     async addPortRange(ctx) {
         const portRangeModel = new PortRangeModel(ctx.request.body)
         let res = await prisma.PortRange.create({
             data: {
-
-
               id:portRangeModel.id||randomUUID(),
-
-
-
               server_id:portRangeModel.server_id,
-
-
-
               min_port:portRangeModel.min_port,
-
-
-
               max_port:portRangeModel.max_port,
-
-
-
+              type:portRangeModel.type,
               sort:portRangeModel.sort,
-
-
-
               creator:portRangeModel.creator,
-
-
-
               editor:portRangeModel.editor,
-
-
-
               created_time:portRangeModel.created_time||new Date().valueOf(),
-
-
-
               modified_time:portRangeModel.modified_time,
-
-
-
               status:portRangeModel.status,
-
-
-
-              is_delete:portRangeModel.is_delete,
-
-
+              is_delete:portRangeModel.is_delete
             }
         })
         return new ResultModel(res.id,null,true)
@@ -104,17 +70,18 @@ export default class PortRangeService {
         return new ResultModel(res.id,null,true)
     }
 
-    async delPortRange(ctx) {
-        let id = ctx.request.query.id;
-        const res = await prisma.PortRange.update({
+    async delPortRange(ids) {
+        const res = await prisma.PortRange.updateMany({
               data:{
                   is_delete: isDelete.true,
               },
               where: {
-                  id: id
+                  id:{
+                      in:ids
+                  }
               }
         })
-        return new ResultModel(id,null,true)
+        return new ResultModel(res.count,null,true)
     }
 
 }

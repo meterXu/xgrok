@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import {ref, reactive, watch, onMounted, shallowReactive} from 'vue'
+import {ref, reactive, watch, onMounted, shallowReactive, useTemplateRef} from 'vue'
 import DrawerSubTitle from "@/components/DrawerSubTitle.vue";
 import FillHeightContainer from "@/components/FillHeightContainer.vue";
 import {useGetIndexMethod, usePage} from "@/libs/use-curd";
-import {editPortRange, getDict, queryPortRange} from "@/api";
-import {mappingDic, resetObj, useFormatDic} from "@/libs/utils";
+import {batchDelPortRange, editPortRange, getDict, queryPortRange} from "@/api";
+import {mappingDic, resetObj, useBatchDelConfirm, useDel, useFormatDic} from "@/libs/utils";
 import {IsDeleteEnum, NotificationTypeEnum} from "@/libs/enum";
 import {showNotification} from "@/libs/utils/message.ts";
-import {Plus} from '@element-plus/icons-vue'
+import {Plus,Delete} from '@element-plus/icons-vue'
 import ServerPortDialog from "@/views/server/module/ServerPortDialog.vue";
+import type {TableInstance} from 'element-plus'
 const isVisible = defineModel()
 const {server} = defineProps<{
   server:Partial<ServerType>
@@ -20,6 +21,8 @@ const serverPortPage = usePage()
 const serviceTypeDict  = shallowReactive<DictItemType[]>([])
 const statusDict = shallowReactive<DictItemType[]>([])
 const formData = shallowReactive<Partial<PortRangeType>>({})
+const multipleSelection = ref<string[]>([])
+const serverPortTableRef = useTemplateRef<TableInstance>('serverPortTableRef')
 
 watch(isVisible, (nv) => {
   if(nv){
@@ -38,6 +41,7 @@ function onQueryServerPort(pageNumber:number=1,pageSize:number=20){
       serverPortPage.total = res.data.total;
     }
   }).finally(() => {
+    serverPortTableRef.value?.clearSelection()
     portLoading.value = false
   })
 }
@@ -61,6 +65,18 @@ function onAddPortRange(){
     server_id:server.id
   })
   portRangeVisible.value=true
+}
+
+function onDelPortRange(){
+  useBatchDelConfirm(multipleSelection.value, {}, () => batchDelPortRange(multipleSelection.value)).then(res => {
+    useDel(res).then(() => {
+      onQueryServerPort()
+    })
+  })
+}
+
+function onSelectionChange(val: OrderType[]) {
+  multipleSelection.value = val.map(c => c.id)
 }
 
 function onEdit(row:PortRangeType){
@@ -90,15 +106,22 @@ onMounted(()=>{
                           @click="()=>{onQueryServerPort(serverPortPage.pageNumber,serverPortPage.pageSize)}">
             端口配置
           </DrawerSubTitle>
-          <el-button @click="onAddPortRange" type="default" text :icon="Plus">
-            添加
-          </el-button>
+          <div>
+            <el-button @click="onAddPortRange" type="primary" text :icon="Plus">
+              添加
+            </el-button>
+            <el-button @click="onDelPortRange" type="danger" text :icon="Delete">
+              删除
+            </el-button>
+          </div>
         </div>
 
         <FillHeightContainer>
-          <el-table class="rounded-2xl!" height="100%" width="100%" header-row-class-name="table-header" row-key="id"
-                    :load="portLoading"
-                    :data="serverPortData">
+          <el-table ref="serverPortTableRef" class="rounded-2xl!" height="100%" width="100%" header-row-class-name="table-header" row-key="id"
+                    v-loading="portLoading"
+                    :data="serverPortData"
+                    @selection-change="onSelectionChange">
+            <el-table-column fixed type="selection" width="18"/>
             <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod" width="55"></el-table-column>
             <el-table-column show-overflow-tooltip  prop="min_port" label="开始端口" align="left"></el-table-column>
             <el-table-column show-overflow-tooltip  prop="max_port" label="结束端口" align="left"></el-table-column>
@@ -110,13 +133,6 @@ onMounted(()=>{
             <el-table-column prop="status" label="是否启用" align="left" width="60">
               <template #default="{row}">
                 <el-switch v-model="row.status" :inactive-value="0" :active-value="1"
-                           @change="onDetailPortRange(row.id,row.status,row.is_delete)"></el-switch>
-              </template>
-            </el-table-column>
-            <el-table-column prop="is_delete" label="是否删除" align="left" width="60">
-              <template #default="{row}">
-                <el-switch v-model="row.is_delete" :inactive-value="0" :active-value="1"
-                           style="--el-switch-on-color: var(--el-color-danger);"
                            @change="onDetailPortRange(row.id,row.status,row.is_delete)"></el-switch>
               </template>
             </el-table-column>
