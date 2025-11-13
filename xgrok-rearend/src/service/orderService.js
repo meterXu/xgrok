@@ -184,7 +184,7 @@ export default class OrderService {
                 unit = 'month'
             }break
         }
-        expiredTime = new moment(nowPlan.value===planType.free?new Date().valueOf():nowPlan.expired_time).add(amount,unit).toDate()
+        expiredTime = new moment(nowPlan.value===planType.free?new Date().valueOf():Number(nowPlan.plan.expired_time)).add(amount,unit).toDate()
         return expiredTime.valueOf()
     }
 

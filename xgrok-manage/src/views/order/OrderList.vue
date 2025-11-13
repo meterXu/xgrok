@@ -163,7 +163,7 @@ onMounted(() => {
                     height="100%"
                     row-key="id"
                     @selection-change="onSelectionChange">
-            <el-table-column fixed type="selection" width="18"/>
+            <el-table-column fixed type="selection"/>
             <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod"
                              width="55"></el-table-column>
             <el-table-column prop="trade_no" label="订单号" align="left" width="180"></el-table-column>

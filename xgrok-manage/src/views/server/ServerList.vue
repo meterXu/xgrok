@@ -153,7 +153,7 @@ onMounted(() => {
                     header-row-class-name="table-header"
                     row-key="id" height="100%"
                     @selection-change="onSelectionChange">
-            <el-table-column fixed type="selection" width="18"/>
+            <el-table-column fixed type="selection"/>
             <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod"
                              width="55"></el-table-column>
             <el-table-column prop="name" label="名称" align="left"></el-table-column>
