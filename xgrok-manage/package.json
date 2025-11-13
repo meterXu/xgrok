@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vueuse/core": "^14.0.0",
     "element-plus": "^2.9.11",
     "js-md5": "^0.8.3",
     "mermaid": "^11.8.1",
