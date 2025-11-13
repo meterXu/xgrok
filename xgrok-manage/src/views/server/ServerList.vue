@@ -113,7 +113,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-full h-full flex flex-col gap-12">
+  <div class="w-full h-full flex flex-col gap-12 pb-4">
     <div
         class="my-inner-form p-12 flex flex-row items-center bg-white border-1 border-(--el-border-color-light) rounded-2xl shadow-xs">
       <el-form inline>
