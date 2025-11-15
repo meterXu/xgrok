@@ -166,9 +166,10 @@ onMounted(() => {
             <el-table-column fixed type="selection"/>
             <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod"
                              width="55"></el-table-column>
-            <el-table-column prop="trade_no" label="订单号" align="left" width="180"></el-table-column>
-            <el-table-column prop="name" label="购买产品" align="left" width="100"></el-table-column>
-            <el-table-column prop="username" label="购买人" align="left" width="180"></el-table-column>
+            <el-table-column fixed prop="trade_no" label="订单号" show-overflow-tooltip align="left" width="200"></el-table-column>
+            <el-table-column fixed prop="name" label="购买产品" show-overflow-tooltip align="left" width="100"></el-table-column>
+            <el-table-column fixed prop="username" label="购买人" show-overflow-tooltip align="left" width="200">
+            </el-table-column>
             <el-table-column prop="pay_status" label="支付状态" align="left" width="200">
               <template #default="{row}">
                 <el-tag type="primary" v-if="row.pay_status===0">
@@ -185,17 +186,17 @@ onMounted(() => {
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="pay_price" label="产品单价" align="left">
+            <el-table-column prop="pay_price" label="产品单价" align="left" width="120">
               <template #default="{row}">
                 ¥{{ row.pay_price }}
               </template>
             </el-table-column>
-            <el-table-column prop="pay_num" label="支付数量" align="left">
+            <el-table-column prop="pay_num" label="支付数量" align="left" width="120">
               <template #default="{row}">
                 <span class="text-(--el-color-primary)">{{ row.pay_num }}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="pay_total_amount" label="支付金额" align="left">
+            <el-table-column prop="pay_total_amount" label="支付金额" align="left" width="120">
               <template #default="{row}">
                 ¥{{ row.pay_total_amount }}
               </template>
@@ -230,21 +231,21 @@ onMounted(() => {
                 {{ useFormatDateTime(row.expired_notify_time) }}
               </template>
             </el-table-column>
-            <el-table-column prop="status" label="是否启用" align="left" width="100">
+            <el-table-column fixed="right" prop="status" label="是否启用" align="left" width="100">
               <template #default="{row}">
                 <el-tag :type="row.status===StatusEnum.disable?'danger':'success'">
                   {{ useFormatDic(statusDict, row.status) }}
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="is_delete" label="是否删除" align="left" width="100">
+            <el-table-column fixed="right" prop="is_delete" label="是否删除" align="left" width="100">
               <template #default="{row}">
                 <el-tag :type="row.is_delete===IsDeleteEnum.true?'danger':'success'">
                   {{ useFormatDic(isDeleteDict, row.is_delete) }}
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="is_delete" label="操作" align="center">
+            <el-table-column fixed="right" prop="is_delete" label="操作" align="center">
               <template #default="{row}">
                 <el-button type="text" @click="onEdit(row)">编辑</el-button>
               </template>

@@ -34,7 +34,8 @@ function onQueryServerPort(pageNumber:number=1,pageSize:number=20){
   serverPortPage.pageNumber = pageNumber
   serverPortPage.pageSize = pageSize
   portLoading.value = true
-  queryPortRange({server_id: server.id,is_delete:IsDeleteEnum.false,...serverPortPage}).then((res) => {
+  queryPortRange({server_id: server.id,is_delete:IsDeleteEnum.false,...serverPortPage,
+    orderBy: JSON.stringify([{type: 'asc'},{created_time:'desc'}])}).then((res) => {
     if(res.success&&res.data){
       serverPortData.splice(0,serverPortData.length);
       serverPortData.push(...res.data.records as any []);
@@ -121,22 +122,22 @@ onMounted(()=>{
                     v-loading="portLoading"
                     :data="serverPortData"
                     @selection-change="onSelectionChange">
-            <el-table-column fixed type="selection" width="18"/>
-            <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod" width="55"></el-table-column>
+            <el-table-column fixed type="selection" width="32"/>
+            <el-table-column fixed type="index" label="序号" width="55" align="center" :index="useGetIndexMethod"></el-table-column>
             <el-table-column show-overflow-tooltip  prop="min_port" label="开始端口" align="left"></el-table-column>
             <el-table-column show-overflow-tooltip  prop="max_port" label="结束端口" align="left"></el-table-column>
-            <el-table-column prop="type" width="60" label="类型" align="left">
+            <el-table-column prop="type" width="60" label="类型" align="center">
               <template #default="{row}">
                 <el-tag>{{useFormatDic(serviceTypeDict,row.type.toString())}}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="status" label="是否启用" align="left" width="60">
+            <el-table-column fixed="right" prop="status" label="是否启用" align="left" width="80">
               <template #default="{row}">
                 <el-switch v-model="row.status" :inactive-value="0" :active-value="1"
                            @change="onDetailPortRange(row.id,row.status,row.is_delete)"></el-switch>
               </template>
             </el-table-column>
-            <el-table-column prop="id" label="操作" align="center" width="60">
+            <el-table-column fixed="right" prop="id" label="操作" align="center" width="100">
               <template #default="{row}">
                 <el-button type="text" @click="onEdit(row)">编辑</el-button>
               </template>

@@ -140,32 +140,32 @@ onMounted(()=>{
                   @selection-change="onSelectionChange">
           <el-table-column fixed type="selection"/>
           <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod" width="55"></el-table-column>
-          <el-table-column prop="username" label="用户名" width="160" show-overflow-tooltip align="left"></el-table-column>
+          <el-table-column fixed prop="username" label="用户名" width="200" show-overflow-tooltip align="left"></el-table-column>
           <el-table-column prop="nickname" label="昵称" width="160" show-overflow-tooltip align="left"></el-table-column>
-          <el-table-column prop="role_name" label="所属角色" align="left"></el-table-column>
+          <el-table-column prop="role_name" label="所属角色" width="100" align="left"></el-table-column>
           <el-table-column prop="created_time" label="创建时间" align="left">
             <template #default="{row}">
               {{useFormatDateTime(row.created_time)}}
             </template>
           </el-table-column>
-          <el-table-column label="隧道配置" align="left" width="200">
+          <el-table-column label="隧道配置" align="left">
             <template #default="{row}">
               <span class="underline cursor-pointer text-(--el-color-blue) inline-block" @click="onShowDrawer(row)">WEB：{{row.web_count}}</span>
               <span class="underline cursor-pointer text-(--el-color-danger) inline-block ml-8" @click="onShowDrawer(row)">服务：{{row.service_count}}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="status" label="是否启用" align="left" width="100">
+          <el-table-column fixed="right" prop="status" label="是否启用" width="100" align="left">
             <template #default="{row}">
               <el-switch v-model="row.status" :inactive-value="0" :active-value="1" @change="(value:number)=>{onDetailUser(row.id,value,row.is_delete)}"></el-switch>
             </template>
           </el-table-column>
-          <el-table-column prop="is_delete" label="是否删除" align="left" width="100">
+          <el-table-column fixed="right" prop="is_delete" label="是否删除" width="100" align="left">
             <template #default="{row}">
               <el-switch v-model="row.is_delete" :inactive-value="0" :active-value="1"
                          style="--el-switch-on-color: var(--el-color-danger);" @change="(value:number)=>{onDetailUser(row.id,row.status,value)}"></el-switch>
             </template>
           </el-table-column>
-          <el-table-column prop="is_delete" width="180" label="操作" align="center">
+          <el-table-column fixed="right" prop="is_delete" width="220" label="操作" align="center">
             <template #default="{row}">
               <el-button type="text" @click="onEdit(row)">编辑</el-button>
               <el-button type="text" @click="onEdit(row)">重置密码</el-button>
