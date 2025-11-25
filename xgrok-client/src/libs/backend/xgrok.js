@@ -214,7 +214,8 @@ async function generateXgrokConf(serverDetail, WebDetails, serviceDetails) {
                     }
                 })],
             transport:{
-                proxyProtocolVersion:"v2"
+                proxyProtocolVersion:"v2",
+                bandwidthLimit:'20MB'
             }
         }
         config.webServer.port = await nextAvailable(global.project.startWebServerProt, global.project.webServer.addr)
