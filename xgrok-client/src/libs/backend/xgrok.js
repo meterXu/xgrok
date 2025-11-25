@@ -212,7 +212,10 @@ async function generateXgrokConf(serverDetail, WebDetails, serviceDetails) {
                         localPort:service.port,
                         remotePort:service.remote_port
                     }
-                })]
+                })],
+            transport:{
+                proxyProtocolVersion:"v2"
+            }
         }
         config.webServer.port = await nextAvailable(global.project.startWebServerProt, global.project.webServer.addr)
         global.logger.info(`xgrok admin port start with [${global.project.startWebServerProt}],run with [${config.webServer.port}]`)
