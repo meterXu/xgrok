@@ -12,15 +12,15 @@ const url = {
     user: {
         query: '/api/user/query',
         detail: '/api/user/detail',
-        modify:'/api/user',
-        delete:'/api/user',
-        tunnelWebConfig:'/api/user/manage/tunnelWebConfig',
-        tunnelServiceConfig:'/api/user/manage/tunnelServiceConfig'
+        modify: '/api/user',
+        delete: '/api/user',
+        tunnelWebConfig: '/api/user/manage/tunnelWebConfig',
+        tunnelServiceConfig: '/api/user/manage/tunnelServiceConfig'
     },
     order: {
         query: '/api/order/query',
         modify: '/api/order',
-        modifyManual:'/api/order/manual',
+        modifyManual: '/api/order/manual',
         delete: '/api/order',
     },
     server: {
@@ -31,10 +31,13 @@ const url = {
     product: {
         query: '/api/product/query'
     },
-    portRange:{
-        query:'/api/portRange/query',
-        modify:'/api/portRange',
-        delete:'/api/portRange'
+    portRange: {
+        query: '/api/portRange/query',
+        modify: '/api/portRange',
+        delete: '/api/portRange'
+    },
+    system: {
+        numberStatistics: '/api/system/numberStatistics'
     }
 }
 
@@ -85,16 +88,16 @@ export function editOrder(data: OrderType): Promise<ResultType<any>> {
     return putAction(url.order.modify, data)
 }
 
-export function batchDelOrder(ids:string[]): Promise<ResultType<any>> {
-    return deleteAction(url.order.delete, {id:ids.join(',')})
+export function batchDelOrder(ids: string[]): Promise<ResultType<any>> {
+    return deleteAction(url.order.delete, {id: ids.join(',')})
 }
 
-export function batchDelUser(ids:string[],isPhysics:boolean=false): Promise<ResultType<any>> {
-    return deleteAction(url.user.delete, {id:ids.join(','),isPhysics});
+export function batchDelUser(ids: string[], isPhysics: boolean = false): Promise<ResultType<any>> {
+    return deleteAction(url.user.delete, {id: ids.join(','), isPhysics});
 }
 
-export function batchDelServer(ids:string[]):Promise<ResultType<any>>{
-    return deleteAction(url.server.delete, {id:ids.join(',')});
+export function batchDelServer(ids: string[]): Promise<ResultType<any>> {
+    return deleteAction(url.server.delete, {id: ids.join(',')});
 }
 
 export function serverQuery(data: any): Promise<ResultType<PaginationDataType<ServerType>>> {
@@ -105,34 +108,38 @@ export function detailServer(data: Partial<ServerType>): Promise<ResultType<any>
     return putAction(url.server.modify, data)
 }
 
-export function addServer(data:Partial<ServerType>):Promise<ResultType<any>>{
+export function addServer(data: Partial<ServerType>): Promise<ResultType<any>> {
     return postAction(url.server.modify, data)
 }
 
-export function productQuery(data:any):Promise<ResultType<PaginationDataType<ProductType>>> {
+export function productQuery(data: any): Promise<ResultType<PaginationDataType<ProductType>>> {
     return getAction(url.product.query, data)
 }
 
-export function queryTunnelWebConfig(data:any):Promise<ResultType<PaginationDataType<any>>> {
+export function queryTunnelWebConfig(data: any): Promise<ResultType<PaginationDataType<any>>> {
     return getAction(url.user.tunnelWebConfig, data)
 }
 
-export function tunnelServiceConfig(data:any):Promise<ResultType<PaginationDataType<any>>> {
+export function tunnelServiceConfig(data: any): Promise<ResultType<PaginationDataType<any>>> {
     return getAction(url.user.tunnelServiceConfig, data)
 }
 
-export function queryPortRange(data:any):Promise<ResultType<PaginationDataType<any>>> {
+export function queryPortRange(data: any): Promise<ResultType<PaginationDataType<any>>> {
     return getAction(url.portRange.query, data)
 }
 
-export function editPortRange(data:Partial<PortRangeType>):Promise<ResultType<any>> {
+export function editPortRange(data: Partial<PortRangeType>): Promise<ResultType<any>> {
     return putAction(url.portRange.modify, data)
 }
 
-export function addPortRange(data:Partial<PortRangeType>):Promise<ResultType<any>> {
+export function addPortRange(data: Partial<PortRangeType>): Promise<ResultType<any>> {
     return postAction(url.portRange.modify, data)
 }
 
-export function batchDelPortRange(ids:string[]):Promise<ResultType<any>>{
-    return deleteAction(url.portRange.delete, {id:ids.join(',')});
+export function batchDelPortRange(ids: string[]): Promise<ResultType<any>> {
+    return deleteAction(url.portRange.delete, {id: ids.join(',')});
+}
+
+export function numberStatistics(startTime: number, endTime: number): Promise<ResultType<any>> {
+    return getAction(url.system.numberStatistics, {startTime, endTime})
 }

@@ -3,3 +3,7 @@ INSERT INTO xgrok.ng_sys_dict (id, `key`, code, chn_value, eng_value, sort, crea
 INSERT INTO xgrok.ng_sys_dict (id, `key`, code, chn_value, eng_value, sort, creator, editor, status, is_delete, created_time, modified_time) VALUES ('d4150ebad2ac6c8dd2d5b17301853fc4', 'is_online', '0', '离线', 'offline', 2, null, null, 1, 0, null, null);
 INSERT INTO xgrok.ng_sys_dict (id, `key`, code, chn_value, eng_value, sort, creator, editor, status, is_delete, created_time, modified_time) VALUES ('d0ec5df10e610046c2054445d70402cb', 'is_vip', '1', '付费使用', 'vip', 1, null, null, 1, 0, null, null);
 INSERT INTO xgrok.ng_sys_dict (id, `key`, code, chn_value, eng_value, sort, creator, editor, status, is_delete, created_time, modified_time) VALUES ('c2988f003403657ab8cb39b7ed882bf8', 'is_vip', '0', '免费使用', 'free', 2, null, null, 1, 0, null, null);
+
+-- 已更新
+CREATE INDEX idx_ng_order_pay_status ON ng_order (pay_status, is_delete, created_time);
+CREATE INDEX idx_oauth_users_status ON oauth_users (status, is_delete, created_time);
