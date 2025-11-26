@@ -13,24 +13,24 @@ const defaultDate = [
   dayjs().startOf('week').toDate(),
   dayjs().endOf('week').toDate()
 ]
-const searchForm = reactive<{ type: string, dateRange: any[] }>({
+const searchForm = reactive<{ type: string, dateRange: Date[] }>({
   type: 'week',
   dateRange: [
-    defaultDate[0].valueOf(),
-    defaultDate[1].valueOf()
+    defaultDate[0],
+    defaultDate[1]
   ],
 })
 
 function onTypeChange(value: dayjs.OpUnitType) {
   searchForm.dateRange = [
-    dayjs().startOf(value).valueOf(),
-    dayjs().endOf(value).valueOf()
+    dayjs().startOf(value).toDate(),
+    dayjs().endOf(value).toDate()
   ]
   loadData()
 }
 
 async function loadData() {
-  numberStatistics(searchForm.dateRange[0],searchForm.dateRange[1]).then(res => {
+  numberStatistics(searchForm.dateRange[0].valueOf(),searchForm.dateRange[1].valueOf()).then(res => {
     statisticsData.numberOfNewOrders.value = res.data.newData.order_count as number
     statisticsData.numberOfNewUsers.value = res.data.newData.user_count as number
     statisticsData.salesVolume.value = res.data.newData.sales_volume as number
@@ -53,6 +53,7 @@ const salesVolumeRef = useTransition(statisticsData.salesVolume, {duration: 1000
       </el-radio-group>
       <div>
         <el-date-picker type="daterange"
+                        @change="loadData"
                         v-model="searchForm.dateRange"
                         range-separator="-"
                         start-placeholder="开始时间"
