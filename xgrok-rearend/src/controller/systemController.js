@@ -23,4 +23,91 @@ export default class SystemController {
         const res = new ResultModel(orderCount, null, true)
         ctx.result(res)
     }
+
+    @request('get', '/system/salesVolumeStatistics')
+    @summary('销售额统计')
+    @tag
+    @query({
+        startTime: {type: "number", required: true, description: "开始时间", nullable: false},
+        endTime: {type: "number", required: true, description: '结束时间', nullable: false},
+        type: {type: "string", required: true, description: "统计类型", nullable: false}
+    })
+    async salesVolumeStatistics(ctx) {
+        const {startTime, endTime, type} = ctx.validatedQuery
+        const resRecords = await this.systemService.salesVolumeStatistics(startTime, endTime, type)
+        const res = new ResultModel(resRecords, null, true)
+        ctx.result(res)
+    }
+
+    @request('get', '/system/productSales')
+    @summary('产品销量统计')
+    @tag
+    @query({
+        startTime: {type: "number", required: true, description: "开始时间", nullable: false},
+        endTime: {type: "number", required: true, description: '结束时间', nullable: false},
+    })
+    async productSales(ctx) {
+        const {startTime, endTime} = ctx.validatedQuery
+        const resRecords = await this.systemService.productSales(startTime, endTime)
+        const res = new ResultModel(resRecords, null, true)
+        ctx.result(res)
+    }
+
+    @request('get', '/system/userOrderTop')
+    @summary('用户订单数top统计')
+    @tag
+    @query({
+        startTime: {type: "number", required: true, description: "开始时间", nullable: false},
+        endTime: {type: "number", required: true, description: '结束时间', nullable: false},
+    })
+    async userOrderTop(ctx) {
+        const {startTime, endTime, top} = ctx.validatedQuery
+        const resRecords = await this.systemService.userOrderTop(startTime, endTime, top)
+        const res = new ResultModel(resRecords, null, true)
+        ctx.result(res)
+    }
+
+    @request('get', '/system/userTunnelTop')
+    @summary('用户隧道数top统计')
+    @tag
+    @query({
+        startTime: {type: "number", required: true, description: "开始时间", nullable: false},
+        endTime: {type: "number", required: true, description: '结束时间', nullable: false},
+        type:{type: "string", required: true, description: '隧道类型', nullable: false},
+    })
+    async userTunnelTop(ctx){
+        const {startTime, endTime, top, type} = ctx.validatedQuery
+        const resRecords = await this.systemService.userTunnelTop(startTime, endTime, top, type)
+        const res = new ResultModel(resRecords, null, true)
+        ctx.result(res)
+    }
+
+    @request('get', '/system/tunnelUsage')
+    @summary('隧道使用分布图')
+    @tag
+    @query({
+        startTime: {type: "number", required: true, description: "开始时间", nullable: false},
+        endTime: {type: "number", required: true, description: '结束时间', nullable: false}
+    })
+    async tunnelUsage(ctx){
+        const {startTime, endTime} = ctx.validatedQuery
+        const resRecords = await this.systemService.tunnelUsage(startTime, endTime)
+        const res = new ResultModel(resRecords, null, true)
+        ctx.result(res)
+    }
+
+    @request('get', '/system/serverUsage')
+    @summary('服务器使用分布图')
+    @tag
+    @query({
+        startTime: {type: "number", required: true, description: "开始时间", nullable: false},
+        endTime: {type: "number", required: true, description: '结束时间', nullable: false},
+        type:{type: "string", required: true, description: '隧道类型', nullable: false},
+    })
+    async serverUsage(ctx){
+        const {startTime, endTime,type} = ctx.validatedQuery
+        const resRecords = await this.systemService.serverUsage(startTime, endTime,type)
+        const res = new ResultModel(resRecords, null, true)
+        ctx.result(res)
+    }
 }
