@@ -3,6 +3,10 @@ import {reactive, ref} from "vue";
 import dayjs from "dayjs";
 import {numberStatistics} from "@/api";
 import {useTransition} from '@vueuse/core'
+import 'dayjs/locale/zh-cn';
+import SalesVolumeStatistics from "@/views/dashboard/module/SalesVolumeStatistics.vue";
+
+dayjs.locale('zh-cn');
 
 const statisticsData = {
   numberOfNewOrders: ref(0),
@@ -30,7 +34,7 @@ function onTypeChange(value: dayjs.OpUnitType) {
 }
 
 async function loadData() {
-  numberStatistics(searchForm.dateRange[0].valueOf(),searchForm.dateRange[1].valueOf()).then(res => {
+  numberStatistics(searchForm.dateRange[0].valueOf(), searchForm.dateRange[1].valueOf()).then(res => {
     statisticsData.numberOfNewOrders.value = res.data.newData.order_count as number
     statisticsData.numberOfNewUsers.value = res.data.newData.user_count as number
     statisticsData.salesVolume.value = res.data.newData.sales_volume as number
@@ -77,24 +81,35 @@ const salesVolumeRef = useTransition(statisticsData.salesVolume, {duration: 1000
       </el-row>
     </el-card>
     <div class="flex-1 flex flex-col gap-24">
-      <el-card class="flex-1/2">
-        <div class="grid grid-cols-3 gap-24">
-          <div>图表1</div>
-          <div>图表2</div>
-          <div>图表3</div>
+      <el-card class="flex-1/2 my-card">
+        <div class="h-full grid grid-cols-3 gap-24">
+          <div class="relative">
+            <SalesVolumeStatistics v-bind="searchForm"/>
+          </div>
+          <div>
+
+          </div>
+          <div>
+
+          </div>
         </div>
       </el-card>
       <el-card class="flex-1/2">
         <div class="grid grid-cols-3 gap-24">
-          <div>图表1</div>
-          <div>图表2</div>
-          <div>图表3</div>
+          <div>用户隧道数top 10</div>
+          <div>隧道使用分布图</div>
+          <div>服务器使用分布图</div>
         </div>
       </el-card>
     </div>
   </div>
 </template>
 
-<style scoped lang="less">
-
+<style lang="less">
+.my-card{
+.el-card__body{
+  padding: 0;
+  height: 100%;
+}
+}
 </style>

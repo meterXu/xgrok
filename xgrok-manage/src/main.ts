@@ -6,6 +6,7 @@ import {Ls,GlobalOverride} from 'xxweb-util'
 import router from './router';
 import store from "@/store";
 import '@/assets/css/index.css'
+
 window.onresize = ()=>{
     resizeFontSize(1920,4,0,(width)=>{
         if(width <= 1280){

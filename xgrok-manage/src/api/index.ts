@@ -1,6 +1,7 @@
 import {getAction, postAction, putAction, deleteAction} from "./manage.js"
 import md5 from "js-md5"
 import qs from "qs"
+import {get} from "@vueuse/core";
 
 const url = {
     oauth: {
@@ -37,7 +38,13 @@ const url = {
         delete: '/api/portRange'
     },
     system: {
-        numberStatistics: '/api/system/numberStatistics'
+        numberStatistics: '/api/system/numberStatistics',
+        salesVolumeStatistics:'/api/system/salesVolumeStatistics',
+        productSales:'/api/system/productSales',
+        userOrderTop:'/api/system/userOrderTop',
+        userTunnelTop:'/api/system/userTunnelTop',
+        tunnelUsage:'/api/system/tunnelUsage',
+        serverUsage:'/api/system/serverUsage'
     }
 }
 
@@ -142,4 +149,28 @@ export function batchDelPortRange(ids: string[]): Promise<ResultType<any>> {
 
 export function numberStatistics(startTime: number, endTime: number): Promise<ResultType<any>> {
     return getAction(url.system.numberStatistics, {startTime, endTime})
+}
+
+export function salesVolumeStatistics(startTime: number, endTime: number,type:string): Promise<ResultType<any>> {
+    return getAction(url.system.salesVolumeStatistics, {startTime, endTime, type})
+}
+
+export function productSales(startTime: number, endTime: number): Promise<ResultType<any>> {
+    return getAction(url.system.productSales, {startTime, endTime})
+}
+
+export function userOrderTop(startTime: number, endTime: number): Promise<ResultType<any>> {
+    return getAction(url.system.userOrderTop,{startTime,endTime})
+}
+
+export function userTunnelTop(startTime: number, endTime: number,type:string): Promise<ResultType<any>> {
+    return getAction(url.system.userTunnelTop,{startTime,endTime,type})
+}
+
+export function tunnelUsage(startTime: number, endTime: number): Promise<ResultType<any>> {
+    return getAction(url.system.tunnelUsage,{startTime, endTime})
+}
+
+export function serverUsage(startTime: number, endTime: number,type:string): Promise<ResultType<any>> {
+    return getAction(url.system.serverUsage,{startTime, endTime,type})
 }
