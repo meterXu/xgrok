@@ -29,6 +29,7 @@ const props = defineProps<{
 let total = 1
 const option = Object.assign({
   title: {
+    top:0,
     text: '服务器使用分布图',
     textStyle: {
       fontSize: '3rem',

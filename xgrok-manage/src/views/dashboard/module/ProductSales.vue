@@ -24,6 +24,7 @@ const props = defineProps<{
 let total = 1
 const option = Object.assign({
   title: {
+    top:0,
     text: '产品销量',
     textStyle: {
       fontSize: '3rem',
@@ -34,7 +35,7 @@ const option = Object.assign({
   grid:{
     bottom:0
   },
-  padding: [0, 0,0,10],
+  padding: [-100, 0,0,0],
   tooltip: {
     trigger: 'item',
     formatter(params: any) {

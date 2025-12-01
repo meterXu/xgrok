@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import type {ShallowReactive} from "vue";
+import {onMounted,onUnmounted,ref} from 'vue'
 import {NotificationTypeEnum} from '@/libs/enum'
 import {showNotification, confirm, message} from "@/libs/utils/message.ts";
 import {isEmpty} from 'xxweb-util'
@@ -105,4 +106,15 @@ export function useSaveOrUpdate(res: ResultType<any>, id?: string): Promise<any>
         showNotification(NotificationTypeEnum.error, res.message || (id ? '更新失败' : '新增失败'))
         return Promise.reject(new Error(res.message || (id ? '更新失败' : '新增失败')))
     }
+}
+
+export function useFixed(){
+    const isFixed = ref(false)
+    const resizeObserver = new ResizeObserver(()=>{
+        isFixed.value = document.body.clientWidth>1440
+    })
+    onMounted(()=>{
+        resizeObserver.observe(document.body as any)
+    })
+    return isFixed
 }

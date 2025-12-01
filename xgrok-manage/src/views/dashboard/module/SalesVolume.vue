@@ -24,6 +24,7 @@ const props = defineProps<{
 const option = Object.assign({
   title: {
     text: '销售额',
+    top:0,
     textStyle: {
       fontSize: '3rem',
       fontWeight: 'normal',

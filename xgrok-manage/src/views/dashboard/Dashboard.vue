@@ -55,7 +55,7 @@ const salesVolumeRef = useTransition(statisticsData.salesVolume, {duration: 1000
 
 <template>
   <div class="h-full flex flex-col gap-24">
-    <div class="flex flex-row gap-12 items-center">
+    <div class="flex flex-col md:flex-row gap-12 items-center">
       <el-radio-group v-model="searchForm.type" @change="onTypeChange">
         <el-radio-button label="按年" value="year"/>
         <el-radio-button label="按月" value="month"/>
@@ -86,23 +86,23 @@ const salesVolumeRef = useTransition(statisticsData.salesVolume, {duration: 1000
         </el-col>
       </el-row>
     </el-card>
-    <div class="flex-1 flex flex-col gap-24">
-      <el-card class="flex-1/2" body-class="p-0 h-full relative">
-        <div class="w-full h-full grid grid-cols-3 gap-24">
-          <SalesVolume v-bind="searchForm"/>
-          <ProductSales v-bind="searchForm"></ProductSales>
-          <UserOrderTop v-bind="searchForm"></UserOrderTop>
+    <div class="flex-1 md:flex md:flex-col md:gap-24 overflow-auto">
+      <el-card class="md:flex-1/2" body-class="p-0 h-full relative">
+        <div class="w-full h-full grid gap-48 md:gap-24 grid-cols-1 md:grid-cols-3">
+          <SalesVolume class="min-h-300 md:min-h-0" v-bind="searchForm"/>
+          <ProductSales class="min-h-300 md:min-h-0" v-bind="searchForm"></ProductSales>
+          <UserOrderTop class="min-h-300 md:min-h-0" v-bind="searchForm"></UserOrderTop>
         </div>
       </el-card>
-      <el-card class="flex-1/2 my-card" body-class="p-0 h-full">
+      <el-card class="md:flex-1/2 mt-24 md:mt-0" body-class="p-0 h-full">
         <el-radio-group v-model="searchForm.tunnelType" size="small" class="absolute z-1">
           <el-radio-button label="网页隧道" value="web" />
           <el-radio-button label="服务隧道" value="service" />
         </el-radio-group>
-        <div class="w-full h-full grid grid-cols-3 gap-24">
-          <UserTunnelTop v-bind="searchForm"></UserTunnelTop>
-          <TunnelUsage v-bind="searchForm"></TunnelUsage>
-          <ServerUsage v-bind="searchForm"></ServerUsage>
+        <div class="w-full h-full grid gap-48 md:gap-24 grid-cols-1 md:grid-cols-3 gap-24">
+          <UserTunnelTop class="min-h-300 md:min-h-0" v-bind="searchForm"></UserTunnelTop>
+          <TunnelUsage class="min-h-300 md:min-h-0" v-bind="searchForm"></TunnelUsage>
+          <ServerUsage class="min-h-300 md:min-h-0" v-bind="searchForm"></ServerUsage>
         </div>
       </el-card>
     </div>

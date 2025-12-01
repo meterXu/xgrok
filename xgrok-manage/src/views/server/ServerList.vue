@@ -3,7 +3,7 @@
 import {onMounted, ref, shallowReactive, shallowRef, useTemplateRef} from "vue";
 import {batchDelServer, detailServer, getDict, serverQuery} from "@/api";
 import {useGetIndexMethod, usePage, useQuery, useQueryCallback} from "@/libs/use-curd";
-import {mappingDic, resetObj, useBatchDelConfirm, useDel, useFormatDic} from "@/libs/utils";
+import {mappingDic, resetObj, useBatchDelConfirm, useDel, useFixed, useFormatDic} from "@/libs/utils";
 import {showNotification} from "@/libs/utils/message";
 import ServerEdit from "@/views/server/module/ServerEdit.vue";
 import {IsDeleteEnum, NotificationTypeEnum, StatusEnum} from "@/libs/enum";
@@ -28,6 +28,7 @@ const dialogVisible = ref(false)
 const portRangeVisible = ref(false)
 const multipleSelection = ref<string[]>([])
 const tableRef = useTemplateRef<TableInstance>('tableRef')
+const isFixed = useFixed()
 
 function queryData(params: any): Promise<ResultType<PaginationDataType<ServerType>>> {
   loading.value = true
@@ -110,6 +111,7 @@ onMounted(() => {
       [serverTypeDict, statusDict, isDeleteDict])
   handleQuery(1, 20)
 })
+
 </script>
 
 <template>
@@ -153,11 +155,11 @@ onMounted(() => {
                     header-row-class-name="table-header"
                     row-key="id" height="100%"
                     @selection-change="onSelectionChange">
-            <el-table-column fixed type="selection"/>
+            <el-table-column :fixed="isFixed" type="selection"/>
             <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod"
                              width="55"></el-table-column>
-            <el-table-column fixed prop="name" label="名称" align="left"></el-table-column>
-            <el-table-column fixed prop="domain" label="域名" show-overflow-tooltip width="220" align="left"></el-table-column>
+            <el-table-column :fixed="isFixed" prop="name" label="名称" align="left"></el-table-column>
+            <el-table-column :fixed="isFixed" prop="domain" label="域名" show-overflow-tooltip width="220" align="left"></el-table-column>
             <el-table-column prop="port" label="端口" align="left"></el-table-column>
             <el-table-column prop="type" label="类型" align="left">
               <template #default="{row}">
@@ -168,26 +170,26 @@ onMounted(() => {
             <el-table-column prop="https_port" label="HTTPS端口" width="120" align="left"></el-table-column>
             <el-table-column prop="up_speed" label="上行速度" align="left"></el-table-column>
             <el-table-column prop="down_speed" label="下行速度" align="left"></el-table-column>
-            <el-table-column fixed="right" prop="status" label="是否启用" align="left" width="100">
+            <el-table-column :fixed="isFixed?'right':false" prop="status" label="是否启用" align="left" width="100">
               <template #default="{row}">
                 <el-switch v-model="row.status" :inactive-value="0" :active-value="1"
                            @change="(value:number)=>{onDetailServer(row.id,value,row.is_delete,row.is_vip)}"></el-switch>
               </template>
             </el-table-column>
-            <el-table-column fixed="right" prop="is_delete" label="是否删除" align="left" width="100">
+            <el-table-column :fixed="isFixed?'right':false" prop="is_delete" label="是否删除" align="left" width="100">
               <template #default="{row}">
                 <el-switch v-model="row.is_delete" :inactive-value="0" :active-value="1"
                            style="--el-switch-on-color: var(--el-color-danger);"
                            @change="(value:number)=>{onDetailServer(row.id,row.status,value,row.is_vip)}"></el-switch>
               </template>
             </el-table-column>
-            <el-table-column fixed="right" prop="is_vip" label="付费使用" align="left" width="100">
+            <el-table-column :fixed="isFixed?'right':false" prop="is_vip" label="付费使用" align="left" width="100">
               <template #default="{row}">
                 <el-switch v-model="row.is_vip" :inactive-value="0" :active-value="1"
                            @change="(value:number)=>{onDetailServer(row.id,row.status,row.is_delete,value)}"></el-switch>
               </template>
             </el-table-column>
-            <el-table-column fixed="right" prop="id" label="操作" align="center" width="200">
+            <el-table-column :fixed="isFixed?'right':false" prop="id" label="操作" align="center" width="200">
               <template #default="{row}">
                 <el-button type="text" @click="onEdit(row)">编辑</el-button>
                 <el-button type="text" @click="onConfigProt(row)">端口配置</el-button>

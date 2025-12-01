@@ -9,13 +9,7 @@ import '@/assets/css/index.css'
 
 window.onresize = ()=>{
     resizeFontSize(1920,4,0,(width)=>{
-        if(width <= 1280){
-            return 1280
-        }
-        else if(width <= 1366){
-            return 1366
-        }
-        else if(width <= 1920){
+        if(width <= 1920){
             return 1920
         }
         return width

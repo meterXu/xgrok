@@ -7,7 +7,7 @@ import {
   mappingDic,
   resetObj,
   useBatchDelConfirm,
-  useDel,
+  useDel, useFixed,
   useFormatDateTime,
   useFormatDic
 } from "@/libs/utils";
@@ -35,6 +35,7 @@ const statusDict = shallowReactive<DictItemType[]>([])
 const isDeleteDict = shallowReactive<DictItemType[]>([])
 const multipleSelection = ref<string[]>([])
 const tableRef = useTemplateRef<TableInstance>('tableRef')
+const isFixed = useFixed()
 
 function queryData(params: any): Promise<ResultType<PaginationDataType<OrderType>>> {
   loading.value = true
@@ -163,12 +164,12 @@ onMounted(() => {
                     height="100%"
                     row-key="id"
                     @selection-change="onSelectionChange">
-            <el-table-column fixed type="selection"/>
+            <el-table-column :fixed="isFixed" type="selection"/>
             <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod"
                              width="55"></el-table-column>
-            <el-table-column fixed prop="trade_no" label="订单号" show-overflow-tooltip align="left" width="200"></el-table-column>
-            <el-table-column fixed prop="name" label="购买产品" show-overflow-tooltip align="left" width="100"></el-table-column>
-            <el-table-column fixed prop="username" label="购买人" show-overflow-tooltip align="left" width="200">
+            <el-table-column :fixed="isFixed" prop="trade_no" label="订单号" show-overflow-tooltip align="left" width="200"></el-table-column>
+            <el-table-column :fixed="isFixed" prop="name" label="购买产品" show-overflow-tooltip align="left" width="100"></el-table-column>
+            <el-table-column :fixed="isFixed" prop="username" label="购买人" show-overflow-tooltip align="left" width="200">
             </el-table-column>
             <el-table-column prop="pay_status" label="支付状态" align="left" width="200">
               <template #default="{row}">
@@ -231,21 +232,21 @@ onMounted(() => {
                 {{ useFormatDateTime(row.expired_notify_time) }}
               </template>
             </el-table-column>
-            <el-table-column fixed="right" prop="status" label="是否启用" align="left" width="100">
+            <el-table-column :fixed="isFixed?'right':false" prop="status" label="是否启用" align="left" width="100">
               <template #default="{row}">
                 <el-tag :type="row.status===StatusEnum.disable?'danger':'success'">
                   {{ useFormatDic(statusDict, row.status) }}
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column fixed="right" prop="is_delete" label="是否删除" align="left" width="100">
+            <el-table-column :fixed="isFixed?'right':false" prop="is_delete" label="是否删除" align="left" width="100">
               <template #default="{row}">
                 <el-tag :type="row.is_delete===IsDeleteEnum.true?'danger':'success'">
                   {{ useFormatDic(isDeleteDict, row.is_delete) }}
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column fixed="right" prop="is_delete" label="操作" align="center">
+            <el-table-column :fixed="isFixed?'right':false" prop="is_delete" label="操作" align="center">
               <template #default="{row}">
                 <el-button type="text" @click="onEdit(row)">编辑</el-button>
               </template>

@@ -3,7 +3,7 @@
 import {onMounted, ref, shallowReactive, shallowRef, useTemplateRef} from "vue";
 import {batchDelUser, editUser, getDict, userQuery} from "@/api";
 import {useGetIndexMethod, usePage, useQuery, useQueryCallback} from "@/libs/use-curd";
-import {mappingDic, resetObj, useBatchDelConfirm, useDel, useFormatDateTime} from "@/libs/utils";
+import {mappingDic, resetObj, useBatchDelConfirm, useDel, useFixed, useFormatDateTime} from "@/libs/utils";
 import {showNotification} from '@/libs/utils/message.ts'
 import {IsDeleteEnum, NotificationTypeEnum, StatusEnum} from "@/libs/enum";
 import {Search, RefreshLeft, Plus, Delete} from "@element-plus/icons-vue";
@@ -27,6 +27,7 @@ const multipleSelection = ref<string[]>([])
 const selectedUser = shallowReactive<UserType>({} as UserType)
 const drawerVisible = ref(false)
 const tableRef = useTemplateRef<TableInstance>('tableRef')
+const isFixed = useFixed()
 
 function queryData(params: any): Promise<ResultType<PaginationDataType<UserType>>> {
   loading.value = true
@@ -138,34 +139,34 @@ onMounted(()=>{
                   header-row-class-name="table-header"
                   row-key="id"
                   @selection-change="onSelectionChange">
-          <el-table-column fixed type="selection"/>
+          <el-table-column :fixed="isFixed" type="selection"/>
           <el-table-column fixed type="index" label="序号" align="center" :index="useGetIndexMethod" width="55"></el-table-column>
-          <el-table-column fixed prop="username" label="用户名" width="200" show-overflow-tooltip align="left"></el-table-column>
+          <el-table-column :fixed="isFixed" prop="username" label="用户名" width="200" show-overflow-tooltip align="left"></el-table-column>
           <el-table-column prop="nickname" label="昵称" width="160" show-overflow-tooltip align="left"></el-table-column>
           <el-table-column prop="role_name" label="所属角色" width="100" align="left"></el-table-column>
-          <el-table-column prop="created_time" label="创建时间" align="left">
+          <el-table-column prop="created_time" label="创建时间" width="180" align="left">
             <template #default="{row}">
               {{useFormatDateTime(row.created_time)}}
             </template>
           </el-table-column>
-          <el-table-column label="隧道配置" align="left">
+          <el-table-column label="隧道配置" align="left" width="180">
             <template #default="{row}">
               <span class="underline cursor-pointer text-(--el-color-blue) inline-block" @click="onShowDrawer(row)">WEB：{{row.web_count}}</span>
               <span class="underline cursor-pointer text-(--el-color-danger) inline-block ml-8" @click="onShowDrawer(row)">服务：{{row.service_count}}</span>
             </template>
           </el-table-column>
-          <el-table-column fixed="right" prop="status" label="是否启用" width="100" align="left">
+          <el-table-column :fixed="isFixed?'right':false" prop="status" label="是否启用" width="100" align="left">
             <template #default="{row}">
               <el-switch v-model="row.status" :inactive-value="0" :active-value="1" @change="(value:number)=>{onDetailUser(row.id,value,row.is_delete)}"></el-switch>
             </template>
           </el-table-column>
-          <el-table-column fixed="right" prop="is_delete" label="是否删除" width="100" align="left">
+          <el-table-column :fixed="isFixed?'right':false" prop="is_delete" label="是否删除" width="100" align="left">
             <template #default="{row}">
               <el-switch v-model="row.is_delete" :inactive-value="0" :active-value="1"
                          style="--el-switch-on-color: var(--el-color-danger);" @change="(value:number)=>{onDetailUser(row.id,row.status,value)}"></el-switch>
             </template>
           </el-table-column>
-          <el-table-column fixed="right" prop="is_delete" width="220" label="操作" align="center">
+          <el-table-column :fixed="isFixed?'right':false" prop="is_delete" width="220" label="操作" align="center">
             <template #default="{row}">
               <el-button type="text" @click="onEdit(row)">编辑</el-button>
               <el-button type="text" @click="onEdit(row)">重置密码</el-button>

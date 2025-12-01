@@ -28,6 +28,7 @@ const props = defineProps<{
 
 const option = Object.assign({
   title: {
+    top:0,
     text: '用户隧道数',
     textStyle: {
       fontSize: '3rem',
