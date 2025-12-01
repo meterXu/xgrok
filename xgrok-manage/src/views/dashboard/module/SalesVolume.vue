@@ -56,7 +56,7 @@ const option = Object.assign({
       type: 'line',
       label: {
         show: true,
-        formatter: '{c|¥{c}}',
+        formatter: '¥{c}',
         rich: {
           c: {
             fontWeight: 'bold'
