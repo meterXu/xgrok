@@ -1,4 +1,5 @@
 import {reactive, ref, shallowReactive, shallowRef} from "vue";
+import {useFixed} from "@/libs/utils";
 
 export function useDialogVisible(){
     return ref(false)
@@ -25,12 +26,13 @@ export function clearEmptyStr(str:string){
 }
 
 export function usePage(pageSize=20):PaginationType{
+    const isFixed = useFixed()
     return reactive({
         pageNumber:1,
         pageSize:pageSize,
         pageSizes:[10,20,50,100],
         total:0,
-        layout:'total, sizes, prev, pager, next, jumper'
+        layout:isFixed.value?'total, sizes, prev, pager, next, jumper':'total,prev, pager, next'
     })
 }
 

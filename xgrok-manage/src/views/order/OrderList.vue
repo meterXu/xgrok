@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref, reactive, shallowReactive, shallowRef, useTemplateRef} from "vue";
+import {onMounted, ref, reactive, shallowReactive, shallowRef, useTemplateRef, computed} from "vue";
 import {batchDelOrder, getDict, orderQuery} from "@/api";
 import {useGetIndexMethod, usePage, useQuery, useQueryCallback} from "@/libs/use-curd";
 import {
@@ -36,6 +36,12 @@ const isDeleteDict = shallowReactive<DictItemType[]>([])
 const multipleSelection = ref<string[]>([])
 const tableRef = useTemplateRef<TableInstance>('tableRef')
 const isFixed = useFixed()
+const activeNames = computed({
+  get(){
+    return [isFixed.value?'search':'']
+  },
+  set(){}
+})
 
 function queryData(params: any): Promise<ResultType<PaginationDataType<OrderType>>> {
   loading.value = true
@@ -99,58 +105,64 @@ onMounted(() => {
 
 <template>
   <div class="w-full h-full flex flex-col gap-12 pb-4">
-    <div
-        class="my-inner-form p-12 flex flex-row items-center bg-white border-1 border-(--el-border-color-light) rounded-2xl shadow-xs">
-      <el-form inline label-width="80">
-        <div class="flex flex-col gap-8">
-          <div>
-            <el-form-item label="订单编号">
-              <el-input class="w-150!" v-model="searchForm.trade_no" clearable @keydown.enter="()=>{handleQuery()}"/>
-            </el-form-item>
-            <el-form-item label="订单状态">
-              <el-select class="w-150!" v-model="searchForm.status" clearable @change="()=>{handleQuery()}">
-                <el-option v-for="item in statusDict" :key="item.code" :label="item.chn_value"
-                           :value="parseInt(item.code)"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="创建日期">
-              <el-date-picker class="w-260!" type="daterange"
-                              start-placeholder="开始日期"
-                              end-placeholder="结束日期" :default-time="[
+    <el-collapse class="search-collapse bg-white border-1 border-(--el-border-color-light) rounded-2xl shadow-xs" v-model="activeNames">
+      <el-collapse-item name="search">
+        <template #title>
+          <span class="px-12 text-[12px]">查询条件</span>
+        </template>
+        <div class="flex flex-row items-center px-12">
+          <el-form inline label-width="80">
+            <div class="flex flex-col gap-8">
+              <div>
+                <el-form-item label="订单编号">
+                  <el-input class="w-150!" v-model="searchForm.trade_no" clearable @keydown.enter="()=>{handleQuery()}"/>
+                </el-form-item>
+                <el-form-item label="订单状态">
+                  <el-select class="w-150!" v-model="searchForm.status" clearable @change="()=>{handleQuery()}">
+                    <el-option v-for="item in statusDict" :key="item.code" :label="item.chn_value"
+                               :value="parseInt(item.code)"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="创建日期">
+                  <el-date-picker class="w-260!" type="daterange"
+                                  start-placeholder="开始日期"
+                                  end-placeholder="结束日期" :default-time="[
                               new Date(2000, 1, 1, 0, 0, 0),
                               new Date(2000, 2, 1, 23, 59, 59),]"
-                              v-model="searchForm.created_time" @change="()=>{handleQuery()}"></el-date-picker>
-            </el-form-item>
-            <el-form-item label="支付状态">
-              <el-select class="w-150!" v-model="searchForm.pay_status" clearable @change="()=>{handleQuery()}">
-                <el-option v-for="item in payStatusDict" :key="item.code" :label="item.chn_value"
-                           :value="parseInt(item.code)"></el-option>
-              </el-select>
-            </el-form-item>
-          </div>
-          <div>
-            <el-form-item label="购买人">
-              <el-input class="w-150!" v-model="searchForm.username" clearable @keydown.enter="()=>{handleQuery()}">
-              </el-input>
-            </el-form-item>
-            <el-form-item label="是否启用">
-              <el-select class="w-150!" v-model="searchForm.status" clearable @change="()=>{handleQuery()}">
-                <el-option v-for="item in statusDict" :label="item.chn_value" :value="parseInt(item.code)"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="是否删除">
-              <el-select class="w-150!" v-model="searchForm.is_delete" clearable @change="()=>{handleQuery()}">
-                <el-option v-for="item in isDeleteDict" :label="item.chn_value" :value="parseInt(item.code)"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="()=>{handleQuery()}" :icon="Search">查询</el-button>
-              <el-button @click="handleReset" :icon="RefreshLeft">重置</el-button>
-            </el-form-item>
-          </div>
+                                  v-model="searchForm.created_time" @change="()=>{handleQuery()}"></el-date-picker>
+                </el-form-item>
+                <el-form-item label="支付状态">
+                  <el-select class="w-150!" v-model="searchForm.pay_status" clearable @change="()=>{handleQuery()}">
+                    <el-option v-for="item in payStatusDict" :key="item.code" :label="item.chn_value"
+                               :value="parseInt(item.code)"></el-option>
+                  </el-select>
+                </el-form-item>
+              </div>
+              <div>
+                <el-form-item label="购买人">
+                  <el-input class="w-150!" v-model="searchForm.username" clearable @keydown.enter="()=>{handleQuery()}">
+                  </el-input>
+                </el-form-item>
+                <el-form-item label="是否启用">
+                  <el-select class="w-150!" v-model="searchForm.status" clearable @change="()=>{handleQuery()}">
+                    <el-option v-for="item in statusDict" :label="item.chn_value" :value="parseInt(item.code)"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="是否删除">
+                  <el-select class="w-150!" v-model="searchForm.is_delete" clearable @change="()=>{handleQuery()}">
+                    <el-option v-for="item in isDeleteDict" :label="item.chn_value" :value="parseInt(item.code)"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item>
+                  <el-button type="primary" @click="()=>{handleQuery()}" :icon="Search">查询</el-button>
+                  <el-button @click="handleReset" :icon="RefreshLeft">重置</el-button>
+                </el-form-item>
+              </div>
+            </div>
+          </el-form>
         </div>
-      </el-form>
-    </div>
+      </el-collapse-item>
+    </el-collapse>
     <div class="flex-1 flex flex-col gap-12 border-1 border-(--el-border-color-light) bg-white rounded-2xl shadow-xs">
       <div class="px-12 pt-12 rounded-2xl flex flex-row items-center bg-white">
         <el-button type="primary" :icon="Plus" @click="onAdd">添加</el-button>

@@ -7,6 +7,7 @@ import {LineChart} from 'echarts/charts';
 import {UniversalTransition} from 'echarts/features';
 import {CanvasRenderer} from 'echarts/renderers';
 import themes from '@/libs/utils/echarts-theme.ts'
+import {debounce} from 'lodash-es'
 
 echarts.use([
   TitleComponent,
@@ -73,17 +74,20 @@ const option = Object.assign({
 const chartRef = useTemplateRef('chartRef')
 let myChart = null as any
 
-function initChart() {
-  loadData().then(resOption => {
-    myChart = echarts.init(chartRef.value as HTMLElement);
+function initChart(startDate:number,endDate:number,type:string) {
+  loadData(startDate,endDate,type).then(resOption => {
     myChart.setOption(resOption)
   })
 }
 
+const debounceInitChart = debounce((startDate:number,endDate:number,type:string)=>{
+  initChart(startDate,endDate,type)
+},500)
 
-function loadData() {
+
+function loadData(startDate:number,endDate:number,type:string) {
   return new Promise((resolve, reject) => {
-    salesVolumeStatistics(props.dateRange[0].valueOf(), props.dateRange[1].valueOf(), props.type).then(res => {
+    salesVolumeStatistics(startDate,endDate,type).then(res => {
       if (props.type === 'week') {
         option.xAxis.data = res.data.map((d: any) => {
           return d.year + '-' + d.week
@@ -102,15 +106,14 @@ function loadData() {
 }
 
 const resizeObserver = new ResizeObserver(() => {
-  //@ts-ignore
   myChart?.resize();
 });
 
 watchEffect(() => {
-  initChart()
+  debounceInitChart(props.dateRange[0].valueOf(), props.dateRange[1].valueOf(), props.type)
 })
 onMounted(() => {
-  initChart()
+  myChart = echarts.init(chartRef.value as HTMLElement);
   resizeObserver.observe(chartRef.value as HTMLElement)
 })
 onUnmounted(() => {

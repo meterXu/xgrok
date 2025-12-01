@@ -10,6 +10,7 @@ import UserOrderTop from "@/views/dashboard/module/UserOrderTop.vue";
 import UserTunnelTop from "@/views/dashboard/module/UserTunnelTop.vue";
 import TunnelUsage from "@/views/dashboard/module/TunnelUsage.vue";
 import ServerUsage from "@/views/dashboard/module/ServerUsage.vue";
+import {debounce} from "lodash-es";
 
 dayjs.locale('zh-cn');
 
@@ -36,7 +37,7 @@ function onTypeChange(value: dayjs.OpUnitType) {
     dayjs().startOf(value).toDate(),
     dayjs().endOf(value).toDate()
   ]
-  loadData()
+  debounceLoadData()
 }
 
 async function loadData() {
@@ -47,7 +48,9 @@ async function loadData() {
   })
 }
 
-loadData()
+const debounceLoadData = debounce(()=>{loadData()},500)
+
+debounceLoadData()
 const numberOfNewOrdersRef = useTransition(statisticsData.numberOfNewOrders, {duration: 1000})
 const numberOfNewUsersRef = useTransition(statisticsData.numberOfNewUsers, {duration: 1000})
 const salesVolumeRef = useTransition(statisticsData.salesVolume, {duration: 1000})
@@ -72,39 +75,41 @@ const salesVolumeRef = useTransition(statisticsData.salesVolume, {duration: 1000
         </el-date-picker>
       </div>
     </div>
-    <el-card>
-      <el-row :gutter="16">
-        <el-col :xs="24" :sm="12" :md="8" class="text-center mb-4">
-          <el-statistic title="新增订单数" :value="numberOfNewOrdersRef"/>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="8" class="text-center mb-4">
-          <el-statistic title="新增用户数" :value="numberOfNewUsersRef">
-          </el-statistic>
-        </el-col>
-        <el-col :xs="24" :sm="12" :md="8" class="text-center mb-4">
-          <el-statistic title="总销售额" :value="salesVolumeRef"/>
-        </el-col>
-      </el-row>
-    </el-card>
     <div class="flex-1 md:flex md:flex-col md:gap-24 overflow-auto">
-      <el-card class="md:flex-1/2" body-class="p-0 h-full relative">
-        <div class="w-full h-full grid gap-48 md:gap-24 grid-cols-1 md:grid-cols-3">
-          <SalesVolume class="min-h-300 md:min-h-0" v-bind="searchForm"/>
-          <ProductSales class="min-h-300 md:min-h-0" v-bind="searchForm"></ProductSales>
-          <UserOrderTop class="min-h-300 md:min-h-0" v-bind="searchForm"></UserOrderTop>
-        </div>
+      <el-card>
+        <el-row :gutter="16">
+          <el-col :xs="24" :sm="12" :md="8" class="text-center mb-4">
+            <el-statistic title="新增订单数" :value="numberOfNewOrdersRef"/>
+          </el-col>
+          <el-col :xs="24" :sm="12" :md="8" class="text-center mb-4">
+            <el-statistic title="新增用户数" :value="numberOfNewUsersRef">
+            </el-statistic>
+          </el-col>
+          <el-col :xs="24" :sm="12" :md="8" class="text-center mb-4">
+            <el-statistic title="总销售额" :value="salesVolumeRef"/>
+          </el-col>
+        </el-row>
       </el-card>
-      <el-card class="md:flex-1/2 mt-24 md:mt-0" body-class="p-0 h-full">
-        <el-radio-group v-model="searchForm.tunnelType" size="small" class="absolute z-1">
-          <el-radio-button label="网页隧道" value="web" />
-          <el-radio-button label="服务隧道" value="service" />
-        </el-radio-group>
-        <div class="w-full h-full grid gap-48 md:gap-24 grid-cols-1 md:grid-cols-3 gap-24">
-          <UserTunnelTop class="min-h-300 md:min-h-0" v-bind="searchForm"></UserTunnelTop>
-          <TunnelUsage class="min-h-300 md:min-h-0" v-bind="searchForm"></TunnelUsage>
-          <ServerUsage class="min-h-300 md:min-h-0" v-bind="searchForm"></ServerUsage>
-        </div>
-      </el-card>
+      <div class="md:flex-1 md:flex md:flex-col md:gap-24 md:mt-0 mt-24">
+        <el-card class="md:flex-1/2" body-class="p-0 h-full relative">
+          <div class="w-full h-full grid gap-48 md:gap-24 grid-cols-1 md:grid-cols-3">
+            <SalesVolume class="min-h-300 md:min-h-0" v-bind="searchForm"/>
+            <ProductSales class="min-h-300 md:min-h-0" v-bind="searchForm"></ProductSales>
+            <UserOrderTop class="min-h-300 md:min-h-0" v-bind="searchForm"></UserOrderTop>
+          </div>
+        </el-card>
+        <el-card class="md:flex-1/2 mt-24 md:mt-0" body-class="p-0 h-full">
+          <el-radio-group v-model="searchForm.tunnelType" size="small" class="absolute z-1">
+            <el-radio-button label="网页隧道" value="web" />
+            <el-radio-button label="服务隧道" value="service" />
+          </el-radio-group>
+          <div class="w-full h-full grid gap-48 md:gap-24 grid-cols-1 md:grid-cols-3 gap-24">
+            <UserTunnelTop class="min-h-300 md:min-h-0" v-bind="searchForm"></UserTunnelTop>
+            <TunnelUsage class="min-h-300 md:min-h-0" v-bind="searchForm"></TunnelUsage>
+            <ServerUsage class="min-h-300 md:min-h-0" v-bind="searchForm"></ServerUsage>
+          </div>
+        </el-card>
+      </div>
     </div>
   </div>
 </template>

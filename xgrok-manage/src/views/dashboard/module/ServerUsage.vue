@@ -11,6 +11,7 @@ import { BarChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
 import {serverUsage} from '@/api'
 import themes from '@/libs/utils/echarts-theme.ts'
+import {debounce} from 'lodash-es'
 
 echarts.use([
   TitleComponent,
@@ -85,17 +86,18 @@ const option = Object.assign({
 const chartRef = useTemplateRef('chartRef')
 let myChart = null as any
 
-function initChart() {
-  loadData().then(resOption => {
-    myChart = echarts.init(chartRef.value as HTMLElement);
+function initChart(startDate:number,endDate:number,tunnelType:string) {
+  loadData(startDate,endDate,tunnelType).then(resOption => {
     myChart.setOption(resOption)
   })
 }
 
+const debounceInitChart = debounce((startDate,endDate,tunnelType)=>{initChart(startDate,endDate,tunnelType)},500)
 
-function loadData() {
+
+function loadData(startDate:number,endDate:number,tunnelType:string) {
   return new Promise((resolve, reject) => {
-    serverUsage(props.dateRange[0].valueOf(), props.dateRange[1].valueOf(),props.tunnelType).then(res => {
+    serverUsage(startDate, endDate,tunnelType).then(res => {
       option.series[0].data = res.data
       total = res.data.reduce((accumulator:number, current:any) => accumulator + current.value,0)
       resolve(option)
@@ -109,10 +111,10 @@ const resizeObserver = new ResizeObserver(() => {
 });
 
 watchEffect(() => {
-  initChart()
+  debounceInitChart(props.dateRange[0].valueOf(), props.dateRange[1].valueOf(),props.tunnelType)
 })
 onMounted(() => {
-  initChart()
+  myChart = echarts.init(chartRef.value as HTMLElement);
   resizeObserver.observe(chartRef.value as HTMLElement)
 })
 onUnmounted(() => {

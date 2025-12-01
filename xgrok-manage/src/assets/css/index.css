@@ -27,6 +27,17 @@ html,body,#app{
   .transition-container{
     height: 100%;
   }
+  .search-collapse{
+    .el-collapse-item__content{
+      padding-bottom: 0;
+    }
+    .el-collapse-item__header{
+      border-radius: 1rem;
+    }
+    .el-collapse-item__wrap{
+      border-radius: 1rem;
+    }
+  }
   .xxWeb-box[data-theme='vue-admin']{
     .app-main{
       background-color: #fafafa;
