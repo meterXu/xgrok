@@ -44,7 +44,7 @@ const option = Object.assign({
                     <span style="display: inline-block;width: 2.5rem; height: 2.5rem; border-radius: 50%;background-color:${params.color}"></span>
                     ${params.name}
                 </span>
-                <strong>${Math.round(params.value*100/total)/100}%</strong>
+                <strong>${Math.round(params.value*10000/total)/100}%</strong>
                </div>
                <div>
                 <span style="display: inline-block;width: 2.5rem; height: 2.5rem; border-radius: 50%;background-color:${params.color}"></span>

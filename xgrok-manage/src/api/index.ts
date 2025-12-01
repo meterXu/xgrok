@@ -160,11 +160,11 @@ export function productSales(startTime: number, endTime: number): Promise<Result
 }
 
 export function userOrderTop(startTime: number, endTime: number): Promise<ResultType<any>> {
-    return getAction(url.system.userOrderTop,{startTime,endTime})
+    return getAction(url.system.userOrderTop,{startTime,endTime,top:5})
 }
 
 export function userTunnelTop(startTime: number, endTime: number,type:string): Promise<ResultType<any>> {
-    return getAction(url.system.userTunnelTop,{startTime,endTime,type})
+    return getAction(url.system.userTunnelTop,{startTime,endTime,type,top:5})
 }
 
 export function tunnelUsage(startTime: number, endTime: number): Promise<ResultType<any>> {
