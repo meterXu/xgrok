@@ -1,32 +1,39 @@
 <script setup lang="ts">
-import {onMounted, onUnmounted, useTemplateRef, watchEffect} from "vue";
+import {useTemplateRef,watchEffect,onMounted,onUnmounted} from 'vue'
 import * as echarts from 'echarts/core';
-import {salesVolumeStatistics} from "@/api";
-import {TitleComponent,TooltipComponent, GridComponent} from 'echarts/components';
-import {LineChart} from 'echarts/charts';
-import {UniversalTransition} from 'echarts/features';
-import {CanvasRenderer} from 'echarts/renderers';
+import {
+  TitleComponent,
+  TooltipComponent,
+  GridComponent,
+  LegendComponent
+} from 'echarts/components';
+import { BarChart } from 'echarts/charts';
+import { CanvasRenderer } from 'echarts/renderers';
+import {serverUsage} from '@/api'
+import themes from '@/libs/utils/echarts-theme.ts'
 
 echarts.use([
   TitleComponent,
   TooltipComponent,
   GridComponent,
-  LineChart,
-  CanvasRenderer,
-  UniversalTransition
+  LegendComponent,
+  BarChart,
+  CanvasRenderer
 ]);
 
 const props = defineProps<{
   dateRange: Date[],
-  type: string
+  tunnelType:string
 }>()
-const option = {
+
+let total = 1
+const option = Object.assign({
   title: {
-    text: '销售额',
+    text: '服务器使用分布图',
     textStyle: {
       fontSize: '3rem',
-      fontWeight:'normal',
-      color:'#606266'
+      fontWeight: 'normal',
+      color: '#606266'
     }
   },
   tooltip: {
@@ -37,25 +44,30 @@ const option = {
                     <span style="display: inline-block;width: 2.5rem; height: 2.5rem; border-radius: 50%;background-color:${params.color}"></span>
                     ${params.name}
                 </span>
-                <strong>¥${params.value}</strong>
+                <strong>${Math.round(params.value*100/total)/100}%</strong>
                </div>
+               <div>
+                <span style="display: inline-block;width: 2.5rem; height: 2.5rem; border-radius: 50%;background-color:${params.color}"></span>
+                ${params.data.domain}
+                </div>
               `;
     }
   },
-  xAxis: {
-    type: 'category',
-    data: []
-  },
-  yAxis: {
-    type: 'value'
-  },
   series: [
     {
+      name: '',
+      type: 'pie',
+      radius: '50%',
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      },
       data: [],
-      type: 'line',
       label:{
-        show:true,
-        formatter: '{c|¥{c}}',
+        formatter:'{b}：{c|{c}}',
         rich:{
           c:{
             fontWeight:'bold'
@@ -64,7 +76,8 @@ const option = {
       }
     }
   ]
-}
+},themes);
+
 const chartRef = useTemplateRef('chartRef')
 let myChart = null as any
 
@@ -78,19 +91,9 @@ function initChart() {
 
 function loadData() {
   return new Promise((resolve, reject) => {
-    salesVolumeStatistics(props.dateRange[0].valueOf(), props.dateRange[1].valueOf(), props.type).then(res => {
-      if (props.type === 'week') {
-        option.xAxis.data = res.data.map((d: any) => {
-          return d.year + '-' + d.week
-        })
-      } else {
-        option.xAxis.data = res.data.map((d: any) => {
-          return d[props.type]
-        })
-      }
-      option.series[0].data = res.data.map((d: any) => {
-        return d.amount
-      })
+    serverUsage(props.dateRange[0].valueOf(), props.dateRange[1].valueOf(),props.tunnelType).then(res => {
+      option.series[0].data = res.data
+      total = res.data.reduce((accumulator:number, current:any) => accumulator + current.value,0)
       resolve(option)
     })
   })
@@ -115,7 +118,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="absolute h-full w-full" ref="chartRef"></div>
+  <div class="h-full w-full" ref="chartRef"></div>
 </template>
 
 <style scoped lang="less">

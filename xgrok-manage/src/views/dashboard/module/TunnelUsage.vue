@@ -1,20 +1,24 @@
 <script setup lang="ts">
-import {onMounted, onUnmounted, useTemplateRef, watchEffect, ref} from "vue";
+import {useTemplateRef,watchEffect,onMounted,onUnmounted} from 'vue'
 import * as echarts from 'echarts/core';
-import {TitleComponent, TooltipComponent, LegendComponent} from 'echarts/components';
-import {PieChart} from 'echarts/charts';
-import {LabelLayout} from 'echarts/features';
-import {CanvasRenderer} from 'echarts/renderers';
-import {productSales} from "@/api";
+import {
+  TitleComponent,
+  TooltipComponent,
+  GridComponent,
+  LegendComponent
+} from 'echarts/components';
+import { BarChart } from 'echarts/charts';
+import { CanvasRenderer } from 'echarts/renderers';
+import {tunnelUsage} from '@/api'
 import themes from '@/libs/utils/echarts-theme.ts'
 
 echarts.use([
   TitleComponent,
   TooltipComponent,
+  GridComponent,
   LegendComponent,
-  PieChart,
-  CanvasRenderer,
-  LabelLayout
+  BarChart,
+  CanvasRenderer
 ]);
 
 const props = defineProps<{
@@ -24,7 +28,7 @@ const props = defineProps<{
 let total = 1
 const option = Object.assign({
   title: {
-    text: '产品销量',
+    text: '隧道分布图',
     textStyle: {
       fontSize: '3rem',
       fontWeight: 'normal',
@@ -33,13 +37,13 @@ const option = Object.assign({
   },
   tooltip: {
     trigger: 'item',
-    formatter(params: any) {
+    formatter(params:any){
       return `<div style="display: flex; align-items: center;gap:4rem">
                 <span>
                     <span style="display: inline-block;width: 2.5rem; height: 2.5rem; border-radius: 50%;background-color:${params.color}"></span>
                     ${params.name}
                 </span>
-                <strong>${Math.round(params.value * 100 / total) / 100}%</strong>
+                <strong>${Math.round(params.value*100/total)/100}%</strong>
                </div>
               `;
     }
@@ -57,17 +61,18 @@ const option = Object.assign({
         }
       },
       data: [],
-      label: {
-        formatter: '{b}：{c|{c}份}',
-        rich: {
-          c: {
-            fontWeight: 'bold'
+      label:{
+        formatter:'{b}：{c|{c}}',
+        rich:{
+          c:{
+            fontWeight:'bold'
           }
         }
       }
     }
   ]
-}, themes);
+},themes);
+
 const chartRef = useTemplateRef('chartRef')
 let myChart = null as any
 
@@ -81,9 +86,9 @@ function initChart() {
 
 function loadData() {
   return new Promise((resolve, reject) => {
-    productSales(props.dateRange[0].valueOf(), props.dateRange[1].valueOf()).then(res => {
+    tunnelUsage(props.dateRange[0].valueOf(), props.dateRange[1].valueOf()).then(res => {
       option.series[0].data = res.data
-      total = res.data.reduce((accumulator: number, current: any) => accumulator + current.value, 0)
+      total = res.data.reduce((accumulator:number, current:any) => accumulator + current.value,0)
       resolve(option)
     })
   })

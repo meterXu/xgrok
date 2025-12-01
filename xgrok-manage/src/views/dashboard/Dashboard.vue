@@ -4,8 +4,12 @@ import dayjs from "dayjs";
 import {numberStatistics} from "@/api";
 import {useTransition} from '@vueuse/core'
 import 'dayjs/locale/zh-cn';
-import SalesVolumeStatistics from "@/views/dashboard/module/SalesVolumeStatistics.vue";
+import SalesVolume from "@/views/dashboard/module/SalesVolume.vue";
 import ProductSales from "@/views/dashboard/module/ProductSales.vue";
+import UserOrderTop from "@/views/dashboard/module/UserOrderTop.vue";
+import UserTunnelTop from "@/views/dashboard/module/UserTunnelTop.vue";
+import TunnelUsage from "@/views/dashboard/module/TunnelUsage.vue";
+import ServerUsage from "@/views/dashboard/module/ServerUsage.vue";
 
 dayjs.locale('zh-cn');
 
@@ -18,8 +22,9 @@ const defaultDate = [
   dayjs().startOf('week').toDate(),
   dayjs().endOf('week').toDate()
 ]
-const searchForm = reactive<{ type: string, dateRange: Date[] }>({
+const searchForm = reactive<{ type: string,tunnelType:string, dateRange: Date[] }>({
   type: 'week',
+  tunnelType:'web',
   dateRange: [
     defaultDate[0],
     defaultDate[1]
@@ -82,24 +87,22 @@ const salesVolumeRef = useTransition(statisticsData.salesVolume, {duration: 1000
       </el-row>
     </el-card>
     <div class="flex-1 flex flex-col gap-24">
-      <el-card class="flex-1/2 my-card">
-        <div class="h-full grid grid-cols-3 gap-24">
-          <div class="relative">
-            <SalesVolumeStatistics v-bind="searchForm"/>
-          </div>
-          <div class="relative">
-            <ProductSales v-bind="searchForm"></ProductSales>
-          </div>
-          <div class="relative">
-
-          </div>
+      <el-card class="flex-1/2" body-class="p-0 h-full relative">
+        <div class="w-full h-full grid grid-cols-3 gap-24">
+          <SalesVolume v-bind="searchForm"/>
+          <ProductSales v-bind="searchForm"></ProductSales>
+          <UserOrderTop v-bind="searchForm"></UserOrderTop>
         </div>
       </el-card>
-      <el-card class="flex-1/2">
-        <div class="grid grid-cols-3 gap-24">
-          <div>用户隧道数top 10</div>
-          <div>隧道使用分布图</div>
-          <div>服务器使用分布图</div>
+      <el-card class="flex-1/2 my-card" body-class="p-0 h-full">
+        <el-radio-group v-model="searchForm.tunnelType" size="small" class="absolute z-1">
+          <el-radio-button label="网页隧道" value="web" />
+          <el-radio-button label="服务隧道" value="service" />
+        </el-radio-group>
+        <div class="w-full h-full grid grid-cols-3 gap-24">
+          <UserTunnelTop v-bind="searchForm"></UserTunnelTop>
+          <TunnelUsage v-bind="searchForm"></TunnelUsage>
+          <ServerUsage v-bind="searchForm"></ServerUsage>
         </div>
       </el-card>
     </div>
@@ -107,10 +110,4 @@ const salesVolumeRef = useTransition(statisticsData.salesVolume, {duration: 1000
 </template>
 
 <style lang="less">
-.my-card{
-.el-card__body{
-  padding: 0;
-  height: 100%;
-}
-}
 </style>

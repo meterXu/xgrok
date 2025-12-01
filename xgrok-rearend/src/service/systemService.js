@@ -123,13 +123,13 @@ export default class SystemService {
     }
 
     async tunnelUsage(startTime, endTime){
-        return prisma.$queryRaw`select 'web' as type, count(*) as total
+        return prisma.$queryRaw`select 'web' as name, count(*) as \`value\`
                                 from ng_tunnel_web
                                 where is_delete = ${isDelete.false}
                                   and status = ${status.enable}
                                   and created_time between ${startTime} AND ${endTime}
                                 union all
-                                select 'service' as type, count(*) as total
+                                select 'service' as name, count(*) as \`value\`
                                 from ng_tunnel_service
                                 where is_delete = ${isDelete.false}
                                   and status = ${status.enable}
@@ -137,7 +137,7 @@ export default class SystemService {
     }
 
     async serverUsage(startTime,endTime,type='web'){
-        return prisma.$queryRaw`select b.name,b.domain,a.type,count(a.type) total from (
+        return prisma.$queryRaw`select b.name,b.domain,a.type,count(a.type) \`value\` from (
                                 select 'web' as type,server_id from ng_tunnel_web where is_delete=${isDelete.false} and status=${status.enable} and created_time between ${startTime} AND ${endTime}
                                 union all
                                 select 'service' as type,server_id from ng_tunnel_service where is_delete=${isDelete.false} and status=${status.enable} and created_time between ${startTime} AND ${endTime}
