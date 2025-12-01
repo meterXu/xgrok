@@ -2,13 +2,14 @@
 import {onMounted, onUnmounted, useTemplateRef, watchEffect} from "vue";
 import * as echarts from 'echarts/core';
 import {salesVolumeStatistics} from "@/api";
-import {TitleComponent, GridComponent} from 'echarts/components';
+import {TitleComponent,TooltipComponent, GridComponent} from 'echarts/components';
 import {LineChart} from 'echarts/charts';
 import {UniversalTransition} from 'echarts/features';
 import {CanvasRenderer} from 'echarts/renderers';
 
 echarts.use([
   TitleComponent,
+  TooltipComponent,
   GridComponent,
   LineChart,
   CanvasRenderer,
@@ -22,8 +23,23 @@ const props = defineProps<{
 const option = {
   title: {
     text: '销售额',
-    textStyle:{
-      fontSize:14
+    textStyle: {
+      fontSize: '3rem',
+      fontWeight:'normal',
+      color:'#606266'
+    }
+  },
+  tooltip: {
+    trigger: 'item',
+    formatter(params:any){
+      return `<div style="display: flex; align-items: center;gap:4rem">
+                <span>
+                    <span style="display: inline-block;width: 2.5rem; height: 2.5rem; border-radius: 50%;background-color:${params.color}"></span>
+                    ${params.name}
+                </span>
+                <strong>¥${params.value}</strong>
+               </div>
+              `;
     }
   },
   xAxis: {
@@ -36,7 +52,16 @@ const option = {
   series: [
     {
       data: [],
-      type: 'line'
+      type: 'line',
+      label:{
+        show:true,
+        formatter: '{c|¥{c}}',
+        rich:{
+          c:{
+            fontWeight:'bold'
+          }
+        }
+      }
     }
   ]
 }

@@ -91,7 +91,7 @@ export default class SystemService {
     }
 
     async productSales(startTime, endTime) {
-        return prisma.$queryRaw`select b.name, count(a.id) sacle_num
+        return prisma.$queryRaw`select b.name, count(a.id) as \`value\`
                           from ng_order a
                                    inner join ng_product b on a.product_id = b.id
                           where a.is_delete = ${isDelete.false}
@@ -100,7 +100,7 @@ export default class SystemService {
                             and b.status = ${status.enable}
                             and a.created_time between ${startTime} AND ${endTime}
                           group by b.name
-                          order by sacle_num desc`
+                          order by \`value\` desc`
     }
 
     async userOrderTop(startTime, endTime,top=10) {

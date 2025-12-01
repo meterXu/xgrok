@@ -1,45 +1,73 @@
 <script setup lang="ts">
-import {onMounted, onUnmounted, useTemplateRef, watchEffect} from "vue";
+import {onMounted, onUnmounted, useTemplateRef, watchEffect,ref} from "vue";
 import * as echarts from 'echarts/core';
-import {salesVolumeStatistics} from "@/api";
-import {TitleComponent, GridComponent} from 'echarts/components';
+import {TitleComponent, TooltipComponent, LegendComponent} from 'echarts/components';
 import {PieChart} from 'echarts/charts';
-import {UniversalTransition} from 'echarts/features';
+import {LabelLayout} from 'echarts/features';
 import {CanvasRenderer} from 'echarts/renderers';
+import {productSales} from "@/api";
 
 echarts.use([
   TitleComponent,
-  GridComponent,
+  TooltipComponent,
+  LegendComponent,
   PieChart,
   CanvasRenderer,
-  UniversalTransition
+  LabelLayout
 ]);
 
 const props = defineProps<{
-  dateRange: Date[],
-  type: string
+  dateRange: Date[]
 }>()
+
+let total = 1
 const option = {
-  title: {
-    text: '产品销量',
-    textStyle:{
-      fontSize:14
+      title: {
+        text: '产品销量',
+        textStyle: {
+          fontSize: '3rem',
+          fontWeight: 'normal',
+          color: '#606266'
+        }
+      },
+      tooltip: {
+        trigger: 'item',
+        formatter(params:any){
+          return `<div style="display: flex; align-items: center;gap:4rem">
+                <span>
+                    <span style="display: inline-block;width: 2.5rem; height: 2.5rem; border-radius: 50%;background-color:${params.color}"></span>
+                    ${params.name}
+                </span>
+                <strong>${Math.round(params.value*100/total)/100}%</strong>
+               </div>
+              `;
+        }
+      },
+      series: [
+        {
+          name: '',
+          type: 'pie',
+          radius: '50%',
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          },
+          data: [],
+          label:{
+            formatter:'{b}：{c|{c}份}',
+            rich:{
+              c:{
+                fontWeight:'bold'
+              }
+            }
+          }
+        }
+      ]
     }
-  },
-  xAxis: {
-    type: 'category',
-    data: []
-  },
-  yAxis: {
-    type: 'value'
-  },
-  series: [
-    {
-      data: [],
-      type: 'line'
-    }
-  ]
-}
+;
 const chartRef = useTemplateRef('chartRef')
 let myChart = null as any
 
@@ -53,19 +81,9 @@ function initChart() {
 
 function loadData() {
   return new Promise((resolve, reject) => {
-    salesVolumeStatistics(props.dateRange[0].valueOf(), props.dateRange[1].valueOf(), props.type).then(res => {
-      if (props.type === 'week') {
-        option.xAxis.data = res.data.map((d: any) => {
-          return d.year + '-' + d.week
-        })
-      } else {
-        option.xAxis.data = res.data.map((d: any) => {
-          return d[props.type]
-        })
-      }
-      option.series[0].data = res.data.map((d: any) => {
-        return d.amount
-      })
+    productSales(props.dateRange[0].valueOf(), props.dateRange[1].valueOf()).then(res => {
+      option.series[0].data = res.data
+      total = res.data.reduce((accumulator:number, current:any) => accumulator + current.value,0)
       resolve(option)
     })
   })

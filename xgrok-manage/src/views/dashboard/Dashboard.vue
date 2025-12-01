@@ -5,6 +5,7 @@ import {numberStatistics} from "@/api";
 import {useTransition} from '@vueuse/core'
 import 'dayjs/locale/zh-cn';
 import SalesVolumeStatistics from "@/views/dashboard/module/SalesVolumeStatistics.vue";
+import ProductSales from "@/views/dashboard/module/ProductSales.vue";
 
 dayjs.locale('zh-cn');
 
@@ -86,10 +87,10 @@ const salesVolumeRef = useTransition(statisticsData.salesVolume, {duration: 1000
           <div class="relative">
             <SalesVolumeStatistics v-bind="searchForm"/>
           </div>
-          <div>
-
+          <div class="relative">
+            <ProductSales v-bind="searchForm"></ProductSales>
           </div>
-          <div>
+          <div class="relative">
 
           </div>
         </div>
