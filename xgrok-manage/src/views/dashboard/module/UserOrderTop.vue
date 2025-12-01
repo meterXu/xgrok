@@ -31,7 +31,7 @@ const option = Object.assign({
     top:0,
     text: '用户订单数',
     textStyle: {
-      fontSize: '3rem',
+      fontSize: '12px',
       fontWeight:'normal',
       color:'#606266'
     }

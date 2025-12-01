@@ -26,7 +26,7 @@ const option = Object.assign({
     text: '销售额',
     top:0,
     textStyle: {
-      fontSize: '3rem',
+      fontSize: '12px',
       fontWeight: 'normal',
       color: '#606266'
     }
