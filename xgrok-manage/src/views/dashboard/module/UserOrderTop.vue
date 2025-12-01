@@ -35,6 +35,9 @@ const option = Object.assign({
       color:'#606266'
     }
   },
+  grid:{
+    bottom:0
+  },
   tooltip: {
     trigger: 'axis',
     axisPointer: {

@@ -31,6 +31,10 @@ const option = Object.assign({
       color: '#606266'
     }
   },
+  grid:{
+    bottom:0
+  },
+  padding: [0, 0,0,10],
   tooltip: {
     trigger: 'item',
     formatter(params: any) {
@@ -48,7 +52,7 @@ const option = Object.assign({
     {
       name: '',
       type: 'pie',
-      radius: '50%',
+      radius: '70%',
       emphasis: {
         itemStyle: {
           shadowBlur: 10,
