@@ -116,5 +116,8 @@ export function useFixed(){
     onMounted(()=>{
         resizeObserver.observe(document.body as any)
     })
+    onUnmounted(()=>{
+        resizeObserver.disconnect()
+    })
     return isFixed
 }
