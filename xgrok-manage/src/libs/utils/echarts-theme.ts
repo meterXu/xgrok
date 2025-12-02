@@ -1,3 +1,3 @@
 export default {
-    color: ['#30a44b', '#2dcda8', '#37A2FF', '#FF0087', '#f39c12'],
+    color: ['#1EAE6A', '#1C8FFB', '#7266D6', '#C94E4F', '#FFCA04'],
 }
