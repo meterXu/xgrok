@@ -92,9 +92,13 @@ function loadData(startDate:number,endDate:number,type:string) {
         option.xAxis.data = res.data.map((d: any) => {
           return `${d.year.toString().substring(2)}年${d.week}周`
         })
-      } else {
+      } else if(props.type==='month'){
         option.xAxis.data = res.data.map((d: any) => {
-          return d[props.type]
+          return d[props.type]+'月'
+        })
+      }else{
+        option.xAxis.data = res.data.map((d: any) => {
+          return d[props.type]+'年'
         })
       }
       option.series[0].data = res.data.map((d: any) => {
