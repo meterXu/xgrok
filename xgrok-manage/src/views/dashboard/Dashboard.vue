@@ -35,6 +35,8 @@ const searchForm = reactive<{ type: string, tunnelType: string, dateRange: Date[
   ],
 })
 
+const currentTime = ref('currentYear')
+
 function onCurrentTimeChange(value:string){
   searchForm.dateRange[0] = dayjs().startOf(value.replace('current','').toLowerCase() as dayjs.OpUnitType).toDate()
   searchForm.dateRange[1] = dayjs().endOf(value.replace('current','').toLowerCase() as dayjs.OpUnitType).toDate()
@@ -70,7 +72,7 @@ const salesVolumeRef = useTransition(statisticsData.salesVolume, {duration: 1000
         <el-radio-button label="按月" value="month"/>
         <el-radio-button label="按周" value="week"/>
       </el-radio-group>
-      <el-radio-group @change="onCurrentTimeChange">
+      <el-radio-group v-model="currentTime" @change="onCurrentTimeChange">
         <el-radio-button label="本年" value="currentYear"></el-radio-button>
         <el-radio-button label="本月" value="currentMonth"></el-radio-button>
         <el-radio-button label="本周" value="currentWeek"></el-radio-button>
@@ -104,7 +106,7 @@ const salesVolumeRef = useTransition(statisticsData.salesVolume, {duration: 1000
             </el-statistic>
           </el-col>
           <el-col :xs="24" :sm="12" :md="8" class="text-center mb-4">
-            <el-statistic title="全部 / 总销售额" :value="salesVolumeRef">
+            <el-statistic title="全部 / 新增销售额" :value="salesVolumeRef">
               <template #prefix>
                 {{ statisticsData.allSales }} /
               </template>
