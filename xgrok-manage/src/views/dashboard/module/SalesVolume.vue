@@ -90,7 +90,7 @@ function loadData(startDate:number,endDate:number,type:string) {
     salesVolumeStatistics(startDate,endDate,type).then(res => {
       if (props.type === 'week') {
         option.xAxis.data = res.data.map((d: any) => {
-          return d.year + '-' + d.week
+          return `${d.year.toString().substring(2)}年${d.week}周`
         })
       } else {
         option.xAxis.data = res.data.map((d: any) => {
