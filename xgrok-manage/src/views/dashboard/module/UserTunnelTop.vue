@@ -56,7 +56,7 @@ const option = Object.assign({
   },
   series: [
     {
-      name: '订单数',
+      name: '隧道数',
       type: 'bar',
       data: [],
       label:{
