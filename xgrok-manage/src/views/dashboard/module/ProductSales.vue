@@ -54,7 +54,7 @@ const option = Object.assign({
     {
       name: '',
       type: 'pie',
-      radius: '70%',
+      radius: '60%',
       emphasis: {
         itemStyle: {
           shadowBlur: 10,
