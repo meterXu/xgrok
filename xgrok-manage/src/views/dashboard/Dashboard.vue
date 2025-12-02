@@ -20,8 +20,8 @@ const statisticsData = {
   salesVolume: ref(0)
 }
 const defaultDate = [
-  dayjs().startOf('week').toDate(),
-  dayjs().endOf('week').toDate()
+  dayjs().startOf('year').toDate(),
+  dayjs().endOf('year').toDate()
 ]
 const searchForm = reactive<{ type: string,tunnelType:string, dateRange: Date[] }>({
   type: 'week',
@@ -33,10 +33,6 @@ const searchForm = reactive<{ type: string,tunnelType:string, dateRange: Date[] 
 })
 
 function onTypeChange(value: dayjs.OpUnitType) {
-  searchForm.dateRange = [
-    dayjs().startOf(value).toDate(),
-    dayjs().endOf(value).toDate()
-  ]
   debounceLoadData()
 }
 
