@@ -133,9 +133,12 @@ export default class OrderService {
 
     async editOrder(orderModel) {
         orderModel.modified_time = orderModel.modified_time || new Date().valueOf()
-        orderModel.pay_total_amount = orderModel.pay_total_amount||(parseFloat(orderModel.pay_price)*orderModel.pay_num).toString()
-        let res = await prisma.ng_order.update({where: {id: orderModel.id}, data: orderModel});
-        return res
+        if(!orderModel.pay_total_amount){
+            if(orderModel.pay_price&&orderModel.pay_num){
+                orderModel.pay_total_amount = (parseFloat(orderModel.pay_price)*orderModel.pay_num).toString()
+            }
+        }
+        return prisma.ng_order.update({where: {id: orderModel.id}, data: orderModel});
     }
 
     async delOrder(ids) {
