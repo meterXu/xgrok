@@ -201,7 +201,10 @@ async function generateXgrokConf(serverDetail, WebDetails, serviceDetails) {
                     name: web.name,
                     type: 'http',
                     localPort:web.port,
-                    subdomain: web.name
+                    subdomain: web.name,
+                    transport:{
+                        bandwidthLimit:'25MB'
+                    }
                 }
             }),
                 ...serviceDetails.map(service => {
@@ -210,13 +213,13 @@ async function generateXgrokConf(serverDetail, WebDetails, serviceDetails) {
                         type:getEnumKey(serviceType,service.type),
                         localIP:service.host,
                         localPort:service.port,
-                        remotePort:service.remote_port
+                        remotePort:service.remote_port,
+                        transport:{
+                            bandwidthLimit:'25MB'
+                        }
                     }
-                })],
-            transport:{
-                proxyProtocolVersion:"v2",
-                bandwidthLimit:'20MB'
-            }
+                })
+            ]
         }
         config.webServer.port = await nextAvailable(global.project.startWebServerProt, global.project.webServer.addr)
         global.logger.info(`xgrok admin port start with [${global.project.startWebServerProt}],run with [${config.webServer.port}]`)
