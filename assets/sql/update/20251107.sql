@@ -7,3 +7,22 @@ INSERT INTO xgrok.ng_sys_dict (id, `key`, code, chn_value, eng_value, sort, crea
 -- 已更新
 CREATE INDEX idx_ng_order_pay_status ON ng_order (pay_status, is_delete, created_time);
 CREATE INDEX idx_oauth_users_status ON oauth_users (status, is_delete, created_time);
+
+
+create table xgrok.ng_permission
+(
+    id            varchar(32)              not null
+        primary key,
+    product_id    varchar(32)              not null,
+    code          varchar(20)              null,
+    value         varchar(20)              null,
+    remark        varchar(20)              null,
+    sort          int                      null,
+    creator       varchar(50)              null,
+    editor        varchar(50)              null,
+    created_time  datetime default (now()) null,
+    modified_time datetime                 null,
+    status        int      default 1       null,
+    is_delete     int      default 0       null
+);
+
