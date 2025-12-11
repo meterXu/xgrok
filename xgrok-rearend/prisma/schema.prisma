@@ -176,6 +176,7 @@ model OAuthUsers {
   oauth_user_role UserRole[]
 
   @@index([username, password], map: "users_username_password")
+  @@index([status, is_delete, created_time], map: "idx_oauth_users_status")
   @@map("oauth_users")
 }
 
@@ -281,6 +282,7 @@ model ng_order {
 
   @@index([trade_no, alipay_traceId], map: "ng_order_trade_no_alipay_traceId_index")
   @@index([product_id], map: "ng_order_ng_product_id_fk")
+  @@index([pay_status, is_delete, created_time], map: "idx_ng_order_pay_status")
 }
 
 model ng_product {
@@ -314,4 +316,19 @@ model ng_assets {
   modified_time BigInt?
 
   @@index([name], map: "ng_assets_name_index")
+}
+
+model ng_permission {
+  id            String    @id @db.VarChar(32)
+  product_id    String    @db.VarChar(32)
+  code          String?   @db.VarChar(20)
+  value         String?   @db.VarChar(20)
+  remark        String?   @db.VarChar(20)
+  sort          Int?
+  creator       String?   @db.VarChar(50)
+  editor        String?   @db.VarChar(50)
+  created_time  DateTime? @default(dbgenerated("(now())")) @db.DateTime(0)
+  modified_time DateTime? @db.DateTime(0)
+  status        Int?      @default(1)
+  is_delete     Int?      @default(0)
 }
