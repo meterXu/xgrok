@@ -1,8 +1,10 @@
 {
 	"name": "xgrok-portal",
-	"private": true,
 	"version": "0.0.1",
+	"description": "xgrok官网",
 	"type": "module",
+	"license": "GPL-3.0",
+	"author": "isaac <xhgainxq@qq.com>",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
@@ -27,5 +29,8 @@
 	"dependencies": {
 		"dotenv": "^17.2.0",
 		"markdown-it": "^14.1.0"
+	},
+	"volta": {
+		"node": "22.21.1"
 	}
 }

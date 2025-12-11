@@ -1,0 +1,26 @@
+import dotenv from 'dotenv'
+import path from 'path'
+
+dotenv.config({
+    path: path.resolve(`.env.${(process.env.NODE_ENV||'development').trim()}`)
+})
+
+export default {
+    NODE_ENV:process.env.NODE_ENV||'development',
+    port:process.env.port||8181,
+    enableSsl:process.env.enableSsl!=='false',
+    ssl_key:process.env.ssl_key||null,
+    ssl_cert:process.env.ssl_cert||null,
+    authIgnores:[
+        '/',
+        '/web'
+        ,'/swagger-html'
+        ,'/api/swagger-html'
+        ,'/api/swagger-json'
+    ],
+    logIgnores:[],
+    grants:['password'],
+    accessTokenExpiresTime:3600*24*7*1000, //有效期7天
+    refreshTokenExpiresTime:3600*24*14*1000, //有效期14天
+    timestampDiff:process.env.timestampDiff||86400,//24H
+}

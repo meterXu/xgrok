@@ -1,9 +1,9 @@
 {
   "name": "xgrok-rearend",
   "version": "1.0.2",
-  "description": "后端！",
+  "description": "xgrok 后端",
   "main": "dist/index.js",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "scripts": {
     "pullDB:dev": "dotenv -e .env.development -- npx prisma db pull",
     "pullDB:prod": "dotenv -e .env.production -- npx prisma db pull",

@@ -6,9 +6,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "isaac <xhgainxq@qq.com>",
+  "license": "GPL-3.0",
   "devDependencies": {
     "resend": "^4.0.1-alpha.0"
+  },
+  "volta": {
+    "node": "22.21.1"
   }
 }

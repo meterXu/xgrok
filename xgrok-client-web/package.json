@@ -1,0 +1,38 @@
+{
+  "name": "xgrok-client-web",
+  "version": "1.1.6",
+  "description": "xgrok客户端web版",
+  "main": "src/main.js",
+  "type": "module",
+  "scripts": {
+    "start:web": "babel-node src/main.js"
+  },
+  "license": "GPL-3.0",
+  "author": "isaac <xhgainxq@qq.com>",
+  "dependencies": {
+    "koa": "^2.11.0",
+    "koa-body": "^4.1.1",
+    "koa-router": "^7.4.0",
+    "koa-send": "^5.0.0",
+    "koa-static": "^5.0.0",
+    "koa-swagger-decorator": "^1.8.6",
+    "koa2-cors": "^2.0.6",
+    "oauth2-server": "^3.1.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.20.7",
+    "@babel/core": "^7.20.7",
+    "@babel/node": "^7.20.7",
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/plugin-proposal-decorators": "^7.20.7",
+    "@babel/plugin-proposal-private-methods": "^7.18.6",
+    "@babel/plugin-transform-runtime": "^7.19.6",
+    "@babel/preset-env": "^7.20.2",
+    "@babel/runtime": "^7.28.4",
+    "dotenv-cli": "^6.0.0",
+    "jiti": "^2.6.1"
+  },
+  "volta": {
+    "node": "22.21.1"
+  }
+}

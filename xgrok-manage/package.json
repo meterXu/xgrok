@@ -1,8 +1,10 @@
 {
   "name": "web",
-  "private": false,
   "version": "0.0.0",
   "type": "module",
+  "description": "xgrok 后台管理",
+  "license": "GPL-3.0",
+  "author": "isaac <xhgainxq@qq.com>",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
@@ -41,5 +43,8 @@
     "vite": "^6.3.5",
     "vite-copy-plugin": "^0.4.0",
     "vue-tsc": "^2.2.8"
+  },
+  "volta": {
+    "node": "22.21.1"
   }
 }
