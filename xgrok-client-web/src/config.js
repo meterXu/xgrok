@@ -12,8 +12,7 @@ export default {
     ssl_key:process.env.ssl_key||null,
     ssl_cert:process.env.ssl_cert||null,
     authIgnores:[
-        '/',
-        '/web'
+        '/'
         ,'/swagger-html'
         ,'/api/swagger-html'
         ,'/api/swagger-json'

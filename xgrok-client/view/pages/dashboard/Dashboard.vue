@@ -17,7 +17,7 @@ const store = useAppStore()
 const serviceSwitchRef = ref()
 const {selectedServer, clientId, systemInfo, tunnelCount, setTunnelCount, appSetting, pid} = store
 
-if (window.project.variable.mode !== 'browser') {
+if (window.project.variable.mode === 'browser') {}else{
   window.electronAPI.onAppQuit(() => {
     closeWebSocket()
     store.setPid(null)

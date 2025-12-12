@@ -5,7 +5,7 @@
   "main": "src/main.js",
   "type": "module",
   "scripts": {
-    "start:web": "babel-node src/main.js"
+    "dev:web-client": "babel-node src/main.js"
   },
   "license": "GPL-3.0",
   "author": "isaac <xhgainxq@qq.com>",
@@ -29,8 +29,7 @@
     "@babel/plugin-transform-runtime": "^7.19.6",
     "@babel/preset-env": "^7.20.2",
     "@babel/runtime": "^7.28.4",
-    "dotenv-cli": "^6.0.0",
-    "jiti": "^2.6.1"
+    "dotenv-cli": "^6.0.0"
   },
   "volta": {
     "node": "22.21.1"

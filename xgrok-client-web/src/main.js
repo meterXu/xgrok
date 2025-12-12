@@ -1,6 +1,3 @@
-// import { createJiti } from "jiti";
-// const jiti = createJiti(import.meta.url);
-
 import Koa from 'koa';
 import config from './config.js'
 import {apiRouter} from './router/index.js'
@@ -18,7 +15,7 @@ let server = null
 const app = new Koa()
 app.use(koaBody({multipart: true}));
 app.use(cors());
-app.use(koaStatic(path.resolve('static')))
+app.use(koaStatic(path.resolve('web')))
     .use(routerResponse())
     .use(apiRouter.routes())
 try{

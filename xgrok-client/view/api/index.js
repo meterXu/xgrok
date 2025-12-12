@@ -177,9 +177,8 @@ export function updateClient(model) {
 }
 
 export function getSystemInfo() {
-    if (window.project.variable.mode !== 'browser') {
-        return window.electronAPI.getSystemInfo()
-    } else {
+    if (window.project.variable.mode === 'browser') {
+        // todo 调用client-web
         return Promise.resolve({
             success: true,
             data: {
@@ -187,6 +186,8 @@ export function getSystemInfo() {
                 osVersion: 'v1.0'
             }
         })
+    } else {
+        return window.electronAPI.getSystemInfo()
     }
 
 }

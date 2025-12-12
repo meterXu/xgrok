@@ -107,11 +107,15 @@ export const useAppStore = defineStore('app', ()=>{
         return _systemInfo
     })
     const appSetting = computed(()=>{
-        window.project.variable.mode!=='browser'&&window.electronAPI.getXgrokAppCfg().then(res=>{
-            if(res.success){
-                Object.assign(_appSetting,res.data)
-            }
-        })
+        if(window.project.variable.mode==='browser'){
+            //todo 请求client-web后端
+        }else{
+            window.electronAPI.getXgrokAppCfg().then(res=>{
+                if(res.success){
+                    Object.assign(_appSetting,res.data)
+                }
+            })
+        }
         return _appSetting
     })
     const tunnelCount = computed(()=>{

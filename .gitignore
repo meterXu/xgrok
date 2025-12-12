@@ -25,13 +25,13 @@ out
 *.njsproj
 *.sln
 *.sw?
-.DS_Store
 xgrok-client/project.js
 xgrok-client/release-builds
 xgrok-client/execute
 xgrok-client/.env.development
 xgrok-client/.env.production
 xgrok-client/.env.browser
+xgrok-client/.env.browser_production
 xgrok-client/auto-imports.d.ts
 xgrok-client/components.d.ts
 xgrok-rearend/.env.development
@@ -39,5 +39,8 @@ xgrok-rearend/.env.production
 xgrok-rearend/.env.proxy
 xgrok-rearend/static/web
 xgrok-manage/project.js
+xgrok-manage/auto-imports.d.ts
+xgrok-manage/components.d.ts
 xgrok-portal/.env.development
 xgrok-portal/.env.production
+xgrok-client-web/web
