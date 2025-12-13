@@ -11,7 +11,7 @@ const project = function (mode) {
             appName: env.VITE_APP_appName,
             baseApi: env.VITE_APP_baseApi,
             ssoApi: env.VITE_APP_ssoApi,
-            backendApi:env.VITE_APP_backendApi,
+            webClientApi:env.VITE_APP_webClientApi,
             tokenKey: env.VITE_APP_tokenKey,
             wsUrl:env.VITE_APP_wsUrl,
             website:env.VITE_APP_website,

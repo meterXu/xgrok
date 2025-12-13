@@ -5,7 +5,10 @@ import {
     postActionSSO,
     putAction,
     postActionSSONoToken,
-    getActionSSONoToken, getActionNoToken
+    getActionSSONoToken,
+    getActionNoToken,
+    getActionWebClient,
+    postActionWebClient, putActionWebClient
 } from "./manage"
 import md5 from "js-md5"
 import qs from "qs"
@@ -31,7 +34,7 @@ const url = {
         tunnelWebConfig: '/user/tunnelWebConfig',
         tunnelServiceConfig: '/user/tunnelServiceConfig',
         queryPayPlan: '/user/queryPayPlan',
-        queryTunnelCount:'/user/queryTunnelCount'
+        queryTunnelCount: '/user/queryTunnelCount'
     },
     tunnel: {
         createWeb: '/tunnelWeb',
@@ -44,7 +47,7 @@ const url = {
         checkName: '/user/checkName',
         checkPort: '/user/checkPort',
         checkWeb: '/user/checkWeb',
-        checkService:'/user/checkService'
+        checkService: '/user/checkService'
     },
     client: {
         query: '/client/query',
@@ -63,12 +66,17 @@ const url = {
         detail: '/order/detail',
         check: '/order/check'
     },
-    version:{
-        list:'/version/list',
-        latest:'/version/latest'
+    version: {
+        list: '/version/list',
+        latest: '/version/latest'
     },
-    assets:{
-        detail:'/assets/detail'
+    assets: {
+        detail: '/assets/detail'
+    },
+    webClient: {
+        config: {
+            appConfig: '/config/appConfig'
+        }
     }
 }
 
@@ -138,12 +146,12 @@ export function checkName(domain, type, port, name, server_id, client_id, id) {
     return getAction(url.compliance.checkName, {domain, type, port, name, server_id, client_id, id})
 }
 
-export function checkWeb(name,domain,port){
-    return getAction(url.compliance.checkWeb, {name,domain,port})
+export function checkWeb(name, domain, port) {
+    return getAction(url.compliance.checkWeb, {name, domain, port})
 }
 
-export function checkService(domain,port,type){
-    return getAction(url.compliance.checkService,{domain,port,type})
+export function checkService(domain, port, type) {
+    return getAction(url.compliance.checkService, {domain, port, type})
 }
 
 export function checkPort(domain, port, server_id, id, type) {
@@ -229,7 +237,7 @@ export function initWebSocket(callback) {
                 time
             ]
         }
-        window.ws = new reconnectingWebSocket(window.project.variable.wsUrl, protocols,{
+        window.ws = new reconnectingWebSocket(window.project.variable.wsUrl, protocols, {
             maxReconnectionDelay: 20000, // 断开后最大的重连时间： 20s，每多一次重连，会增加 1.3 倍，5 * 1.3 * 1.3 * 1.3...
             minReconnectionDelay: 5000, // 断开后最短的重连时间： 5s
             maxRetries: 5
@@ -282,7 +290,7 @@ export function checkServerOnline(domain, port) {
     return getAction(url.server.checkServerOnline, {domain, port})
 }
 
-export function versionList(){
+export function versionList() {
     return getActionNoToken(url.version.list)
 }
 
@@ -290,10 +298,18 @@ export function versionLatest() {
     return getActionNoToken(url.version.latest)
 }
 
-export function detailAssets(name){
-    return getAction(url.assets.detail,{name})
+export function detailAssets(name) {
+    return getAction(url.assets.detail, {name})
 }
 
-export function queryTunnelCount(serverId,clientId){
-    return getAction(url.user.queryTunnelCount,{serverId,clientId})
+export function queryTunnelCount(serverId, clientId) {
+    return getAction(url.user.queryTunnelCount, {serverId, clientId})
+}
+
+export function getXgrokAppCfg() {
+    return getActionWebClient(url.webClient.config.appConfig)
+}
+
+export function setXgrokAppCfg(data) {
+    return putActionWebClient(url.webClient.config.appConfig,data)
 }

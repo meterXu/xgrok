@@ -127,3 +127,8 @@ export const hostType = {
     remote:1,
     local:0
 }
+
+export const clientType = {
+    browser:'browser',
+    electron:'electron'
+}

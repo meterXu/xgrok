@@ -1,6 +1,6 @@
 import {computed, reactive} from "vue";
 import router from "@/router";
-import {NotificationType, payPlan} from "@/libs/enums";
+import {clientType, NotificationType, payPlan} from "@/libs/enums";
 import {confirm} from "@/libs/common";
 import {useAppStore} from '@/store'
 import {showNotification} from "@/libs/message";
@@ -109,5 +109,17 @@ export function operationConfirm(){
         })
     }else{
         return Promise.resolve()
+    }
+}
+
+export function useClientType(){
+    return ref(window.project.variable.mode)
+}
+
+export function useClientTypeExecute(browserAction,electronAction){
+    if(window.project.variable.mode===clientType.browser){
+        browserAction&&browserAction()
+    }else{
+        electronAction&&electronAction()
     }
 }

@@ -16,10 +16,17 @@ export default {
         ,'/swagger-html'
         ,'/api/swagger-html'
         ,'/api/swagger-json'
+        ,'/api/*'
     ],
     logIgnores:[],
     grants:['password'],
     accessTokenExpiresTime:3600*24*7*1000, //有效期7天
     refreshTokenExpiresTime:3600*24*14*1000, //有效期14天
     timestampDiff:process.env.timestampDiff||86400,//24H
+    appCfgPath:path.resolve(`.xgrokApp.json`),
+    appConf:{
+        theme: 'system',
+        autoServer:false,
+        proxy: ''
+    }
 }

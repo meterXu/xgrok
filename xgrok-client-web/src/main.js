@@ -8,6 +8,7 @@ import http from 'http'
 import routerResponse from "./middleware/routerResponse.js";
 import path from "path";
 
+global.appConfig = config
 BigInt.prototype.toJSON = function() {
     return Number(this)
 }
