@@ -1,13 +1,15 @@
 <script setup>
+import {useClientTypeExecute} from "@/libs/useAction";
+
 const props = defineProps(['href'])
 const emit = defineEmits(['click'])
 function onClick(){
   if(props.href){
-    if(window.project.variable.mode==='browser'){
+    useClientTypeExecute(()=>{
       window.open(props.href,'_blank')
-    }else{
+    },()=>{
       window.electronAPI.openExternal(props.href)
-    }
+    })
   }
   emit('click')
 }

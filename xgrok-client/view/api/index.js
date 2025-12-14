@@ -15,6 +15,7 @@ import qs from "qs"
 import {ACCESS_TOKEN} from "xxweb-util";
 import {isDeleteType, serverEnum, statusType} from "@/libs/enums";
 import reconnectingWebSocket from 'reconnecting-websocket'
+import {useClientTypeExecute} from "@/libs/useAction";
 
 const url = {
     oauth: {
@@ -76,6 +77,9 @@ const url = {
     webClient: {
         config: {
             appConfig: '/config/appConfig'
+        },
+        system:{
+            info:'/system/info'
         }
     }
 }
@@ -185,19 +189,11 @@ export function updateClient(model) {
 }
 
 export function getSystemInfo() {
-    if (window.project.variable.mode === 'browser') {
-        // todo 调用client-web
-        return Promise.resolve({
-            success: true,
-            data: {
-                hostname: 'test',
-                osVersion: 'v1.0'
-            }
-        })
-    } else {
+    return useClientTypeExecute(()=>{
+        return getActionWebClient(url.webClient.system.info)
+    },()=>{
         return window.electronAPI.getSystemInfo()
-    }
-
+    })
 }
 
 export function sendValidateCode(email, type = 0) {

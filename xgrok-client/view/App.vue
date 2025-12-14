@@ -4,34 +4,38 @@ import {deviceType, getTheme, systemThemeChangeEvent} from "@/libs/common";
 import bus from "@/libs/bus";
 import {resizeFontSize} from "xxweb-util";
 import {useAppStore} from '@/store'
+import {useClientTypeExecute} from "@/libs/useAction";
 
 const router = useRouter()
 const {setSystemTheme} = useAppStore()
 
-window.onresize = ()=>{
-  resizeFontSize(1000,4,0,(width)=>{
-    if(width<800){
+window.onresize = () => {
+  resizeFontSize(1000, 4, 0, (width) => {
+    if (width < 800) {
       return 800
     }
-    if(width>1000){
+    if (width > 1000) {
       return 1000
     }
-  }).then(widthNum=>{
-    bus.$emit('processWidth',widthNum/4)
+  }).then(widthNum => {
+    bus.$emit('processWidth', widthNum / 4)
   })
 }
+
 // window.onresize
-
-window.project.variable.mode!=='browser'&&window.electronAPI.onRoute((data)=>{
-  router.push({name:data.name})
+useClientTypeExecute(() => {
+}, () => {
+  window.electronAPI.onRoute((data) => {
+    router.push({name: data.name})
+  })
 })
 
-watchEffect(()=>{
-  document.querySelector('html').setAttribute('theme',getTheme())
-  document.querySelector('html').setAttribute('class',getTheme())
+watchEffect(() => {
+  document.querySelector('html').setAttribute('theme', getTheme())
+  document.querySelector('html').setAttribute('class', getTheme())
 })
 
-systemThemeChangeEvent((_theme)=>{
+systemThemeChangeEvent((_theme) => {
   setSystemTheme(_theme)
 })
 </script>
@@ -43,7 +47,7 @@ systemThemeChangeEvent((_theme)=>{
       <div class="main-container">
         <router-view v-slot="{ Component }">
           <keep-alive>
-            <component :is="Component" />
+            <component :is="Component"/>
           </keep-alive>
         </router-view>
       </div>

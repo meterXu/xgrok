@@ -6,6 +6,7 @@ import PlusScrollbar from "@/components/plus-scrollbar/PlusScrollbar.vue";
 import 'highlight.js/styles/atom-one-light.css'
 import hljs from 'highlight.js/lib/core';
 import accesslog from 'highlight.js/lib/languages/accesslog';
+import {useClientTypeExecute} from "@/libs/useAction";
 
 const route = useRoute()
 const logContent = ref('')
@@ -18,25 +19,29 @@ function onRefresh(init = false) {
   if (init) {
     endIndex.value = 0
   }
-  window.project.variable.mode !== 'browser' && window.electronAPI.getLog({
-    startIndex: endIndex.value,
-    length: 100
-  }).then(res => {
-    if (init) {
-      logContent.value = res.data.records.map(c=>{
-        return hljs.highlight(c, { language: 'accesslog' }).value
-      }).join('<br/>')
-    } else {
-      logContent.value = logContent.value.concat(
-          res.data.records.map(c=>{
-            return hljs.highlight(c, { language: 'accesslog' }).value
-          }).join('<br/>')
-      )
-    }
-    nextTick(() => {
-      logScrollbarRef.value.scrollbar.setScrollTop(logContentRef.value.clientHeight);
+  useClientTypeExecute(()=>{
+    // todo
+  },()=>{
+    window.electronAPI.getLog({
+      startIndex: endIndex.value,
+      length: 100
+    }).then(res => {
+      if (init) {
+        logContent.value = res.data.records.map(c=>{
+          return hljs.highlight(c, { language: 'accesslog' }).value
+        }).join('<br/>')
+      } else {
+        logContent.value = logContent.value.concat(
+            res.data.records.map(c=>{
+              return hljs.highlight(c, { language: 'accesslog' }).value
+            }).join('<br/>')
+        )
+      }
+      nextTick(() => {
+        logScrollbarRef.value.scrollbar.setScrollTop(logContentRef.value.clientHeight);
+      })
+      endIndex.value = res.data.endIndex + 1
     })
-    endIndex.value = res.data.endIndex + 1
   })
 }
 

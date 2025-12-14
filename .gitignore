@@ -44,3 +44,4 @@ xgrok-manage/components.d.ts
 xgrok-portal/.env.development
 xgrok-portal/.env.production
 xgrok-client-web/web
+xgrok-client-web/execute

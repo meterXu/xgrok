@@ -12,12 +12,13 @@ import HorizontalHeader from "@/components/header/HorizontalHeader.vue";
 import PlusScrollbar from "@/components/plus-scrollbar/PlusScrollbar.vue";
 import ServerList from "@/pages/dashboard/modules/ServerConfig/ServerList.vue";
 import ServiceSwitch from '@/components/control-btns/ServiceSwitch.vue'
+import {useClientTypeExecute} from "@/libs/useAction";
 
 const store = useAppStore()
 const serviceSwitchRef = ref()
 const {selectedServer, clientId, systemInfo, tunnelCount, setTunnelCount, appSetting, pid} = store
 
-if (window.project.variable.mode === 'browser') {}else{
+useClientTypeExecute(()=>{},()=>{
   window.electronAPI.onAppQuit(() => {
     closeWebSocket()
     store.setPid(null)
@@ -28,7 +29,7 @@ if (window.project.variable.mode === 'browser') {}else{
   window.electronAPI.onRefreshPid((_pid) => {
     store.setPid(_pid)
   })
-}
+})
 
 function initServerConfigData() {
   if (selectedServer && selectedServer.type === window.project.variable.type) {

@@ -1,7 +1,7 @@
 <script setup>
 import {isOnline, NotificationType} from "@/libs/enums";
 import {useAppStore} from '@/store'
-import {checkTunnelConfig} from "@/libs/useAction";
+import {checkTunnelConfig, useClientTypeExecute} from "@/libs/useAction";
 import {isEmpty,$on,$off} from "xxweb-util";
 import {onMounted,onUnmounted} from 'vue';
 import {alert, showNotification} from "@/libs/message";
@@ -46,9 +46,10 @@ async function onTurnOn() {
       tunnelWebs: toRaw(tunnelCount.web),
       tunnelServices: toRaw(tunnelCount.service)
     }
-    if(window.project.variable.mode==='browser'){
+    useClientTypeExecute(()=>{
+      // todo
       store.setPid(1)
-    }else {
+    },async ()=>{
       try{
         let res = await window.electronAPI.turnOn(JSON.parse(JSON.stringify(data)))
         if (res.success) {
@@ -62,20 +63,22 @@ async function onTurnOn() {
               res.message,'启动失败',{
                 dangerouslyUseHTMLString:true,
                 confirmButtonClass:'el-button--danger is-plain'
-          })
+              })
         }
       }finally {
         switchLoading.value = false
       }
-    }
+    })
   }
 }
+
 async function onTurnOff() {
   switchLoading.value = true
-  if(window.project.variable.mode==='browser'){
+  useClientTypeExecute(()=>{
+    // todo
     store.setPid(null)
     store.setConfigIsLock(false)
-  }else{
+  },async ()=>{
     try{
       let res = await window.electronAPI.turnOff(pid.value)
       if (res.success) {
@@ -92,7 +95,7 @@ async function onTurnOff() {
     }finally {
       switchLoading.value = false
     }
-  }
+  })
 }
 
 

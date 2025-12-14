@@ -3,6 +3,7 @@ import TunnelItem from "@/components/tunnel/TunnelItem.vue";
 import {useMyTitle} from "@/libs/common";
 import {httpType} from "@/libs/enums";
 import {useAppStore} from "@/store";
+import {useClientTypeExecute} from "@/libs/useAction";
 
 const props = defineProps(['item'])
 const store = useAppStore()
@@ -19,7 +20,11 @@ function httpUrl(tunnelConfig, type) {
 
 function onOpenLink(item, type) {
   const link = httpUrl(item, type)
-  window.project.variable.mode === 'browser' ? window.open(link, '_blank') : window.electronAPI.openExternal(link)
+  useClientTypeExecute(() => {
+    window.open(link, '_blank')
+  }, () => {
+    window.electronAPI.openExternal(link)
+  })
 }
 
 </script>
