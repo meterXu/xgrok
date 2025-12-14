@@ -80,7 +80,8 @@ const url = {
         },
         system:{
             info:'/system/info',
-            turnOn:'/system/turnOn'
+            turnOn:'/system/turnOn',
+            turnOff:'/system/turnOff'
         }
     }
 }
@@ -313,4 +314,8 @@ export function setXgrokAppCfg(data) {
 
 export function serviceTurnOn(data){
     return putActionWebClient(url.webClient.system.turnOn,data)
+}
+
+export function serviceTurnOff(data){
+    return putActionWebClient(url.webClient.system.turnOff,data)
 }

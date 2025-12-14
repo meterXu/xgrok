@@ -46,7 +46,7 @@ function isNullOrUndefined(value) {
 // 删除进程
 function killPid(pid) {
     return new Promise((resolve, reject) => {
-        try{
+        try {
             if (checkProcess(pid)) {
                 process.kill(pid, 'SIGTERM');
             }
@@ -55,7 +55,7 @@ function killPid(pid) {
             }, 1000)
             closeAllWebServer(global.webServers)
             closeAllTcpServer(global.tcpServers)
-        }catch (err){
+        } catch (err) {
             reject(err)
         }
     })
@@ -120,7 +120,7 @@ function copyFolder(src, dest, callback) {
 }
 
 function closeAllWebServer(webServers) {
-    webServers?.forEach(webServer => {
+    webServers && webServers.forEach(webServer => {
         webServer.proxyServer.close((error) => {
             if (error) {
                 global.logger.error('Error closing web proxy:', error)
@@ -133,7 +133,7 @@ function closeAllWebServer(webServers) {
 }
 
 function closeAllTcpServer(tcpServers) {
-    tcpServers?.forEach(tcpServer => {
+    tcpServers && tcpServers.forEach(tcpServer => {
         tcpServer.proxyServer.close((error) => {
             if (error) {
                 global.logger.error('Error closing tcp proxy:', error)
@@ -321,7 +321,7 @@ function getEnumKey(enumData, value) {
  * @returns {Promise<string[]>}
  */
 async function readLinesInRange(filePath, start, end) {
-    const fileStream = fs.createReadStream(filePath, { encoding: 'utf8' });
+    const fileStream = fs.createReadStream(filePath, {encoding: 'utf8'});
     const rl = readline.createInterface({
         input: fileStream,
         crlfDelay: Infinity,
@@ -344,7 +344,7 @@ async function readLinesInRange(filePath, start, end) {
 }
 
 async function getLineCount(filePath) {
-    const fileStream = fs.createReadStream(filePath, { encoding: 'utf8' });
+    const fileStream = fs.createReadStream(filePath, {encoding: 'utf8'});
     const rl = readline.createInterface({
         input: fileStream,
         crlfDelay: Infinity,
@@ -363,33 +363,40 @@ function sleep(time = 100) {
         }, time);
     });
 }
-function waitPortRun(checkPort,checkAddr,count=10){
+
+function waitPortRun(checkPort, checkAddr, count = 10) {
     return new Promise(async (resolve, reject) => {
-        let _count =0
-        while (_count<count){
-            const [port,host,isFree]= await isFreePort(checkPort,checkAddr)
-            if(isFree){
+        let _count = 0
+        while (_count < count) {
+            const [port, host, isFree] = await isFreePort(checkPort, checkAddr)
+            if (isFree) {
                 _count++
                 await sleep(1000)
-            }else{
+            } else {
                 break
             }
         }
-        if(_count<10){
+        if (_count < 10) {
             resolve(true)
-        }else{
+        } else {
             resolve(false)
         }
     })
 }
-function saveAppCfg(saveCfg){
+
+function saveAppCfg(saveCfg) {
     let content = JSON.parse(fs.readFileSync(global.project.xgrokAppCfgPath).toString())
     content = Object.assign(content, saveCfg);
-    fs.writeFileSync(global.project.xgrokAppCfgPath,JSON.stringify(content,null, 2))
+    fs.writeFileSync(global.project.xgrokAppCfgPath, JSON.stringify(content, null, 2))
     return true
 }
-function getAppCfg(){
+
+function getAppCfg() {
     return JSON.parse(fs.readFileSync(global.project.xgrokAppCfgPath).toString())
+}
+
+function isElectron() {
+    return process.env['VITE_APP_mode'] === 'electron'
 }
 
 module.exports = {
@@ -414,5 +421,6 @@ module.exports = {
     sleep,
     waitPortRun,
     saveAppCfg,
-    getAppCfg
+    getAppCfg,
+    isElectron
 }

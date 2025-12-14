@@ -1,5 +1,5 @@
 import {getSystemInfo} from '../../../xgrok-client/src/libs/backend/system.js'
-import {turnOn} from '../../../xgrok-client/src/libs/backend/xgrok.js'
+import {turnOn,turnOff} from '../../../xgrok-client/src/libs/backend/xgrok.js'
 export default class SystemService {
     constructor() {
     }
@@ -8,12 +8,12 @@ export default class SystemService {
         return getSystemInfo()
     }
 
-    async turnOn(xgrokConf) {
-        await turnOn(xgrokConf)
+    turnOn(xgrokConf) {
+        return turnOn(xgrokConf)
     }
 
-    async  turnOff(pid) {
-
+    turnOff(pid) {
+        return turnOff(pid)
     }
 
     getLog(){

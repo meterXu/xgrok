@@ -117,6 +117,7 @@ export function useClientType(){
 }
 
 export function useClientTypeExecute(browserAction,electronAction){
+
     if(window.project.variable.mode===clientType.browser){
         return browserAction&&browserAction()
     }else{

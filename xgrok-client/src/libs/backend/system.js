@@ -1,4 +1,4 @@
-const {hostname, version,readLinesInRange,getLineCount,checkUrl,saveAppCfg, getAppCfg} = require("../util");
+const {hostname, version,readLinesInRange,getLineCount,checkUrl,saveAppCfg, getAppCfg, isElectron} = require("../util");
 const {BrowserWindow, nativeImage}  = require('electron')
 const path = require("node:path");
 const AutoLaunch = require('auto-launch');
@@ -153,7 +153,7 @@ function getXgrokAppCfg(){
     return getAppCfg()
 }
 function setXgrokAppCfg(data){
-    if(process.env['VITE_APP_mode']==='electron'){
+    if(isElectron()){
         const minecraftAutoLauncher = new AutoLaunch({
             name: 'xgrok',
             path: global.project.appAbsoluteName

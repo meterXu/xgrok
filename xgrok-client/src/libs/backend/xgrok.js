@@ -2,9 +2,8 @@ const path = require("node:path");
 const {execFile} = require("node:child_process");
 const fs = require("node:fs");
 const {stringify} = require('yaml')
-const {killPid, findProcessId,getEnumKey, waitPortRun} = require("../util");
+const {killPid, findProcessId,getEnumKey, waitPortRun,isElectron,platform, arch,sleep} = require("../util");
 const {serviceType, hostType,httpType, serverType,runStatusType} = require('../enum')
-const {platform, arch,sleep} = require("../util");
 const {shell} = require('electron');
 const http = require('http');
 const httpProxy = require('http-proxy');
@@ -70,7 +69,9 @@ async function turnOff(pid) {
         let ress = await Promise.all(pids.map(c => killPid(c)))
         res = !ress.some(c => c.false)
     }
-    global.win.webContents.send('view/process', 0)
+    if(isElectron()){
+        global.win.webContents.send('view/process', 0)
+    }
     return res
 }
 

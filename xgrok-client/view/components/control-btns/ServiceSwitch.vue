@@ -5,7 +5,7 @@ import {checkTunnelConfig, useClientTypeExecute} from "@/libs/useAction";
 import {isEmpty,$on,$off} from "xxweb-util";
 import {onMounted,onUnmounted} from 'vue';
 import {alert, showNotification} from "@/libs/message";
-import {queryTunnelCount, serviceTurnOn} from "@/api";
+import {queryTunnelCount, serviceTurnOff, serviceTurnOn} from "@/api";
 const emits = defineEmits(['serverLoading'])
 const store = useAppStore()
 const {pid, selectedServer,tunnelCount,setTunnelCount,clientId} = store
@@ -47,11 +47,10 @@ async function onTurnOn() {
       tunnelServices: toRaw(tunnelCount.service)
     }
     try{
-      let res = null
-      useClientTypeExecute(async ()=>{
-        res = await serviceTurnOn(data)
+      let res = await useClientTypeExecute(async ()=>{
+         return serviceTurnOn(data)
       },async ()=>{
-        res = await window.electronAPI.turnOn(JSON.parse(JSON.stringify(data)))
+        return window.electronAPI.turnOn(JSON.parse(JSON.stringify(data)))
       })
       if (res.success) {
         store.setPid(res.data)
@@ -74,28 +73,26 @@ async function onTurnOn() {
 
 async function onTurnOff() {
   switchLoading.value = true
-  useClientTypeExecute(()=>{
-    // todo
-    store.setPid(null)
-    store.setConfigIsLock(false)
-  },async ()=>{
-    try{
-      let res = await window.electronAPI.turnOff(pid.value)
-      if (res.success) {
-        store.setPid(null)
-        store.setConfigIsLock(false)
-        store.setAppSetting({autoServer:false})
-        showNotification(NotificationType.success,'关闭成功')
-      } else {
-        alert(res.data.message,'关闭失败',{
-          dangerouslyUseHTMLString:true,
-          confirmButtonClass:'el-button--danger is-plain'
-        })
-      }
-    }finally {
-      switchLoading.value = false
+  try{
+    let res = await useClientTypeExecute(()=>{
+      return serviceTurnOff({pid:pid.value})
+    },async ()=>{
+      return window.electronAPI.turnOff(pid.value)
+    })
+    if (res.success) {
+      store.setPid(null)
+      store.setConfigIsLock(false)
+      store.setAppSetting({autoServer:false})
+      showNotification(NotificationType.success,'关闭成功')
+    } else {
+      alert(res.data.message,'关闭失败',{
+        dangerouslyUseHTMLString:true,
+        confirmButtonClass:'el-button--danger is-plain'
+      })
     }
-  })
+  }finally {
+    switchLoading.value = false
+  }
 }
 
 
