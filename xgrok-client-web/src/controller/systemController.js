@@ -1,6 +1,5 @@
 import SystemService from "../service/systemService.js";
 import {query, request, summary, tags} from "koa-swagger-decorator";
-import path from 'node:path'
 import ResultModel from "../model/sys/resultModel";
 
 const tag = tags(['System'])
