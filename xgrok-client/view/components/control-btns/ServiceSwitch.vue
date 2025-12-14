@@ -5,7 +5,7 @@ import {checkTunnelConfig, useClientTypeExecute} from "@/libs/useAction";
 import {isEmpty,$on,$off} from "xxweb-util";
 import {onMounted,onUnmounted} from 'vue';
 import {alert, showNotification} from "@/libs/message";
-import {queryTunnelCount} from "@/api";
+import {queryTunnelCount, serviceTurnOn} from "@/api";
 const emits = defineEmits(['serverLoading'])
 const store = useAppStore()
 const {pid, selectedServer,tunnelCount,setTunnelCount,clientId} = store
@@ -46,29 +46,29 @@ async function onTurnOn() {
       tunnelWebs: toRaw(tunnelCount.web),
       tunnelServices: toRaw(tunnelCount.service)
     }
-    useClientTypeExecute(()=>{
-      // todo
-      store.setPid(1)
-    },async ()=>{
-      try{
-        let res = await window.electronAPI.turnOn(JSON.parse(JSON.stringify(data)))
-        if (res.success) {
-          store.setPid(res.data)
-          store.setAppSetting({autoServer:true})
-          showNotification(NotificationType.success,'启动成功')
-        } else {
-          store.setPid(0)
-          store.setConfigIsLock(false)
-          alert(
-              res.message,'启动失败',{
-                dangerouslyUseHTMLString:true,
-                confirmButtonClass:'el-button--danger is-plain'
-              })
-        }
-      }finally {
-        switchLoading.value = false
+    try{
+      let res = null
+      useClientTypeExecute(async ()=>{
+        res = await serviceTurnOn(data)
+      },async ()=>{
+        res = await window.electronAPI.turnOn(JSON.parse(JSON.stringify(data)))
+      })
+      if (res.success) {
+        store.setPid(res.data)
+        store.setAppSetting({autoServer:true})
+        showNotification(NotificationType.success,'启动成功')
+      } else {
+        store.setPid(0)
+        store.setConfigIsLock(false)
+        alert(
+            res.message,'启动失败',{
+              dangerouslyUseHTMLString:true,
+              confirmButtonClass:'el-button--danger is-plain'
+            })
       }
-    })
+    }finally {
+      switchLoading.value = false
+    }
   }
 }
 

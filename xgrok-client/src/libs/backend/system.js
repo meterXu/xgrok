@@ -4,10 +4,6 @@ const path = require("node:path");
 const AutoLaunch = require('auto-launch');
 const net = require('node:net')
 const {serviceType} = require("../enum");
-const minecraftAutoLauncher = new AutoLaunch({
-    name: 'xgrok',
-    path: global.project.appAbsoluteName
-});
 async function getSystemInfo(data){
     return Promise.resolve({
         hostname:hostname(),
@@ -157,13 +153,19 @@ function getXgrokAppCfg(){
     return getAppCfg()
 }
 function setXgrokAppCfg(data){
-    if(data.hasOwnProperty('autoLaunch')){
-        if(data.autoLaunch){
-            minecraftAutoLauncher.enable()
-            data.autoServer = !!global.pid
-        }else{
-            minecraftAutoLauncher.disable()
-            data.autoServer = false
+    if(process.env['VITE_APP_mode']==='electron'){
+        const minecraftAutoLauncher = new AutoLaunch({
+            name: 'xgrok',
+            path: global.project.appAbsoluteName
+        });
+        if(data.hasOwnProperty('autoLaunch')){
+            if(data.autoLaunch){
+                minecraftAutoLauncher.enable()
+                data.autoServer = !!global.pid
+            }else{
+                minecraftAutoLauncher.disable()
+                data.autoServer = false
+            }
         }
     }
     return saveAppCfg(data)

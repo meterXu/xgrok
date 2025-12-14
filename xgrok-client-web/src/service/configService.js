@@ -1,19 +1,11 @@
-import fs from "node:fs/promises";
-
+import {getXgrokAppCfg,setXgrokAppCfg} from '../../../xgrok-client/src/libs/backend/system.js'
 export default class ConfigService{
     constructor() {
     }
     async getAppConfig(){
-        let config = null
-        try{
-            await fs.access(global.appConfig.appCfgPath)
-            config = await fs.readFile(global.appConfig.appCfgPath)
-        }catch (err){
-            await fs.writeFile(global.appConfig.appCfgPath,JSON.stringify(global.appConfig.appConf,null,2))
-        }
-        return config?JSON.parse(config):global.appConfig.appConf
+        return getXgrokAppCfg()
     }
     async setAppConfig(configModel){
-        await fs.writeFile(global.appConfig.appCfgPath,JSON.stringify(configModel,null,2))
+        return setXgrokAppCfg(configModel)
     }
 }

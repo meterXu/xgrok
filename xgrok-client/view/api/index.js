@@ -79,7 +79,8 @@ const url = {
             appConfig: '/config/appConfig'
         },
         system:{
-            info:'/system/info'
+            info:'/system/info',
+            turnOn:'/system/turnOn'
         }
     }
 }
@@ -308,4 +309,8 @@ export function getXgrokAppCfg() {
 
 export function setXgrokAppCfg(data) {
     return putActionWebClient(url.webClient.config.appConfig,data)
+}
+
+export function serviceTurnOn(data){
+    return putActionWebClient(url.webClient.system.turnOn,data)
 }

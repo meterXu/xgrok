@@ -1,6 +1,7 @@
 import SystemService from "../service/systemService.js";
 import {query, request, summary, tags} from "koa-swagger-decorator";
 import ResultModel from "../model/sys/resultModel";
+import xgrokConfModel from "../../../xgrok-client/src/models/xgrokConfModel.js";
 
 const tag = tags(['System'])
 
@@ -15,7 +16,7 @@ export default class SystemController {
     @summary('查询系统信息')
     @tag
     async getSystemInfo(ctx) {
-        const systemInfo = this.systemService.getSystemInfo()
+        const systemInfo = await this.systemService.getSystemInfo()
         const res = new ResultModel(systemInfo,null,true)
         ctx.result(res)
     }
@@ -24,21 +25,22 @@ export default class SystemController {
     @request('put', '/system/turnOn')
     @summary('开启服务')
     @tag
-    turnOn(){
-
+    async turnOn(ctx){
+        const xgrokConf= new xgrokConfModel(ctx.validatedBody)
+        ctx.result(new ResultModel(await this.systemService.turnOn(xgrokConf),null,true))
     }
 
     @request('put', '/system/turnOff')
     @summary('关闭服务')
     @tag
-    turnOff(){
-
+    async turnOff(ctx){
+        ctx.result(new ResultModel(await this.systemService.turnOff(),null,true))
     }
 
     @request('get', '/system/log')
     @summary('获取日志')
     @tag
-    getLog(){
-
+    async getLog(ctx){
+        ctx.result(new ResultModel(await this.systemService.getLog(),null,true))
     }
 }

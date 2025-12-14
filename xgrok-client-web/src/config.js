@@ -27,7 +27,7 @@ export default {
     clientRootPath:path.resolve(path.join('execute',os.platform())),
     xgrokCoreCfgPath:path.resolve('.xgrok.cfg'),
     logPath:path.resolve('.xgrok-core.log'),
-    appCfgPath:path.resolve(`.xgrokApp.json`),
+    xgrokAppCfgPath:path.resolve(`.xgrokApp.json`),
     serverPort:4446,
     startWebServerProt:7400,
     auth:{

@@ -5,7 +5,7 @@
   "main": "src/main.js",
   "type": "module",
   "scripts": {
-    "dev:web-client": "babel-node src/main.js"
+    "dev:web-client": "dotenv -e .env.browser -- npx babel-node src/main.js"
   },
   "license": "GPL-3.0",
   "author": "isaac <xhgainxq@qq.com>",
