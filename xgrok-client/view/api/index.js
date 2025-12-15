@@ -81,7 +81,8 @@ const url = {
         system:{
             info:'/system/info',
             turnOn:'/system/turnOn',
-            turnOff:'/system/turnOff'
+            turnOff:'/system/turnOff',
+            log:'/system/log'
         }
     }
 }
@@ -318,4 +319,8 @@ export function serviceTurnOn(data){
 
 export function serviceTurnOff(data){
     return putActionWebClient(url.webClient.system.turnOff,data)
+}
+
+export function getLog(startIndex,length){
+    return getActionWebClient(url.webClient.system.log+`?startIndex=${startIndex}&length=${length}`)
 }

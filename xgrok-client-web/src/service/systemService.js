@@ -1,4 +1,4 @@
-import {getSystemInfo} from '../../../xgrok-client/src/libs/backend/system.js'
+import {getSystemInfo,getLog} from '../../../xgrok-client/src/libs/backend/system.js'
 import {turnOn,turnOff} from '../../../xgrok-client/src/libs/backend/xgrok.js'
 export default class SystemService {
     constructor() {
@@ -16,7 +16,7 @@ export default class SystemService {
         return turnOff(pid)
     }
 
-    getLog(){
-
+    getLog(logModel){
+        return getLog(logModel)
     }
 }

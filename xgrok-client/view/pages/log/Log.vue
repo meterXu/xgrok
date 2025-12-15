@@ -7,6 +7,7 @@ import 'highlight.js/styles/atom-one-light.css'
 import hljs from 'highlight.js/lib/core';
 import accesslog from 'highlight.js/lib/languages/accesslog';
 import {useClientTypeExecute} from "@/libs/useAction";
+import {getLog} from "@/api";
 
 const route = useRoute()
 const logContent = ref('')
@@ -15,34 +16,33 @@ const logScrollbarRef = ref(null)
 const logContentRef = ref()
 hljs.registerLanguage('accesslog', accesslog);
 
-function onRefresh(init = false) {
+async function onRefresh(init = false) {
   if (init) {
     endIndex.value = 0
   }
-  useClientTypeExecute(()=>{
-    // todo
+  const logRes = await useClientTypeExecute(()=>{
+    return getLog(endIndex.value,100)
   },()=>{
-    window.electronAPI.getLog({
+    return window.electronAPI.getLog({
       startIndex: endIndex.value,
       length: 100
-    }).then(res => {
-      if (init) {
-        logContent.value = res.data.records.map(c=>{
-          return hljs.highlight(c, { language: 'accesslog' }).value
-        }).join('<br/>')
-      } else {
-        logContent.value = logContent.value.concat(
-            res.data.records.map(c=>{
-              return hljs.highlight(c, { language: 'accesslog' }).value
-            }).join('<br/>')
-        )
-      }
-      nextTick(() => {
-        logScrollbarRef.value.scrollbar.setScrollTop(logContentRef.value.clientHeight);
-      })
-      endIndex.value = res.data.endIndex + 1
     })
   })
+  if (init) {
+    logContent.value = logRes.data.records.map(c=>{
+      return hljs.highlight(c, { language: 'accesslog' }).value
+    }).join('<br/>')
+  } else {
+    logContent.value = logContent.value.concat(
+        logRes.data.records.map(c=>{
+          return hljs.highlight(c, { language: 'accesslog' }).value
+        }).join('<br/>')
+    )
+  }
+  nextTick(() => {
+    logScrollbarRef.value.scrollbar.setScrollTop(logContentRef.value.clientHeight);
+  })
+  endIndex.value = logRes.data.endIndex + 1
 }
 
 watch(route, (nv) => {

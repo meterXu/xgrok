@@ -1,7 +1,8 @@
 import SystemService from "../service/systemService.js";
 import {body, request, summary, tags} from "koa-swagger-decorator";
 import ResultModel from "../model/sys/resultModel";
-import xgrokConfModel from "../../../xgrok-client/src/models/xgrokConfModel.js";
+import XgrokConfModel from "../../../xgrok-client/src/models/xgrokConfModel.js";
+import LogModel from "../model/logModel.js";
 
 const tag = tags(['System'])
 
@@ -27,7 +28,7 @@ export default class SystemController {
     @tag
     @body({server:{},tunnelWebs:[],tunnelServices:[]})
     async turnOn(ctx){
-        const xgrokConf= new xgrokConfModel(ctx.validatedBody)
+        const xgrokConf= new XgrokConfModel(ctx.validatedBody)
         const data = await this.systemService.turnOn(xgrokConf)
         ctx.result(new ResultModel(data.pid,data.message,true))
     }
@@ -45,6 +46,7 @@ export default class SystemController {
     @summary('获取日志')
     @tag
     async getLog(ctx){
-        ctx.result(new ResultModel(await this.systemService.getLog(),null,true))
+        const logModel = new LogModel(ctx.validatedQuery)
+        ctx.result(new ResultModel(await this.systemService.getLog(logModel),null,true))
     }
 }
