@@ -1,6 +1,6 @@
 FROM hub.xdog.icu/node:22-alpine
 
-RUN apk update && apk add --no-cache \
+RUN apt-get update && apt-get add --no-cache \
     git ca-certificates wget tar bash openssl
 
 WORKDIR /workspace
