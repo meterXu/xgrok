@@ -1,5 +1,5 @@
 import {body, request, summary, tags} from "koa-swagger-decorator";
-import ResultModel from "../model/sys/resultModel";
+import ResultModel from "../model/sys/resultModel.js";
 import ConfigModel from "../model/configModel.js";
 import ConfigService from "../service/configService.js";
 

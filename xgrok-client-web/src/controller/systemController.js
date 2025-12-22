@@ -1,6 +1,6 @@
 import SystemService from "../service/systemService.js";
 import {body, request, summary, tags} from "koa-swagger-decorator";
-import ResultModel from "../model/sys/resultModel";
+import ResultModel from "../model/sys/resultModel.js";
 import XgrokConfModel from "../../../xgrok-client/src/models/xgrokConfModel.js";
 import LogModel from "../model/logModel.js";
 

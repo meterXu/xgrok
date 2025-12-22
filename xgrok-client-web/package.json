@@ -2,10 +2,12 @@
   "name": "xgrok-client-web",
   "version": "1.1.6",
   "description": "xgrok客户端web版",
-  "main": "src/main.js",
+  "main": "dist/main.js",
   "type": "module",
   "scripts": {
-    "dev:web-client": "dotenv -e .env.browser -- npx babel-node src/main.js"
+    "dev:web-client": "dotenv -e .env.browser -- npx babel-node src/main.js",
+    "build:web-client": "rm -rf dist && babel src -d dist",
+    "prod": "export NODE_ENV=production&&node dist/main.js"
   },
   "license": "GPL-3.0",
   "author": "isaac <xhgainxq@qq.com>",
