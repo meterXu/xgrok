@@ -25,7 +25,7 @@ function onCopy(item) {
     <span class="w-full flex items-center justify-between">
                   <span class="overflow-hidden text-ellipsis">{{ selectedServer?.domain }}:{{ item.remote_port }}</span>
                   <el-tooltip content="点击复制">
-                    <IconParkOutlineCopy @click="onCopy(item)" class="text-[12px] hover:text-(--el-color-primary)"/>
+                    <IconParkOutlineCopy @click.stop="onCopy(item)" class="text-[12px] hover:text-(--el-color-primary)"/>
                   </el-tooltip>
                 </span>
   </TunnelItem>

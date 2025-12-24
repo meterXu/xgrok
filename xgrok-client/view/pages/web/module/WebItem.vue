@@ -45,10 +45,10 @@ function onCopy(item, type){
     <span class="w-full flex items-center justify-center gap-6">
                 <span class="overflow-hidden text-ellipsis">{{ httpUrl(item, httpType.https) }}</span>
                 <el-tooltip content="点击复制">
-                  <IconParkOutlineCopy @click="onCopy(item,httpType.https)" class="text-[19px] hover:text-(--el-color-primary)"/>
+                  <IconParkOutlineCopy @click.stop="onCopy(item,httpType.https)" class="text-[19px] hover:text-(--el-color-primary)"/>
                 </el-tooltip>
                 <el-tooltip content="点击访问">
-                  <IconParkOutlineEarth @click="onOpenLink(item,httpType.https)" class="text-[19px] hover:text-(--el-color-primary)"/>
+                  <IconParkOutlineEarth @click.stop="onOpenLink(item,httpType.https)" class="text-[19px] hover:text-(--el-color-primary)"/>
                 </el-tooltip>
               </span>
   </TunnelItem>

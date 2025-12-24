@@ -1,11 +1,16 @@
-{
+const preset_env_conf= process.env.NODE_ENV==='development'?{
+    "targets": {
+        "node": "current"
+    }
+}:{
+    "targets": {
+        "node": "current"
+    },
+    "modules":false
+}
+export default {
     "presets": [
-        ["@babel/preset-env", {
-            "targets": {
-                "node": "current"
-            },
-            "modules": false
-        }]
+        ["@babel/preset-env",preset_env_conf]
     ],
     "plugins": [
         ["@babel/plugin-transform-runtime"],

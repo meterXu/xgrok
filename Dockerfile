@@ -1,21 +1,14 @@
-FROM hub.xdog.icu/node:22-alpine
+FROM hub.xdog.icu/node:22-bullseye-slim
 
-RUN apt-get update && apt-get add --no-cache \
-    git ca-certificates wget tar bash openssl
+COPY xgrok-client /workspace/xgrok-client
+COPY xgrok-client-web /workspace/xgrok-client-web
 
-WORKDIR /workspace
+WORKDIR /workspace/xgrok-client-web
 
-RUN git clone https://github.com/meterXu/xgrok.git
+RUN rm -rf src && \
+    mkdir -p /xgrok/log && \
+    mkdir -p /xgrok/conf
 
-RUN cd xgrok\xgrok-client  && \
-    npm  install && \
-    npm run build:brower
+EXPOSE 8181
 
-RUN cd xgrok\xgrok-client-web  && \
-    npm  install && \
-    npm run build:web-client
-
-RUN cd xgrok\xgrok-client && \
-    cp -rp dist ..\xgrok-client-web\web && \
-    cd xgrok\xgrok-client-web && \
-    npm run prod
+ENTRYPOINT ["npm","run","prod"]
