@@ -45,4 +45,5 @@ xgrok-portal/.env.development
 xgrok-portal/.env.production
 xgrok-client-web/web
 xgrok-client-web/execute
+xgrok-client-web/.env.development
 xgrok-client-web/.env.production
