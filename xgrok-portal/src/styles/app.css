@@ -217,15 +217,16 @@ body{
     }
     .dialog-content-2{
         padding: 12px;
-        width: 500px;
+        width: 480px;
         overflow: auto;
         height: max-content;
         .code{
-            border-radius: 24px;
+            margin: 0;
+            border-radius: 12px;
             background: #000;
             color: #fff;
             height: max-content;
-            padding: 12px;
+            padding: 12px 24px;
         }
     }
 }

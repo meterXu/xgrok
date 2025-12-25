@@ -104,19 +104,18 @@
         </ul>
     </div>
     <div class="dialog-content-2">
-        <div class="code">
+        <pre class="code">
             <code>
-                <p>version: "3"</p>
-                <p>services:<p>
-                <p>&nbsp;&nbsp;xgrok:<p>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;image: xgrok:latest<p>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;container_name: xgrok<p>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;ports:<p>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- 8181:8181<p>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;volumes: <p>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- /tmp/xgrok:/xgrok/conf<p>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;restart: always<p>
-            </code>
-        </div>
+version: "3"
+services:
+  xgrok:
+    image: xgrok:1.1.6
+    container_name: xgrok
+    ports:
+      - 8181:8181
+    volumes:
+      - /tmp/xgrok:/xgrok/conf
+    restart: always</code>
+        </pre>
     </div>
 </div>
