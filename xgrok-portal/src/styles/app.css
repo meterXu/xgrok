@@ -142,15 +142,18 @@ body{
     height: 32px;
     width: 32px;
     color: #fff;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
-.download_ul_li:nth-child(1) .download-item-icon{
-    background: url('https://cdn.xdo.icu/xgrok-portal/windows11.svg');
+.download-item-icon-windows{
+    background-image: url('/windows11.svg');
 }
-.download_ul_li:nth-child(2) .download-item-icon{
-    background: url('https://cdn.xdo.icu/xgrok-portal/mac.svg');
+.download-item-icon-macSelect{
+    background-image: url('/mac.svg');
 }
-.download_ul_li:nth-child(3) .download-item-icon{
-    background: url('https://cdn.xdo.icu/xgrok-portal/mac.svg');
+.download-item-icon-docker{
+    background-image: url('/docker.svg');
 }
 
 .download-item-label{
@@ -181,6 +184,53 @@ body{
     padding: 0 12px;
     color: #303133;
     font-size: 14px;
+}
+.dialog{
+    visibility: hidden;
+    .dialog-modal{
+        z-index: 9998;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.6);
+    }
+    .dialog-content-1,.dialog-content-2{
+        z-index: 9999;
+        visibility: hidden;
+        position: absolute;
+        width: 360px;
+        height: 200px;
+        top: 50%;
+        left:50%;
+        transform: translate(-50%, -50%);
+        background-color: #3b4144;
+        box-shadow: 0px 0px 12px rgba(0, 0, 0, .72);
+        border-radius: 24px;
+        .download-ul{
+            bottom: unset;
+            top: 50%;
+            margin: 0;
+            transform: translate(-50%, -50%);
+        }
+    }
+    .dialog-content-2{
+        padding: 12px;
+        width: 500px;
+        overflow: auto;
+        height: max-content;
+        .code{
+            border-radius: 24px;
+            background: #000;
+            color: #fff;
+            height: max-content;
+            padding: 12px;
+        }
+    }
+}
+.show{
+    visibility: visible !important;
 }
 @media screen and (max-width:1024px) {
     .container{

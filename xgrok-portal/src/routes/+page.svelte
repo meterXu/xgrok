@@ -4,6 +4,22 @@
     import '../styles/gh-fork-ribbon.min.css'
     let {data} = $props();
     let version = data.version
+    const repositoryUrl = 'https://github.com/meterXu/xgrok'
+    const downloadItems = [
+        {
+            title: 'Windows版',
+            value: 'windows'
+        },
+        {
+            title: 'Mac版',
+            value: 'macSelect'
+        },
+        {
+            title: 'Docker版',
+            value: 'docker'
+        }
+    ]
+
     function downloadFile(type) {
         const urls = {
             windows: {text: `xgrok-Setup-${version}.exe`, url: `./release/${version}/xgrok-Setup-${version}.exe`},
@@ -23,21 +39,26 @@
         document.body.removeChild(a);
     }
 
-    const repositoryUrl = 'https://github.com/meterXu/xgrok'
-    const downloadItems = [
-        {
-            title: 'Windows版',
-            value: 'windows'
-        },
-        {
-            title: 'mac Apple版',
-            value: 'mac'
-        },
-        {
-            title: 'mac Intel版',
-            value: 'mac2'
+    function typeSelect(type){
+        switch (type){
+            case "windows":{
+                return downloadFile(type)
+            }
+            case 'macSelect':{
+                document.querySelector('.dialog').classList.add('show');
+                document.querySelector('.dialog-content-1').classList.add('show');
+            }break;
+            case 'docker':{
+                document.querySelector('.dialog').classList.add('show');
+                document.querySelector('.dialog-content-2').classList.add('show');
+            }break
         }
-    ]
+    }
+    function hideDialog(){
+        document.querySelector('.dialog').classList.remove('show')
+        document.querySelector('.dialog-content-1').classList.remove('show');
+        document.querySelector('.dialog-content-2').classList.remove('show');
+    }
 </script>
 <div class="container-wrap">
     <div class="content">
@@ -55,8 +76,8 @@
         </div>
         <ul class="download-ul">
             {#each downloadItems as item }
-                <li class="download_ul_li" onclick="{downloadFile(item.value)}">
-                    <div class="download-item-icon"></div>
+                <li class="download_ul_li" onclick="{()=>typeSelect(item.value)}">
+                    <div class="download-item-icon download-item-icon-{item.value}"></div>
                     <div class="download-item-label">{item.title}</div>
                 </li>
             {/each}
@@ -66,5 +87,36 @@
 <div class="footer-copyright">
     <div class="footer-content">
         <a href="https://beian.miit.gov.cn/#/Integrated/index">ICP备案号：苏ICP备20001603号-2</a>
+    </div>
+</div>
+<div class="dialog">
+    <div class="dialog-modal" onclick="{hideDialog}"></div>
+    <div class="dialog-content-1">
+        <ul class="download-ul">
+            <li class="download_ul_li" onclick="{()=>downloadFile('mac')}">
+                <div class="download-item-icon download-item-icon-macSelect"></div>
+                <div class="download-item-label">Mac Apple版</div>
+            </li>
+            <li class="download_ul_li" onclick="{()=>downloadFile('mac2')}">
+                <div class="download-item-icon download-item-icon-macSelect"></div>
+                <div class="download-item-label">Mac Intel版</div>
+            </li>
+        </ul>
+    </div>
+    <div class="dialog-content-2">
+        <div class="code">
+            <code>
+                <p>version: "3"</p>
+                <p>services:<p>
+                <p>&nbsp;&nbsp;xgrok:<p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;image: xgrok:latest<p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;container_name: xgrok<p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;ports:<p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- 8181:8181<p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;volumes: <p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- /tmp/xgrok:/xgrok/conf<p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;restart: always<p>
+            </code>
+        </div>
     </div>
 </div>
