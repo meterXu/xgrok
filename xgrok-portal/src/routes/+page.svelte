@@ -109,7 +109,7 @@
 version: "3"
 services:
   xgrok:
-    image: xgrok:latest
+    image: meterxu/xgrok:latest
     container_name: xgrok
     ports:
       - 8181:8181
