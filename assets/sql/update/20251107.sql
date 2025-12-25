@@ -8,7 +8,7 @@ INSERT INTO xgrok.ng_sys_dict (id, `key`, code, chn_value, eng_value, sort, crea
 CREATE INDEX idx_ng_order_pay_status ON ng_order (pay_status, is_delete, created_time);
 CREATE INDEX idx_oauth_users_status ON oauth_users (status, is_delete, created_time);
 
-
+-- 已更新
 create table xgrok.ng_permission
 (
     id            varchar(32)              not null
@@ -25,4 +25,10 @@ create table xgrok.ng_permission
     status        int      default 1       null,
     is_delete     int      default 0       null
 );
+
+alter table ng_client
+    add device_id varchar(36) null comment '设备唯一id';
+
+create index ng_client_device_id_index
+    on ng_client (device_id);
 

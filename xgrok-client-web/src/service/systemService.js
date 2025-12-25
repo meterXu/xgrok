@@ -1,11 +1,19 @@
-import {getSystemInfo,getLog} from '../../../xgrok-client/src/libs/backend/system.js'
+import {getSystemInfo,getLog,getXgrokAppCfg,setXgrokAppCfg} from '../../../xgrok-client/src/libs/backend/system.js'
 import {turnOn,turnOff} from '../../../xgrok-client/src/libs/backend/xgrok.js'
 export default class SystemService {
     constructor() {
     }
 
-    getSystemInfo(){
-        return getSystemInfo()
+    async getSystemInfo(){
+        const appCfg = getXgrokAppCfg()
+        const systemInfo = await getSystemInfo()
+        if(appCfg.device_id){
+            systemInfo.device_id = appCfg.device_id
+        }else{
+            appCfg.device_id = systemInfo.device_id
+            setXgrokAppCfg(appCfg)
+        }
+        return systemInfo
     }
 
     turnOn(xgrokConf) {

@@ -4,8 +4,9 @@ export default class ConfigService{
     constructor() {
     }
     async getAppConfig(){
+        // init appConfig
         if(!fs.existsSync(global.project.xgrokAppCfgPath)){
-            fs.writeFileSync(global.project.xgrokAppCfgPath,JSON.stringify(global.project.appConf))
+            fs.writeFileSync(global.project.xgrokAppCfgPath,JSON.stringify(global.project.appConf,null,2))
         }
         return getXgrokAppCfg()
     }

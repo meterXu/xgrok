@@ -1,1 +1,6 @@
-{"theme":"system","autoServer":false,"proxy":""}
+{
+  "theme": "system",
+  "autoServer": false,
+  "proxy": "",
+  "device_id": ""
+}

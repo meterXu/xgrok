@@ -226,10 +226,12 @@ model ng_client {
   is_delete         Int?            @default(0)
   created_time      BigInt?
   modified_time     BigInt?
+  device_id         String?         @db.VarChar(36)
   ng_tunnel_service TunnelService[]
   ng_tunnel_web     TunnelWeb[]
 
   @@index([hostname], map: "ng_client_hostname_index")
+  @@index([device_id], map: "ng_client_device_id_index")
 }
 
 model ng_email {

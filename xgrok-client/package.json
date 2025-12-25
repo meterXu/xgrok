@@ -91,6 +91,7 @@
     "http-proxy": "^1.18.1",
     "js-md5": "^0.8.3",
     "less": "^3.11.1",
+    "node-machine-id": "^1.1.12",
     "node-port-check": "^2.0.1",
     "pinia": "^2.1.7",
     "postcss": "^8.5.3",

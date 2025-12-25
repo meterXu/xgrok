@@ -6,6 +6,7 @@ import {swaggerClass, swaggerProperty} from "koa-swagger-decorator";
         this.id = body.id
         this.hostname = body.hostname
         this.osVersion = body.osVersion
+        this.device_id = body.device_id
         this.sort = body.sort
         this.is_vip = body.is_vip
         this.creator = body.creator
@@ -18,8 +19,9 @@ import {swaggerClass, swaggerProperty} from "koa-swagger-decorator";
 
     /** generate by CodeGirl */
     @swaggerProperty({type: "string", description: "", nullable: false}) id
-    @swaggerProperty({type: "string", description: "", nullable: false}) hostname
-    @swaggerProperty({type: "string", description: "", nullable: false}) osVersion
+    @swaggerProperty({type: "string", description: "", nullable: true}) hostname
+    @swaggerProperty({type: "string", description: "", nullable: true}) osVersion
+    @swaggerProperty({type: "string", description: "", nullable: true}) device_id
     @swaggerProperty({type: "number", description: "", nullable: true}) sort
     @swaggerProperty({type: "number", description: "", nullable: false}) is_vip
     @swaggerProperty({type: "string", description: "", nullable: true}) creator

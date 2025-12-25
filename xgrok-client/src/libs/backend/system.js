@@ -1,4 +1,5 @@
 const {hostname, version,readLinesInRange,getLineCount,checkUrl,saveAppCfg, getAppCfg, isElectron} = require("../util");
+const machineId = require('node-machine-id');
 const {BrowserWindow, nativeImage}  = require('electron')
 const path = require("node:path");
 const AutoLaunch = require('auto-launch');
@@ -6,6 +7,7 @@ const net = require('node:net')
 const {serviceType} = require("../enum");
 async function getSystemInfo(data){
     return Promise.resolve({
+        device_id:machineId.machineIdSync(true),
         hostname:hostname(),
         osVersion:version()
     })
