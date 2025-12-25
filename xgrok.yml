@@ -4,8 +4,7 @@ services:
     image: xgrok:1.1.6
     container_name: xgrok
     ports:
-      - 8282:8181
-#    volumes:
-#      - /tmp/xgrok/log:/xgrok/log
-#      - /tmp/xgrok/conf:/xgrok/conf
+      - 8181:8181
+    volumes:
+      - /tmp/xgrok:/xgrok/conf
     restart: always

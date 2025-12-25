@@ -26,8 +26,8 @@ export default {
     timestampDiff:process.env.timestampDiff||86400,//24H
     clientRootPath:path.resolve(path.join('execute',os.platform())),
     xgrokCoreCfgPath:path.resolve('.xgrok.cfg'),
-    logPath:path.resolve('.xgrok-core.log'),
-    xgrokAppCfgPath:path.resolve(`.xgrokApp.json`),
+    logPath:path.resolve('conf','xgrok-core.log'),
+    xgrokAppCfgPath:path.resolve('conf',`xgrokApp.json`),
     serverPort:4446,
     startWebServerProt:7400,
     auth:{

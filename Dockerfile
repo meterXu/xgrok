@@ -1,13 +1,13 @@
 FROM hub.xdog.icu/node:22-bullseye-slim
 
-COPY xgrok-client /workspace/xgrok-client
-COPY xgrok-client-web /workspace/xgrok-client-web
+COPY xgrok-client /xgrok-client
+COPY xgrok-client-web /xgrok
 
-WORKDIR /workspace/xgrok-client-web
+WORKDIR /xgrok
 
 RUN rm -rf src && \
-    mkdir -p /xgrok/log && \
-    mkdir -p /xgrok/conf
+    rm -rf .env.development && \
+    rm -rf .env.template
 
 EXPOSE 8181
 
