@@ -11,10 +11,10 @@ export default class ClientService {
         const _where = {
             OR: [
                 {hostname:clientModel.hostname},
-                {deviceId:clientModel.deviceId},
+                {device_id:clientModel.device_id}
             ]
         }
-        return await prisma.$transaction([prisma.ng_client.count({where: clientModel}), prisma.ng_client.findMany({
+        return await prisma.$transaction([prisma.ng_client.count({where: _where}), prisma.ng_client.findMany({
             where: _where,
             orderBy: orderBy,
             skip: (pagination.pageNumber - 1) * pagination.pageSize,

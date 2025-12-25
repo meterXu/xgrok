@@ -16,7 +16,7 @@ import {useClientTypeExecute} from "@/libs/useAction";
 
 const store = useAppStore()
 const serviceSwitchRef = ref()
-const {selectedServer, clientId, systemInfo, tunnelCount, setTunnelCount, appSetting, pid} = store
+const {selectedServer, clientId, tunnelCount, setTunnelCount, appSetting, pid} = store
 
 useClientTypeExecute(()=>{},()=>{
   window.electronAPI.onAppQuit(() => {
@@ -54,8 +54,8 @@ function initClient() {
         if (res1.success) {
           if (res1.data.records.length > 0) {
             store.setClientId(res1.data.records[0].id)
-            !res1.data.device_id&&updateClient({
-              id: clientId.value,
+            !res1.data.records[0].device_id&&updateClient({
+              id: res1.data.records[0].id,
               device_id: res.data.device_id
             })
           } else {

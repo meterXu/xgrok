@@ -173,11 +173,12 @@ export function deleteTunnelServiceBatch(ids) {
     return deleteAction(url.tunnel.deleteTunnelServiceBatch, {ids})
 }
 
-export function queryClient(hostname) {
+export function queryClient(hostname,device_id) {
     return getAction(url.client.query, {
         pageNumber: 1,
         pageSize: 1,
         hostname,
+        device_id,
         status: statusType.enable,
         is_delete: isDeleteType.no
     })
