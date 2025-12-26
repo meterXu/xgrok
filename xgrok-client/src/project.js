@@ -36,7 +36,8 @@ const getProject=function (app,mode){
             autoLaunch: false,
             autoServer:false,
             exitInTaskBar: true,
-            proxy: ''
+            proxy: '',
+            pid:0
         },null, 2),'utf8')
     }
     if(mode==='development'){

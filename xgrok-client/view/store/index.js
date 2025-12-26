@@ -45,9 +45,6 @@ export const useAppStore = defineStore('app', () => {
         return _token
     })
     const pid = computed(() => {
-        if ($ss.get("pid")) {
-            _pid.value = alterStoreValue(getLsValue($ss.get("pid")))
-        }
         return _pid
     })
     const selectedServer = computed(() => {
@@ -122,6 +119,7 @@ export const useAppStore = defineStore('app', () => {
                 }
             })
         })
+        setPid(_appSetting.pid||null)
         return _appSetting
     })
     const tunnelCount = computed(() => {
@@ -145,7 +143,6 @@ export const useAppStore = defineStore('app', () => {
 
     function setPid(data) {
         _pid.value = data
-        $ss.set("pid", setLsValue(data))
     }
 
     function setSelectedServer(data) {

@@ -5,7 +5,7 @@
   "main": "dist/main.js",
   "type": "module",
   "scripts": {
-    "dev:web-client": "dotenv -e .env.browser -- npx babel-node src/main.js",
+    "dev:web-client": "dotenv -e .env.development -- npx babel-node src/main.js",
     "build:web-client": "rm -rf web && cd ../xgrok-client && npm run build:brower && cp -rpf dist ../xgrok-client-web/web && cd ../xgrok-client-web && rm -rf dist && babel src -d dist",
     "prod": "export NODE_ENV=production&&node dist/main.js"
   },

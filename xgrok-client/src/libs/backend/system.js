@@ -163,7 +163,7 @@ function setXgrokAppCfg(data){
         if(data.hasOwnProperty('autoLaunch')){
             if(data.autoLaunch){
                 minecraftAutoLauncher.enable()
-                data.autoServer = !!global.pid
+                data.autoServer = !!global.xgrokPid
             }else{
                 minecraftAutoLauncher.disable()
                 data.autoServer = false

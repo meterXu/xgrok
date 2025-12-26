@@ -6,6 +6,7 @@ COPY xgrok-client-web /xgrok
 WORKDIR /xgrok
 
 RUN rm -rf src && \
+    rm -rf execute\darwin && \
     rm -rf .env.development && \
     rm -rf .env.template
 

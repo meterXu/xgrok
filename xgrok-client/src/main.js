@@ -10,7 +10,7 @@ const project = getProject(app,process.env.NODE_ENV)
 global.project = project
 global.logger.info('xgrok project:',project)
 require('./ipc/backend')
-const {killPid, findProcessId,checkUpdate,getAppCfg} = require("./libs/util");
+const {killPid, findProcessId,checkUpdate,getAppCfg, saveAppCfg} = require("./libs/util");
 global.logger.info(`xgrok is running,version:${app.getVersion()}`)
 global.proxyLocalhost = '127.0.0.1'
 
@@ -144,6 +144,7 @@ if (!gotTheLock) {
         requireClose = true
         global.logger.info(`kill xgrok,pid is ${global.xgrokPid}`)
         global.xgrokPid && await killPid(global.xgrokPid)
+        saveAppCfg(Object.assign(getAppCfg(), {pid: null}))
         global.win.webContents.send('view/appQuit')
     })
     app.whenReady().then(async () => {

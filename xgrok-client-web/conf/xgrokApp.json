@@ -2,5 +2,6 @@
   "theme": "system",
   "autoServer": false,
   "proxy": "",
-  "device_id": ""
+  "device_id": "",
+  "pid": null
 }
