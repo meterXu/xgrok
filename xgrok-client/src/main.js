@@ -15,6 +15,57 @@ global.logger.info(`xgrok is running,version:${app.getVersion()}`)
 global.proxyLocalhost = '127.0.0.1'
 
 let requireClose = false
+
+// 获取单实例锁
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+    // 如果无法获取锁，说明已有实例运行，当前实例应退出
+    app.quit();
+}else {
+    findProcessId('xgrok-core').then(pids=>{
+        pids&&pids.forEach(pid=>killPid(pid))
+    })
+    saveAppCfg({pid:null})
+    // 当运行第二个实例时, 将会聚焦到这个窗口
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+        // 在这里处理第二个实例的参数和工作目录
+        if (global.win) {
+            if(global.win.isMinimized()) global.win.restore();
+            if(!global.win.isVisible()) global.win.show()
+            global.win.focus();
+        }
+    });
+    app.on('activate', () => {
+        global.logger.info(`BrowserWindow.getAllWindows:${BrowserWindow.getAllWindows().length}`)
+        if(process.platform !=='darwin'){
+            if (BrowserWindow.getAllWindows().length === 0) createWindow()
+        }else{
+            if(!global.win.isVisible()){
+                global.win.show()
+            }
+        }
+    })
+    app.on('window-all-closed', () => {
+        global.logger.info(`window all closed`)
+        if (process.platform !== 'darwin'){
+            win.webContents.send('view/appQuit')
+            app.quit()
+        }
+    })
+    app.on('before-quit',async ()=>{
+        global.logger.info('app will quit')
+        requireClose = true
+        global.logger.info(`kill xgrok,pid is ${global.xgrokPid}`)
+        global.xgrokPid && await killPid(global.xgrokPid)
+        saveAppCfg({pid: null})
+        global.win.webContents.send('view/appQuit')
+    })
+    app.whenReady().then(async () => {
+        Menu.setApplicationMenu(null) // null值取消顶部菜单栏
+        createWindow()
+    })
+}
+
 function createWindow () {
     const trayIcon = nativeImage.createFromPath(project.trayIcon[process.platform])
     const appIcon = nativeImage.createFromPath(project.appIcon[process.platform])
@@ -102,53 +153,4 @@ function createWindow () {
     })
 
     global.win = win
-}
-
-// 获取单实例锁
-const gotTheLock = app.requestSingleInstanceLock();
-if (!gotTheLock) {
-    // 如果无法获取锁，说明已有实例运行，当前实例应退出
-    app.quit();
-}else {
-    findProcessId('xgrok-core').then(pids=>{
-        pids&&pids.forEach(pid=>killPid(pid))
-    })
-    // 当运行第二个实例时, 将会聚焦到这个窗口
-    app.on('second-instance', (event, commandLine, workingDirectory) => {
-        // 在这里处理第二个实例的参数和工作目录
-        if (global.win) {
-            if(global.win.isMinimized()) global.win.restore();
-            if(!global.win.isVisible()) global.win.show()
-            global.win.focus();
-        }
-    });
-    app.on('activate', () => {
-        global.logger.info(`BrowserWindow.getAllWindows:${BrowserWindow.getAllWindows().length}`)
-        if(process.platform !=='darwin'){
-            if (BrowserWindow.getAllWindows().length === 0) createWindow()
-        }else{
-            if(!global.win.isVisible()){
-                global.win.show()
-            }
-        }
-    })
-    app.on('window-all-closed', () => {
-        global.logger.info(`window all closed`)
-        if (process.platform !== 'darwin'){
-            win.webContents.send('view/appQuit')
-            app.quit()
-        }
-    })
-    app.on('before-quit',async ()=>{
-        global.logger.info('app will quit')
-        requireClose = true
-        global.logger.info(`kill xgrok,pid is ${global.xgrokPid}`)
-        global.xgrokPid && await killPid(global.xgrokPid)
-        saveAppCfg({pid: null})
-        global.win.webContents.send('view/appQuit')
-    })
-    app.whenReady().then(async () => {
-        Menu.setApplicationMenu(null) // null值取消顶部菜单栏
-        createWindow()
-    })
 }
