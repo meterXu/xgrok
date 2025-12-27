@@ -38,7 +38,7 @@ async function turnOn(xgrokConf) {
             let runStatus = await getTunnelStatus([...xgrokConf.tunnelWebs||[],...xgrokConf.tunnelServices||[]])
             global.logger.info(`xgrok tunnels status: ${JSON.stringify(runStatus)}`)
             if(runStatus.length === 0) {
-                saveAppCfg(Object.assign(getAppCfg(),{pid}))
+                saveAppCfg({pid})
                 return Promise.resolve({
                     pid:pid,
                     message:'隧道启动成功'
@@ -72,7 +72,7 @@ async function turnOff(pid) {
     if(isElectron()){
         global.win.webContents.send('view/process', 0)
     }
-    saveAppCfg(Object.assign(getAppCfg(), {pid: null}))
+    saveAppCfg({pid: null})
     return res
 }
 

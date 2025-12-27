@@ -144,7 +144,7 @@ if (!gotTheLock) {
         requireClose = true
         global.logger.info(`kill xgrok,pid is ${global.xgrokPid}`)
         global.xgrokPid && await killPid(global.xgrokPid)
-        saveAppCfg(Object.assign(getAppCfg(), {pid: null}))
+        saveAppCfg({pid: null})
         global.win.webContents.send('view/appQuit')
     })
     app.whenReady().then(async () => {
