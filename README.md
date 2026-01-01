@@ -6,7 +6,7 @@
 
 官网：https://www.xdo.icu/
 
-![poster.webp](assets%2F%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2%2Fposter.webp)
+![poster.webp](assets%2F%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2%2Fc1.webp)
 
 ## 一、安装
 ### Windows
