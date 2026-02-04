@@ -67,4 +67,14 @@ export default class PortRangeController {
         ctx.result(res)
     }
 
+    @request('get', '/user/getFreePort')
+    @summary('获取端口范围内未被占用的端口')
+    @tag
+    @query({
+        id: {type: "string", required: true, description: '端口范围id'}
+    })
+    async getFreePortRange(ctx) {
+
+    }
+
 }
