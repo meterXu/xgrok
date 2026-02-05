@@ -68,7 +68,7 @@ export default class PortRangeController {
         ctx.result(res)
     }
 
-    @request('get', '/user/getFreePort')
+    @request('get', '/portRange/getFreePort')
     @summary('获取端口范围内未被占用的端口')
     @tag
     @query({
@@ -77,8 +77,8 @@ export default class PortRangeController {
     })
     async getFreePortRange(ctx) {
         const {serverId,type} = ctx.validatedQuery
-        const res = await this.portRangeService.getFreePortRange(serverId,type)
-        ctx.result(new ResultModel(res,null,true))
+        const port = await this.portRangeService.getFreePortRange(serverId,type)
+        ctx.result(new ResultModel(port,null,true))
     }
 
 }

@@ -88,28 +88,33 @@ export default class PortRangeService {
     async getFreePortRange(serverId, type) {
         const portRanges = await prisma.PortRange.findMany({
             select: {
-                min_port:true,
-                max_port:true
+                min_port: true,
+                max_port: true
             },
             where: {
-                serverId,
+                server_id: serverId,
                 type,
                 status: status.enable,
                 is_delete: isDelete.false
             }
         })
-        const serviceConfigs = await prisma.TunnelService.findMany({
-            select:{
-                remote_port:true
-            },
-            where:{
-                is_delete:isDelete.false,
-                server_id:serverId
-            }
-        })
-        const randomIndex = Math.floor(Math.random()*portRanges.length)
-        const portRanges[randomIndex]
-        // 从portRange中随机获取端口，且端口不在service中
-
+        if (portRanges.length > 0) {
+            let serviceConfigs = await prisma.TunnelService.findMany({
+                select: {
+                    remote_port: true
+                },
+                where: {
+                    is_delete: isDelete.false,
+                    server_id: serverId
+                }
+            })
+            serviceConfigs = serviceConfigs.map(c => c.remote_port)
+            const randomIndex = Math.floor(Math.random() * portRanges.length)
+            let portRangeArray = Array.from({length: portRanges[randomIndex].max_port - portRanges[randomIndex].min_port}, (_, index) => portRanges[randomIndex].min_port + index)
+            portRangeArray = portRangeArray.filter(c => !serviceConfigs.some(s => s === c))
+            return portRangeArray.length > 0 ? portRangeArray[Math.floor(Math.random() * portRangeArray.length)] : null
+        } else {
+            return null
+        }
     }
 }
