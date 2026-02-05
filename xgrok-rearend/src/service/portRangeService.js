@@ -1,7 +1,8 @@
 import ResultModel from "../model/sys/resultModel.js";
 import {randomUUID} from "../utils/index.js";
-import {isDelete} from "../utils/enum.js";
+import {isDelete, status} from "../utils/enum.js";
 import PortRangeModel from "../model/portRangeModel.js";
+
 const {PrismaClient} = require("@prisma/client");
 const prisma = new PrismaClient();
 
@@ -9,7 +10,7 @@ export default class PortRangeService {
     constructor() {
     }
 
-    async queryPortRange(pagination,orderBy,portRangeModel) {
+    async queryPortRange(pagination, orderBy, portRangeModel) {
         let res = await prisma.$transaction([
             prisma.PortRange.count({
                 where: portRangeModel
@@ -26,13 +27,13 @@ export default class PortRangeService {
             total: res[0],
             records: res[1],
             pagination: pagination
-        },null,true)
+        }, null, true)
     }
 
     async detailPortRange(portRangeModel) {
         return prisma.PortRange.findUnique({
             where: {
-               id: portRangeModel.id
+                id: portRangeModel.id
             }
         })
     }
@@ -41,47 +42,74 @@ export default class PortRangeService {
         const portRangeModel = new PortRangeModel(ctx.request.body)
         let res = await prisma.PortRange.create({
             data: {
-              id:portRangeModel.id||randomUUID(),
-              server_id:portRangeModel.server_id,
-              min_port:portRangeModel.min_port,
-              max_port:portRangeModel.max_port,
-              type:portRangeModel.type,
-              sort:portRangeModel.sort,
-              creator:portRangeModel.creator,
-              editor:portRangeModel.editor,
-              created_time:portRangeModel.created_time||new Date().valueOf(),
-              modified_time:portRangeModel.modified_time,
-              status:portRangeModel.status,
-              is_delete:portRangeModel.is_delete
+                id: portRangeModel.id || randomUUID(),
+                server_id: portRangeModel.server_id,
+                min_port: portRangeModel.min_port,
+                max_port: portRangeModel.max_port,
+                type: portRangeModel.type,
+                sort: portRangeModel.sort,
+                creator: portRangeModel.creator,
+                editor: portRangeModel.editor,
+                created_time: portRangeModel.created_time || new Date().valueOf(),
+                modified_time: portRangeModel.modified_time,
+                status: portRangeModel.status,
+                is_delete: portRangeModel.is_delete
             }
         })
-        return new ResultModel(res.id,null,true)
+        return new ResultModel(res.id, null, true)
     }
 
     async editPortRange(ctx) {
         const portRangeModel = new PortRangeModel(ctx.request.body)
-        portRangeModel.modified_time = portRangeModel.modified_time||new Date().valueOf()
+        portRangeModel.modified_time = portRangeModel.modified_time || new Date().valueOf()
         let res = await prisma.PortRange.update({
             where: {
                 id: portRangeModel.id
             },
             data: portRangeModel
-            });
-        return new ResultModel(res.id,null,true)
+        });
+        return new ResultModel(res.id, null, true)
     }
 
     async delPortRange(ids) {
         const res = await prisma.PortRange.updateMany({
-              data:{
-                  is_delete: isDelete.true,
-              },
-              where: {
-                  id:{
-                      in:ids
-                  }
-              }
+            data: {
+                is_delete: isDelete.true,
+            },
+            where: {
+                id: {
+                    in: ids
+                }
+            }
         })
-        return new ResultModel(res.count,null,true)
+        return new ResultModel(res.count, null, true)
     }
 
+    async getFreePortRange(serverId, type) {
+        const portRanges = await prisma.PortRange.findMany({
+            select: {
+                min_port:true,
+                max_port:true
+            },
+            where: {
+                serverId,
+                type,
+                status: status.enable,
+                is_delete: isDelete.false
+            }
+        })
+        const serviceConfigs = await prisma.TunnelService.findMany({
+            select:{
+                remote_port:true
+            },
+            where:{
+                is_delete:isDelete.false,
+                server_id:serverId
+            }
+        })
+        const randomIndex = Math.floor(Math.random()*portRanges.length)
+        const portRanges[randomIndex]
+        // 从portRange中随机获取端口，且端口不在service中
+
+    }
 }
