@@ -4,6 +4,7 @@ import TunnelWebService from "./tunnelWebService.js";
 import TunnelServiceService from "./tunnelServiceService.js";
 import ResultModel from "../model/sys/resultModel.js";
 import OrderService from "./orderService.js";
+import {randomString} from "../utils";
 
 const {PrismaClient} = require("@prisma/client");
 const prisma = new PrismaClient();
@@ -113,5 +114,26 @@ export default class UserService {
         let totalRes = await prisma.$queryRaw(Prisma.raw(totalSql))
         let recordRes = await prisma.$queryRaw(Prisma.raw(querySql))
         return [totalRes[0]._all,recordRes]
+    }
+
+    async getRandomSubName(serverId){
+        const subName = randomString(6)
+        let randomCount = 0
+        while (randomCount<10){
+            const tunnelWebs = await prisma.TunnelWeb.findMany({
+                where: {
+                    server_id: serverId,
+                    name:subName,
+                    status: status.enable,
+                    is_delete: isDelete.false
+                }
+            })
+            if(tunnelWebs.length === 0){
+                return subName
+            }else{
+                randomCount++
+            }
+        }
+        return null
     }
 }

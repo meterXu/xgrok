@@ -243,4 +243,16 @@ export default class UserController {
         const res = new ResultModel(data, null, true)
         ctx.result(res)
     }
+
+    @request('get', '/user/getRandomSubName')
+    @summary('随机获取未被占用的子域名')
+    @tag
+    @query({
+        serverId: {type: "string", required: true, description: '服务器id'}
+    })
+    async getRandomSubName(ctx){
+        const {serverId} = ctx.validatedQuery
+        const subName = await this.userService.getRandomSubName(serverId)
+        ctx.result(new ResultModel(subName,null,true))
+    }
 }

@@ -69,7 +69,7 @@ export default class PortRangeController {
     }
 
     @request('get', '/portRange/getFreePort')
-    @summary('获取端口范围内未被占用的端口')
+    @summary('随机获取端口范围内未被占用的端口')
     @tag
     @query({
         serverId: {type: "string", required: true, description: '服务器id'},
