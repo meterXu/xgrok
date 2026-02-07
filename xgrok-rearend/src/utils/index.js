@@ -1,11 +1,12 @@
 import moment from "moment";
-import {payStatus, serviceType} from "./enum.js";
+import {isDelete, payStatus, serviceType, status} from "./enum.js";
 import {AlipaySdk} from "alipay-sdk";
 import config from "../config.js";
 import fs from "fs";
 import path from "path";
 import net from "net";
 import http from "http";
+
 const os = require('os');
 
 export function randomNumber() {
@@ -33,73 +34,77 @@ export function randomString(length = 1, chats = '0123456789qwertyuioplkjhgfdsaz
     return str
 }
 
-export function randomUUID(isFull=false) {
-    const chats= isFull?undefined:'0123456789abcdef'
+export function randomUUID(isFull = false) {
+    const chats = isFull ? undefined : '0123456789abcdef'
     return randomString(32, chats)
 }
 
-export function isNullOrUndefined(value){
-    return value===undefined||value===null
+export function isNullOrUndefined(value) {
+    return value === undefined || value === null
 }
 
-export function aliPayPaymentToSys(trade_status){
-    switch (trade_status){
-        case 'WAIT_BUYER_PAY':{
+export function isEmpty(value) {
+    return isNullOrUndefined(value)||value === ''
+}
+
+export function aliPayPaymentToSys(trade_status) {
+    switch (trade_status) {
+        case 'WAIT_BUYER_PAY': {
             return payStatus.unPayment
         }
-        case 'TRADE_CLOSED':{
+        case 'TRADE_CLOSED': {
             return payStatus.paymentClose
         }
-        case 'TRADE_SUCCESS':{
+        case 'TRADE_SUCCESS': {
             return payStatus.paymentSuccess
         }
-        case 'TRADE_FINISHED':{
+        case 'TRADE_FINISHED': {
             return payStatus.paymentFinished
         }
-        default:{
+        default: {
             return payStatus.unPayment
         }
     }
 }
 
-export function sysPayToText(_payStatus){
-    switch (_payStatus){
-        case payStatus.unPayment:{
+export function sysPayToText(_payStatus) {
+    switch (_payStatus) {
+        case payStatus.unPayment: {
             return '未付款'
         }
-        case payStatus.paymentClose:{
+        case payStatus.paymentClose: {
             return '付款关闭'
         }
-        case payStatus.paymentSuccess:{
+        case payStatus.paymentSuccess: {
             return '付款成功'
         }
-        case payStatus.paymentFinished:{
+        case payStatus.paymentFinished: {
             return '付款完成'
         }
-        default:{
+        default: {
             return '未付款'
         }
     }
 }
 
-export function isSysPaySuccess(pay_status){
-    return pay_status===payStatus.paymentSuccess||pay_status===payStatus.paymentFinished
+export function isSysPaySuccess(pay_status) {
+    return pay_status === payStatus.paymentSuccess || pay_status === payStatus.paymentFinished
 }
 
-export function getAlipaySdk(){
+export function getAlipaySdk() {
     return new AlipaySdk({
         // 设置应用 ID
         appId: config.alipay_appId,
         // 设置应用私钥
-        privateKey: fs.readFileSync(path.join(__dirname,`../keys/${process.env.NODE_ENV}/alipayApp/private-key.pem`), 'ascii'),
+        privateKey: fs.readFileSync(path.join(__dirname, `../keys/${process.env.NODE_ENV}/alipayApp/private-key.pem`), 'ascii'),
         // 设置支付宝公钥
-        alipayPublicKey: fs.readFileSync(path.join(__dirname,`../keys/${process.env.NODE_ENV}/alipayPublicKey/alipayPublicKey_RSA2.crt`), 'ascii'),
+        alipayPublicKey: fs.readFileSync(path.join(__dirname, `../keys/${process.env.NODE_ENV}/alipayPublicKey/alipayPublicKey_RSA2.crt`), 'ascii'),
         // 设置网关
         gateway: config.alipay_gateway,
     });
 }
 
-export function isEmail(email){
+export function isEmail(email) {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(email)
 }
@@ -111,9 +116,9 @@ export function isEmail(email){
  * @param type 类型
  * @returns Promise true被占用，false未占用
  */
-export function checkServerOnline(domain,port,type){
+export function checkServerOnline(domain, port, type) {
     return new Promise((resolve, reject) => {
-        if(type===serviceType.tcp){
+        if (type === serviceType.tcp) {
             const socket = new net.Socket();
             socket.setTimeout(3000); // 设置超时时间，根据需要调整
             socket.once('connect', () => {
@@ -146,13 +151,13 @@ export function checkServerOnline(domain,port,type){
                 }
             });
             socket.connect(port, domain);
-        }else{
+        } else {
             resolve(false);//todo 视为未被占用
         }
     })
 }
 
-export function checkUrl(name, domain, port, timeout=3000) {
+export function checkUrl(name, domain, port, timeout = 3000) {
     const url = `http://${name}.${domain}:${port}/`
     return new Promise((resolve) => {
         http.get(url, (res) => {
@@ -164,14 +169,16 @@ export function checkUrl(name, domain, port, timeout=3000) {
         }).on('error', () => {
             resolve(false); // 请求错误
         });
-        setTimeout(() => {resolve(false)}, timeout);
+        setTimeout(() => {
+            resolve(false)
+        }, timeout);
     });
 }
 
-export function getPaySuccessEmail(alipayNotifyModel){
+export function getPaySuccessEmail(alipayNotifyModel) {
     return {
-        subject:"感谢订阅 xgrok - 订单信息",
-        html:`
+        subject: "感谢订阅 xgrok - 订单信息",
+        html: `
 <p>亲爱的用户，你好</p>
 <p>你的付款方式：支付宝</p>
 <br/>
@@ -189,10 +196,10 @@ export function getPaySuccessEmail(alipayNotifyModel){
     }
 }
 
-export function getPayRefundEmail(refundModel){
+export function getPayRefundEmail(refundModel) {
     return {
-        subject:"欢迎再次订阅 xgrok - 订单退款",
-        html:`
+        subject: "欢迎再次订阅 xgrok - 订单退款",
+        html: `
 <p>亲爱的用户，你好</p>
 <p>已成功为你进行了退款</p>
 <br/>
@@ -208,14 +215,36 @@ export function getPayRefundEmail(refundModel){
     }
 }
 
-export function getSubjectName(name,pay_num){
-    return pay_num>1?`xgrok-${name}×${pay_num}`:
+export function getSubjectName(name, pay_num) {
+    return pay_num > 1 ? `xgrok-${name}×${pay_num}` :
         `xgrok-${name}`
 }
 
-export function initLog(){
+export function initLog() {
     let _log = console.log
-    console.log=function (){
+    console.log = function () {
         _log(`${new Date()} ${[...arguments].join(' ')}`)
     }
+}
+
+/**
+ * model转sql的where，支持全匹配和模糊查询
+ * @param model
+ * @param prefix
+ */
+export function modelToWhere(model, prefix="") {
+    const modelPros = Object.entries(model);
+    return modelPros.filter(c=> !isEmpty(c[1])).map(([key, value]) => {
+        if (typeof value === 'string') {
+            return `${prefix}${key} = '${value}'`
+        } else if (typeof value === 'number') {
+            return `${prefix}${key} = ${value}`
+        } else if (typeof value === 'boolean') {
+            return `${prefix}${key} = ${value?1:0}`
+        } else if (typeof value === 'object' && value.contains) {
+            return `${prefix}${key} like '%${value.contains}%'`
+        } else {
+            return null
+        }
+    }).filter(c=>c).join(' and ')
 }

@@ -25,7 +25,7 @@ export default class ServerController {
         serverQuery.name = {
             contains:serverQuery.name
         }
-        const queryRes = await this.serverService.queryServer(pagination,orderBy,serverQuery)
+        const queryRes = await this.serverService.queryServer(pagination,orderBy,serverQuery,ctx.token.user.id)
         const res = new ResultModel({
             total: queryRes[0],
             records: queryRes[1],
@@ -40,7 +40,7 @@ export default class ServerController {
     @query({...ServerModel.swaggerDocument})
     async detailServer(ctx) {
         const serverQuery = new ServerModel(ctx.validatedQuery)
-        const serverDetail = await this.serverService.detailServer(serverQuery)
+        const serverDetail = await this.serverService.detailServer(serverQuery,ctx.token.user.id)
         const res = serverDetail?new ResultModel(serverDetail,null,true):new ResultModel(null,'未找到该数据！',false)
         ctx.result(res)
     }
