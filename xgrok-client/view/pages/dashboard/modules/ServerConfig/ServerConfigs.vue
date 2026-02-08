@@ -12,8 +12,8 @@ const {selectedServer} = store
 <template>
   <ServerConfigItem class="server-configs border-none bg-(--primary-bg-0) h-full" :serverConfig="selectedServer">
     <div class="text-[12px] inline-flex gap-12">
-      <span class="inline-block">网页：<span class="font-bold text-(--el-color-primary)">{{tunnelCount.web.length}}</span></span>
-      <span class="inline-block">服务：<span class="font-bold text-(--el-color-primary)">{{tunnelCount.service.length}}</span></span>
+      <span class="inline-block"><MdiArrowUpBold/><span class="font-bold text-(--el-color-primary)">6Mbps</span></span>
+      <span class="inline-block"><MdiArrowDownBold/><span class="font-bold text-(--el-color-orage)">10Mbps</span></span>
     </div>
   </ServerConfigItem>
 </template>

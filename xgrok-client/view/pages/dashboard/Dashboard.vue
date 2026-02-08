@@ -86,6 +86,8 @@ watchEffect(() => {
     queryTunnelCount(selectedServer?.id, clientId.value).then(res => {
       tunnelCount.web.splice(0, tunnelCount.web.length, ...res.web)
       tunnelCount.service.splice(0, tunnelCount.service.length, ...res.service)
+      tunnelCount.allWeb = res.allWeb
+      tunnelCount.allService = res.allService
       setTunnelCount(tunnelCount)
       if (!pid.value && appSetting.autoLaunch && appSetting.autoServer) {
         serviceSwitchRef.value.onTurnOn()
@@ -108,7 +110,7 @@ onMounted(() => {
         <ServerConfigs class="absolute" :tunnelCount="tunnelCount"></ServerConfigs>
       </div>
       <div class="flex-1 h-full relative">
-        <SystemCard class="absolute"></SystemCard>
+        <SystemCard class="absolute" :tunnelCount="tunnelCount"></SystemCard>
       </div>
       <ServiceSwitch ref="serviceSwitchRef">
       </ServiceSwitch>
