@@ -14,6 +14,9 @@ export default async function (data){
         case 'checkPlanExpired':{
             await planExpired(data)
         }break
+        case 'notify':{
+            alert(data.message,data.title)
+        }
     }
 
 }
