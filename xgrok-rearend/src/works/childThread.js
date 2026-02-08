@@ -75,7 +75,7 @@ async function checkPlanExpired(){
         console.log(`checkPlanExpired: wait 1h for the execution to continue`)
         setTimeout(async () => {
             await _task()
-        },process.env.NODE_ENV==='development'?6*1000:3600*1000)//每小时执行一次
+        },process.env.NODE_ENV==='development'?6*1000:1800*1000)//开发模式6s执行一次，正式环境每半时执行一次
     }
     await _task()
 }
