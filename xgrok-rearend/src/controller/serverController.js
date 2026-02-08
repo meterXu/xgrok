@@ -17,7 +17,8 @@ export default class ServerController {
     @request('get', '/server/query')
     @summary('查询服务器')
     @tag
-    @query({...PaginationModel.swaggerDocument,...OrderByModel.swaggerDocument,...ServerModel.swaggerDocument})
+    @query({...PaginationModel.swaggerDocument,...OrderByModel.swaggerDocument,...ServerModel.swaggerDocument,
+        clientId:{type: "string", required: false, description: '客户端id'}})
     async queryServer(ctx) {
         const pagination = new PaginationModel(ctx.validatedQuery)
         const orderBy = new OrderByModel(ctx.validatedQuery)
@@ -25,7 +26,7 @@ export default class ServerController {
         serverQuery.name = {
             contains:serverQuery.name
         }
-        const queryRes = await this.serverService.queryServer(pagination,orderBy,serverQuery,ctx.token.user.id)
+        const queryRes = await this.serverService.queryServer(pagination,orderBy,serverQuery,ctx.token.user.id,ctx.validatedQuery.clientId)
         const res = new ResultModel({
             total: queryRes[0],
             records: queryRes[1],
@@ -37,10 +38,10 @@ export default class ServerController {
     @request('get', '/server/detail')
     @summary('查询服务器详情')
     @tag
-    @query({...ServerModel.swaggerDocument})
+    @query({...ServerModel.swaggerDocument,clientId:{type: "string", required: false, description: '客户端id'}})
     async detailServer(ctx) {
         const serverQuery = new ServerModel(ctx.validatedQuery)
-        const serverDetail = await this.serverService.detailServer(serverQuery,ctx.token.user.id)
+        const serverDetail = await this.serverService.detailServer(serverQuery,ctx.token.user.id,ctx.validatedQuery.clientId)
         const res = serverDetail?new ResultModel(serverDetail,null,true):new ResultModel(null,'未找到该数据！',false)
         ctx.result(res)
     }

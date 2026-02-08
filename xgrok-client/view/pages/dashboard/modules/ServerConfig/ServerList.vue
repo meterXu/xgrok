@@ -8,7 +8,7 @@ import {confirm,alert} from "@/libs/common";
 import {$emit} from 'xxweb-util'
 
 const emits = defineEmits(['selectServerConfig','restart'])
-const {selectedServer,setSelectedServer,plan,pid} = useAppStore()
+const {selectedServer,setSelectedServer,plan,pid,clientId} = useAppStore()
 const serverConfigs = shallowReactive([])
 
 function onSelectConfigItem(_serverConfig) {
@@ -45,7 +45,7 @@ function onSelectConfigItem(_serverConfig) {
 }
 
 function loadServersConfig() {
-  queryServersConfig(window.project.variable.type).then(res => {
+  queryServersConfig(window.project.variable.type,clientId.value).then(res => {
     if (res.success) {
       serverConfigs.splice(0, serverConfigs.length, ...res.data.records)
       if(!selectedServer.id&&serverConfigs[0]){
@@ -72,6 +72,10 @@ onMounted(() => {
           <template #right-top-icon>
             <div></div>
           </template>
+          <div class="text-[12px] inline-flex gap-12">
+            <span class="inline-block">网页：<span class="font-bold text-(--el-color-primary)">{{item.user_web_tunnel_count}}</span>/{{item.web_tunnel_count}}</span>
+            <span class="inline-block">服务：<span class="font-bold text-(--el-color-primary)">{{item.user_service_tunnel_count}}</span>/{{item.service_tunnel_count}}</span>
+          </div>
         </ServerConfigItem>
       </div>
     </div>

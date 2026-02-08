@@ -11,9 +11,9 @@ const {selectedServer} = store
 
 <template>
   <ServerConfigItem class="server-configs border-none bg-(--primary-bg-0) h-full" :serverConfig="selectedServer">
-    <div class="text-[12px] inline-flex gap-8">
-      <span class="inline-block">网页:{{tunnelCount.web.length}}</span>
-      <span class="inline-block">服务:{{tunnelCount.service.length}}</span>
+    <div class="text-[12px] inline-flex gap-12">
+      <span class="inline-block">网页：<span class="font-bold text-(--el-color-primary)">{{tunnelCount.web.length}}</span></span>
+      <span class="inline-block">服务：<span class="font-bold text-(--el-color-primary)">{{tunnelCount.service.length}}</span></span>
     </div>
   </ServerConfigItem>
 </template>

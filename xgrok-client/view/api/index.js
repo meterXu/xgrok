@@ -101,11 +101,12 @@ export function login(data) {
     return postActionSSO(url.oauth.authorize, qs.stringify(data))
 }
 
-export function queryServersConfig(type = serverEnum.ngrok) {
+export function queryServersConfig(type = serverEnum.ngrok,clientId) {
     return getAction(url.server.query, {
         pageNumber: 1,
         pageSize: 99,
         type,
+        clientId,
         status: statusType.enable,
         is_delete: isDeleteType.no
     })

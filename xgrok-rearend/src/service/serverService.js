@@ -12,7 +12,7 @@ export default class ServerService {
     constructor() {
     }
 
-    async queryServer(pagination, orderBy, serverQuery, creatorId) {
+    async queryServer(pagination, orderBy, serverQuery, creatorId,clientId) {
         const where = modelToWhere(serverQuery, 'a.')
         const query = `select a.*,
                               b.web_tunnel_count,
@@ -35,10 +35,11 @@ export default class ServerService {
                                 left join (select a.id,
                                                   count(b.id) user_web_tunnel_count
                                            from ng_server a
-                                                    left join ng_tunnel_service b
+                                                    left join ng_tunnel_web b
                                                               on a.id = b.server_id and b.is_delete = 0 and
                                                                  b.status = 1 and
-                                                                 b.creator = '${creatorId}'
+                                                                 b.creator = '${creatorId}' and
+                                                                 b.client_id = '${clientId}'
                                            group by a.id) d on a.id = d.id
                                 left join (select a.id,
                                                   count(b.id) user_service_tunnel_count
@@ -46,7 +47,8 @@ export default class ServerService {
                                                     left join ng_tunnel_service b
                                                               on a.id = b.server_id and b.is_delete = 0 and
                                                                  b.status = 1 and
-                                                                 b.creator = '${creatorId}'
+                                                                 b.creator = '${creatorId}' and
+                                                                 b.client_id = '${clientId}'
                                            group by a.id) e on a.id = e.id
                            ${where ? `where ${where}` : ''}
                        order by a.created_time desc
@@ -59,7 +61,7 @@ export default class ServerService {
         ])
     }
 
-    async detailServer(serverModel,creatorId) {
+    async detailServer(serverModel,creatorId,clientId) {
         let query = await prisma.$queryRaw(Prisma.raw(`select a.*,
                                              b.web_tunnel_count,
                                              c.service_tunnel_count,
@@ -80,10 +82,11 @@ export default class ServerService {
                                                left join (select a.id,
                                                                  count(b.id) user_web_tunnel_count
                                                           from ng_server a
-                                                                   left join ng_tunnel_service b
+                                                                   left join ng_tunnel_web b
                                                                              on a.id = b.server_id and
                                                                                 b.is_delete = 0 and b.status = 1 and
-                                                                                b.creator = '${creatorId}'
+                                                                                b.creator = '${creatorId}' and
+                                                                                b.client_id = '${clientId}'
                                                           group by a.id) d on a.id = d.id
                                                left join (select a.id,
                                                                  count(b.id) user_service_tunnel_count
@@ -91,7 +94,8 @@ export default class ServerService {
                                                                    left join ng_tunnel_service b
                                                                              on a.id = b.server_id and
                                                                                 b.is_delete = 0 and b.status = 1 and
-                                                                                b.creator = '${creatorId}'
+                                                                                b.creator = '${creatorId}' and
+                                                                                b.client_id = '${clientId}'
                                                           group by a.id) e on a.id = e.id
                                       where a.id = '${serverModel.id}'`))
         return query.length>0?query[0]:null
