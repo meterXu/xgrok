@@ -85,7 +85,7 @@ export const notifyType={
     //指定用户应用类型
     userApp:1,
     //指定设备
-    device:1,
+    device:2,
     // 所有连接
-    all:2
+    all:3
 }

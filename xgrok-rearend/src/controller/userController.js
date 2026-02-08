@@ -229,17 +229,22 @@ export default class UserController {
     @tag
     @body({
         userId:{type: "string", required: true, description: '用户id'},
-        type:{type: "string", required: true, description: '用户id'},
-        context: {type: "string", required: true, description: '通知内容'}
+        uuid:{type: "string", required: true, description: '唯一id'},
+        client_id:{type: "string", required: true, description: '客户端类型'},
+        type:{type: "string", required: true, description: '消息类型'},
+        context: {type: "string", required: true, description: '通知内容'},
+        notifyType:{type: "number", required: true, description: '通知类型'},
     })
     async notify(ctx){
-        const {userId,context,type} = ctx.validatedBody
+        const {userId,context,type,uuid,client_id,notifyType} = ctx.validatedBody
         const data = Object.assign({
-            type:type,
-            userId:userId
+            type,
+            userId,
+            uuid,
+            client_id
         },JSON.parse(context))
-        // 向前端发送付款状态
-        global.webSocket.sendToClient(data)
+        // 向前端发送消息
+        global.webSocket.sendToClient(data,notifyType)
         const res = new ResultModel(data, null, true)
         ctx.result(res)
     }

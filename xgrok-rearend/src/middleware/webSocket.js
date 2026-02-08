@@ -26,7 +26,7 @@ export default class WS {
                 }
                 const protocols = request.headers['sec-websocket-protocol'].split(', ')
                 let token = getQueryVariable(request.url, 'token')
-                let clientId = getQueryVariable(request.url, 'clientId')
+                let clientId = getQueryVariable(request.url, 'clientId')//客户端设备id
                 token = await this.OAuthTokensService.detailToken(token);
                 if (!token || protocols[0] !== 'isaacxu') {
                     return _ws.close();
@@ -39,7 +39,7 @@ export default class WS {
                 _ws.uuid = uuid
                 // 同一个账号在不同设备上相同方式登录，user_id和client_id是一样的
                 _ws.userId = token.user_id
-                _ws.client_id = token.client_id
+                _ws.client_id = token.client_id // auth验证中的client_id
                 this.clients.set(_ws.uuid, _ws);
                 _ws.on('close', () => {
                     this.clients.delete(uuid)// 移除关闭的连接
