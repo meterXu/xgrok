@@ -101,7 +101,6 @@ export default class OAuthTokensService {
 
     async queryToken(pagination,orderBy,tokenQuery){
         const where = [
-            tokenQuery.access_token_expires_at_start && `a.access_token_expires_at >= '${tokenQuery.access_token_expires_at_start}'`,
             tokenQuery.access_token_expires_at_end && `a.access_token_expires_at <= '${tokenQuery.access_token_expires_at_end}'`
         ].filter(c => c).join(' and ')
         const totalSql = `select count(*) _all from oauth_tokens a
@@ -121,5 +120,13 @@ export default class OAuthTokensService {
                 id: id
             }
         });
+    }
+
+    detailToken(token){
+        return prisma.OAuthTokens.findFirst({
+            where:{
+                access_token:token
+            }
+        })
     }
 }

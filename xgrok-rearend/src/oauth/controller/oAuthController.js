@@ -10,7 +10,8 @@ import OAuthUsersService from "../../service/oauthUsersService.js";
 import PaginationModel from "../../model/sys/paginationModel.js";
 import OrderByModel from "../../model/sys/orderByModel.js";
 import OAuthTokensService from "../../service/oauthTokensService.js";
-import {clientIds, roleType} from "../../utils/enum.js";
+import OAuthClientsService from '../../service/oauthClientsService.js'
+import {roleType} from "../../utils/enum.js";
 import Model from "../password/Model.js";
 const moment = require('moment');
 
@@ -25,6 +26,8 @@ export default class OAuthController{
             this.oAuthUsersService = new OAuthUsersService()
         if(!this.oAuthTokensService)
             this.oAuthTokensService = new OAuthTokensService()
+        if(!this.oauthClientsService)
+            this.oauthClientsService = new OAuthClientsService()
     }
 
     @request('post', '/authorize')
@@ -107,32 +110,38 @@ export default class OAuthController{
     @body(UsersModel.swaggerDocument)
     async register(ctx){
         const userModel = new UsersModel(ctx.validatedBody)
+        const {client_id} = ctx.validatedBody
         if(await this._checkUserIsExist(userModel.username)){
             return ctx.result(new ResultModel('该邮箱已注册',false))
         }
         if(await this._validateCode(userModel.username,ctx.validatedBody.code)){
-            const registerRes = await this.oAuthUsersService.register(userModel,ctx.validatedBody.code)
-            const accessToken = Model.createNewToken('accessToken')
-            const refreshToken = Model.createNewToken('refreshToken')
-            const token = await this.oAuthTokensService.createOrUpdateOAuthToken({
-                accessToken:accessToken.value,
-                accessTokenExpiresAt:accessToken.expiresTime,
-                refreshToken:refreshToken.value,
-                refreshTokenExpiresAt:refreshToken.expiresTime,
-                user:{id:registerRes[0].id},
-                client:{id:clientIds.web}
-            })
-            const data ={
-                accessToken:token.access_token,
-                user:{
-                    id:registerRes[0].id,
-                    username:registerRes[0].username,
-                    type:roleType.普通用户,
+            const client = this.oauthClientsService.queryOAuthClients({client_id})
+            if(client){
+                const registerRes = await this.oAuthUsersService.register(userModel,ctx.validatedBody.code)
+                const accessToken = Model.createNewToken('accessToken')
+                const refreshToken = Model.createNewToken('refreshToken')
+                const token = await this.oAuthTokensService.createOrUpdateOAuthToken({
+                    accessToken:accessToken.value,
+                    accessTokenExpiresAt:accessToken.expiresTime,
+                    refreshToken:refreshToken.value,
+                    refreshTokenExpiresAt:refreshToken.expiresTime,
+                    user:{id:registerRes[0].id},
+                    client:{id:client.id}
+                })
+                const data ={
+                    accessToken:token.access_token,
+                    user:{
+                        id:registerRes[0].id,
+                        username:registerRes[0].username,
+                        type:roleType.普通用户,
+                    }
                 }
+                return ctx.result(new ResultModel(data,null,true))
+            }else{
+                return ctx.result(new ResultModel(false, "无法注册，非法请求",false))
             }
-            return ctx.result(new ResultModel(data,null,true))
         }else{
-            return ctx.result(new ResultModel('验证码错误或已过期',false))
+            return ctx.result(new ResultModel(false,'验证码错误或已过期',false))
         }
     }
 

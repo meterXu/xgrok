@@ -8,14 +8,15 @@ import {
     getActionSSONoToken,
     getActionNoToken,
     getActionWebClient,
-    postActionWebClient, putActionWebClient
+    putActionWebClient
 } from "./manage"
 import md5 from "js-md5"
 import qs from "qs"
 import {ACCESS_TOKEN} from "xxweb-util";
-import {isDeleteType, serverEnum, statusType} from "@/libs/enums";
+import {clientType, isDeleteType, serverEnum, statusType} from "@/libs/enums";
 import reconnectingWebSocket from 'reconnecting-websocket'
-import {useClientTypeExecute} from "@/libs/useAction";
+import {useClientType, useClientTypeExecute} from "@/libs/useAction";
+import {useAppStore} from "@/store";
 
 const url = {
     oauth: {
@@ -91,7 +92,7 @@ export function login(data) {
     data = Object.assign({
         grant_type: "password",
         scope: "all",
-        client_id: "app",
+        client_id:  useClientType().value===clientType.electron?'app':'web',
         client_secret: "abf7162029b76303d1ed302545a56b31",
         timestamp: new Date().valueOf()
     }, data)
@@ -226,18 +227,11 @@ export function queryPayPlan() {
 
 export function initWebSocket(callback) {
     if (!window.ws) {
-        let protocols = []
-        const token = window.app.config.globalProperties.$ls.get(ACCESS_TOKEN)
-        if (token) {
-            const time = new Date().valueOf()
-            protocols = [
-                token.split(' ')[0],
-                md5([token.split(' ')[1], time, 'isaacxu'].join(' ')),
-                token.split(' ')[1],
-                time
-            ]
-        }
-        window.ws = new reconnectingWebSocket(window.project.variable.wsUrl, protocols, {
+        window.ws = new reconnectingWebSocket(()=>{
+            const token = window.app.config.globalProperties.$ls.get(ACCESS_TOKEN)
+            const store = useAppStore()
+            return window.project.variable.wsUrl+'?token='+token?.split(' ')[1]+`&clientId=${store.clientId.value}`
+        },  ['isaacxu',useClientType().value===clientType.electron?'app':'web'], {
             maxReconnectionDelay: 20000, // 断开后最大的重连时间： 20s，每多一次重连，会增加 1.3 倍，5 * 1.3 * 1.3 * 1.3...
             minReconnectionDelay: 5000, // 断开后最短的重连时间： 5s
             maxRetries: 5

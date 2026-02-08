@@ -1,7 +1,7 @@
 import {isMainThread} from "worker_threads";
 import WebSocket from "ws";
 import OAuthTokensService from "../service/oauthTokensService.js";
-import {clientIds, isNotify, status} from "../utils/enum.js";
+import {isNotify, notifyType, status} from "../utils/enum.js";
 import EmailService from "../service/emailService.js";
 import {isEmail} from "../utils/index.js";
 import OrderService from "../service/orderService.js";
@@ -35,26 +35,21 @@ export default class MainThreadWorker{
     }
 
     heartbeatToken(data){
+        const isOnline =  global.webSocket.checkWsIsOnline(data,notifyType.userApp)
         // check user is online
-        let findClient = null
-        global.webSocket.ws.clients.forEach((client)=>{
-            if(client.readyState === WebSocket.OPEN && client.userId === data.userId){
-                findClient = client
-            }
-        })
-        if(findClient){
+        if(isOnline){
             //update token
-            console.log(`user [${findClient.userId}] online, refresh accessToken`)
+            console.log(`user [${data.userId}] online, refresh accessToken`)
             this.oauthTokensService.createOrUpdateOAuthToken({
                 user:{id:data.userId},
-                client:{id:clientIds.web},
+                client:{id:data.client_id},
                 accessToken:data.access_token,
                 accessTokenExpiresAt:data.access_token_expires_at,
                 refreshToken:data.refresh_token,
                 refreshTokenExpiresAt:data.refresh_token_expires_at
             }).then(()=>{
-                console.log(`refresh accessToken [${findClient.userId}] successful, send websocket message to user [${data.userId}]`)
-                global.webSocket.sendToClient(data)
+                console.log(`refresh accessToken [${data.userId}] successful, send websocket message to user [${data.userId}]`)
+                global.webSocket.sendToClient(data,notifyType.userApp)
             })
         }else{
             console.log(`user [${data.userId}] offline, delete accessToken by id [${data.access_token_id}]`)

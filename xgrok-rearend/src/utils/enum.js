@@ -69,11 +69,6 @@ export const roleType={
     管理员:1
 }
 
-export const clientIds = {
-    web:'d8b2c39afe43bcbabfd8580c9d4a8cfb',
-    app:'0c07a0474684162f9751adb748ad33e1'
-}
-
 export const isOnline={
     online:1,
     offline:0
@@ -82,4 +77,15 @@ export const isOnline={
 export const isNotify={
     no:0,
     yes:1
+}
+
+export const notifyType={
+    //指定用户
+    user:0,
+    //指定用户应用类型
+    userApp:1,
+    //指定设备
+    device:1,
+    // 所有连接
+    all:2
 }

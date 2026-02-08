@@ -14,12 +14,10 @@ async function heartbeatToken(){
     async function _task(){
         console.log('heart beat accessTokens started')
         const oAuthTokensService = new OAuthTokensService()
-        let startTime = new moment().format('yyyy-MM-DD HH:mm:ss').toString()
-        let endTime = new moment().add(1,'hour').format('yyyy-MM-DD HH:mm:ss').toString()
-        console.log(`Filter accessTokens that are about to expire, time range [${startTime}], [${endTime}]`)
+        let endTime = new moment().add(1,'hour')
+        console.log(`Filter accessTokens that are about to expire, time less than [${endTime.format('yyyy-MM-DD HH:mm:ss').toString()}]`)
         const tokenRes = await oAuthTokensService.queryToken({pageSize: 999, pageNumber: 1}, {}, {
-            access_token_expires_at_start: startTime,
-            access_token_expires_at_end:endTime
+            access_token_expires_at_end:endTime.valueOf()
         })
         console.log(`${tokenRes[0]} accessTokens are about to expire`)
         for(let token of tokenRes[1]){
@@ -29,6 +27,7 @@ async function heartbeatToken(){
             parentPort.postMessage({
                 type: 'heartbeatToken',
                 userId: token.user_id,
+                client_id: token.client_id,
                 access_token_id:token.id,
                 access_token:newAccessToken.value,
                 access_token_expires_at:newAccessToken.expiresTime,
@@ -39,7 +38,7 @@ async function heartbeatToken(){
         console.log(`heartbeatToken: wait 1h for the execution to continue`)
         setTimeout(async () => {
             await _task()
-        },process.env.NODE_ENV==='development'?6*1000:3600*1000)//每小时执行一次
+        },process.env.NODE_ENV==='development'?6*1000:1800*1000)//开发模式6s执行一次，正式环境每半时执行一次
     }
     await _task()
 }

@@ -5,7 +5,7 @@ import {checkUserIsExist, queryPayPlan, register, sendValidateCode, validateCode
 import {useRouter} from "vue-router";
 import md5 from "js-md5"
 import {
-  onFormValidate, resetFormValidate,
+  onFormValidate, resetFormValidate, useClientType,
   useGetDisabled,
   useGetErrorMsg,
   useGetTermsOfServiceUrl,
@@ -14,6 +14,7 @@ import {
 import {alert,resetObj} from '@/libs/common'
 import {useAppStore} from "@/store";
 import Logo from "@/components/Logo.vue";
+import {clientType} from "@/libs/enums";
 
 const expireCount = 120
 const sendCodeLoading = ref(false)
@@ -87,6 +88,7 @@ function onSubmit(){
       const registerData = JSON.parse(JSON.stringify(form))
       registerData.password = md5(form.password)
       registerData.confirmPassword = null
+      registerData.client_id = useClientType().value===clientType.electron?'app':'web'
       register(registerData).then(res=>{
         if(res.success){
           alert('注册成功','',{async callback(){

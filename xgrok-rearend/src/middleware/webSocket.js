@@ -1,58 +1,132 @@
-import {UserType as token} from "../utils/enum";
+import OAuthTokensService from "../service/oauthTokensService";
+import {getQueryVariable} from "../utils";
+import md5 from 'js-md5'
+import {notifyType} from "../utils/enum";
 
 const WebSocket = require('ws')
-import AuthModel from '../oauth/password/Model.js'
 export default class WS {
     constructor() {
         this.ws = null
         this.clients = new Map()
+        if (!this.OAuthTokensService) {
+            this.OAuthTokensService = new OAuthTokensService()
+        }
     }
 
     init(server) {
         // 创建实例
-        this.ws = new WebSocket.Server({ server,path: '/websockets'});
+        this.ws = new WebSocket.Server({server, path: '/websockets'});
         this.ws.on('connection', async (_ws, request) => {
             try {
-                if(!(request.url.includes('/websockets'))){
+                if (!(request.url.includes('/websockets'))) {
                     return _ws.close();
                 }
-                if(!request.headers['sec-websocket-protocol']){
+                if (!request.headers['sec-websocket-protocol']) {
                     return _ws.close()
                 }
                 const protocols = request.headers['sec-websocket-protocol'].split(', ')
-                const auth = new AuthModel({
-                    headers:{
-                        Authorization:protocols[0]+' '+protocols[1],
-                        'x-access-token':protocols[2],
-                        'x-access-time':protocols[3]
-                    }
-                })
-                const token = await auth.getAccessToken(process.env.NODE_ENV==='development'?protocols[2]:protocols[1])
-                if(!token){
+                let token = getQueryVariable(request.url, 'token')
+                let clientId = getQueryVariable(request.url, 'clientId')
+                token = await this.OAuthTokensService.detailToken(token);
+                if (!token || protocols[0] !== 'isaacxu') {
                     return _ws.close();
                 }
-                if(this.clients.has(token.user.id)){
-                    const existingClient = await this.clients.get(token.user.id)
+                const uuid = md5(token.user_id + clientId + protocols[1]) // 同一个账号多个设备不同使用方式视为不同的连接
+                if (this.clients.has(uuid)) {
+                    const existingClient = await this.clients.get(uuid)
                     existingClient.close();
                 }
-                _ws.userId = token.user.id;
-                this.clients.set(_ws.userId, _ws);
+                _ws.uuid = uuid
+                // 同一个账号在不同设备上相同方式登录，user_id和client_id是一样的
+                _ws.userId = token.user_id
+                _ws.client_id = token.client_id
+                this.clients.set(_ws.uuid, _ws);
                 _ws.on('close', () => {
-                    this.clients.delete(token.user.id)// 移除关闭的连接
-                    console.log(`Connection closed for user ${token.user.id}`);
+                    this.clients.delete(uuid)// 移除关闭的连接
+                    console.log(`Connection closed for user[${token.user_id}],device[${clientId}]`);
                 })
-                _ws.send(JSON.stringify({'type':'connection',"message":`连接成功，当前在线${this.clients.size}个连接`,"retCode": 200}))
+                _ws.send(JSON.stringify({
+                    'type': 'connection',
+                    "message": `连接成功，当前在线${this.clients.size}个连接`,
+                    "retCode": 200
+                }))
             } catch (error) {
-                console.log('websocket connection error',error)
+                console.log('websocket connection error', error)
                 return _ws.close();
             }
         });
     }
 
-    sendToClient(data) {
-        const client = this.clients.get(data.userId)
-        if(client&&client.readyState===WebSocket.OPEN){
-            client.send(JSON.stringify(data))
+    sendToClient(data, type = notifyType.user) {
+        switch (type) {
+            case notifyType.user: {
+                this.clients.forEach((client) => {
+                    if (client.readyState === WebSocket.OPEN && client.userId === data.userId) {
+                        client.send(JSON.stringify(data))
+                    }
+                })
+            }
+                break;
+            case notifyType.userApp: {
+                this.clients.forEach((client) => {
+                    if (client.readyState === WebSocket.OPEN && client.userId === data.userId && client.client_id === data.client_id) {
+                        client.send(JSON.stringify(data))
+                    }
+                })
+            }
+                break;
+            case notifyType.device: {
+                const client = this.clients.get(data.uuid)
+                if (client && client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify(data))
+                }
+            }
+                break;
+            case notifyType.all: {
+                this.clients.forEach((client) => {
+                    if (client && client.readyState === WebSocket.OPEN) {
+                        client.send(JSON.stringify(data))
+                    }
+                })
+            }
         }
+    }
+
+    checkWsIsOnline(data, type = notifyType.user) {
+        let res = false
+        switch (type) {
+            case notifyType.user: {
+                global.webSocket.ws.clients.forEach((client) => {
+                    if (client.readyState === WebSocket.OPEN && client.userId === data.userId) {
+                        res = true
+                    }
+                })
+            }
+                break
+            case notifyType.userApp: {
+                global.webSocket.ws.clients.forEach((client) => {
+                    if (client.readyState === WebSocket.OPEN && client.userId === data.userId && client.client_id === client.client_id) {
+                        res = true
+                    }
+                })
+            }
+                break
+            case notifyType.device: {
+                const client = this.clients.get(data.uuid)
+                if (client && client.readyState === WebSocket.OPEN) {
+                    res = true
+                }
+            }
+                break
+            case notifyType.all: {
+                global.webSocket.ws.clients.forEach((client) => {
+                    if (client.readyState === WebSocket.OPEN) {
+                        res = true
+                    }
+                })
+            }
+                break
+        }
+        return res
     }
 }

@@ -248,3 +248,18 @@ export function modelToWhere(model, prefix="") {
         }
     }).filter(c=>c).join(' and ')
 }
+
+export function getQueryVariable(url,name) {
+    const urlSection = url.split('?');
+    const query = urlSection.length >= 2 ? urlSection[1] : null;
+    if (query) {
+        let vars = query.split('&');
+        for (let i = 0; i < vars.length; i++) {
+            let pair = vars[i].split('=');
+            if (pair[0] === name) {
+                return decodeURIComponent(pair[1]);
+            }
+        }
+    }
+    return null;
+}

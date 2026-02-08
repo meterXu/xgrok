@@ -42,7 +42,7 @@ function onSubmit(){
       login(form).then(async res=>{
         if(res.success){
           store.setUserName(form.username)
-          store.setUserInfo(res.data)
+          store.setUserInfo(res.data.user)
           store.setToken(res.data.accessToken)
           const plan = await queryPayPlan()
           plan.success && store.setPlan(plan.data)

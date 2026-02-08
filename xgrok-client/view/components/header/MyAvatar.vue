@@ -67,7 +67,7 @@ function logout() {
 <template>
   <el-dropdown @command="onCommand">
     <el-avatar :src="avatar" class="bg-transparent! cursor-pointer">
-      <span>{{ userInfo?.user?.username }}</span>
+      <span>{{ userInfo?.username }}</span>
     </el-avatar>
     <template #dropdown>
       <el-dropdown-menu>

@@ -56,7 +56,7 @@ export function login(data: any): Promise<ResultType<any>> {
     data = Object.assign({
         grant_type: "password",
         scope: "all",
-        client_id: "web",
+        client_id: "manage",
         client_secret: "abf7162029b76303d1ed302545a56b31",
         timestamp: new Date().valueOf()
     }, data)
