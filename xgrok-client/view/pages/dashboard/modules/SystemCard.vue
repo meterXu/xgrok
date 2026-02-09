@@ -16,13 +16,13 @@ const {tunnelCount} = defineProps(['tunnelCount'])
       </span>
       <span class="inline-flex items-center gap-4">
         <MdiLocalAreaNetworkConnect/>
-        <el-tooltip effect="dark" content="总设备数">
+        <el-tooltip effect="dark" content="个人总设备数">
           <span>3</span>
         </el-tooltip>
       </span>
     </div>
     <div>
-      <el-tooltip effect="dark" content="当前设备隧道数/所有设备隧道数">
+      <el-tooltip effect="dark" content="当前设备隧道数/个人所有设备隧道数">
         <div class="text-[12px] inline-flex gap-12">
         <span class="inline-block">
           网页：<span class="font-bold text-(--el-color-primary)">{{ tunnelCount.web.length }}</span>/{{tunnelCount.allWeb.length}}
