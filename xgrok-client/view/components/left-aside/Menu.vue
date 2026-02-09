@@ -4,7 +4,6 @@ import IconParkOutlinePlanet from '~icons/icon-park-outline/planet';
 import IconParkOutlineWholeSiteAccelerator from '~icons/icon-park-outline/whole-site-accelerator';
 import IconParkOutlineSettingTwo from '~icons/icon-park-outline/setting-two';
 import IconParkOutlineInfo from '~icons/icon-park-outline/info';
-import {useAppStore} from "@/store";
 
 const menuList = [
   {
@@ -22,6 +21,11 @@ const menuList = [
     icon: <IconParkOutlineWholeSiteAccelerator/>,
     name: 'Service',
   },
+  // {
+  //   title: '直联',
+  //   icon: <IconParkOutlineLinkThree/>,
+  //   name: 'Vpn',
+  // },
   {
     title: '订阅',
     icon: <IconParkOutlineCooperativeHandshake/>,
@@ -32,11 +36,6 @@ const menuList = [
     icon: <IconParkOutlineDocSearchTwo/>,
     name: 'Log',
   },
-  // {
-  //   title: '互联',
-  //   icon: <IconParkOutlineLinkThree/>,
-  //   name: 'vpn',
-  // },
   {
     title: '设置',
     icon: <IconParkOutlineSettingTwo/>,

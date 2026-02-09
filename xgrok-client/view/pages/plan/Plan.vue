@@ -160,20 +160,20 @@ function onWillPlanExpiredTime(item) {
 .product-card-active {
   position: relative;
   margin: -4px !important;
-  border: 4px solid var(--el-color-success);
+  border: 2px solid var(--el-color-success);
 
   &::after {
     content: "";
     position: absolute;
     top: 0;
     right: 0;
-    width: 36px;
-    height: 36px;
+    width: 24px;
+    height: 24px;
     background-color: var(--el-color-success);
-    border-bottom-left-radius: 4px;
+    border-bottom-left-radius: 8px;
     background-image: url(@/assets/imgs/check-white.svg);
     background-repeat: no-repeat;
-    background-size: 20px;
+    background-size: 14px;
     background-position: center center;
   }
 }

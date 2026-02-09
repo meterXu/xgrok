@@ -12,8 +12,8 @@ const {selectedServer} = store
 <template>
   <ServerConfigItem class="server-configs border-none bg-(--primary-bg-0) h-full" :serverConfig="selectedServer">
     <div class="text-[12px] inline-flex gap-12">
-      <span class="inline-block"><MdiArrowUpBold/><span class="font-bold text-(--el-color-primary)">6Mbps</span></span>
-      <span class="inline-block"><MdiArrowDownBold/><span class="font-bold text-(--el-color-orage)">10Mbps</span></span>
+      <span class="inline-flex items-center gap-4 text-(--el-color-primary)"><MdiArrowUpBold/><span class="font-bold">6Mbps</span></span>
+      <span class="inline-flex items-center gap-4 text-(--el-color-orange)"><MdiArrowDownBold/><span class="font-bold">10Mbps</span></span>
     </div>
   </ServerConfigItem>
 </template>

@@ -59,7 +59,7 @@ const rules = {
     {max: 200, message: '最多200个字', trigger: 'change'}
   ],
   port: [
-    {type: 'integer', required: true, message: '请输入代理端口', trigger: 'change'},
+    {type: 'integer', required: true, message: '请输入本地端口', trigger: 'change'},
   ],
   remote_port: [
     {type: 'integer', required: true, message: '请输入映射端口', trigger: 'change'},
@@ -232,7 +232,7 @@ created()
         </el-radio-group>
       </el-badge>
     </el-form-item>
-    <el-form-item label="代理端口" prop="port">
+    <el-form-item label="本地端口" prop="port">
       <div class="port-wrap">
         <el-input-number v-model="formData.port" placeholder="端口号"></el-input-number>
         <div class="port-content">

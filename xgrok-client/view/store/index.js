@@ -27,7 +27,10 @@ export const useAppStore = defineStore('app', () => {
     const _appSetting = shallowReactive({})
     const _tunnelCount = reactive({
         web: [],
-        service: []
+        service: [],
+        allWeb:[],
+        allService:[]
+
     })
     const _systemTheme = ref(null)
 

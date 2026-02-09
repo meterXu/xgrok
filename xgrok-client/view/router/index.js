@@ -82,6 +82,14 @@ const normalRoutes = [
                     title: '服务',
                 }
             },
+            // {
+            //     path: 'vpn',
+            //     name: 'Vpn',
+            //     component: ServiceTunnelPage,
+            //     meta: {
+            //         title: '直联',
+            //     }
+            // },
             {
                 path: 'plan',
                 name: 'Plan',
