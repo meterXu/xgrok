@@ -50,14 +50,11 @@ docker安装成功后，访问 `htttp://xxx.xxx.xxx.xxx:8181/`
 
 ![c3.webp](assets%2F%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2%2Fc3.webp)
 
-![c4.webp](assets%2F%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2%2Fc4.webp)
-
 ![c10.webp](assets%2F%E8%BD%AF%E4%BB%B6%E7%95%8C%E9%9D%A2%2Fc10.webp)
 
 
 ## 三、计划清单
 
-- [x] 支付界面优化
 - [x] 捐赠页面优化
 - [x] 删除界面优化
 - [x] 增加隧道修改
