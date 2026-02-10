@@ -66,6 +66,18 @@ body{
     font-size: 14px;
     font-weight: normal;
 }
+.footer-content a:hover{
+    color: #fff;
+    opacity: 1;
+}
+.footer-content a+a:before{
+    content: '';
+    display: inline-block;
+    border-left: 1px solid #6d6d6d;
+    width: 2px;
+    height: 10px;
+    margin-right: 3px;
+}
 .header{
     height: 64px;
     line-height: 64px;

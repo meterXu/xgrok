@@ -87,6 +87,8 @@
 <div class="footer-copyright">
     <div class="footer-content">
         <a href="https://beian.miit.gov.cn/#/Integrated/index">ICP备案号：苏ICP备20001603号-2</a>
+        <a href="/document/termsOfService" target="_blank">服务条款</a>
+        <a href="/document/privacyAgreement" target="_blank">隐私策略</a>
     </div>
 </div>
 <div class="dialog">
