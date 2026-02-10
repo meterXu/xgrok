@@ -95,7 +95,7 @@ const normalRoutes = [
                 name: 'Plan',
                 component: Plan,
                 meta: {
-                    title: '订阅',
+                    title: '捐赠',
                 }
             },
             {

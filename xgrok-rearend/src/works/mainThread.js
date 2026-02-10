@@ -61,11 +61,11 @@ export default class MainThreadWorker{
         if(isEmail(data.email)){
             console.log(`send [${data.category}] message to email [${data.email}]`)
             let emailData = data.category==='expireInOneDay'?{
-                subject:'订阅通知📢 xgrok',
-                html:'👋<br/>你的订阅将在一天后过期，为了不影响你的应用正常运行，请在24H内延长订阅！<br/>💵💵💵'
+                subject:'捐赠通知📢 xgrok',
+                html:'👋<br/>你的捐赠将在一天后过期，为了不影响你的应用正常运行，请在24H内继续捐赠！<br/>💵💵💵'
             }:{
-                subject:'订阅通知📢 xgrok',
-                html:'😊<br/>你的订阅已过期，系统已自动将其更新为【免费计划】，欢迎再次订阅！<br/>🙏🙏🙏'
+                subject:'捐赠通知📢 xgrok',
+                html:'😊<br/>你的捐赠已过期，系统已自动将其更新为【不捐赠】，欢迎再次捐赠！<br/>🙏🙏🙏'
             }
             await this.emailService.sendEmail(data.email,emailData.subject,emailData.html)
         }

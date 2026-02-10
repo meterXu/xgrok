@@ -45,7 +45,7 @@ async function planExpired(data){
                     await window.electronAPI.turnOff(store.pid.value)
                     store.setPid(null)
                 }
-                alert('你的订阅已过期')
+                alert('你的捐赠已失效')
             }
         }
     })

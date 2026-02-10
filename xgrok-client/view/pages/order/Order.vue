@@ -33,19 +33,19 @@ const closeBtn = computed(()=>{
     case null:{
       return {
         type:'info',
-        text:'我暂时不想订阅'
+        text:'我暂时不想捐赠'
       }
     }
     case true:{
       return {
         type:'success',
-        text:`订阅成功，(${paySuccessTimerNum.value}s)自动返回`
+        text:`捐赠成功，(${paySuccessTimerNum.value}s)自动返回`
       }
     }
     case false:{
       return {
         type:'danger',
-        text:'订阅失败，点我返回'
+        text:'捐赠失败，点我返回'
       }
     }
   }
@@ -110,9 +110,9 @@ function closeOrder(){
   }else if(payRes.value===false){
     router.replace({name:'Plan'})
   }else{
-    confirm('确定要不订阅了吗？',null,{
-      confirmButtonText:'不，还想订阅',
-      cancelButtonText:'是的，不订阅',
+    confirm('确定要不捐赠了吗？',null,{
+      confirmButtonText:'不，还想捐赠',
+      cancelButtonText:'是的，不捐赠',
       cancelButtonClass:'el-button--danger is-plain'
     }).then(()=>{}).catch(()=>{
       router.replace({name:'Plan'})

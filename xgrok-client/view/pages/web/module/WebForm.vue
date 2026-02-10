@@ -109,7 +109,7 @@ function onSave() {
             pid.value&&$emit('restart')
           } else {
             confirm(res.message || `${createOrUpdateText.value}失败`, null, {
-              confirmButtonText: '去订阅',
+              confirmButtonText: '去捐赠',
               cancelButtonText: '知道了',
               confirmButtonClass: 'el-button--warning is-plain'
             }).then(() => {

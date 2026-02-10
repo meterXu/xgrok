@@ -27,7 +27,7 @@ const menuList = [
   //   name: 'Vpn',
   // },
   {
-    title: '订阅',
+    title: '捐赠',
     icon: <IconParkOutlineCooperativeHandshake/>,
     name: 'Plan',
   },

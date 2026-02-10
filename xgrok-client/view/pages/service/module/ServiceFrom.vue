@@ -179,8 +179,8 @@ function queryRangeByType() {
 
 function onChangeType(value) {
   if (value === serviceType.UDP && plan.value !== payPlan.vip) {
-    confirm('免费用户无法创建UDP隧道', null, {
-      confirmButtonText: '去订阅',
+    confirm('无捐赠用户无法创建UDP隧道', null, {
+      confirmButtonText: '去捐赠',
       cancelButtonText: '知道了',
       confirmButtonClass: 'el-button--warning is-plain'
     }).then(() => {

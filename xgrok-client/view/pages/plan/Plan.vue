@@ -101,12 +101,12 @@ function onWillPlanExpiredTime(item) {
           <el-card class="cursor-pointer flex-1 m-[-1px] box-content border hover:border-(--el-color-success)! product-card product-card-info">
             <template #header>
               <div class="text-[14px] font-bold">
-                <span>订阅信息</span>
+                <span>捐赠信息</span>
               </div>
             </template>
             <div class="p-[0_20px_0px_20px]">
               <el-descriptions class="mt-24 my-descriptions" :column="1">
-                <el-descriptions-item label="当前订阅：">{{ plan?.plan.name }}</el-descriptions-item>
+                <el-descriptions-item label="当前捐赠：">{{ plan?.plan.name }}</el-descriptions-item>
                 <el-descriptions-item label="到期日期：">{{ plan?.plan.expired_time_str || '-' }}</el-descriptions-item>
                 <el-descriptions-item v-if="showWillPlan" label="将延长至：">{{ willPlanExpiredTime }}</el-descriptions-item>
               </el-descriptions>
@@ -144,7 +144,7 @@ function onWillPlanExpiredTime(item) {
                     <template #icon>
                       <icon-park-outline-hand-right/>
                     </template>
-                    {{ plan.value === 0 ? '立即订阅' : '延长订阅' }}
+                    {{ plan.value === 0 ? '立即捐赠' : '继续捐赠' }}
                   </el-button>
                 </template>
               </el-card>

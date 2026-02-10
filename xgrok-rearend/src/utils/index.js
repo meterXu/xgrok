@@ -177,17 +177,17 @@ export function checkUrl(name, domain, port, timeout = 3000) {
 
 export function getPaySuccessEmail(alipayNotifyModel) {
     return {
-        subject: "感谢订阅 xgrok - 订单信息",
+        subject: "感谢捐赠 xgrok - 捐赠信息",
         html: `
 <p>亲爱的用户，你好</p>
-<p>你的付款方式：支付宝</p>
+<p>你的捐赠方式：支付宝</p>
 <br/>
-<p>订单编号： ${alipayNotifyModel.out_trade_no}</p>
-<p>应付金额： ￥${alipayNotifyModel.total_amount}CNY</p>
-<p>付款时间： ${new moment(alipayNotifyModel.gmt_create).format('yyyy-MM-DD')}</p>
-<p>付款状态： ${sysPayToText(aliPayPaymentToSys(alipayNotifyModel.trade_status))}</p>
+<p>捐赠编号： ${alipayNotifyModel.out_trade_no}</p>
+<p>捐赠金额： ￥${alipayNotifyModel.total_amount}CNY</p>
+<p>捐赠时间： ${new moment(alipayNotifyModel.gmt_create).format('yyyy-MM-DD')}</p>
+<p>捐赠状态： ${sysPayToText(aliPayPaymentToSys(alipayNotifyModel.trade_status))}</p>
 <br/>
-<p>订单内容</p>
+<p>捐赠内容</p>
 <p>${alipayNotifyModel.subject}，￥${alipayNotifyModel.total_amount}CNY</p>
 <p>------------------------------------------------------</p>
 <p>小计: ￥${alipayNotifyModel.total_amount}CNY</p>
@@ -198,19 +198,19 @@ export function getPaySuccessEmail(alipayNotifyModel) {
 
 export function getPayRefundEmail(refundModel) {
     return {
-        subject: "欢迎再次订阅 xgrok - 订单退款",
+        subject: "欢迎再次捐赠 xgrok - 捐赠退回",
         html: `
 <p>亲爱的用户，你好</p>
-<p>已成功为你进行了退款</p>
+<p>已成功为你进行了捐赠退回</p>
 <br/>
 <p>------------------------------------------------------</p>
-<p>订单编号： ${refundModel.out_trade_no}</p>
-<p>商品名称： ${refundModel.subject}</p>
-<p>实付金额： ￥${refundModel.total_amount}CNY</p>
+<p>捐赠编号： ${refundModel.out_trade_no}</p>
+<p>捐赠名称： ${refundModel.subject}</p>
+<p>实际捐赠金额： ￥${refundModel.total_amount}CNY</p>
 <br/>
-<p>退款金额： ￥${refundModel.refund_amount}CNY</p>
-<p>退款时间： ${new moment(refundModel.refund_time).format('yyyy-MM-DD')}</p>
-<p>退款原因： ￥${refundModel.refund_reason}</p>
+<p>退回金额： ￥${refundModel.refund_amount}CNY</p>
+<p>退回时间： ${new moment(refundModel.refund_time).format('yyyy-MM-DD')}</p>
+<p>退回原因： ￥${refundModel.refund_reason}</p>
 <p>------------------------------------------------------</p>`
     }
 }

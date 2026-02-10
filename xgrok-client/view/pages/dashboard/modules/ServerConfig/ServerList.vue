@@ -34,8 +34,8 @@ function onSelectConfigItem(_serverConfig) {
       setSelectedServer(_serverConfig)
     }
   } else {
-    confirm('免费计划无法使用收费服务器', '',{
-      confirmButtonText: '去订阅',
+    confirm('不捐赠无法使用高速服务器', '',{
+      confirmButtonText: '去捐赠',
       cancelButtonText: '知道了',
       confirmButtonClass: 'el-button--warning is-plain'
     }).then(() => {
