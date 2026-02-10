@@ -1,5 +1,5 @@
 <title>XGROK</title>
-<meta name="description" content="XGROK是一款内网穿透软件，旨在为普通用户提供简单快捷的网络穿透体验。">
+<meta name="description" content="XGROK是一款开源的内网穿透软件，旨在为普通用户提供简单快捷的网络穿透体验。">
 <script>
     import '../styles/gh-fork-ribbon.min.css'
     let {data} = $props();

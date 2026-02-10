@@ -73,7 +73,7 @@ function logout() {
       <el-dropdown-menu>
         <el-dropdown-item command="Plan">我的捐赠</el-dropdown-item>
         <el-dropdown-item command="Setting">系统设置</el-dropdown-item>
-        <el-dropdown-item command="Logout" class="avatar-exit-system">退出系统</el-dropdown-item>
+        <el-dropdown-item command="Logout" class="avatar-exit-system">退出软件</el-dropdown-item>
       </el-dropdown-menu>
     </template>
   </el-dropdown>

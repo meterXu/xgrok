@@ -20,11 +20,11 @@ export const UserType ={
 
 export const VIPType ={
     no:{
-        text:'免费计划',
+        text:'萍水相逢',
         value:0
     },
     vip:{
-        text:'付费计划',
+        text:'福报绵绵',
         value:1
     }
 }

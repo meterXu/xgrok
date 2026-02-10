@@ -145,7 +145,7 @@ export default class UserController {
     }
 
     @request('get', '/user/queryPayPlan')
-    @summary('查询付费计划')
+    @summary('查询捐赠类别')
     @tag
     async queryPayPlan(ctx){
         const payPlan = await this.orderService.queryPayPlan(ctx.token.user.id)
