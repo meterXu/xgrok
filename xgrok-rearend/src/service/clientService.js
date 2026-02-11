@@ -22,6 +22,28 @@ export default class ClientService {
         })])
     }
 
+    async queryClientList(pagination, orderBy, clientModel) {
+        return await prisma.$transaction([prisma.ng_client.count({where: clientModel}), prisma.ng_client.findMany({
+            where: clientModel,
+            orderBy: orderBy,
+            skip: (pagination.pageNumber - 1) * pagination.pageSize,
+            take: pagination.pageSize
+        })])
+    }
+
+    async queryClientByHostNameOrDeviceId(hostname,device_id,creator) {
+        const _where = {
+            OR:[
+                {hostname:hostname},
+                {device_id:device_id}
+            ],
+            creator:creator
+        }
+        return await prisma.ng_client.findFirst({
+            where: _where
+        })
+    }
+
     async detailClient(clientModel) {
         return await prisma.ng_client.findUnique({where: {id: clientModel.id}})
     }

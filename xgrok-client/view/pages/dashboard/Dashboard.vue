@@ -2,7 +2,7 @@
 import {
   detailServerConfig,
   queryServersConfig,
-  closeWebSocket, queryTunnelCount, getSystemInfo, queryClient, createClient, updateClient
+  closeWebSocket, queryTunnelCount, getSystemInfo, createClient, updateClient, queryByHostNameOrDeviceId
 } from '@/api'
 import {onMounted} from 'vue'
 import {useAppStore} from '@/store';
@@ -50,32 +50,30 @@ function initServerConfigData() {
 function initClient() {
   getSystemInfo().then(res => {
     if (res.success) {
-      queryClient(res.data.hostname,res.data.device_id).then(res1 => {
-        if (res1.success) {
-          if (res1.data.records.length > 0) {
-            store.setClientId(res1.data.records[0].id)
-            !res1.data.records[0].device_id&&updateClient({
-              id: res1.data.records[0].id,
-              device_id: res.data.device_id
-            })
-          } else {
-            createClient({
-              device_id: res.data.device_id,
-              hostname: res.data.hostname,
-              osVersion: res.data.osVersion
-            }).then(res2 => {
-              res2.success && store.setClientId(res2.data)
-            })
-          }
-          const hostname = res1.data.records.length>0?res1.data.records[0].hostname:res.data.hostname
-          const osVersion = res1.data.records.length>0?res1.data.records[0].osVersion:res.data.osVersion
-          const device_id = res1.data.records.length>0?res1.data.records[0].device_id:res.data.device_id
-          store.setSystemInfo({
-            hostname,
-            osVersion,
-            device_id
+      queryByHostNameOrDeviceId(res.data.hostname,res.data.device_id).then(res1 => {
+        if (res1.data) {
+          store.setClientId(res1.data.id)
+          !res1.data.device_id&&updateClient({
+            id: res1.data.id,
+            device_id: res.data.device_id
+          })
+        } else {
+          createClient({
+            device_id: res.data.device_id,
+            hostname: res.data.hostname,
+            osVersion: res.data.osVersion
+          }).then(res2 => {
+            res2.success && store.setClientId(res2.data)
           })
         }
+        const hostname = res1.data?res1.data.hostname:res.data.hostname
+        const osVersion = res1.data?res1.data.osVersion:res.data.osVersion
+        const device_id = res1.data?res1.data.device_id:res.data.device_id
+        store.setSystemInfo({
+          hostname,
+          osVersion,
+          device_id
+        })
       })
     }
   })

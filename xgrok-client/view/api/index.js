@@ -53,6 +53,8 @@ const url = {
     },
     client: {
         query: '/client/query',
+        queryList: '/client/queryList',
+        queryByHostNameOrDeviceId:'/client/queryByHostNameOrDeviceId',
         createClient: '/client'
     },
     email: {
@@ -175,15 +177,15 @@ export function deleteTunnelServiceBatch(ids) {
     return deleteAction(url.tunnel.deleteTunnelServiceBatch, {ids})
 }
 
-export function queryClient(hostname,device_id) {
-    return getAction(url.client.query, {
-        pageNumber: 1,
-        pageSize: 1,
+export function queryByHostNameOrDeviceId(hostname,device_id) {
+    return getAction(url.client.queryByHostNameOrDeviceId, {
         hostname,
-        device_id,
-        status: statusType.enable,
-        is_delete: isDeleteType.no
+        device_id
     })
+}
+
+export function queryClientList(){
+    return getAction(url.client.queryList)
 }
 
 export function createClient(model) {

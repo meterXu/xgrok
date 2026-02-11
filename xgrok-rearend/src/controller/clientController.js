@@ -14,7 +14,10 @@ export default class ClientController {
         }
     }
 
-    @request('get', '/client/query') @summary('查询') @tag @query({...PaginationModel.swaggerDocument, ...OrderByModel.swaggerDocument, ...ClientModel.swaggerDocument})
+    @request('get', '/client/query')
+    @summary('根据hostname或device_id查询')
+    @tag
+    @query({...PaginationModel.swaggerDocument, ...OrderByModel.swaggerDocument, ...ClientModel.swaggerDocument})
     async queryClient(ctx) {
         const pagination = new PaginationModel(ctx.validatedQuery)
         const orderBy = new OrderByModel(ctx.validatedQuery)
@@ -22,6 +25,34 @@ export default class ClientController {
         clientQuery.creator = ctx.token.user.id
         const queryRes = await this.clientService.queryClient(pagination, orderBy, clientQuery)
         const res = new ResultModel({total: queryRes[0], records: queryRes[1], pagination: pagination}, null, true)
+        ctx.result(res)
+    }
+
+    @request('get', '/client/queryList')
+    @summary('查询')
+    @tag
+    @query({...PaginationModel.swaggerDocument, ...OrderByModel.swaggerDocument, ...ClientModel.swaggerDocument})
+    async queryClientList(ctx) {
+        const pagination = new PaginationModel(ctx.validatedQuery)
+        const orderBy = new OrderByModel(ctx.validatedQuery)
+        const clientQuery = new ClientModel(ctx.validatedQuery)
+        clientQuery.creator = ctx.token.user.id
+        const queryRes = await this.clientService.queryClientList(pagination, orderBy, clientQuery)
+        const res = new ResultModel({total: queryRes[0], records: queryRes[1], pagination: pagination}, null, true)
+        ctx.result(res)
+    }
+
+    @request('get', '/client/queryByHostNameOrDeviceId')
+    @summary('根据hostname或device_id查询')
+    @tag
+    @query({
+        hostname:{type: "string", description: "", nullable: true},
+        device_id:{type: "string", description: "", nullable: true}
+    })
+    async queryByHostNameOrDeviceId(ctx) {
+        const {hostname,device_id} = ctx.validatedQuery
+        const client = await this.clientService.queryClientByHostNameOrDeviceId(hostname, device_id,ctx.token.user.id)
+        const res = new ResultModel(client, null, true)
         ctx.result(res)
     }
 

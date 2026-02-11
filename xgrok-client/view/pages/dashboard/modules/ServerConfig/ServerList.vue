@@ -80,8 +80,12 @@ onMounted(() => {
           <div class="flex justify-between text-[12px] ">
             <el-tooltip effect="dark" content="当前设备隧道数/总隧道数">
               <div class="inline-flex gap-12">
-                <span class="inline-block">网页：<span class="font-bold text-(--el-color-primary)">{{item.user_web_tunnel_count}}</span>/{{item.web_tunnel_count}}</span>
-                <span class="inline-block">服务：<span class="font-bold text-(--el-color-primary)">{{item.user_service_tunnel_count}}</span>/{{item.service_tunnel_count}}</span>
+                <span class="inline-block">网页：
+                  <span class="font-bold text-(--el-color-primary)">{{item.user_web_tunnel_count}}</span>/{{item.web_tunnel_count}}
+                </span>
+                <span class="inline-block">服务：
+                  <span class="font-bold text-(--el-color-primary)">{{item.user_service_tunnel_count}}</span>/{{item.service_tunnel_count}}
+                </span>
               </div>
             </el-tooltip>
           </div>

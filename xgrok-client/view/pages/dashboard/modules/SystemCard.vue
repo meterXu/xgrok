@@ -1,8 +1,15 @@
 <script setup>
 import {useAppStore} from "@/store";
+import {queryClientList} from "@/api";
 
 const {systemInfo} = useAppStore()
 const {tunnelCount} = defineProps(['tunnelCount'])
+const userClientCount = ref(0)
+
+queryClientList().then(res => {
+  userClientCount.value = res.data.total;
+})
+
 </script>
 
 <template>
@@ -14,21 +21,23 @@ const {tunnelCount} = defineProps(['tunnelCount'])
               <div class="truncate max-w-200">{{ systemInfo?.hostname }}</div>
             </el-tooltip>
       </span>
-      <span class="inline-flex items-center gap-4">
-        <MdiLocalAreaNetworkConnect/>
-        <el-tooltip effect="dark" content="个人总设备数">
-          <span>3</span>
-        </el-tooltip>
-      </span>
+      <el-tooltip effect="dark" content="个人总设备数">
+        <span class="inline-flex items-center gap-4 text-(--el-color-orange)">
+          <MdiLocalAreaNetworkConnect/>
+          <span>{{ userClientCount }}</span>
+        </span>
+      </el-tooltip>
     </div>
     <div>
       <el-tooltip effect="dark" content="当前设备隧道数/个人所有设备隧道数">
         <div class="text-[12px] inline-flex gap-12">
         <span class="inline-block">
-          网页：<span class="font-bold text-(--el-color-primary)">{{ tunnelCount.web.length }}</span>/{{tunnelCount.allWeb.length}}
+          网页：<span class="font-bold text-(--el-color-primary)">{{ tunnelCount.web.length }}</span>/
+          <span class="text-(--el-color-orange)">{{ tunnelCount.allWeb.length }}</span>
         </span>
           <span class="inline-block">
-          服务：<span class="font-bold text-(--el-color-primary)">{{ tunnelCount.service.length }}</span>/{{tunnelCount.allService.length }}
+          服务：<span class="font-bold text-(--el-color-primary)">{{ tunnelCount.service.length }}</span>/
+            <span class="text-(--el-color-orange)">{{ tunnelCount.allService.length }}</span>
         </span>
         </div>
       </el-tooltip>
