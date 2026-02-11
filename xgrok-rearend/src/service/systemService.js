@@ -1,5 +1,7 @@
 import {Prisma} from "@prisma/client";
 import {isDelete, payStatus, status} from "../utils/enum.js";
+import {performance} from "perf_hooks";
+import net from "net";
 
 const {PrismaClient} = require("@prisma/client");
 const prisma = new PrismaClient();
@@ -145,5 +147,31 @@ export default class SystemService {
                                 inner join ng_server b on a.server_id = b.id and b.is_delete=${isDelete.false} and b.status=${status.enable}
                                 where a.type=${type}
                                 group by b.name,b.domain,a.type`
+    }
+
+    async checkTcpLatency(serverId,timeout=5000){
+        return new Promise(async (resolve, reject) => {
+            const server = await prisma.Server.findUnique({
+                where: {
+                    id:serverId
+                }
+            })
+            const socket = new net.Socket();
+            const start = performance.now();
+            socket.setTimeout(timeout);
+            socket.connect(server.port, server.domain, () => {
+                const latency = performance.now() - start;
+                socket.destroy();
+                resolve(latency.toFixed(3));
+            });
+            socket.on('error', (err) => {
+                socket.destroy();
+                reject(`连接错误: ${err.message}`);
+            });
+            socket.on('timeout', () => {
+                socket.destroy();
+                reject('连接超时');
+            });
+        });
     }
 }

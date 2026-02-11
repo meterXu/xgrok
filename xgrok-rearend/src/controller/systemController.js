@@ -110,4 +110,13 @@ export default class SystemController {
         const res = new ResultModel(resRecords, null, true)
         ctx.result(res)
     }
+
+    @request('get', '/system/checkTcpLatency')
+    @summary('测量TCP握手延迟')
+    @tag
+    async checkTcpLatency(ctx){
+        const {serverId} = ctx.validatedQuery
+        const res = await this.systemService.checkTcpLatency(serverId)
+        ctx.result(new ResultModel(res, null, true))
+    }
 }
