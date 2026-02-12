@@ -119,4 +119,13 @@ export default class SystemController {
         const res = await this.systemService.checkTcpLatency(serverId)
         ctx.result(new ResultModel(res, null, true))
     }
+
+    @request('get', '/system/networkSpeed')
+    @summary('测量用户客户端和服务端之间的速率')
+    @tag
+    async networkSpeed(ctx){
+        const {serverId,clientId} = ctx.validatedQuery
+        const res = await this.systemService.networkSpeed(serverId,clientId,ctx.token.user.id)
+        ctx.result(new ResultModel(res, null, true))
+    }
 }

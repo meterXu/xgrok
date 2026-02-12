@@ -1,7 +1,9 @@
 import {Prisma} from "@prisma/client";
-import {isDelete, payStatus, status} from "../utils/enum.js";
+import {isDelete, payStatus, serviceType, status} from "../utils/enum.js";
+import {sleep} from '../utils'
 import {performance} from "perf_hooks";
 import net from "net";
+import axios from "axios";
 
 const {PrismaClient} = require("@prisma/client");
 const prisma = new PrismaClient();
@@ -174,4 +176,80 @@ export default class SystemService {
             });
         });
     }
+
+    networkSpeed(serverId,clientId,creator){
+        return new Promise(async (resolve, reject) => {
+            try{
+                let sourceQuery = await prisma.$transaction([
+                    prisma.Server.findUnique({
+                        where:{
+                            id:serverId,
+                        }
+                    }),
+                    prisma.TunnelWeb.findMany({
+                        where:{
+                            server_id:serverId,
+                            client_id:clientId,
+                            creator:creator,
+                            status:status.enable,
+                            is_delete:isDelete.false
+                        }
+                    }),
+                    prisma.TunnelService.findMany({
+                        where:{
+                            server_id:serverId,
+                            client_id:clientId,
+                            creator:creator,
+                            status:status.enable,
+                            is_delete:isDelete.false
+                        }
+                    })
+                ])
+                const tunnelSet = new Set([
+                    ...sourceQuery[1].map(c=>`frp_server_traffic_out{name="${c.name}",type="http"}`),
+                    ...sourceQuery[2].map(c=>`frp_server_traffic_out{name="${c.name}",type="${c.type===serviceType.tcp?'tcp':'udp'}"}`)
+                ])
+                let lastTotalOut = 0;
+                let lastTime = Date.now();
+                let speedMbps = 0;
+                async function samplingNetwork(){
+                    const res = await axios.get(`http://${sourceQuery[0].domain}:7400/metrics`, {
+                        auth: {
+                            username: 'xgrok',
+                            password: 'xgrok'
+                        }
+                    });
+                    const now = Date.now();
+                    const lines = res.data.split('\n');
+                    let currentTotalOut = 0;
+                    for (const line of lines) {
+                        // 仅处理包含目标的行
+                        if (line.startsWith('frp_server_traffic_out') && tunnelSet.has(line.split(' ')[0])) {
+                            const parts = line.split(' ');
+                            const val = parseFloat(parts[1]); // 使用 parseFloat 兼容科学计数法
+                            if (!isNaN(val)) currentTotalOut += val;
+                        }
+                    }
+                    //获取用户客户端下的启用隧道的总字节数
+                    if (lastTotalOut > 0) {
+                        const timeDiff = (now - lastTime) / 1000;
+                        const byteDiff = currentTotalOut - lastTotalOut;
+                        speedMbps = (byteDiff * 8 / 1024 / 1024 / timeDiff).toFixed(2);
+                    }
+                    lastTotalOut = currentTotalOut;
+                    lastTime = now;
+                }
+                // 采样两次计算差值
+                await samplingNetwork();
+                await sleep(3000); // 采样间隔越长，速率越平稳
+                await samplingNetwork();
+                resolve(speedMbps)
+            }catch (err){
+                reject(err)
+            }
+        })
+
+    }
+
+
 }
