@@ -245,7 +245,7 @@ export default class SystemService {
                 await samplingNetwork();
                 resolve(speedMbps)
             }catch (err){
-                reject(err)
+                resolve(0);
             }
         })
 
