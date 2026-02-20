@@ -87,6 +87,9 @@ const url = {
             turnOff:'/system/turnOff',
             log:'/system/log'
         }
+    },
+    system:{
+        speedAndTraffic:'/system/speedAndTraffic'
     }
 }
 
@@ -321,4 +324,8 @@ export function serviceTurnOff(data){
 
 export function getLog(startIndex,length){
     return getActionWebClient(url.webClient.system.log+`?startIndex=${startIndex}&length=${length}`)
+}
+
+export function speedAndTraffic(serverId,clientId){
+    return getAction(url.system.speedAndTraffic,{serverId,clientId})
 }

@@ -271,3 +271,28 @@ export function sleep(time = 100) {
         }, time);
     });
 }
+
+export function speedValueFmt(countByte) {
+    const countbyte = countByte*8;
+    if(countbyte>1024*1024*1024){
+        return (countbyte/(1024*1024*1024)).toFixed(2)+'Mbs'
+    }else if(countbyte>1024*1024){
+        return (countbyte/(1024*1024)).toFixed(2)+'Mbs'
+    }else if (countbyte>1024){
+        return (countbyte/1024).toFixed(2)+'Kbs'
+    }else{
+        return countbyte+'bs'
+    }
+}
+
+export function storageValueFmt(countByte) {
+    if(countByte>1024*1024*1024){
+        return (countByte/(1024*1024*1024)).toFixed(2)+'GB'
+    }else if(countByte>1024*1024){
+        return (countByte/(1024*1024)).toFixed(2)+'MB'
+    }else if (countByte>1024){
+        return (countByte/1024).toFixed(2)+'KB'
+    }else{
+        return countByte+'B'
+    }
+}

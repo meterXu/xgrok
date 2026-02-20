@@ -1,6 +1,6 @@
 import {Prisma} from "@prisma/client";
 import {isDelete, payStatus, serviceType, status} from "../utils/enum.js";
-import {sleep} from '../utils'
+import {sleep, speedValueFmt, storageValueFmt} from '../utils'
 import {performance} from "perf_hooks";
 import net from "net";
 import axios from "axios";
@@ -177,7 +177,7 @@ export default class SystemService {
         });
     }
 
-    networkSpeed(serverId,clientId,creator){
+    speedAndTraffic(serverId,clientId,creator){
         return new Promise(async (resolve, reject) => {
             try{
                 let sourceQuery = await prisma.$transaction([
@@ -211,7 +211,8 @@ export default class SystemService {
                 ])
                 let lastTotalOut = 0;
                 let lastTime = Date.now();
-                let speedMbps = 0;
+                let speed = 0;
+                let traffic = 0;
                 async function samplingNetwork(){
                     const res = await axios.get(`http://${sourceQuery[0].domain}:7400/metrics`, {
                         auth: {
@@ -233,8 +234,10 @@ export default class SystemService {
                     //获取用户客户端下的启用隧道的总字节数
                     if (lastTotalOut > 0) {
                         const timeDiff = (now - lastTime) / 1000;
-                        const byteDiff = currentTotalOut - lastTotalOut;
-                        speedMbps = (byteDiff * 8 / 1024 / 1024 / timeDiff).toFixed(2);
+                        const ByteDiff = currentTotalOut - lastTotalOut;
+                        const Bs = ByteDiff/ timeDiff;
+                        speed = speedValueFmt(Bs)
+                        traffic = storageValueFmt(ByteDiff)
                     }
                     lastTotalOut = currentTotalOut;
                     lastTime = now;
@@ -243,9 +246,15 @@ export default class SystemService {
                 await samplingNetwork();
                 await sleep(3000); // 采样间隔越长，速率越平稳
                 await samplingNetwork();
-                resolve(speedMbps)
+                resolve({
+                    speed,
+                    traffic
+                })
             }catch (err){
-                resolve(0);
+                resolve({
+                    speed:0,
+                    traffic:0
+                });
             }
         })
 

@@ -120,12 +120,12 @@ export default class SystemController {
         ctx.result(new ResultModel(res, null, true))
     }
 
-    @request('get', '/system/networkSpeed')
+    @request('get', '/system/speedAndTraffic')
     @summary('测量用户客户端和服务端之间的速率')
     @tag
-    async networkSpeed(ctx){
+    async speedAndTraffic(ctx){
         const {serverId,clientId} = ctx.validatedQuery
-        const res = await this.systemService.networkSpeed(serverId,clientId,ctx.token.user.id)
+        const res = await this.systemService.speedAndTraffic(serverId,clientId,ctx.token.user.id)
         ctx.result(new ResultModel(res, null, true))
     }
 }
