@@ -3,13 +3,13 @@ import {defineEmits} from 'vue'
 import ServerConfigItem from "@/components/ServerConfigItem.vue";
 import {useAppStore} from "@/store";
 import {isOnline, payPlan, useStatusClass} from "@/libs/enums";
-import {queryServersConfig} from "@/api";
+import {checkTcpLatency, queryServersConfig} from "@/api";
 import {confirm,alert} from "@/libs/common";
 import {$emit} from 'xxweb-util'
 
 const emits = defineEmits(['selectServerConfig','restart'])
 const {selectedServer,setSelectedServer,plan,pid,clientId} = useAppStore()
-const serverConfigs = shallowReactive([])
+const serverConfigs = reactive([])
 
 function onSelectConfigItem(_serverConfig) {
   if(_serverConfig.id === selectedServer.id)
@@ -48,14 +48,21 @@ function loadServersConfig() {
   queryServersConfig(window.project.variable.type,clientId.value).then(res => {
     if (res.success) {
       serverConfigs.splice(0, serverConfigs.length, ...res.data.records)
+      serverConfigs.forEach(c=>{
+        checkTcpLatency(c.id).then(res=>{
+          c.tcpLatency = res.data
+        })
+      })
       if(!selectedServer.id&&serverConfigs[0]){
         setSelectedServer(serverConfigs[0])
       }
     }
   })
 }
-function onSpeedTest(id){
-  console.log(id)
+function onSpeedTest(item){
+  checkTcpLatency(item.id).then(res=>{
+    item.tcpLatency = res.data
+  })
 }
 
 onMounted(() => {
@@ -74,7 +81,7 @@ onMounted(() => {
         <ServerConfigItem class="border-none h-140"  :serverConfig="item" :statusClass="useStatusClass(item.is_online)">
           <template #right-top-icon>
             <el-tooltip effect="dark" content="点击可测速">
-              <div class="text-[12px] text-(--el-color-danger) select-none" @click.stop="onSpeedTest">123 ms</div>
+              <div class="text-[12px] text-(--el-color-danger) select-none" @click.stop="onSpeedTest(item)">{{item.tcpLatency||'-'}} ms</div>
             </el-tooltip>
           </template>
           <div class="flex justify-between text-[12px] ">

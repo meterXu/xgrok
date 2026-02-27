@@ -237,14 +237,14 @@ export default class SystemService {
                         const ByteDiff = currentTotalOut - lastTotalOut;
                         const Bs = ByteDiff/ timeDiff;
                         speed = speedValueFmt(Bs)
-                        traffic = storageValueFmt(ByteDiff)
+                        traffic = storageValueFmt(currentTotalOut)
                     }
                     lastTotalOut = currentTotalOut;
                     lastTime = now;
                 }
                 // 采样两次计算差值
                 await samplingNetwork();
-                await sleep(3000); // 采样间隔越长，速率越平稳
+                await sleep(1000); // 采样间隔越长，速率越平稳
                 await samplingNetwork();
                 resolve({
                     speed,
@@ -252,8 +252,8 @@ export default class SystemService {
                 })
             }catch (err){
                 resolve({
-                    speed:0,
-                    traffic:0
+                    speed:'0',
+                    traffic:'0'
                 });
             }
         })

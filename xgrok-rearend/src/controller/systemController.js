@@ -121,7 +121,7 @@ export default class SystemController {
     }
 
     @request('get', '/system/speedAndTraffic')
-    @summary('测量用户客户端和服务端之间的速率')
+    @summary('测量用户客户端的上传速率和使用的流量')
     @tag
     async speedAndTraffic(ctx){
         const {serverId,clientId} = ctx.validatedQuery

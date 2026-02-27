@@ -275,13 +275,13 @@ export function sleep(time = 100) {
 export function speedValueFmt(countByte) {
     const countbyte = countByte*8;
     if(countbyte>1024*1024*1024){
-        return (countbyte/(1024*1024*1024)).toFixed(2)+'Mbs'
+        return (countbyte/(1024*1024*1024)).toFixed(2)+'Mbps'
     }else if(countbyte>1024*1024){
-        return (countbyte/(1024*1024)).toFixed(2)+'Mbs'
+        return (countbyte/(1024*1024)).toFixed(2)+'Mbps'
     }else if (countbyte>1024){
-        return (countbyte/1024).toFixed(2)+'Kbs'
+        return (countbyte/1024).toFixed(2)+'Kbps'
     }else{
-        return countbyte+'bs'
+        return countbyte+'bps'
     }
 }
 

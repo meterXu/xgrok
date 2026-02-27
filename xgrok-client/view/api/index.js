@@ -89,6 +89,7 @@ const url = {
         }
     },
     system:{
+        checkTcpLatency:'/system/checkTcpLatency',
         speedAndTraffic:'/system/speedAndTraffic'
     }
 }
@@ -324,6 +325,10 @@ export function serviceTurnOff(data){
 
 export function getLog(startIndex,length){
     return getActionWebClient(url.webClient.system.log+`?startIndex=${startIndex}&length=${length}`)
+}
+
+export function checkTcpLatency(serverId){
+    return getAction(url.system.checkTcpLatency, {serverId})
 }
 
 export function speedAndTraffic(serverId,clientId){

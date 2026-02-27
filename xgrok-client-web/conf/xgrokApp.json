@@ -1,7 +1,7 @@
 {
   "theme": "system",
-  "autoServer": false,
   "proxy": "",
-  "device_id": "",
-  "pid": null
+  "device_id": "5ba95be6-d273-5be8-a480-47e9dd862bf7",
+  "pid": null,
+  "autoServer": false
 }
