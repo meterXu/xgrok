@@ -7,7 +7,7 @@ import {
   onFormValidate,
   useGetDisabled,
   useGetValidateRes,
-  useGetTermsOfServiceUrl, usePrivacyAgreementUrl
+  useGetTermsOfServiceUrl, usePrivacyAgreementUrl, onOpenLink
 } from "@/libs/useAction";
 import Logo from "@/components/Logo.vue";
 import {showNotification} from "@/libs/message";
@@ -59,10 +59,6 @@ function onSubmit(){
   })
 }
 
-function onOpenLink(link){
-  window.electronAPI.openExternal(link)
-}
-
 </script>
 
 <template>
@@ -109,7 +105,7 @@ function onOpenLink(link){
     box-shadow: 0 0 0 1px var(--el-input-border-color, var(--el-border-color)) inset;;
   }
   .link{
-    text-decoration: none;
+    text-decoration: underline;
     color: var(--el-color-success);
   }
 }

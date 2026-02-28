@@ -44,6 +44,9 @@ export function useGetTermsOfServiceUrl(){
 export function usePrivacyAgreementUrl(){
     return window.project.variable.website+'privacyAgreement.html'
 }
+export function useDonationAgreementUrl(){
+    return window.project.variable.website+'donationAgreement.html'
+}
 
 export async function useGoBack(){
     router.back()
@@ -122,4 +125,12 @@ export function useClientTypeExecute(browserAction,electronAction){
     }else{
         return electronAction&&electronAction()
     }
+}
+
+export function onOpenLink(link){
+    useClientTypeExecute(() => {
+        window.open(link, '_blank')
+    }, () => {
+        window.electronAPI.openExternal(link)
+    })
 }

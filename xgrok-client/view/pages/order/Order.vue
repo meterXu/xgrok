@@ -3,11 +3,11 @@ import {computed, defineProps, onUnmounted, ref, watchEffect} from 'vue'
 import {detailProduct, createOrder, checkOrder, queryPayPlan} from '@/api'
 import QRious from 'qrious'
 import {useRouter} from "vue-router";
-import {ElMessage} from 'element-plus'
 import {useAppStore} from "@/store";
 import {NotificationType, useSysPayStatusToPayRes} from "@/libs/enums";
 import {confirm} from "@/libs/common";
 import {showNotification} from "@/libs/message";
+import {useDonationAgreementUrl,onOpenLink} from "@/libs/useAction";
 
 const props = defineProps(['productId','payNum'])
 const qrcodeImg = ref(null)
@@ -19,6 +19,7 @@ const payRes = ref(null)
 const store = useAppStore()
 const {orderStatus} = store
 const paySuccessTimerNum = ref(5)
+const donationAgreement = ref(true)
 let paySuccessTimer = null
 
 const productName = computed(()=>{
@@ -129,7 +130,7 @@ onUnmounted(()=>{
 
 <template>
   <div class="order-wrap">
-    <div class="qr-wrap">
+    <div class="qr-wrap" :class="{'qr-warp-blur':!donationAgreement}">
       <div id="qrcode" class="qr-img" :class="{'qr-img-ok':payRes===true,'qr-img-error':payRes===false}"
            v-loading="!qrcodeImg" element-loading-custom-class="qr-loading">
         <div class="qr-img-wrap">
@@ -154,20 +155,24 @@ onUnmounted(()=>{
     <div class="qr-title">
       {{productName}}￥{{_price}}
     </div>
+    <el-checkbox v-model="donationAgreement">
+      我已阅读并同意
+      <a class="link" href="javascript:;" @click="onOpenLink(useDonationAgreementUrl())">捐赠须知</a>
+    </el-checkbox>
     <div class="order-remark">
       <el-alert :closable="false">
         <ul class="remark-ul">
           <li>
-            请在5分之内完成付款，过期后，此订单将会关闭！
+            请仔细阅读《捐赠须知》！
           </li>
           <li>
-            此为虚拟商品，支付完成后，立即生效！
+            请在5分之内完成捐赠，过期后，此捐赠通道将会关闭！
           </li>
           <li>
-            支持7天无理由退款，退款金额按照购买时长折算！
+            捐赠不支持7天无理由退款！
           </li>
           <li>
-            若交易失败，请带上支付截图发送邮件至xgrok@xdog.icu。
+            若捐赠失败，请带上支付截图发送邮件至<a href="mailto:xgrok@xdog.icu">xgrok@xdog.icu</a>。
           </li>
         </ul>
       </el-alert>
@@ -186,7 +191,6 @@ onUnmounted(()=>{
     </div>
   </div>
 </template>
-
 <style scoped lang="less">
 .order-wrap{
   position: absolute;
@@ -194,6 +198,10 @@ onUnmounted(()=>{
   top: 50%;
   transform: translate(-50%,-50%);
   text-align: center;
+  .link{
+    text-decoration: underline;
+    color: var(--el-color-success);
+  }
 }
 .qr-wrap{
   display: inline-block;
@@ -203,6 +211,17 @@ onUnmounted(()=>{
   border-radius: 4px;
   text-align: center;
   padding: 12px;
+}
+.qr-warp-blur{
+  &:after{
+    position: absolute;
+    content: '';
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    backdrop-filter: blur(5px);
+  }
 }
 .qr-remark{
   margin-top: 12px;
