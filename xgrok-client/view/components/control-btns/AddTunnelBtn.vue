@@ -3,7 +3,7 @@ import {useAppStore} from "@/store";
 import {defineEmits} from "vue"
 
 const {configIsLock} = useAppStore()
-const emits = defineEmits('addTunnel')
+const emits = defineEmits(['addTunnel'])
 
 function onAddTunnel() {
   emits('addTunnel')

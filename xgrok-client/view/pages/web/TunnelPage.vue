@@ -6,9 +6,9 @@ import LeftMiddle from "@/components/left-aside/LeftMiddle.vue";
 import TunnelList from "@/components/tunnel/TunnelList.vue";
 import {onMounted, ref} from "vue";
 import {useAppStore} from "@/store";
-import {checkWeb, deleteTunnelWebBatch, queryTunnelWebConfig, updateTunnelWeb} from "@/api";
+import {checkWeb, checkWebByWebClient, deleteTunnelWebBatch, queryTunnelWebConfig, updateTunnelWeb} from "@/api";
 import WebForm from "@/pages/web/module/WebForm.vue";
-import {checkPermission, operationConfirm} from "@/libs/useAction";
+import {checkPermission, operationConfirm, useClientTypeExecute} from "@/libs/useAction";
 import {getEnumKey, confirm} from "@/libs/common";
 import {isOnline, NotificationType, tunnelType} from "@/libs/enums";
 import TunnelFormWrap from '@/components/tunnel/TunnelFormWrap.vue'
@@ -98,14 +98,21 @@ function onDel() {
 
 function onTest() {
   testStatus.value = 'start'
-  Promise.all([
-    window.electronAPI.checkWeb({
-      name: activeTunnel.value.name,
-      domain: selectedServer.domain,
-      port: selectedServer.http_port
-    }),
-    checkWeb(activeTunnel.value.name, selectedServer.domain, selectedServer.http_port)
-  ]).then(resArray => {
+  useClientTypeExecute(()=>{
+    return Promise.all([
+        checkWebByWebClient(activeTunnel.value.name, selectedServer.domain, selectedServer.http_port),
+        checkWeb(activeTunnel.value.name, selectedServer.domain, selectedServer.http_port)
+    ])
+  },()=>{
+    return Promise.all([
+      window.electronAPI.checkWeb({
+        name: activeTunnel.value.name,
+        domain: selectedServer.domain,
+        port: selectedServer.http_port
+      }),
+      checkWeb(activeTunnel.value.name, selectedServer.domain, selectedServer.http_port)
+    ])
+  }).then(resArray => {
     activeTunnel.value.is_online = resArray[0].data && resArray[1].data ? isOnline.online : isOnline.offline
     testStatus.value = activeTunnel.value.is_online ? 'success' : 'failed'
     updateTunnelWeb({

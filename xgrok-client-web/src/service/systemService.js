@@ -1,4 +1,4 @@
-import {getSystemInfo,getLog,getXgrokAppCfg,setXgrokAppCfg} from '../../../xgrok-client/src/libs/backend/system.js'
+import {getSystemInfo,getLog,getXgrokAppCfg,setXgrokAppCfg,checkWeb,checkPort} from '../../../xgrok-client/src/libs/backend/system.js'
 import {turnOn,turnOff} from '../../../xgrok-client/src/libs/backend/xgrok.js'
 export default class SystemService {
     constructor() {
@@ -26,5 +26,13 @@ export default class SystemService {
 
     getLog(logModel){
         return getLog(logModel)
+    }
+
+    checkWeb(name, domain, port){
+        return checkWeb({name, domain, port})
+    }
+
+    checkService(domain, port, type){
+        return checkPort(domain, port, type)
     }
 }

@@ -135,7 +135,7 @@ export default class UserController {
     @query({
         name:{type:'string',required:true,description:'name'},
         domain:{type:'string',required:true,description:'域名'},
-        port:{type:null,required:true,description:'端口'}
+        port:{type:'number',required:true,description:'端口'}
     })
     async checkWeb(ctx){
         const {name,domain,port} = ctx.validatedQuery

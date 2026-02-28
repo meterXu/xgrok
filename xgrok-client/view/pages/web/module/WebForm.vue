@@ -2,7 +2,7 @@
 import {reactive, defineEmits, ref, watch} from "vue";
 import {isOnline, NotificationType, tunnelType} from "@/libs/enums";
 import {getUrlSchema} from "@/libs/common";
-import {checkName, createTunnelWeb, updateTunnelWeb} from "@/api";
+import {checkName, createTunnelWeb, getRandomSubName, updateTunnelWeb} from "@/api";
 import {useAppStore} from "@/store";
 import {tipText} from "@/libs/infoText";
 import InfoTip from "@/components/infoTip.vue";
@@ -11,6 +11,7 @@ import {onFormValidate, operationConfirm, useGetDisabled, useGetErrorMsg} from "
 import {useRouter} from "vue-router";
 import {showNotification} from "@/libs/message";
 import {$emit} from 'xxweb-util'
+import RefreshButton from "@/components/RefreshButton.vue";
 
 const store = useAppStore()
 const {selectedServer, clientId,configIsLock,pid} = store
@@ -46,6 +47,11 @@ watchEffect(() => {
   formData.port = props.tunnelForm?.port || 80
   formData.is_online = isOnline.online
 })
+watchEffect(() => {
+  if(!formData.id){
+    queryRandomName()
+  }
+})
 
 const validateRes = reactive({
   name: {value: null, valid: true},
@@ -55,8 +61,8 @@ const validateRes = reactive({
 })
 const rules = {
   name: [
-    {required: true, message: '请输入名称', trigger: 'change'},
-    {validator: validateName, trigger: 'change'}
+    {required: true, message: '请输入名称', trigger: 'blur'},
+    {validator: validateName, trigger: 'blur'}
   ],
   host: [
     {required: true, message: '请输入正确的网址', type: 'url', trigger: 'change'},
@@ -151,6 +157,14 @@ function validateName(rule, value, callback) {
     })
   }
 }
+
+function queryRandomName(){
+  getRandomSubName(selectedServer.id).then(res => {
+    if(res.success){
+      formData.name = res.data
+    }
+  })
+}
 </script>
 
 <template>
@@ -168,11 +182,14 @@ function validateName(rule, value, callback) {
            :show-message="false"
            @validate="(prop,valid,value)=>{onFormValidate(validateRes,{prop,valid,value})}">
     <el-form-item label="名称" prop="name">
-      <el-input v-model="formData.name" placeholder="请输入网页名称">
-        <template #suffix>
-          <InfoTip :text="tipText.zh.name" :loading="validateNameLoading"></InfoTip>
-        </template>
-      </el-input>
+      <div class="w-full flex justify-start items-center gap-4">
+        <el-input v-model="formData.name" placeholder="请输入网页名称">
+          <template #suffix>
+            <InfoTip :text="tipText.zh.name" :loading="validateNameLoading"></InfoTip>
+          </template>
+        </el-input>
+        <RefreshButton @click="queryRandomName"></RefreshButton>
+      </div>
     </el-form-item>
     <el-form-item label="代理网址" prop="host">
       <el-input v-model="formData.host" placeholder="请输入网页地址">

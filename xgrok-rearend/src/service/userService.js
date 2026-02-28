@@ -176,15 +176,25 @@ export default class UserService {
         const subName = randomString(6)
         let randomCount = 0
         while (randomCount < 10) {
-            const tunnelWebs = await prisma.TunnelWeb.findMany({
-                where: {
-                    server_id: serverId,
-                    name: subName,
-                    status: status.enable,
-                    is_delete: isDelete.false
-                }
-            })
-            if (tunnelWebs.length === 0) {
+            const tunnels = await prisma.$transaction([
+                prisma.TunnelWeb.findMany({
+                    where: {
+                        server_id: serverId,
+                        name: subName,
+                        status: status.enable,
+                        is_delete: isDelete.false
+                    }
+                }),
+                prisma.TunnelService.findMany({
+                    where: {
+                        server_id: serverId,
+                        name: subName,
+                        status: status.enable,
+                        is_delete: isDelete.false
+                    }
+                })
+            ])
+            if ((tunnels[0].length+tunnels[1].length) === 0) {
                 return subName
             } else {
                 randomCount++

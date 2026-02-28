@@ -1,6 +1,14 @@
 <script setup>
 import {reactive, defineEmits, ref, watch} from "vue";
-import {checkName, checkPort, createTunnelService, queryRange, updateTunnelService} from "@/api";
+import {
+  checkName,
+  checkPort,
+  createTunnelService,
+  getFreePort,
+  getRandomSubName,
+  queryRange,
+  updateTunnelService
+} from "@/api";
 import {useAppStore} from "@/store";
 import {hostType, isOnline, NotificationType, payPlan, serviceType, tunnelType} from "@/libs/enums";
 import InfoTip from "@/components/infoTip.vue";
@@ -9,6 +17,7 @@ import {testName, isLocalHost, confirm} from "@/libs/common";
 import {gotoSubscribe, operationConfirm, useGetDisabled, useGetErrorMsg, onFormValidate} from "@/libs/useAction";
 import {showNotification} from "@/libs/message";
 import {$emit} from "xxweb-util";
+import RefreshButton from "@/components/RefreshButton.vue";
 
 const store = useAppStore()
 const {selectedServer, clientId, configIsLock, pid, plan} = store
@@ -43,8 +52,8 @@ const validateRes = reactive({
 })
 const rules = {
   name: [
-    {required: true, message: '请输入名称', trigger: 'change'},
-    {validator: validateName, trigger: 'change'},
+    {required: true, message: '请输入名称', trigger: 'blur'},
+    {validator: validateName, trigger: 'blur'},
   ],
   remark: [
     {max: 50, message: '最多50个字', trigger: 'change'}
@@ -83,6 +92,12 @@ watchEffect(() => {
   formData.remote_port = props.tunnelForm?.remote_port
   formData.is_remote = props.tunnelForm?.is_remote || 0
   formData.is_online = isOnline.online
+})
+watchEffect(()=>{
+  if(!formData.id){
+    queryFreePort()
+    queryRandomName()
+  }
 })
 
 watch(() => formData.host, (nv) => {
@@ -177,6 +192,21 @@ function queryRangeByType() {
   })
 }
 
+function queryFreePort(){
+  getFreePort(selectedServer.id, formData.type).then(res=>{
+    if (res.success) {
+     formData.remote_port = res.data
+    }
+  })
+}
+
+function queryRandomName(){
+  getRandomSubName(selectedServer.id).then(res => {
+    if(res.success){
+      formData.name = res.data
+    }
+  })
+}
 function onChangeType(value) {
   if (value === serviceType.UDP && plan.value !== payPlan.vip) {
     confirm('无捐赠用户无法创建UDP隧道', null, {
@@ -190,6 +220,7 @@ function onChangeType(value) {
     })
   } else {
     queryRangeByType()
+    queryFreePort()
     ruleFormRef.value.validateField('remote_port')
   }
 }
@@ -211,11 +242,14 @@ created()
            :show-message="false"
            @validate="(prop,valid,value)=>{onFormValidate(validateRes,{prop,valid,value})}">
     <el-form-item label="名称" prop="name">
-      <el-input v-model="formData.name" placeholder="请输入名称">
-        <template #suffix>
-          <InfoTip :text="tipText.zh.name" :loading="validateNameLoading"></InfoTip>
-        </template>
-      </el-input>
+      <div class="w-full flex justify-start items-center gap-4">
+        <el-input v-model="formData.name" placeholder="请输入名称">
+          <template #suffix>
+            <InfoTip :text="tipText.zh.name" :loading="validateNameLoading"></InfoTip>
+          </template>
+        </el-input>
+        <RefreshButton @click="queryRandomName"></RefreshButton>
+      </div>
     </el-form-item>
     <el-form-item label="代理地址" prop="host">
       <el-input v-model="formData.host" placeholder="请输入代理地址">
@@ -242,7 +276,10 @@ created()
     </el-form-item>
     <el-form-item label="映射端口" prop="remote_port">
       <div class="port-wrap">
-        <el-input-number v-model="formData.remote_port" placeholder="端口号"></el-input-number>
+        <div class="flex justify-start items-center gap-4">
+          <el-input-number v-model="formData.remote_port" placeholder="端口号"></el-input-number>
+          <RefreshButton @click="queryFreePort"></RefreshButton>
+        </div>
         <div class="port-content">
           <div class="port-rang-content">端口范围：{{ portRange || '-' }}</div>
           <InfoTip :text="tipText.zh.remote_port" :loading="validateRemotePortLoading"></InfoTip>

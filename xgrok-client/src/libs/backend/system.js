@@ -62,7 +62,7 @@ async function checkPort(host,checkPort,type) {
             socket.once('timeout', () => {
                 resolve({
                     data:true,
-                    message:'本地代理端口未被占用'
+                    message:'本地端口未被占用'
                 })
                 socket.destroy();
             });
@@ -70,12 +70,12 @@ async function checkPort(host,checkPort,type) {
                 if (err.code === 'ECONNREFUSED') {
                     resolve({
                         data:true,
-                        message:'本地代理端口未被占用'
+                        message:'本地端口未被占用'
                     })
                 } else {
                     resolve({
                         data:false,
-                        message:'本地代理端口已被其他服务占用，请换一个'
+                        message:'本地端口已被其他服务占用，请换一个'
                     })
                 }
             });

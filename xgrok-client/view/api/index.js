@@ -36,7 +36,8 @@ const url = {
         tunnelWebConfig: '/user/tunnelWebConfig',
         tunnelServiceConfig: '/user/tunnelServiceConfig',
         queryPayPlan: '/user/queryPayPlan',
-        queryTunnelCount: '/user/queryTunnelCount'
+        queryTunnelCount: '/user/queryTunnelCount',
+        getRandomSubName:'/user/getRandomSubName'
     },
     tunnel: {
         createWeb: '/tunnelWeb',
@@ -85,12 +86,17 @@ const url = {
             info:'/system/info',
             turnOn:'/system/turnOn',
             turnOff:'/system/turnOff',
-            log:'/system/log'
+            log:'/system/log',
+            checkWeb: '/system/checkWeb',
+            checkService: '/system/checkService'
         }
     },
     system:{
         checkTcpLatency:'/system/checkTcpLatency',
         speedAndTraffic:'/system/speedAndTraffic'
+    },
+    portRange:{
+        getFreePort:'/portRange/getFreePort'
     }
 }
 
@@ -164,11 +170,15 @@ export function checkName(domain, type, port, name, server_id, client_id, id) {
 export function checkWeb(name, domain, port) {
     return getAction(url.compliance.checkWeb, {name, domain, port})
 }
-
+export function checkWebByWebClient(name, domain, port) {
+    return getActionWebClient(url.webClient.system.checkWeb, {name, domain, port})
+}
 export function checkService(domain, port, type) {
     return getAction(url.compliance.checkService, {domain, port, type})
 }
-
+export function checkServiceByWebClient(domain, port, type) {
+    return getActionWebClient(url.webClient.system.checkService, {domain, port, type})
+}
 export function checkPort(domain, port, server_id, id, type) {
     return getAction(url.compliance.checkPort, {domain, port, server_id, id, type})
 }
@@ -333,4 +343,12 @@ export function checkTcpLatency(serverId){
 
 export function speedAndTraffic(serverId,clientId){
     return getAction(url.system.speedAndTraffic,{serverId,clientId})
+}
+
+export function getRandomSubName(serverId){
+    return getAction(url.user.getRandomSubName,{serverId})
+}
+
+export function getFreePort(serverId,type){
+    return getAction(url.portRange.getFreePort,{serverId,type})
 }
