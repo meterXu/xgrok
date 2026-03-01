@@ -25,7 +25,13 @@ export default class ConfigController {
     @body(ConfigModel.swaggerDocument)
     async setAppConfig(ctx){
         const configModel = new ConfigModel(ctx.validatedBody)
-        await this.configService.setAppConfig(configModel)
+        const newConfigModel = {}
+        Object.entries(configModel).forEach(([key, value]) => {
+           if(value!==undefined){
+               newConfigModel[key] = value
+           }
+        })
+        await this.configService.setAppConfig(newConfigModel)
         ctx.result(new ResultModel(null,'',true))
     }
 }

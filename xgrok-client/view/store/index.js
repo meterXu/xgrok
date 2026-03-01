@@ -149,6 +149,10 @@ export const useAppStore = defineStore('app', () => {
     }
 
     function setSelectedServer(data) {
+        useClientTypeExecute(()=>{
+            setXgrokAppCfg({selected_server_id:data.id})
+        },()=>{})
+        _appSetting.selected_server_id = data.id
         Object.assign(_selectedServer, data)
         $ls.set("selectedServer", setLsValue(data))
     }

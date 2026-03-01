@@ -155,7 +155,7 @@ function getXgrokAppCfg(){
     return getAppCfg()
 }
 function setXgrokAppCfg(data){
-    if(isElectron()){
+    if(isElectron()){//客户端设置自启动模式
         const minecraftAutoLauncher = new AutoLaunch({
             name: 'xgrok',
             path: global.project.appAbsoluteName
@@ -163,10 +163,10 @@ function setXgrokAppCfg(data){
         if(data.hasOwnProperty('autoLaunch')){
             if(data.autoLaunch){
                 minecraftAutoLauncher.enable()
-                data.autoServer = !!global.xgrokPid
+                data.autoStart = !!global.xgrokPid
             }else{
                 minecraftAutoLauncher.disable()
-                data.autoServer = false
+                data.autoStart = false
             }
         }
     }

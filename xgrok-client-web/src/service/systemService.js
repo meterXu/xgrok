@@ -7,6 +7,7 @@ export default class SystemService {
     async getSystemInfo(){
         const appCfg = getXgrokAppCfg()
         const systemInfo = await getSystemInfo()
+        // 获取系统信息时初始化设备唯一ID
         if(appCfg.device_id){
             systemInfo.device_id = appCfg.device_id
         }else{

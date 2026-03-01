@@ -2,7 +2,7 @@
 import {
   detailServerConfig,
   queryServersConfig,
-  closeWebSocket, queryTunnelCount, getSystemInfo, createClient, updateClient, queryByHostNameOrDeviceId
+  closeWebSocket, queryTunnelCount, getSystemInfo, createClient, updateClient, queryByHostNameOrDeviceId, getXgrokAppCfg
 } from '@/api'
 import {onMounted} from 'vue'
 import {useAppStore} from '@/store';
@@ -41,7 +41,21 @@ function initServerConfigData() {
   } else {
     queryServersConfig(window.project.variable.type).then(res => {
       if (res.success && res.data.records.length > 0) {
-        store.setSelectedServer(res.data.records[0])
+        useClientTypeExecute(()=>{
+          getXgrokAppCfg().then(res2=>{
+            if(res2.success&&res2.data.selected_server_id){
+              detailServerConfig(res2.data.selected_server_id).then(res3 => {
+                if (res3.success) {
+                  store.setSelectedServer(res3.data)
+                }
+              })
+            }else{
+              store.setSelectedServer(res.data.records[0])
+            }
+          })
+        },()=>{
+          store.setSelectedServer(res.data.records[0])
+        })
       }
     })
   }

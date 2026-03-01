@@ -42,7 +42,9 @@ export default {
     },
     appConf:{
         theme: 'system',
+        pid:0,
+        device_id:'',
         autoServer:false,
-        proxy: ''
+        selected_server_id:''
     }
 }

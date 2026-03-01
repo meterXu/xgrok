@@ -3,9 +3,10 @@ import {defineEmits} from 'vue'
 import ServerConfigItem from "@/components/ServerConfigItem.vue";
 import {useAppStore} from "@/store";
 import {isOnline, payPlan, useStatusClass} from "@/libs/enums";
-import {checkTcpLatency, queryServersConfig} from "@/api";
+import {checkTcpLatency, getXgrokAppCfg, queryServersConfig} from "@/api";
 import {confirm,alert} from "@/libs/common";
 import {$emit} from 'xxweb-util'
+import {useClientTypeExecute} from "@/libs/useAction";
 
 const emits = defineEmits(['selectServerConfig','restart'])
 const {selectedServer,setSelectedServer,plan,pid,clientId} = useAppStore()
@@ -53,9 +54,6 @@ function loadServersConfig() {
           c.tcpLatency = res.data
         })
       })
-      if(!selectedServer.id&&serverConfigs[0]){
-        setSelectedServer(serverConfigs[0])
-      }
     }
   })
 }
