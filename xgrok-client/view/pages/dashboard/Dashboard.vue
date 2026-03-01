@@ -13,6 +13,7 @@ import PlusScrollbar from "@/components/plus-scrollbar/PlusScrollbar.vue";
 import ServerList from "@/pages/dashboard/modules/ServerConfig/ServerList.vue";
 import ServiceSwitch from '@/components/control-btns/ServiceSwitch.vue'
 import {useClientTypeExecute} from "@/libs/useAction";
+import {clientType} from "@/libs/enums";
 
 const store = useAppStore()
 const serviceSwitchRef = ref()
@@ -31,32 +32,29 @@ useClientTypeExecute(()=>{},()=>{
   })
 })
 
-function initServerConfigData() {
-  if (selectedServer && selectedServer.type === window.project.variable.type) {
-    detailServerConfig(selectedServer.id).then(res => {
-      if (res.success) {
-        store.setSelectedServer(res.data)
+async function initServerConfigData() {
+  await useClientTypeExecute(async ()=>{
+    //webclient模式直接获取后端的selectedServer
+    const res = await getXgrokAppCfg()
+    if(res.success&&res.data.selected_server_id){
+      const res2 = await detailServerConfig(res.data.selected_server_id)
+      if(res2.success){
+        store.setSelectedServer(res2.data)
       }
-    })
-  } else {
+    }
+  },async ()=>{
+    //客户端类型为frp模式的则获取selectedServer详情
+    if(selectedServer.type === window.project.variable.type){
+      const res3 = await detailServerConfig(selectedServer.id)
+      if (res3.success) {
+        store.setSelectedServer(res3.data)
+      }
+    }
+  })
+  // 没有selectedServer，则取第一个
+  if (!selectedServer) {
     queryServersConfig(window.project.variable.type).then(res => {
-      if (res.success && res.data.records.length > 0) {
-        useClientTypeExecute(()=>{
-          getXgrokAppCfg().then(res2=>{
-            if(res2.success&&res2.data.selected_server_id){
-              detailServerConfig(res2.data.selected_server_id).then(res3 => {
-                if (res3.success) {
-                  store.setSelectedServer(res3.data)
-                }
-              })
-            }else{
-              store.setSelectedServer(res.data.records[0])
-            }
-          })
-        },()=>{
-          store.setSelectedServer(res.data.records[0])
-        })
-      }
+      store.setSelectedServer(res.data.records[0])
     })
   }
 }
