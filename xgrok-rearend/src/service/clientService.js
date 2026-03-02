@@ -1,5 +1,5 @@
 import {randomUUID} from "../utils/index.js";
-import {isDelete} from "../utils/enum.js";
+import {isDelete, status} from "../utils/enum.js";
 
 const {PrismaClient} = require("@prisma/client");
 const prisma = new PrismaClient();
@@ -12,7 +12,10 @@ export default class ClientService {
             OR: [
                 {hostname:clientModel.hostname},
                 {device_id:clientModel.device_id}
-            ]
+            ],
+            status:status.enable,
+            is_delete:isDelete.false,
+            creator: clientModel.creator
         }
         return await prisma.$transaction([prisma.ng_client.count({where: _where}), prisma.ng_client.findMany({
             where: _where,
@@ -37,7 +40,9 @@ export default class ClientService {
                 {hostname:hostname},
                 {device_id:device_id}
             ],
-            creator:creator
+            creator:creator,
+            status:status.enable,
+            is_delete:isDelete.false
         }
         return await prisma.ng_client.findFirst({
             where: _where
