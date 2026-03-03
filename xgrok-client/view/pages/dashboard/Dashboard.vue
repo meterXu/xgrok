@@ -56,6 +56,11 @@ async function initServerConfigData() {
     queryServersConfig(window.project.variable.type).then(res => {
       store.setSelectedServer(res.data.records[0])
     })
+  }else{
+    //webclient模式下如果配置中不存在selected_server_id，需要首次初始化selectedServer
+    useClientTypeExecute(()=>{
+      !appSetting.selected_server_id&&store.setSelectedServer(selectedServer)
+    })
   }
 }
 
