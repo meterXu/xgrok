@@ -115,8 +115,6 @@ services:
     container_name: xgrok
     ports:
       - 8181:8181
-    volumes:
-      - /tmp/xgrok:/xgrok/conf
     restart: always</code>
         </pre>
     </div>
