@@ -4,10 +4,11 @@ import {deviceType, getTheme, systemThemeChangeEvent} from "@/libs/common";
 import bus from "@/libs/bus";
 import {resizeFontSize} from "xxweb-util";
 import {useAppStore} from '@/store'
-import {useClientTypeExecute} from "@/libs/useAction";
+import {useClientTypeExecute,useClientType} from "@/libs/useAction";
 
 const router = useRouter()
 const {setSystemTheme} = useAppStore()
+const clientType = useClientType()
 
 window.onresize = () => {
   resizeFontSize(1000, 4, 0, (width) => {
@@ -43,7 +44,7 @@ systemThemeChangeEvent((_theme) => {
 <template>
   <el-config-provider size="default">
     <div class="main">
-      <HeaderToolBar v-if="deviceType()==='win32'"></HeaderToolBar>
+      <HeaderToolBar v-if="deviceType()==='win32'&&clientType===clientType.electron"></HeaderToolBar>
       <div class="main-container">
         <router-view v-slot="{ Component }">
           <keep-alive>

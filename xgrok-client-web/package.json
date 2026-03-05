@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev:web-client": "dotenv -e .env.development -- npx babel-node src/main.js",
-    "build:web-client": "rm -rf web && cd ../xgrok-client && npm run build:brower && cp -rpf dist ../xgrok-client-web/web && cd ../xgrok-client-web && rm -rf dist && babel src -d dist",
+    "build:web-client": "node build.js",
     "prod": "export NODE_ENV=production&&node dist/main.js"
   },
   "license": "GPL-3.0",
@@ -31,7 +31,8 @@
     "@babel/plugin-transform-runtime": "^7.19.6",
     "@babel/preset-env": "^7.20.2",
     "@babel/runtime": "^7.28.4",
-    "dotenv-cli": "^6.0.0"
+    "dotenv-cli": "^6.0.0",
+    "fs-extra": "^11.3.4"
   },
   "volta": {
     "node": "22.21.1"
