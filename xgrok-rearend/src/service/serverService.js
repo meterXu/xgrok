@@ -51,7 +51,7 @@ export default class ServerService {
                                                                  b.client_id = '${clientId}'
                                            group by a.id) e on a.id = e.id
                            ${where ? `where ${where}` : ''}
-                       order by a.created_time desc
+                       order by a.sort asc,a.created_time desc
                            limit ${(pagination.pageNumber - 1) * pagination.pageSize}, ${pagination.pageSize}`
         return await prisma.$transaction([
             prisma.Server.count({

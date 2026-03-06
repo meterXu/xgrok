@@ -13,9 +13,8 @@ export default class SysDictService {
 
     async querySysDict(ctx) {
         const pagination = new PaginationModel(ctx.request.query)
-        const order = new OrderByModel(ctx.request.query)
+        const orderBy = new OrderByModel(ctx.request.query)
         const sysDictModel = new SysDictModel(ctx.request.query)
-        const orderBy = {'created_time':'desc'}
         let res = await prisma.$transaction([
             prisma.SysDict.count({
                 where: sysDictModel
