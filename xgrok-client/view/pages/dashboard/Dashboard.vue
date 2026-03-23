@@ -52,7 +52,7 @@ async function initServerConfigData() {
     }
   })
   // 没有selectedServer，则取第一个
-  if (!selectedServer) {
+  if (!selectedServer.id) {
     queryServersConfig(window.project.variable.type).then(res => {
       store.setSelectedServer(res.data.records[0])
     })
