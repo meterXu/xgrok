@@ -21,7 +21,7 @@ function onDropdownMenuClick(command:string){
 <template>
   <XXWebBox :appConfig="_project" :permission="permission" @dropdownMenuClick="onDropdownMenuClick">
     <template #head-user-userName>
-      {{userInfo?.user?.username||userInfo?.user?.nickname}}
+      {{userInfo?.user?.nickname||userInfo?.user?.username}}
     </template>
   </XXWebBox>
 </template>
