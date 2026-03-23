@@ -8,6 +8,7 @@ import {showNotification} from '@/libs/utils/message.ts'
 import {IsDeleteEnum, NotificationTypeEnum, StatusEnum} from "@/libs/enum";
 import {Search, RefreshLeft, Plus, Delete} from "@element-plus/icons-vue";
 import UserEdit from "./module/UserEdit.vue";
+import UserResetPwd from "./module/UserResetPwd.vue";
 import UserTunnelDrawer from "@/views/user/module/UserTunnelDrawer.vue";
 import type {TableInstance} from "element-plus";
 
@@ -15,6 +16,7 @@ const loading = shallowRef(false)
 const tableData = shallowReactive([] as any[])
 const page = usePage()
 const dialogVisible = ref(false)
+const resetDialogVisible = ref(false)
 const searchForm = shallowReactive({
   username:'',
   status:1,
@@ -69,6 +71,11 @@ function onDetailUser(id:string,status:number,is_delete:number){
 function onEdit(row:any){
   Object.assign(formData,row)
   dialogVisible.value = true
+}
+
+function onChangePwd(row:any){
+  Object.assign(formData,row)
+  resetDialogVisible.value = true
 }
 
 function onSelectionChange(val: OrderType[]){
@@ -182,7 +189,7 @@ onMounted(()=>{
           <el-table-column :fixed="isFixed?'right':false" prop="is_delete" width="220" label="操作" align="center">
             <template #default="{row}">
               <el-button type="text" @click="onEdit(row)">编辑</el-button>
-              <el-button type="text" @click="onEdit(row)">重置密码</el-button>
+              <el-button type="text" @click="onChangePwd(row)">重置密码</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -203,6 +210,7 @@ onMounted(()=>{
   </div>
 </div>
   <UserEdit v-model="dialogVisible" :formData="formData" @close="handleQuery"></UserEdit>
+  <UserResetPwd v-model="resetDialogVisible" :formData="formData"></UserResetPwd>
   <UserTunnelDrawer v-model="drawerVisible" :user="selectedUser"></UserTunnelDrawer>
 </template>
 

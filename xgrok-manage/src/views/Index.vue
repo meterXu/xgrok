@@ -5,7 +5,7 @@ import {useRouter} from "vue-router";
 import {appStore} from "@/store";
 
 const store = appStore()
-const {permission} = store
+const {permission,userInfo} = store
 const router = useRouter();
 const _project = expandFullProject(window.project) as Project;
 function onDropdownMenuClick(command:string){
@@ -19,7 +19,11 @@ function onDropdownMenuClick(command:string){
 </script>
 
 <template>
-  <XXWebBox :appConfig="_project" :permission="permission" @dropdownMenuClick="onDropdownMenuClick"></XXWebBox>
+  <XXWebBox :appConfig="_project" :permission="permission" @dropdownMenuClick="onDropdownMenuClick">
+    <template #head-user-userName>
+      {{userInfo?.user?.username||userInfo?.user?.nickname}}
+    </template>
+  </XXWebBox>
 </template>
 
 <style scoped lang="less">

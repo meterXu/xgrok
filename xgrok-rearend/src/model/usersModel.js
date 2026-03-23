@@ -16,7 +16,7 @@ export default class UsersModel {
         this.is_delete = body.is_delete
     }
 
-    /** generate by CodeGirl */ @swaggerProperty({type: "string", description: "", nullable: false}) id
+    /** generate by CodeGirl */ @swaggerProperty({type: "string", description: "", nullable: true}) id
     @swaggerProperty({type: "string", description: "", nullable: false}) username
     @swaggerProperty({type: "string", description: "", nullable: false}) password
     @swaggerProperty({type: "number", description: "", nullable: true}) created_time

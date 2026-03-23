@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {reactive, computed, ref, watch, onMounted} from 'vue'
+import {computed, ref, watch, onMounted} from 'vue'
 import type {FormInstance} from 'element-plus'
 import {resetObj, useSaveOrUpdate} from "@/libs/utils/index.js";
-import {addUser, editUser} from "@/api";
+import {editUser} from "@/api";
 import md5 from "js-md5"
 
 interface Props {
@@ -15,9 +15,8 @@ const emit = defineEmits(['close'])
 const ruleFormRef = ref<FormInstance>()
 const rules = computed(()=>{
   return {
-    username: [{required: true, message: '请输入用户名', trigger: 'blur'}],
-    password:[{required:!props.formData.id,message: '请输入密码', trigger: 'blur'}],
-    confirmPassword:[{required:!props.formData.id,message: '请再次输入密码', trigger: 'blur'},{
+    password:[{required:true,message: '请输入密码', trigger: 'blur'}],
+    confirmPassword:[{required:true,message: '请再次输入密码', trigger: 'blur'},{
       validator: (rule: any, value: any, callback: any) => {
         if (value !== props.formData.password) {
           callback(new Error("两次密码输入不一致"))
@@ -37,10 +36,6 @@ function handleCancel() {
   emit('close')
 }
 
-const dialogTitle = computed(() => {
-  return props.formData.id? '修改用户' : '添加用户'
-})
-
 watch(dialogVisible, (nv) => {
   if(nv){
     ruleFormRef.value?.clearValidate()
@@ -53,12 +48,8 @@ function handleOk() {
       saveLoading.value=true
       try {
         const _formData = JSON.parse(JSON.stringify(props.formData))
-        if(_formData.password){
-          _formData.password = md5(_formData.password)
-        }else{
-          delete _formData.password
-        }
-        let res = _formData.id?await editUser(_formData as UserType):await addUser(_formData as UserType)
+        _formData.password = md5(_formData.password)
+        let res = await editUser(_formData as UserType)
         useSaveOrUpdate(res,_formData.id).then(()=>{
           handleCancel()
         }).finally(()=> {
@@ -76,14 +67,14 @@ onMounted(() => {})
 </script>
 <template>
   <el-dialog
-      :title="dialogTitle"
+      title="重置密码"
       v-model="dialogVisible"
       width="36%"
       @close="handleCancel">
     <el-form :model="formData" :rules="rules" ref="ruleFormRef" label-width="140px" class="demo-ruleForm">
-      <el-form-item label="用户名" prop="username">
+      <el-form-item label="用户名">
         <el-col :span="21">
-          <el-input v-model="formData.username" placeholder="请输入用户名"></el-input>
+          <label class="font-bold">{{formData.username}}</label>
         </el-col>
       </el-form-item>
       <el-form-item label="密码" prop="password">
@@ -94,22 +85,6 @@ onMounted(() => {})
       <el-form-item label="确认密码" prop="confirmPassword">
         <el-col :span="21">
           <el-input type="password" v-model="formData.confirmPassword" placeholder="请再次输入密码"></el-input>
-        </el-col>
-      </el-form-item>
-      <el-form-item label="昵称" prop="nickname">
-        <el-col :span="21">
-          <el-input v-model="formData.nickname" placeholder="请输入昵称"></el-input>
-        </el-col>
-      </el-form-item>
-      <el-form-item label="是否启用" prop="status">
-        <el-col :span="21">
-          <el-switch v-model="formData.status" :inactive-value="0" :active-value="1"></el-switch>
-        </el-col>
-      </el-form-item>
-      <el-form-item label="是否删除" prop="is_delete">
-        <el-col :span="21">
-          <el-switch v-model="formData.is_delete" :inactive-value="0" :active-value="1"
-                     style="--el-switch-on-color: var(--el-color-danger);"></el-switch>
         </el-col>
       </el-form-item>
     </el-form>
