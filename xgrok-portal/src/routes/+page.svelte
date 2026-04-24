@@ -3,7 +3,7 @@
 <script>
     import '../styles/gh-fork-ribbon.min.css'
     let {data} = $props();
-    let version = data.version
+    let {version,oss} = data
     const repositoryUrl = 'https://github.com/meterXu/xgrok'
     const downloadItems = [
         {
@@ -22,9 +22,9 @@
 
     function downloadFile(type) {
         const urls = {
-            windows: {text: `xgrok-Setup-${version}.exe`, url: `./release/${version}/xgrok-Setup-${version}.exe`},
-            mac: {text: `xgrok-${version}-arm64.dmg`, url: `./release/${version}/xgrok-${version}-arm64.dmg`},
-            mac2: {text: `xgrok-${version}.dmg`, url: `./release/${version}/xgrok-${version}.dmg`}
+            windows: {text: `xgrok-Setup-${version}.exe`, url: `${oss}/release/${version}/xgrok-Setup-${version}.exe`},
+            mac: {text: `xgrok-${version}-arm64.dmg`, url: `${oss}/release/${version}/xgrok-${version}-arm64.dmg`},
+            mac2: {text: `xgrok-${version}.dmg`, url: `${oss}/release/${version}/xgrok-${version}.dmg`}
         }
         // 创建一个a元素
         let a = document.createElement('a');

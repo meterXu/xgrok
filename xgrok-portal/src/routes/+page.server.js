@@ -6,8 +6,10 @@ dotenv.config({
 export function load(){
     return new Promise((resolve,reject)=>{
         const baseApi = process.env.VITE_APP_baseApi
+        const oss = process.env.VITE_APP_oss
         fetch(`${baseApi}/version/latest`).then(res => res.json()).then((data) => {
            return resolve({
+               oss:oss,
                version:data.name?.replace(/^v/gi,'')
            })
         }).catch(err=>{
