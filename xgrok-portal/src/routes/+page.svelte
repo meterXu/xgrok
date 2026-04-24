@@ -108,6 +108,10 @@
     <div class="dialog-content-2">
         <pre class="code">
             <code>
+# create folder
+mkdir -p /etc/xgrok/conf
+
+# started by docker-compose
 version: "3"
 services:
   xgrok:
@@ -115,6 +119,8 @@ services:
     container_name: xgrok
     ports:
       - 8181:8181
+    volumes:
+      - /etc/xgrok/conf:/xgrok/conf
     restart: always</code>
         </pre>
     </div>
