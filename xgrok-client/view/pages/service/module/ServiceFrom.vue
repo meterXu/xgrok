@@ -77,10 +77,11 @@ function onSave() {
     if (valid) {
       saveLoading.value = true
       operationConfirm().then(() => {
-        if(formData.secret_key){
-          formData.secret_key = encryptData(formData.secret_key)
+        const postData = JSON.parse(JSON.stringify(formData))
+        if(postData.secret_key){
+          postData.secret_key = encryptData(postData.secret_key)
         }
-        formData.id ? updateTunnelService(formData).then(res => {
+        postData.id ? updateTunnelService(postData).then(res => {
               showNotification(res.success ? NotificationType.success : NotificationType.error, res.success ? '更新成功' : '更新失败')
               if (res.success) {
                 emits('cancel')
@@ -90,7 +91,7 @@ function onSave() {
             }).finally(() => {
               saveLoading.value = false
             })
-            : createTunnelService(formData).then(res => {
+            : createTunnelService(postData).then(res => {
               if (res.success) {
                 showNotification(NotificationType.success, '创建成功')
                 emits('cancel')

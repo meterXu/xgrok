@@ -122,10 +122,16 @@ export function getTheme(){
     return store.appSetting.theme==='system'?store.systemTheme.value:store.appSetting.theme;
 }
 
+const KEY_STRING = 'xgrok00000000000';
+const IV_STRING = '1234567890123456';
+
+const key = CryptoJS.enc.Utf8.parse(KEY_STRING);
+const iv = CryptoJS.enc.Utf8.parse(IV_STRING);
+
 export function encryptData(data) {
     const srcs = CryptoJS.enc.Utf8.parse(data);
-    const encrypted = CryptoJS.AES.encrypt(srcs, 'xgrok', {
-        iv: CryptoJS.enc.Utf8.parse('1234567890'),
+    const encrypted = CryptoJS.AES.encrypt(srcs, key, {
+        iv: iv,
         mode: CryptoJS.mode.CBC,
         padding: CryptoJS.pad.Pkcs7
     });
@@ -133,8 +139,8 @@ export function encryptData(data) {
 }
 
 export function decryptData(encryptedData) {
-    const decrypted = CryptoJS.AES.decrypt(encryptedData, 'xgrok', {
-        iv: CryptoJS.enc.Utf8.parse('1234567890'),
+    const decrypted = CryptoJS.AES.decrypt(encryptedData, key, {
+        iv: iv,
         mode: CryptoJS.mode.CBC,
         padding: CryptoJS.pad.Pkcs7
     });
