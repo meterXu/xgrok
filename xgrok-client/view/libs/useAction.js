@@ -14,11 +14,15 @@ export function useGetValidateRes(form){
 }
 
 export function useGetErrorMsg(validateRes){
-    return computed(()=>{
+    const errorMsg= computed(()=>{
         return Object.entries(validateRes).map(c=>{
             return c[1].value
         }).filter(c=>c)
     })
+    const pass = computed(()=>{
+        return !errorMsg.value.some(c=>!c.valid)
+    })
+    return {errorMsg,pass}
 }
 
 export function useGetDisabled(validateRes){
@@ -32,11 +36,14 @@ export function onFormValidate(validateRes,validObj){
     validateRes[validObj.prop].value = validObj.value
 }
 
-export function resetFormValidate(validateRes){
+export function resetFormValidate(formRef,validateRes){
+    formRef.value.resetFields()
     Object.entries(validateRes).forEach(([key,value])=>{
         validateRes[key].value = null
+        validateRes[key].valid = true
     })
 }
+
 
 export function useGetTermsOfServiceUrl(){
     return window.project.variable.website+'termsOfService.html'

@@ -6,7 +6,9 @@ const tunnelType = {
 //1:tcp,2:udp
 const serviceType = {
     tcp:1,
-    udp:2
+    udp:2,
+    stcp_server:3,
+    stcp_client:4
 }
 
 const httpType={

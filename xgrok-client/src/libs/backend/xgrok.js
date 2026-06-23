@@ -157,9 +157,9 @@ async function saveYamlConf(serverDetail, webDetails, serviceDetails) {
 
 }
 
-async function generateXgrokConf(serverDetail, WebDetails, serviceDetails) {
+async function generateXgrokConf(serverDetail, webDetails, serviceDetails) {
     if (serverDetails.type === serverType.ngrok) {
-        let webTunnels = WebDetails.map(web => {
+        let webTunnels = webDetails.map(web => {
             return {[web.name]: {proto: {http: web.port}}}
         })
         let serviceTunnels = serviceDetails.map(service => {
@@ -198,35 +198,72 @@ async function generateXgrokConf(serverDetail, WebDetails, serviceDetails) {
                 to:global.project.logPath
             },
             webServer:global.project.webServer,
-            proxies: [...WebDetails.map(web => {
-                return {
-                    name: web.name,
-                    type: 'http',
-                    localPort:web.port,
-                    subdomain: web.name,
-                    transport:{
-                        bandwidthLimit:'25MB'
-                    }
-                }
-            }),
-                ...serviceDetails.map(service => {
-                    return {
-                        name:service.name,
-                        type:getEnumKey(serviceType,service.type),
-                        localIP:service.host,
-                        localPort:service.port,
-                        remotePort:service.remote_port,
-                        transport:{
-                            bandwidthLimit:'25MB'
-                        }
-                    }
-                })
+            proxies: [
+                ...generateWebConf(webDetails),
+                ...generateNormalServiceConf(serviceDetails),
+                ...generateSecretServerConf(serviceDetails)
+            ],
+            visitors:[
+                ...generateSecretClientConf(serviceDetails)
             ]
         }
         config.webServer.port = await nextAvailable(global.project.startWebServerProt, global.project.webServer.addr)
         global.logger.info(`xgrok admin port start with [${global.project.startWebServerProt}],run with [${config.webServer.port}]`)
         return stringify(config)
     }
+}
+
+function generateWebConf(webDetails){
+    return webDetails.map(web => {
+        return {
+            name: web.name,
+            type: 'http',
+            localPort:web.port,
+            subdomain: web.name,
+            transport:{
+                bandwidthLimit:'25MB'
+            }
+        }})
+}
+
+function generateNormalServiceConf(serviceDetails){
+    return serviceDetails.filter(c=>c.type===serviceType.tcp||c.type===serviceType.udp).map(service => {
+        return {
+            name:service.name,
+            type:getEnumKey(serviceType,service.type).split('_')[0],
+            localIP:service.host,
+            localPort:service.port,
+            remotePort:service.remote_port,
+            transport:{
+                bandwidthLimit:'25MB'
+            }
+        }
+    })
+}
+
+function generateSecretServerConf(serviceDetails){
+    return serviceDetails.filter(c=>c.type===serviceType.stcp_server).map(service => {
+        return {
+            name:service.name,
+            type:getEnumKey(serviceType,service.type).split('_')[0],
+            localIP:service.host,
+            localPort:service.port,
+            secretKey:service.secret_key
+        }
+    })
+}
+
+function generateSecretClientConf(serviceDetails){
+    return serviceDetails.filter(c=>c.type===serviceType.stcp_client).map(service => {
+        return {
+            name:service.name,
+            type:getEnumKey(serviceType,service.type).split('_')[0],
+            secretKey:service.secret_key,
+            serverName:service.server_name,
+            bindAddr: service.host,
+            bindPort: service.port
+        }
+    })
 }
 
 function readXgrokCfgFile(xgrokCfgPath) {

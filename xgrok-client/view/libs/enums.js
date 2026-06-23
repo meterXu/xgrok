@@ -17,7 +17,9 @@ export const defaultPort={
 
 export const serviceType={
     TCP:1,
-    UDP:2
+    UDP:2,
+    STCP_SERVER:3,
+    STCP_CLIENT:4
 }
 
 export const payPlan={

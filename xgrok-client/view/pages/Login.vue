@@ -4,10 +4,9 @@ import {reactive, ref} from "vue";
 import {login, queryPayPlan} from "@/api";
 import {useAppStore} from "@/store";
 import {
-  onFormValidate,
   useGetDisabled,
   useGetValidateRes,
-  useGetTermsOfServiceUrl, usePrivacyAgreementUrl, onOpenLink
+  useGetTermsOfServiceUrl, usePrivacyAgreementUrl, onOpenLink, onFormValidate
 } from "@/libs/useAction";
 import Logo from "@/components/Logo.vue";
 import {showNotification} from "@/libs/message";

@@ -44,6 +44,8 @@ export default class TunnelServiceService {
               name:tunnelServiceModel.name,
               host:tunnelServiceModel.host,
               type:tunnelServiceModel.type,
+              server_name:tunnelServiceModel.server_name,
+              secret_key:tunnelServiceModel.secret_key,
               port:tunnelServiceModel.port,
               remote_port:tunnelServiceModel.remote_port,
               sort:tunnelServiceModel.sort,

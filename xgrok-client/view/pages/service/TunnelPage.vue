@@ -37,7 +37,7 @@ const isAdd = ref(false)
 const search = ref('')
 const testStatus = ref('')
 const activeTunnel = computed(() => {
-  return tunnelServiceConfigs.find(c => c.id === activeId.value)
+  return tunnelServiceConfigs.find(c => c.id === activeId.value)||{}
 })
 const isEmpty = computed(() => {
   return !activeId.value && !isAdd.value

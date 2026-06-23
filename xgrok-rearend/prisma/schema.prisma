@@ -84,6 +84,8 @@ model TunnelService {
   name          String    @db.VarChar(50)
   host          String    @db.VarChar(200)
   type          Int
+  server_name   String?   @db.VarChar(50)
+  secret_key    String?   @db.VarChar(100)
   port          Int
   remote_port   Int
   remark        String?   @db.VarChar(100)

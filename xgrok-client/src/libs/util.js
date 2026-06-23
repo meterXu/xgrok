@@ -8,6 +8,7 @@ const {exec} = require('child_process');
 const dgram = require('dgram');
 const {serverType, serviceType} = require("./enum");
 const {isFreePort} = require("node-port-check");
+const CryptoJS = require('crypto-js')
 
 function randomNumber() {
     const random = (min, max) => {
@@ -385,7 +386,7 @@ function waitPortRun(checkPort, checkAddr, count = 10) {
 }
 
 function saveAppCfg(saveCfg) {
-    let content = JSON.parse(fs.readFileSync(global.project.xgrokAppCfgPath).toString())
+    let content = JSON.parse(fs.readFileSync(global.project.xgrokAppCfgPath).toString()||"{}")
     content = Object.assign(content, saveCfg);
     fs.writeFileSync(global.project.xgrokAppCfgPath, JSON.stringify(content, null, 2))
     return true

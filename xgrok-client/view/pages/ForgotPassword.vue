@@ -67,11 +67,11 @@ let rules = ref({
 })
 const validateRes = useGetValidateRes(form)
 const registerDisable = useGetDisabled(validateRes)
-const errorMsg = useGetErrorMsg(validateRes)
+const {errorMsg,pass} = useGetErrorMsg(validateRes)
 function onSubmit(){
-  forgotLoading.value = true
   ruleForm.value.validate(valid=>{
     if(valid){
+      forgotLoading.value = true
       const changePwdData = JSON.parse(JSON.stringify(form))
       changePwdData.password = md5(form.password)
       changePwdData.confirmPassword = null
@@ -79,7 +79,7 @@ function onSubmit(){
         if(res.success){
           alert('修改成功','',{callback(){
               router.back()
-          }})
+            }})
         }else{
           alert(res.message||'修改失败')
         }
@@ -130,8 +130,7 @@ function clearSendCodeTimer(){
 onBeforeRouteLeave(()=>{
   sendCodeLoading.value = false
   forgotLoading.value = false
-  ruleForm.value.resetFields()
-  resetFormValidate(validateRes)
+  resetFormValidate(ruleForm,validateRes)
   clearSendCodeTimer()
 })
 

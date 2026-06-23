@@ -7,7 +7,7 @@ import {useAppStore} from "@/store";
 import {tipText} from "@/libs/infoText";
 import InfoTip from "@/components/infoTip.vue";
 import {confirm, testName, isLocalHost} from "@/libs/common";
-import {onFormValidate, operationConfirm, useGetDisabled, useGetErrorMsg} from "@/libs/useAction";
+import {onFormValidate, operationConfirm, resetFormValidate, useGetDisabled, useGetErrorMsg} from "@/libs/useAction";
 import {useRouter} from "vue-router";
 import {showNotification} from "@/libs/message";
 import {$emit} from 'xxweb-util'
@@ -75,7 +75,7 @@ const rules = {
     {type: 'integer', required: true, message: '请输入本地端口', trigger: 'change'}
   ]
 }
-const errorMsg = useGetErrorMsg(validateRes)
+const {errorMsg,pass} = useGetErrorMsg(validateRes)
 const addBtnDisabled = computed(() => {
   return useGetDisabled(validateRes).value||configIsLock.value
 })
@@ -94,9 +94,9 @@ const createOrUpdateText = computed(()=>{
 })
 
 function onSave() {
-  saveLoading.value = true
-  ruleFormRef.value.validate(valid => {
+  ruleFormRef.value.validate(valid=>{
     if (valid) {
+      saveLoading.value = true
       operationConfirm().then(()=>{
         formData.id ? updateTunnelWeb(formData).then(res => {
           showNotification(res.success ? NotificationType.success : NotificationType.error, res.success ? `${createOrUpdateText.value}成功` : `${createOrUpdateText.value}失败`)
@@ -128,14 +128,12 @@ function onSave() {
       }).catch(()=>{
         saveLoading.value = false
       })
-    } else {
-      saveLoading.value = false
     }
   })
 }
 
 function onCancel() {
-  ruleFormRef.value.resetFields()
+  resetFormValidate(ruleFormRef,validateRes)
   emits('cancel')
 }
 

@@ -10,6 +10,8 @@ export default class TunnelServiceModel {
         this.name = body.name
         this.host = body.host
         this.type = body.type
+        this.secret_key=body.secret_key
+        this.server_name = body.server_name
         this.port = body.port
         this.remote_port = body.remote_port
         this.sort = body.sort
@@ -32,6 +34,8 @@ export default class TunnelServiceModel {
     @swaggerProperty({ type: "string",description:"",nullable:false}) name
     @swaggerProperty({ type: "string",description:"",nullable:false}) host
     @swaggerProperty({ type: "number",description:"1:tcp,2:udp",nullable:false}) type
+    @swaggerProperty({ type: "string",description:"",nullable:true}) secret_key
+    @swaggerProperty({ type: "string",description:"",nullable:true}) server_name
     @swaggerProperty({ type: "number",description:"",nullable:false}) port
     @swaggerProperty({ type: "number",description:"",nullable:false}) remote_port
     @swaggerProperty({ type: "number",description:"",nullable:true}) sort

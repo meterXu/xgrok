@@ -11,7 +11,7 @@ import {
   useGetTermsOfServiceUrl,
   useGetValidateRes, usePrivacyAgreementUrl
 } from "@/libs/useAction";
-import {alert,resetObj} from '@/libs/common'
+import {alert} from '@/libs/common'
 import {useAppStore} from "@/store";
 import Logo from "@/components/Logo.vue";
 import {clientType} from "@/libs/enums";
@@ -79,12 +79,12 @@ let rules = ref({
 })
 const validateRes = useGetValidateRes(form)
 const registerDisable = useGetDisabled(validateRes)
-const errorMsg = useGetErrorMsg(validateRes)
+const {errorMsg,pass} = useGetErrorMsg(validateRes)
 
 function onSubmit(){
-  registerLoading.value = true
   ruleForm.value.validate(valid=>{
     if(valid){
+      registerLoading.value = true
       const registerData = JSON.parse(JSON.stringify(form))
       registerData.password = md5(form.password)
       registerData.confirmPassword = null
@@ -100,7 +100,7 @@ function onSubmit(){
               router.push({
                 name:'Dashboard'
               })
-          }})
+            }})
         }else{
           alert(res.message||'注册失败')
         }
@@ -116,22 +116,20 @@ function onSendCode(){
   rules.value = {
     username:rules.value.username
   }
-  ruleForm.value.validate(valid=>{
-    if(valid){
-      sendCodeLoading.value = true
-      sendValidateCode(form.username).then(res=>{
-        if(res.success){
-          ElMessage.success('发送成功')
-          sendCodeTime.value = expireCount
-          startSendCodeTimer()
-        }
-      }).finally(()=>{
-        sendCodeLoading.value = false
-        rules.value = _rules
-      })
-    }
-    rules.value = _rules
-  })
+  if(pass){
+    sendCodeLoading.value = true
+    sendValidateCode(form.username).then(res=>{
+      if(res.success){
+        ElMessage.success('发送成功')
+        sendCodeTime.value = expireCount
+        startSendCodeTimer()
+      }
+    }).finally(()=>{
+      sendCodeLoading.value = false
+      rules.value = _rules
+    })
+  }
+  rules.value = _rules
 }
 
 function startSendCodeTimer(){
@@ -155,8 +153,7 @@ function onOpenLink(link){
 onBeforeRouteLeave(()=>{
   sendCodeLoading.value = false
   registerLoading.value = false
-  ruleForm.value.resetFields()
-  resetFormValidate(validateRes)
+  resetFormValidate(ruleForm,validateRes)
   clearSendCodeTimer()
 })
 </script>

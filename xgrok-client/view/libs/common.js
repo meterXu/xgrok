@@ -1,6 +1,7 @@
 import {defaultPort, httpType, payPlan} from "@/libs/enums";
 import {ElMessageBox} from "element-plus";
 import {useAppStore} from "@/store";
+import CryptoJS from 'crypto-js'
 
 export function useMyTitle(tunnelConfig){
     return tunnelConfig.remark?`${tunnelConfig.name}：${tunnelConfig.remark}`:tunnelConfig.name
@@ -94,6 +95,7 @@ export function resetObj(obj, defaultValue) {
         }
     })
     Object.assign(obj, defaultValue)
+    return obj
 }
 
 export function getEnumKey(enumData, value) {
@@ -118,4 +120,23 @@ export function systemThemeChangeEvent(callback){
 export function getTheme(){
     const store = useAppStore()
     return store.appSetting.theme==='system'?store.systemTheme.value:store.appSetting.theme;
+}
+
+export function encryptData(data) {
+    const srcs = CryptoJS.enc.Utf8.parse(data);
+    const encrypted = CryptoJS.AES.encrypt(srcs, 'xgrok', {
+        iv: CryptoJS.enc.Utf8.parse('1234567890'),
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+    });
+    return encrypted.toString();
+}
+
+export function decryptData(encryptedData) {
+    const decrypted = CryptoJS.AES.decrypt(encryptedData, 'xgrok', {
+        iv: CryptoJS.enc.Utf8.parse('1234567890'),
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+    });
+    return decrypted.toString(CryptoJS.enc.Utf8);
 }
