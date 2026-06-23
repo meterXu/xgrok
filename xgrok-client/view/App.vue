@@ -44,7 +44,7 @@ systemThemeChangeEvent((_theme) => {
 <template>
   <el-config-provider size="default">
     <div class="main">
-      <HeaderToolBar v-if="deviceType()==='win32'&&clientType===clientType.electron"></HeaderToolBar>
+      <HeaderToolBar v-if="deviceType()==='win32'&&clientType.value===clientType.electron"></HeaderToolBar>
       <div class="main-container">
         <router-view v-slot="{ Component }">
           <keep-alive>
