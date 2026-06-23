@@ -176,7 +176,7 @@ created()
     </li>
   </TransitionGroup>
   <StaticFormContent ref="ruleFormRef"
-              :formData="formData"
+              :model="formData"
               :validateRes="validateRes"
               :portRange="portRange"
               @changeType="onChangeType"

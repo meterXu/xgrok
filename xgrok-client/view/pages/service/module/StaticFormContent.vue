@@ -4,13 +4,14 @@ import InfoTip from "@/components/infoTip.vue";
 import {ref} from "vue";
 import {tipText} from "@/libs/infoText";
 import {useAppStore} from "@/store";
-import {testName} from "@/libs/common";
-import {checkName, checkPort, checkServiceByWebClient} from "@/api";
+import {encryptData, testName} from "@/libs/common";
+import {checkName, checkPort, checkServiceByWebClient, validateServerNameAndSecret} from "@/api";
 import {serviceType, tunnelType} from "@/libs/enums";
 import {useClientTypeExecute,onFormValidate} from "@/libs/useAction";
-const {formData} = defineProps(['formData','validateRes','portRange'])
+const {model} = defineProps(['model','validateRes','portRange'])
 const ruleFormRef = ref('ruleFormRef')
 
+const formData = reactive({})
 const store = useAppStore()
 const {selectedServer, clientId, pid, plan} = store
 const validateLocalPortLoading = ref(false)
@@ -55,13 +56,18 @@ const rules = computed(() => {
         [{type: 'integer', required: true, message: '请输入本地端口', trigger: 'change'}] :
         [{type: 'integer', required: true, message: '请输入本地端口', trigger: 'change'},{validator: validateLocalPort, trigger: 'change'}]
     _rules.remote_port = []
-    _rules.server_name=[
+    _rules.server_name=formData.type===serviceType.STCP_SERVER?[]:[
       {required: true, message: '请输入需要连接的隧道名称', trigger: 'blur'},
-      {max: 50, message: '最多50个字', trigger: 'blur'}
+      {max: 50, message: '最多50个字', trigger: 'blur'},
+      {validator: validateServerName, trigger: 'blur'},
     ]
-    _rules.secret_key =[
+    _rules.secret_key = formData.type===serviceType.STCP_SERVER?[
       {required: true, message: '请输入隧道密码', trigger: 'blur'},
       {max: 16, message: '最多16个字', trigger: 'blur'}
+    ]:[
+      {required: true, message: '请输入隧道密码', trigger: 'blur'},
+      {max: 16, message: '最多16个字', trigger: 'blur'},
+      {validator: validatePassword, trigger: 'blur'},
     ]
   }
   return _rules
@@ -82,7 +88,21 @@ function validateName(rule, value, callback) {
     })
   }
 }
-
+function validateServerName(rule, value, callback) {
+  if (!value) {
+    callback(new Error('请输入名称'))
+  } else if (!testName(value)) {
+    callback(new Error('名称不符合格式'))
+  } else {
+    validateNameLoading.value = true
+    checkName.debounce()(selectedServer.domain, tunnelType.service, selectedServer.http_port, value, selectedServer.id, clientId.value, formData.id || '').then(res => {
+      if (res.success) {
+        validateNameLoading.value = false
+        callback(res.data ? new Error('该隧道不存在'):undefined)
+      }
+    })
+  }
+}
 function validatePort(rule, value, callback) {
   if (!value) {
     callback(new Error('请输入名称'))
@@ -99,19 +119,30 @@ function validatePort(rule, value, callback) {
     })
   }
 }
-
 function validateLocalPort(rule, value, callback) {
+  if(model.port===value){
+    callback()
+    return
+  }
   validateLocalPortLoading.value = true
   useClientTypeExecute(
       ()=>checkServiceByWebClient(formData.host, formData.port,serviceType.TCP),
-      ()=>window.electronAPI.checkPort({
-    host:formData.host,port:formData.port,type:serviceType.TCP
-  })).then(res=>{
-    callback(res.data ? undefined : res.message)
-  }).finally(() => {
-    validateLocalPortLoading.value = false
+      ()=>window.electronAPI.checkPort({host:formData.host,port:formData.port,type:serviceType.TCP}))
+      .then(res=>{
+        callback(res.data ? undefined : res.message)
+      }).finally(() => {
+        validateLocalPortLoading.value = false
+      })
+}
+function validatePassword(rule, value, callback) {
+  validateServerNameAndSecret(selectedServer.id,formData.server_name,encryptData(value)).then(res=>{
+    callback(res.data? undefined : new Error(res.message))
   })
 }
+
+watchEffect(() => {
+  Object.assign(formData,model)
+})
 
 defineExpose({
   validate:(callback)=>ruleFormRef.value.validate(callback),

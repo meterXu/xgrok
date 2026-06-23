@@ -260,4 +260,18 @@ export default class UserController {
         const subName = await this.userService.getRandomSubName(serverId)
         ctx.result(new ResultModel(subName,null,true))
     }
+
+    @request('get', '/user/validateServerNameAndSecret')
+    @summary('验证隧道名和密钥是否匹配')
+    @tag
+    @query({
+        serverId: {type: "string", required: true, description: '服务器id'},
+        serverName: {type: "string", required: true, description: '隧道名'},
+        secretKey: {type: "string", required: true, description: '密钥'}
+    })
+    async validateServerNameAndSecret(ctx){
+        const {serverId,serverName,secretKey} = ctx.validatedQuery
+        const pass = await this.userService.validateServerNameAndSecret(serverId,serverName,secretKey)
+        ctx.result(new ResultModel(pass,pass?'隧道名和密钥匹配':'隧道名和密钥不匹配',true))
+    }
 }

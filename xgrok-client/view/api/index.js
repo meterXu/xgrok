@@ -50,7 +50,8 @@ const url = {
         checkName: '/user/checkName',
         checkPort: '/user/checkPort',
         checkWeb: '/user/checkWeb',
-        checkService: '/user/checkService'
+        checkService: '/user/checkService',
+        validateServerNameAndSecret:'/user/validateServerNameAndSecret',
     },
     client: {
         query: '/client/query',
@@ -175,6 +176,9 @@ export function checkWebByWebClient(name, domain, port) {
 }
 export function checkService(domain, port, type) {
     return getAction(url.compliance.checkService, {domain, port, type})
+}
+export function validateServerNameAndSecret(serverId, serverName,secretKey) {
+    return getAction(url.compliance.validateServerNameAndSecret, {serverId, serverName,secretKey})
 }
 export function checkServiceByWebClient(domain, port, type) {
     return getActionWebClient(url.webClient.system.checkService, {domain, port, type})

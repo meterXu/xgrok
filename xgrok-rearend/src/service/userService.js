@@ -202,4 +202,15 @@ export default class UserService {
         }
         return null
     }
+
+    async validateServerNameAndSecret(serverId,serverName,secretKey) {
+        let where = [
+            `a.server_id = '${serverId}'`,
+            `a.name = '${serverName}'`,
+            `a.secret_key = '${secretKey}'`,
+        ].filter(c => c).join(' and ')
+        let totalSql = `select count(a.id) _all from ng_tunnel_service a ${where ? `where ${where}` : ''}`
+        let totalRes = await prisma.$queryRaw(Prisma.raw(totalSql))
+        return totalRes[0]._all>0
+    }
 }
