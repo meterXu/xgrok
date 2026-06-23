@@ -1,6 +1,6 @@
 <script setup>
 
-import {getEnumKey, useMyTitle} from "@/libs/common";
+import {decryptData, getEnumKey, useMyTitle} from "@/libs/common";
 import TunnelItem from "@/components/tunnel/TunnelItem.vue";
 import {doCopy} from "xxweb-util";
 import {showNotification} from "@/libs/message";
@@ -25,8 +25,12 @@ function onCopy(item) {
     doCopy(selectedServer.domain + ':' + item.remote_port).then(() => {
       showNotification(NotificationType.success, '复制成功')
     })
-  }else{
+  }else if(props.item.type===serviceType.STCP_CLIENT){
     doCopy(item.host + ':' + item.port).then(() => {
+      showNotification(NotificationType.success, '复制成功')
+    })
+  } else {
+    doCopy('连接信息：隧道名：'+item.name + '，密码：' + decryptData(item.secret_key)).then(() => {
       showNotification(NotificationType.success, '复制成功')
     })
   }

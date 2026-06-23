@@ -21,7 +21,7 @@ import TunnelFormWrap from "@/components/tunnel/TunnelFormWrap.vue";
 import PlusScrollbar from "@/components/plus-scrollbar/PlusScrollbar.vue";
 import PlusLoading from "@/components/plus-loading/PlusLoading.vue";
 import {checkPermission, operationConfirm, useClientTypeExecute} from "@/libs/useAction";
-import {isOnline, NotificationType, tunnelType} from "@/libs/enums";
+import {isOnline, NotificationType, serviceType, tunnelType} from "@/libs/enums";
 import {showNotification} from "@/libs/message";
 import ServiceItem from "@/pages/service/module/ServiceItem.vue";
 import ServiceSwitch from "@/components/control-btns/ServiceSwitch.vue";
@@ -101,13 +101,18 @@ function onTest() {
   useClientTypeExecute(()=>{
     return Promise.all([
       checkServiceByWebClient(activeTunnel.value.host, activeTunnel.value.port,activeTunnel.value.type),
-      checkService(selectedServer.domain, activeTunnel.value.remote_port,activeTunnel.value.type)])
+      [serviceType.STCP_CLIENT,serviceType.STCP_SERVER].indexOf(activeTunnel.value.type)>-1?
+          {data:true}:
+          checkService(selectedServer.domain, activeTunnel.value.remote_port,activeTunnel.value.type)
+    ])
   },()=>{
     return Promise.all([
       window.electronAPI.checkPort({
         host:activeTunnel.value.host,port:activeTunnel.value.port,type:activeTunnel.value.type
       }),
-      checkService(selectedServer.domain, activeTunnel.value.remote_port,activeTunnel.value.type)])
+      [serviceType.STCP_CLIENT,serviceType.STCP_SERVER].indexOf(activeTunnel.value.type)>-1?
+          {data:true}:
+          checkService(selectedServer.domain, activeTunnel.value.remote_port,activeTunnel.value.type)])
   }).then(resArray => {
         activeTunnel.value.is_online = !resArray[0].data && resArray[1].data ? isOnline.online : isOnline.offline
         testStatus.value = activeTunnel.value.is_online ? 'success' : 'failed'

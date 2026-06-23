@@ -36,7 +36,7 @@ async function checkWeb({name, domain, port}) {
  */
 async function checkPort(host,checkPort,type) {
     return new Promise((resolve, reject) => {
-        if(type===serviceType.tcp){
+        if(type===serviceType.tcp||type===serviceType.stcp_server||type===serviceType.stcp_client){
             const socket = new net.Socket();
             socket.setTimeout(3000); // 设置超时时间，根据需要调整
             socket.once('connect', () => {
