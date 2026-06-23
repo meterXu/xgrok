@@ -141,3 +141,21 @@ export function onOpenLink(link){
         window.electronAPI.openExternal(link)
     })
 }
+
+export function userServiceForm(){
+    return reactive({
+        id: undefined,
+        name: null,
+        remark: null,
+        type: null,
+        host: null,
+        server_name:null,
+        secret_key:null,
+        server_id: null,
+        client_id: null,
+        port: null,
+        remote_port: null,
+        is_remote: null,
+        is_online: null
+    })
+}

@@ -7,11 +7,11 @@ import {useAppStore} from "@/store";
 import {encryptData, testName} from "@/libs/common";
 import {checkName, checkPort, checkServiceByWebClient, validateServerNameAndSecret} from "@/api";
 import {serviceType, tunnelType} from "@/libs/enums";
-import {useClientTypeExecute,onFormValidate} from "@/libs/useAction";
-const {model} = defineProps(['model','validateRes','portRange'])
+import {useClientTypeExecute, onFormValidate, userServiceForm} from "@/libs/useAction";
+const {formData} = defineProps(['formData','validateRes','portRange'])
 const ruleFormRef = ref('ruleFormRef')
 
-const formData = reactive({})
+const tmpFormData = userServiceForm()
 const store = useAppStore()
 const {selectedServer, clientId, pid, plan} = store
 const validateLocalPortLoading = ref(false)
@@ -73,6 +73,10 @@ const rules = computed(() => {
   return _rules
 })
 
+watch(()=>formData.id,(nv) => {
+  Object.assign(tmpFormData,formData)
+},{immediate: true})
+
 function validateName(rule, value, callback) {
   if (!value) {
     callback(new Error('请输入名称'))
@@ -120,7 +124,7 @@ function validatePort(rule, value, callback) {
   }
 }
 function validateLocalPort(rule, value, callback) {
-  if(model.port===value){
+  if(tmpFormData.port===value){
     callback()
     return
   }
@@ -139,10 +143,6 @@ function validatePassword(rule, value, callback) {
     callback(res.data? undefined : new Error(res.message))
   })
 }
-
-watchEffect(() => {
-  Object.assign(formData,model)
-})
 
 defineExpose({
   validate:(callback)=>ruleFormRef.value.validate(callback),

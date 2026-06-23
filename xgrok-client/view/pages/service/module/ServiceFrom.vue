@@ -10,7 +10,14 @@ import {
 import {useAppStore} from "@/store";
 import {hostType, isOnline, NotificationType, payPlan, serviceType} from "@/libs/enums";
 import {confirm, decryptData, encryptData, isLocalHost, resetObj} from "@/libs/common";
-import {gotoSubscribe, operationConfirm, resetFormValidate, useGetDisabled, useGetErrorMsg} from "@/libs/useAction";
+import {
+  gotoSubscribe,
+  operationConfirm,
+  resetFormValidate,
+  useGetDisabled,
+  useGetErrorMsg,
+  userServiceForm
+} from "@/libs/useAction";
 import {showNotification} from "@/libs/message";
 import {$emit} from "xxweb-util";
 import StaticFormContent from "@/pages/service/module/StaticFormContent.vue";
@@ -22,24 +29,7 @@ const emits = defineEmits(['updateSuccess', 'cancel', 'createSuccess'])
 const ruleFormRef = ref('ruleFormRef')
 const portRange = ref(null)
 const saveLoading = ref(false)
-const formData = reactive({
-  id: undefined,
-  name: null,
-  remark: null,
-  type: null,
-  host: null,
-  server_name:null,
-  secret_key:null,
-  server_id: null,
-  client_id: null,
-  port: null,
-  remote_port: null,
-  is_remote: null,
-  is_online: null
-})
-resetObj(formData,{
-  id: undefined, type:1,host:'127.0.0.1',server_id:selectedServer.id,client_id:clientId.value,is_remote:0,port:0,is_online:isOnline.online
-})
+let formData = userServiceForm()
 const validateRes = reactive({
   name: {value: null, valid: true},
   type: {value: null, valid: true},
@@ -56,10 +46,10 @@ const addBtnDisabled = computed(() => {
 })
 
 watch(()=>props.tunnelForm,(nv)=>{
-  resetObj(formData,{
+  formData = userServiceForm()
+  Object.assign(formData,{
     id: undefined, type:1,host:'127.0.0.1',server_id:selectedServer.id,client_id:clientId.value,is_remote:null,port:null,is_online:isOnline.online
-  })
-  Object.assign(formData,nv)
+  },nv)
   if(formData.id&&formData.secret_key){
     formData.secret_key = decryptData(formData.secret_key)
   }else{
@@ -176,7 +166,7 @@ created()
     </li>
   </TransitionGroup>
   <StaticFormContent ref="ruleFormRef"
-              :model="formData"
+              :formData="formData"
               :validateRes="validateRes"
               :portRange="portRange"
               @changeType="onChangeType"
