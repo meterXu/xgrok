@@ -9,7 +9,7 @@ import {
 } from "@/api";
 import {useAppStore} from "@/store";
 import {hostType, isOnline, NotificationType, payPlan, serviceType} from "@/libs/enums";
-import {confirm, decryptData, encryptData, isLocalHost, resetObj} from "@/libs/common";
+import {confirm, decryptData, defaultHost, encryptData, isLocalHost, resetObj} from "@/libs/common";
 import {
   gotoSubscribe,
   operationConfirm,
@@ -19,7 +19,6 @@ import {
   userServiceForm
 } from "@/libs/useAction";
 import {showNotification} from "@/libs/message";
-import {$emit} from "xxweb-util";
 import StaticFormContent from "@/pages/service/module/StaticFormContent.vue";
 
 const store = useAppStore()
@@ -48,7 +47,7 @@ const addBtnDisabled = computed(() => {
 watch(()=>props.tunnelForm,(nv)=>{
   formData = userServiceForm()
   Object.assign(formData,{
-    id: undefined, type:1,host:'127.0.0.1',server_id:selectedServer.id,client_id:clientId.value,is_remote:null,port:null,is_online:isOnline.online
+    id: undefined, type:1,host:defaultHost,server_id:selectedServer.id,client_id:clientId.value,is_remote:null,port:null,is_online:isOnline.online
   },nv)
   if(formData.id&&formData.secret_key){
     formData.secret_key = decryptData(formData.secret_key)
@@ -104,8 +103,8 @@ function onCancel() {
 }
 
 function onChangeType(value) {
-  if (value === serviceType.UDP && plan.value !== payPlan.vip) {
-    confirm('无捐赠用户无法创建UDP隧道', null, {
+  if ([serviceType.UDP,serviceType.STCP_CLIENT,serviceType.STCP_SERVER].indexOf(value)>-1 && plan.value !== payPlan.vip) {
+    confirm('无捐赠用户无法创建非TCP隧道', null, {
       confirmButtonText: '去捐赠',
       cancelButtonText: '知道了',
       confirmButtonClass: 'el-button--warning is-plain'
@@ -118,6 +117,9 @@ function onChangeType(value) {
     if(value === serviceType.TCP||value===serviceType.UDP){
       queryRangeByType()
       queryFreePort()
+    }
+    if(value === serviceType.STCP_CLIENT){
+      formData.host=defaultHost
     }
     resetFormValidate(ruleFormRef,validateRes)
   }

@@ -140,3 +140,5 @@ export function decryptData(encryptedData) {
     });
     return decrypted.toString(CryptoJS.enc.Utf8);
 }
+
+export const defaultHost='127.0.0.1'
