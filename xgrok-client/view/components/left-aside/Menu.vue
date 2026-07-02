@@ -22,7 +22,7 @@ const menuList = [
     name: 'Service',
   },
   // {
-  //   title: '直联',
+  //   title: '组网',
   //   icon: <IconParkOutlineLinkThree/>,
   //   name: 'Vpn',
   // },

@@ -9,6 +9,7 @@ import Index from '@/pages/Index.vue'
 import Dashboard from "@/pages/dashboard/Dashboard.vue";
 import WebTunnelPage from "@/pages/web/TunnelPage.vue"
 import ServiceTunnelPage from '@/pages/service/TunnelPage.vue'
+import VpnTunnelPage from '@/pages/vpn/TunnelPage.vue'
 import Plan from "@/pages/plan/Plan.vue"
 import Log from "@/pages/log/Log.vue"
 import About from "@/pages/about/About.vue"
@@ -82,14 +83,14 @@ const normalRoutes = [
                     title: '服务',
                 }
             },
-            // {
-            //     path: 'vpn',
-            //     name: 'Vpn',
-            //     component: ServiceTunnelPage,
-            //     meta: {
-            //         title: '直联',
-            //     }
-            // },
+            {
+                path: 'vpn',
+                name: 'Vpn',
+                component: VpnTunnelPage,
+                meta: {
+                    title: '组网',
+                }
+            },
             {
                 path: 'plan',
                 name: 'Plan',
