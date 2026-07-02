@@ -32,6 +32,7 @@ export default class SystemController {
         tunnelServices:{required:true,description:'服务隧道信息'}})
     async turnOn(ctx){
         const xgrokConf= new XgrokConfModel(ctx.validatedBody)
+        await xgrokConf.exchangePorts()
         const data = await this.systemService.turnOn(xgrokConf)
         ctx.result(new ResultModel(data.pid,data.message,true))
     }
@@ -43,6 +44,20 @@ export default class SystemController {
     async turnOff(ctx){
         const {pid} = ctx.validatedBody
         ctx.result(new ResultModel(await this.systemService.turnOff(pid),null,true))
+    }
+
+    @request('put','/system/turnRestart')
+    @summary('重启服务')
+    @tag
+    @body({
+        pid:{type:'number',description:'进程id'},
+        server:{required:true,description:'服务信息'},
+        tunnelWebs:{required:true,description:'web隧道信息'},
+        tunnelServices:{required:true,description:'服务隧道信息'}})
+    async turnRestart(ctx){
+        const xgrokConf= new XgrokConfModel(ctx.validatedBody)
+        xgrokConf.pid&&await this.systemService.turnOff(xgrokConf.pid)
+        await this.turnOn(ctx)
     }
 
     @request('get', '/system/log')

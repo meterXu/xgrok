@@ -5,7 +5,7 @@ import {checkTunnelConfig, useClientTypeExecute} from "@/libs/useAction";
 import {isEmpty,$on,$off} from "xxweb-util";
 import {onMounted,onUnmounted} from 'vue';
 import {alert, showNotification} from "@/libs/message";
-import {queryTunnelCount, serviceTurnOff, serviceTurnOn} from "@/api";
+import {queryTunnelCount, serviceTurnOff, serviceTurnOn, serviceTurnRestart} from "@/api";
 const emits = defineEmits(['serverLoading'])
 const store = useAppStore()
 const {pid, selectedServer,tunnelCount,setTunnelCount,clientId} = store
@@ -36,31 +36,32 @@ async function onSwitchChange() {
   }
 }
 
-async function onTurnOn() {
+async function onTurnOn(isRestart = false) {
   if (checkTunnelConfig(selectedServer,tunnelCount.web,tunnelCount.service)){
     switchLoading.value = true
-    store.setPid(null)
     store.setConfigIsLock(true)
     let data = {
+      pid:pid.value,
       server: selectedServer,
       tunnelWebs: toRaw(tunnelCount.web),
       tunnelServices: toRaw(tunnelCount.service)
     }
     try{
       let res = await useClientTypeExecute(async ()=>{
-         return serviceTurnOn(data)
+         return isRestart?serviceTurnRestart(data):serviceTurnOn(data)
       },async ()=>{
-        return window.electronAPI.turnOn(JSON.parse(JSON.stringify(data)))
+        return isRestart?window.electronAPI.turnRestart(JSON.parse(JSON.stringify(data)))
+            :window.electronAPI.turnOn(JSON.parse(JSON.stringify(data)))
       })
       if (res.success) {
         store.setPid(res.data)
         store.setAppSetting({autoServer:true})
-        showNotification(NotificationType.success,'启动成功')
+        !isRestart&&showNotification(NotificationType.success,'启动成功')
       } else {
         store.setPid(0)
         store.setConfigIsLock(false)
         alert(
-            res.message,'启动失败',{
+            res.message,isRestart?'重启失败':'启动失败',{
               dangerouslyUseHTMLString:true,
               confirmButtonClass:'el-button--danger is-plain'
             })
@@ -95,11 +96,9 @@ async function onTurnOff() {
   }
 }
 
-
 async function onRestart() {
   let _refresh = async () => {
-    await onSwitchChange()
-    !pid.value && await onSwitchChange()
+    await onTurnOn(true)
   }
   await _refresh.debounce()()
 }

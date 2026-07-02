@@ -24,7 +24,7 @@ import ServiceSwitch from "@/components/control-btns/ServiceSwitch.vue";
 import AddTunnelBtn from "@/components/control-btns/AddTunnelBtn.vue";
 
 const store = useAppStore()
-const {selectedServer, clientId, configIsLock,pid} = store
+const {selectedServer, clientId, configIsLock,pid,setTunnelCountWeb} = store
 const tunnelWebConfigs = reactive([])
 const tunnelLoading = ref(false)
 const activeId = shallowRef(null)
@@ -44,19 +44,18 @@ const filterTunnelWebConfigs = computed(() => {
   return search.value ? tunnelWebConfigs.filter(c => c.name.indexOf(search.value) > -1) : tunnelWebConfigs
 })
 
-function loadTunnelData() {
+async function loadTunnelData() {
   if (!selectedServer || !clientId.value) {
     return false
   }
   tunnelLoading.value = true
-  queryTunnelWebConfig(selectedServer.id, clientId.value).then(res => {
-    if (res.success) {
-      tunnelWebConfigs.splice(0, tunnelWebConfigs.length, ...res.data)
-      activeId.value = null
-    }
-  }).finally(() => {
-    tunnelLoading.value = false;
-  })
+  const res = await queryTunnelWebConfig(selectedServer.id, clientId.value)
+  if (res.success) {
+    tunnelWebConfigs.splice(0, tunnelWebConfigs.length, ...res.data)
+    activeId.value = null
+    setTunnelCountWeb(tunnelWebConfigs)
+  }
+  tunnelLoading.value = false;
 }
 
 function onAddTunnel() {
@@ -82,10 +81,10 @@ function onDel() {
       confirmButtonClass: 'el-button--danger is-plain'
     }).then(() => {
       operationConfirm().then(()=>{
-        deleteTunnelWebBatch(activeTunnel.value.id).then((res) => {
+        deleteTunnelWebBatch(activeTunnel.value.id).then(async(res) => {
           if (res.success) {
             showNotification(NotificationType.success, '删除成功')
-            loadTunnelData()
+            await loadTunnelData()
             pid.value&&$emit('restart')
           } else {
             showNotification(NotificationType.error, '删除失败')
@@ -138,11 +137,9 @@ function onToggleStatus(value){
   })
 }
 
-function operateSuccess(type){
-  if(pid.value&&type==='update'){
-    $emit('restart')
-  }
-  loadTunnelData()
+async function operateSuccess(type){
+  await loadTunnelData()
+  pid.value&&$emit('restart')
 }
 onMounted(() => {
   loadTunnelData()

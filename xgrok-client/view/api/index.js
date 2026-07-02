@@ -87,6 +87,7 @@ const url = {
             info:'/system/info',
             turnOn:'/system/turnOn',
             turnOff:'/system/turnOff',
+            turnRestart:'/system/turnRestart',
             log:'/system/log',
             checkWeb: '/system/checkWeb',
             checkService: '/system/checkService'
@@ -331,6 +332,10 @@ export function setXgrokAppCfg(data) {
 
 export function serviceTurnOn(data){
     return putActionWebClient(url.webClient.system.turnOn,data)
+}
+
+export function serviceTurnRestart(data){
+    return putActionWebClient(url.webClient.system.turnRestart,data)
 }
 
 export function serviceTurnOff(data){

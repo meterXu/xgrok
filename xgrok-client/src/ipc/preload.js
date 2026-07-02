@@ -3,6 +3,7 @@ const { contextBridge, ipcRenderer } = require('electron/renderer')
 contextBridge.exposeInMainWorld('electronAPI', {
     turnOn:(data)=>ipcRenderer.invoke('xgrok', {type:'turnOn', data:data}),
     turnOff:(data)=>ipcRenderer.invoke('xgrok', {type:'turnOff', data:data}),
+    turnRestart:(data)=>ipcRenderer.invoke('xgrok', {type:'turnRestart', data:data}),
     setXY:(data)=>ipcRenderer.invoke('xgrok', {type:'setXY', data:data}),
     minWindow:(data)=>ipcRenderer.invoke('xgrok',{type:'minWindow', data:data}),
     maxWindow:(data)=>ipcRenderer.invoke('xgrok',{type:'maxWindow', data:data}),

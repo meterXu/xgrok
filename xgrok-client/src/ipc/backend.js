@@ -1,7 +1,7 @@
 // 在主进程中
 const { ipcMain, app, dialog, shell} = require('electron');
 const xgrokConfModel = require("../models/xgrokConfModel");
-const {turnOn,turnOff, setXY,
+const {turnOn,turnOff,turnRestart, setXY,
     minWindow,
     maxWindow,
     closeWindow,
@@ -25,6 +25,15 @@ ipcMain.handle('xgrok', async (event, arg) => {
             }break
             case 'turnOff':{
                 res.success = await turnOff(arg.data)
+            }break
+            case 'turnRestart':{
+                const xgrokConf= new xgrokConfModel(arg.data)
+                await xgrokConf.exchangePorts()
+                let turnData = await turnRestart(xgrokConf)
+                global.xgrokPid=turnData.pid
+                res.success = !!turnData.pid
+                res.message = turnData.message
+                res.data = turnData.pid
             }break
             case 'setXY':{
                 setXY(arg.data)

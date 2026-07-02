@@ -103,7 +103,6 @@ function onSave() {
           if (res.success) {
             emits('cancel')
             emits('updateSuccess')
-            pid.value&&$emit('restart')
           }
         }).finally(() => {
           saveLoading.value = false
@@ -112,7 +111,6 @@ function onSave() {
             showNotification(NotificationType.success,  `${createOrUpdateText.value}成功`)
             emits('cancel')
             emits('createSuccess')
-            pid.value&&$emit('restart')
           } else {
             confirm(res.message || `${createOrUpdateText.value}失败`, null, {
               confirmButtonText: '去捐赠',

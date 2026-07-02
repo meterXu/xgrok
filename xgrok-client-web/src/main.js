@@ -12,6 +12,7 @@ global.project = config
 global.logger = {
     info:console.log
 }
+global.proxyLocalhost = '127.0.0.1'
 BigInt.prototype.toJSON = function() {
     return Number(this)
 }

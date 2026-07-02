@@ -76,6 +76,11 @@ async function turnOff(pid) {
     return res
 }
 
+async function turnRestart(xgrokConf){
+    xgrokConf.pid&&await turnOff(pid)
+    return await turnOn(xgrokConf)
+}
+
 async function getTunnelStatus(tunnels){
     return new Promise(async (resolve, reject) => {
         try{
@@ -480,6 +485,7 @@ function stopBeat() {
 module.exports = {
     turnOn,
     turnOff,
+    turnRestart,
     setXY,
     minWindow,
     maxWindow,

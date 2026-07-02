@@ -3,6 +3,7 @@ const tunnelServiceModel = require('./tunnelServiceModel')
 
 class xgrokConfModel {
     constructor(xgrokConf) {
+        this.pid = xgrokConf.pid;
         this.server = xgrokConf.server
         this.tunnelWebs = xgrokConf.tunnelWebs.map(c=>{
             return new tunnelWebModel(c)

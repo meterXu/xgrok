@@ -76,7 +76,6 @@ function onSave() {
               if (res.success) {
                 emits('cancel')
                 emits('updateSuccess')
-                pid.value && $emit('restart')
               }
             }).finally(() => {
               saveLoading.value = false
@@ -86,7 +85,6 @@ function onSave() {
                 showNotification(NotificationType.success, '创建成功')
                 emits('cancel')
                 emits('createSuccess')
-                pid.value && $emit('restart')
               } else {
                 gotoSubscribe(res.message || '创建失败')
               }

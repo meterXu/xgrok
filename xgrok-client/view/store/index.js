@@ -126,6 +126,9 @@ export const useAppStore = defineStore('app', () => {
         return _appSetting
     })
     const tunnelCount = computed(() => {
+        if($ls.get("tunnelCount")) {
+            merge(_tunnelCount,getLsValue($ls.get("tunnelCount")))
+        }
         return _tunnelCount
     })
     const systemTheme = computed(() => {
@@ -207,10 +210,21 @@ export const useAppStore = defineStore('app', () => {
 
     function setTunnelCount(data) {
         merge(_tunnelCount, data)
+        $ls.set("tunnelCount", setLsValue(alterStoreValue(_tunnelCount)))
     }
 
     function setSystemTheme(data) {
         _systemTheme.value = data
+    }
+
+    function setTunnelCountWeb(allWeb){
+        _tunnelCount.web=allWeb
+        $ls.set("tunnelCount", setLsValue(alterStoreValue(_tunnelCount)))
+    }
+
+    function setTunnelCountService(allService){
+        _tunnelCount.service=allService
+        $ls.set("tunnelCount", setLsValue(alterStoreValue(_tunnelCount)))
     }
 
     return {
@@ -245,7 +259,9 @@ export const useAppStore = defineStore('app', () => {
         setSystemInfo,
         setAppSetting,
         setTunnelCount,
-        setSystemTheme
+        setSystemTheme,
+        setTunnelCountWeb,
+        setTunnelCountService,
     }
 })
 export default createPinia()

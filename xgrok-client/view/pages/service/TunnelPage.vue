@@ -29,7 +29,7 @@ import {$emit} from "xxweb-util";
 import AddTunnelBtn from "@/components/control-btns/AddTunnelBtn.vue";
 
 const store = useAppStore()
-const {selectedServer, clientId, configIsLock,pid} = store
+const {selectedServer, clientId, configIsLock,pid,setTunnelCountService} = store
 const tunnelServiceConfigs = reactive([])
 const tunnelLoading = ref(false)
 const activeId = shallowRef(null)
@@ -49,19 +49,18 @@ const filterTunnelServiceConfigs = computed(() => {
   return search.value ? tunnelServiceConfigs.filter(c => c.name.indexOf(search.value) > -1) : tunnelServiceConfigs
 })
 
-function loadTunnelData() {
+async function loadTunnelData() {
   if (!selectedServer || !clientId.value) {
     return false
   }
   tunnelLoading.value = true
-  queryTunnelServiceConfig(selectedServer.id, clientId.value).then(res => {
-    if (res.success) {
-      tunnelServiceConfigs.splice(0, tunnelServiceConfigs.length, ...res.data)
-      activeId.value = null
-    }
-  }).finally(() => {
-    tunnelLoading.value = false;
-  })
+  const res = await queryTunnelServiceConfig(selectedServer.id, clientId.value)
+  if (res.success) {
+    tunnelServiceConfigs.splice(0, tunnelServiceConfigs.length, ...res.data)
+    setTunnelCountService(tunnelServiceConfigs)
+    activeId.value = null
+  }
+  tunnelLoading.value = false;
 }
 
 function onCancel() {
@@ -82,10 +81,10 @@ function onDel() {
       confirmButtonClass: 'el-button--danger is-plain'
     }).then(() => {
       operationConfirm().then(()=>{
-        deleteTunnelServiceBatch(activeTunnel.value.id).then((res) => {
+        deleteTunnelServiceBatch(activeTunnel.value.id).then(async (res) => {
           if (res.success) {
             showNotification(NotificationType.success, '删除成功')
-            loadTunnelData()
+            await loadTunnelData()
             pid.value&&$emit('restart')
           } else {
             showNotification(NotificationType.error, '删除失败')
@@ -143,7 +142,10 @@ function onChange() {
   isAdd.value = false
   testStatus.value = ''
 }
-
+async function operateSuccess(type){
+  await loadTunnelData()
+  pid.value&&$emit('restart')
+}
 onMounted(() => {
   loadTunnelData()
 })
@@ -195,8 +197,8 @@ onMounted(() => {
             <ServiceFrom
                 :tunnelForm="activeTunnel"
                 @cancel="onCancel"
-                @updateSuccess="loadTunnelData"
-                @createSuccess="loadTunnelData">
+                @updateSuccess="operateSuccess('update')"
+                @createSuccess="operateSuccess('create')">
             </ServiceFrom>
           </div>
         </template>

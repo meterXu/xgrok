@@ -20,8 +20,7 @@ async function getSpeedAndTraffic(){
 }
 
 function startTimeOut() {
-  stopTimeOut()
-  if(pid.value){
+  if(pid.value&&timer!==-1){
     timer = setTimeout(async () => {
       await getSpeedAndTraffic()
       startTimeOut()
@@ -31,7 +30,7 @@ function startTimeOut() {
 
 function stopTimeOut() {
   timer && clearTimeout(timer)
-  timer = 0
+  timer = -1
 }
 
 watch([selectedServer,pid],(nvs)=>{
