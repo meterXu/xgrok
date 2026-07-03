@@ -48,25 +48,42 @@ const axiosWebClient = createService(window.project.variable.webClientApi, confi
     }
 })
 
-axios.interceptors.response.use((response) => response,async (error) => {
-    if(error.response && error.response.status === 401) {
+let refreshPromise = null
+
+axios.interceptors.response.use((response) => response, async (error) => {
+    if (error.response && error.response.status === 401) {
         const originalConfig = error.config
         const store = useAppStore()
         if (!originalConfig._retry) {
-            try{
-                const res = await refreshToken(store.refreshToken.value)
-                if(res.success){
-                    store.setUserName(res.data.user.username)
-                    store.setUserInfo(res.data.user)
-                    store.setToken(res.data.accessToken)
-                    store.setRefreshToken(res.data.refreshToken)
-                    originalConfig._retry = true
+            originalConfig._retry = true
+            // 如果当前没有正在进行的刷新，则发起一个新的刷新请求
+            if (!refreshPromise) {
+                refreshPromise = refreshToken(store.refreshToken.value)
+                    .then(res => {
+                        if (res.success) {
+                            store.setUserName(res.data.user.username)
+                            store.setUserInfo(res.data.user)
+                            store.setToken(res.data.accessToken)
+                            store.setRefreshToken(res.data.refreshToken)
+                        }
+                        return res
+                    })
+                    .finally(() => {
+                        refreshPromise = null
+                    })
+            }
+            // 等待刷新完成（可能是自己发起的，也可能是其他请求发起的）
+            try {
+                const res = await refreshPromise
+                if (res && res.success) {
                     return axios(originalConfig)
                 }
-            }catch (err){
+            } catch (err) {
+                // refreshToken 本身失败（网络错误等）
             }
         }
     }
+    return Promise.reject(error)
 })
 
 onResponseError(axios, (error) => dealWithError(error))
@@ -75,7 +92,8 @@ onResponseError(axiosSSO, (error) => dealWithError(error))
 onResponseError(axiosSSONoToken, (error) => dealWithError(error))
 onResponseError(axiosWebClient, (error) => dealWithError(error))
 axios.interceptors.response.use((response) => {
-    return response ? response.data : {}
+    // response.config exists on real axios responses, not on already-unwrapped data from retries
+    return response && response.config ? response.data : (response || {})
 })
 axiosNoToken.interceptors.response.use((response) => {
     return response ? response.data : {}
