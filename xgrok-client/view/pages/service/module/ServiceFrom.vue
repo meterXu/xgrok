@@ -49,9 +49,10 @@ watch(()=>props.tunnelForm,(nv)=>{
   Object.assign(formData,{
     id: undefined, type:1,host:defaultHost,server_id:selectedServer.id,client_id:clientId.value,is_remote:null,port:null,is_online:isOnline.online
   },nv)
-  if(formData.id&&formData.secret_key){
+  if(formData.secret_key){
     formData.secret_key = decryptData(formData.secret_key)
-  }else{
+  }
+  if(!formData.id){
     queryFreePort()
     queryRandomName()
   }
