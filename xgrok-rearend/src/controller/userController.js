@@ -162,8 +162,9 @@ export default class UserController {
     })
     async queryTunnelCount(ctx){
         const {serverId,clientId} = ctx.validatedQuery
-        const res = await this.userService.queryTunnelCount(ctx.token.user.id,serverId,clientId)
-        ctx.result(res,null,true)
+        const queryRes = await this.userService.queryTunnelCount(ctx.token.user.id,serverId,clientId)
+        const res = new ResultModel(queryRes,null, true)
+        ctx.result(res)
     }
 
     @request('get', '/user/query')

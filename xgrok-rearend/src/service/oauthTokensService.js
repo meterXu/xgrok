@@ -60,7 +60,6 @@ export default class OAuthTokensService {
             return null
         }
     }
-
     async createOrUpdateOAuthToken(oauthTokensModel) {
         const _token = await this.queryOAuthToken({
             user_id:oauthTokensModel.user.id,

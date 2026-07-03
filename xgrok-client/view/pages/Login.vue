@@ -43,6 +43,7 @@ function onSubmit(){
           store.setUserName(form.username)
           store.setUserInfo(res.data.user)
           store.setToken(res.data.accessToken)
+          store.setRefreshToken(res.data.refreshToken)
           const plan = await queryPayPlan()
           plan.success && store.setPlan(plan.data)
           router.push({

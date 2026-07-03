@@ -8,9 +8,6 @@ export default async function (data){
         case 'order':{
             orderAction(data)
         }break
-        case 'heartbeatToken':{
-            heartbeatToken(data)
-        }break
         case 'checkPlanExpired':{
             await planExpired(data)
         }break
@@ -30,10 +27,6 @@ function orderAction(data){
             }
         })
     }
-}
-function heartbeatToken(data){
-    const store = useAppStore()
-    store.setToken(data.access_token)
 }
 async function planExpired(data){
     const store = useAppStore()

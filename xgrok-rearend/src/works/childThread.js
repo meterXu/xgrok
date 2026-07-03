@@ -1,47 +1,11 @@
 import OrderSchedule from "./orderSchedule.js";
 import {getAlipaySdk, initLog} from "../utils/index.js";
-import OAuthTokensService from "../service/oauthTokensService.js";
-import moment from "moment";
-import Model from "../oauth/password/Model.js";
 import OrderService from "../service/orderService";
 
 const {parentPort} = require("worker_threads");
 global.alipaySdk = getAlipaySdk()
 global.parentPort = parentPort
 start()
-
-async function heartbeatToken(){
-    async function _task(){
-        console.log('heart beat accessTokens started')
-        const oAuthTokensService = new OAuthTokensService()
-        let endTime = new moment().add(1,'hour')
-        console.log(`Filter accessTokens that are about to expire, time less than [${endTime.format('yyyy-MM-DD HH:mm:ss').toString()}]`)
-        const tokenRes = await oAuthTokensService.queryToken({pageSize: 999, pageNumber: 1}, {}, {
-            access_token_expires_at_end:endTime.valueOf()
-        })
-        console.log(`${tokenRes[0]} accessTokens are about to expire`)
-        for(let token of tokenRes[1]){
-            console.log(`accessToken [${token.access_token}] will expire at ${token.access_token_expires_at}`)
-            const newAccessToken = Model.createNewToken('accessToken')
-            const newRefreshToken = Model.createNewToken('refreshToken')
-            parentPort.postMessage({
-                type: 'heartbeatToken',
-                userId: token.user_id,
-                client_id: token.client_id,
-                access_token_id:token.id,
-                access_token:newAccessToken.value,
-                access_token_expires_at:newAccessToken.expiresTime,
-                refresh_token:newRefreshToken.value,
-                refresh_token_expires_at:newRefreshToken.expiresTime,
-            })
-        }
-        console.log(`heartbeatToken: wait 1h for the execution to continue`)
-        setTimeout(async () => {
-            await _task()
-        },process.env.NODE_ENV==='development'?6*1000:1800*1000)//开发模式6s执行一次，正式环境每半时执行一次
-    }
-    await _task()
-}
 
 async function checkPlanExpired(){
     async function _task(){
@@ -85,6 +49,5 @@ async function start(){
     console.log('worker thead started')
     const orderSchedule = new OrderSchedule()
     await orderSchedule.create()
-    await heartbeatToken()
     await checkPlanExpired()
 }

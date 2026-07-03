@@ -1,11 +1,10 @@
 import {getErrorText} from "xxweb-util";
-import { ElMessage } from 'element-plus'
 import {alert} from "@/libs/common";
 import { useAppStore } from '../store/index'
 import {showNotification} from "@/libs/message";
 import {NotificationType} from "@/libs/enums";
 
-export function dealWithError(error){
+export async function dealWithError(error){
   try{
     let data = error.response?error.response.data:error;
     if(typeof(data)==="string"){

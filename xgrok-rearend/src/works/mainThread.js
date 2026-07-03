@@ -19,9 +19,6 @@ export default class MainThreadWorker{
                     case 'order':{
                         this.sendWebSocketMsg(result)
                     }break
-                    case 'heartbeatToken':{
-                        this.heartbeatToken(result)
-                    }break
                     case 'checkPlanExpired':{
                         await this.checkPlanExpired(result)
                     }break
@@ -32,29 +29,6 @@ export default class MainThreadWorker{
 
     sendWebSocketMsg(data){
         global.webSocket.sendToClient(data)
-    }
-
-    heartbeatToken(data){
-        const isOnline =  global.webSocket.checkWsIsOnline(data,notifyType.userApp)
-        // check user is online
-        if(isOnline){
-            //update token
-            console.log(`user [${data.userId}] online, refresh accessToken`)
-            this.oauthTokensService.createOrUpdateOAuthToken({
-                user:{id:data.userId},
-                client:{id:data.client_id},
-                accessToken:data.access_token,
-                accessTokenExpiresAt:data.access_token_expires_at,
-                refreshToken:data.refresh_token,
-                refreshTokenExpiresAt:data.refresh_token_expires_at
-            }).then(()=>{
-                console.log(`refresh accessToken [${data.userId}] successful, send websocket message to user [${data.userId}]`)
-                global.webSocket.sendToClient(data,notifyType.userApp)
-            })
-        }else{
-            console.log(`user [${data.userId}] offline, delete accessToken by id [${data.access_token_id}]`)
-            this.oauthTokensService.delToken(data.access_token_id)
-        }
     }
 
     async checkPlanExpired(data){

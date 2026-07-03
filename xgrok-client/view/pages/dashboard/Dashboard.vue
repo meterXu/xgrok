@@ -99,13 +99,15 @@ function initClient() {
 watchEffect(() => {
   if (selectedServer?.id && clientId.value) {
     queryTunnelCount(selectedServer?.id, clientId.value).then(res => {
-      tunnelCount.web.splice(0, tunnelCount.web.length, ...res.web)
-      tunnelCount.service.splice(0, tunnelCount.service.length, ...res.service)
-      tunnelCount.allWeb = res.allWeb
-      tunnelCount.allService = res.allService
-      setTunnelCount(tunnelCount)
-      if (!pid.value && appSetting.autoLaunch && appSetting.autoServer) {
-        serviceSwitchRef.value.onTurnOn()
+      if(res.success){
+        tunnelCount.web.splice(0, tunnelCount.web.length, ...res.data.web||res.web)
+        tunnelCount.service.splice(0, tunnelCount.service.length, ...res.data.service||res.service)
+        tunnelCount.allWeb = res.data.allWeb||res.allWeb
+        tunnelCount.allService = res.data.allService||res.allService
+        setTunnelCount(tunnelCount)
+        if (!pid.value && appSetting.autoLaunch && appSetting.autoServer) {
+          serviceSwitchRef.value.onTurnOn()
+        }
       }
     })
   }

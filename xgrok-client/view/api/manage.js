@@ -1,6 +1,8 @@
 import {createService, ACCESS_TOKEN, onResponseError} from 'xxweb-util'
 import {dealWithError} from './dealwithError';
 import md5 from "js-md5"
+import {useAppStore} from "@/store";
+import {refreshToken} from "@/api/index";
 
 const axios = createService(window.project.variable.baseApi, config => {
     const token = window.app.config.globalProperties.$ls.get(ACCESS_TOKEN)
@@ -21,7 +23,7 @@ const axios = createService(window.project.variable.baseApi, config => {
 })
 const axiosSSO = createService(window.project.variable.ssoApi, () => {
     return {}
-}, null, false)
+}, null, true)
 const axiosNoToken = createService(window.project.variable.baseApi, () => {
     return {}
 }, null, false)
@@ -43,6 +45,27 @@ const axiosWebClient = createService(window.project.variable.webClientApi, confi
     return {
         tokenKey: window.project.variable.tokenKey,
         token: token
+    }
+})
+
+axios.interceptors.response.use((response) => response,async (error) => {
+    if(error.response && error.response.status === 401) {
+        const originalConfig = error.config
+        const store = useAppStore()
+        if (!originalConfig._retry) {
+            try{
+                const res = await refreshToken(store.refreshToken.value)
+                if(res.success){
+                    store.setUserName(res.data.user.username)
+                    store.setUserInfo(res.data.user)
+                    store.setToken(res.data.accessToken)
+                    store.setRefreshToken(res.data.refreshToken)
+                    originalConfig._retry = true
+                    return axios(originalConfig)
+                }
+            }catch (err){
+            }
+        }
     }
 })
 
@@ -75,24 +98,6 @@ export function postAction(url, parameter) {
     })
 }
 
-export function postActionNoToken(url, parameter) {
-    return axiosNoToken({
-        url: url,
-        method: "post",
-        data: parameter
-    })
-}
-
-// post method= {post | put}
-export function httpAction(url, parameter, method) {
-    return axios({
-        url: url,
-        method: method,
-        data: parameter
-    })
-}
-
-// put
 export function putAction(url, parameter) {
     return axios({
         url: url,
@@ -101,7 +106,6 @@ export function putAction(url, parameter) {
     })
 }
 
-// get
 export function getAction(url, parameter) {
     return axios({
         url: url,
@@ -118,27 +122,11 @@ export function getActionNoToken(url, parameter) {
     })
 }
 
-// deleteAction
 export function deleteAction(url, parameter) {
     return axios({
         url: url,
         method: "delete",
         params: parameter
-    })
-}
-
-/**
- * 下载文件 用于excel导出
- * @param url
- * @param parameter
- * @returns {*}
- */
-export function downFile(url, parameter) {
-    return axios({
-        url: url,
-        params: parameter,
-        method: "get",
-        responseType: "blob"
     })
 }
 
@@ -150,71 +138,11 @@ export function getActionSSONoToken(url, parameter) {
     })
 }
 
-// post
-export function postActionSSO(url, parameter) {
-    return axiosSSO({
-        url: url,
-        method: "post",
-        data: parameter
-    })
-}
-
 export function postActionSSONoToken(url, parameter) {
     return axiosSSONoToken({
         url: url,
         method: "post",
         data: parameter
-    })
-}
-
-// post method= {post | put}
-export function httpActionSSO(url, parameter, method) {
-    return axiosSSO({
-        url: url,
-        method: method,
-        data: parameter
-    })
-}
-
-// put
-export function putActionSSO(url, parameter) {
-    return axiosSSO({
-        url: url,
-        method: "put",
-        data: parameter
-    })
-}
-
-// get
-export function getActionSSO(url, parameter) {
-    return axiosSSO({
-        url: url,
-        method: "get",
-        params: parameter
-    })
-}
-
-// deleteAction
-export function deleteActionSSO(url, parameter) {
-    return axiosSSO({
-        url: url,
-        method: "delete",
-        params: parameter
-    })
-}
-
-/**
- * 下载文件 用于excel导出
- * @param url
- * @param parameter
- * @returns {*}
- */
-export function downFileSSO(url, parameter) {
-    return axiosSSO({
-        url: url,
-        params: parameter,
-        method: "get",
-        responseType: "blob"
     })
 }
 
@@ -226,26 +154,10 @@ export function getActionWebClient(url, parameter) {
     })
 }
 
-export function postActionWebClient(url, data) {
-    return axiosWebClient({
-        url: url,
-        method: "post",
-        data: data
-    })
-}
-
 export function putActionWebClient(url, data) {
     return axiosWebClient({
         url: url,
         method: "put",
         data: data
-    })
-}
-
-export function deleteActionWebClient(url, parameter) {
-    return axiosWebClient({
-        url: url,
-        method: "delete",
-        params: parameter
     })
 }

@@ -25,9 +25,11 @@ const status = computed(()=>{
 
 async function onSwitchChange() {
   queryTunnelCount(selectedServer?.id,clientId.value).then(res=>{
-    tunnelCount.web.splice(0,tunnelCount.web.length,...res.web)
-    tunnelCount.service.splice(0,tunnelCount.service.length,...res.service)
-    setTunnelCount(tunnelCount)
+    if(res.success){
+      tunnelCount.web.splice(0,tunnelCount.web.length,...res.data.web||res.web)
+      tunnelCount.service.splice(0,tunnelCount.service.length,...res.data.service||res.service)
+      setTunnelCount(tunnelCount)
+    }
   })
   if (!pid.value) {
     await onTurnOn()

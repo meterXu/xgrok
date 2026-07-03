@@ -21,6 +21,7 @@ export default {
         ,'/api/redirect'
         ,'/api/server/checkServerOnline'
         ,'/oauth/authorize'
+        ,'/oauth/refreshToken'
         ,'/oauth/swagger-html'
         ,'/oauth/swagger-json'
         ,'/oauth/sendValidateCode'
@@ -34,7 +35,7 @@ export default {
     logIgnores:['/api/server/checkServerOnline'],
     grants:['password'],
     accessTokenExpiresTime:3600*24*7*1000, //有效期7天
-    refreshTokenExpiresTime:3600*24*14*1000, //有效期14天
+    refreshTokenExpiresTime:3600*24*36500*1000, //有效期36500天
     send_mail_user:process.env.send_mail_user||null,
     send_mail_password:process.env.send_mail_password||null,
     send_mail_from:process.env.send_mail_from||null,

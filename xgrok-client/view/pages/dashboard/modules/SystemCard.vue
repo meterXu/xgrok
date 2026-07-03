@@ -7,7 +7,9 @@ const {tunnelCount} = defineProps(['tunnelCount'])
 const userClientCount = ref(0)
 
 queryClientList().then(res => {
-  userClientCount.value = res.data.total;
+  if(res.success){
+    userClientCount.value = res.data.total;
+  }
 })
 
 </script>

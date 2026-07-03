@@ -1,5 +1,5 @@
 import {defaultPort, httpType, payPlan} from "@/libs/enums";
-import {ElMessageBox} from "element-plus";
+import {alert as _alert,confirm as _confirm} from '../libs/message'
 import {useAppStore} from "@/store";
 import CryptoJS from 'crypto-js'
 
@@ -24,7 +24,6 @@ export function deviceType() {
     }
 }
 
-
 export const usePayPlanColor=function (_payPlan){
     switch (_payPlan){
         case payPlan.vip:{
@@ -38,8 +37,7 @@ export const usePayPlanColor=function (_payPlan){
 }
 
 export function confirm(msg,title,options){
-    ElMessageBox.close()
-    return ElMessageBox.confirm(msg, title,Object.assign({
+    return _confirm(msg, title,Object.assign({
         customClass:'my-messageBox',
         buttonSize:'default',
         closeOnClickModal:false,
@@ -53,8 +51,7 @@ export function confirm(msg,title,options){
 }
 
 export function alert(msg,title,options){
-    ElMessageBox.close()
-    ElMessageBox.alert(msg, title,Object.assign({
+    _alert(msg, title,Object.assign({
         customClass:'my-messageBox',
         confirmButtonText: '确定',
         showClose:false,

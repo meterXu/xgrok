@@ -37,12 +37,11 @@ export default class OAuthService{
         }
     }
 
-    async refreshToken(ctx){
-        debugger
-        let token = await this.oauthTokensService.queryOAuthToken(ctx.request.body)
+    async refreshToken(body){
+        let token = await this.oauthTokensService.queryOAuthToken(body)
         if(token&&token.refreshTokenExpiresAt.valueOf() >= new Date().valueOf()){
             let accessToken = Model.createNewToken()
-            let refreshToken  = Model.createNewToken()
+            let refreshToken  = Model.createNewToken('refreshToken')
             token.accessToken = accessToken.value
             token.refreshToken = refreshToken.value
             token.accessTokenExpiresAt  = accessToken.expiresTime.valueOf()

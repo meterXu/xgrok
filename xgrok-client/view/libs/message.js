@@ -1,13 +1,19 @@
 import {ElNotification,ElMessageBox,ElMessage} from "element-plus";
 let globalMessageBox = null;
+let globalElNotification = null;
 
 export function showNotification(type, message, title) {
-    ElNotification({
-        type: type,
-        title,
-        message,
-        position: 'bottom-right'
-    })
+    if(!globalElNotification){
+        globalElNotification = ElNotification({
+            type: type,
+            title,
+            message,
+            position: 'bottom-right',
+            onClose:()=>{
+                globalElNotification = null
+            }
+        })
+    }
 }
 
 export const message = {
@@ -32,7 +38,6 @@ export function confirm(confirmText, title, options){
                     }
                 }
             }, options)
-            // @ts-ignore
             globalMessageBox = ElMessageBox.confirm(confirmText, title, dealWithOption(_options)).catch((err) => {
                 reject(err);
             });

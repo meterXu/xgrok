@@ -2,7 +2,6 @@ import {
     deleteAction,
     getAction,
     postAction,
-    postActionSSO,
     putAction,
     postActionSSONoToken,
     getActionSSONoToken,
@@ -25,7 +24,8 @@ const url = {
         checkUserIsExist: '/checkUserIsExist',
         sendValidateCode: '/sendValidateCode',
         register: '/register',
-        changePwd: '/changePwd'
+        changePwd: '/changePwd',
+        refreshToken: '/refreshToken',
     },
     server: {
         query: '/server/query',
@@ -112,7 +112,11 @@ export function login(data) {
     }, data)
     data.password = md5(data.password)
     data.signature = md5(data.password + data.client_secret + data.timestamp)
-    return postActionSSO(url.oauth.authorize, qs.stringify(data))
+    return postActionSSONoToken(url.oauth.authorize, qs.stringify(data))
+}
+
+export function refreshToken(refreshToken) {
+    return postActionSSONoToken(url.oauth.refreshToken,{refresh_token:refreshToken})
 }
 
 export function queryServersConfig(type = serverEnum.ngrok,clientId) {

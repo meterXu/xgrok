@@ -4,8 +4,9 @@ import {alterStoreValue, getLsValue, setLsValue,ACCESS_TOKEN,USER_INFO,PERMISSIO
 
 export const useAppStore = defineStore('app', ()=>{
     const $ls = window.app.config.globalProperties.$ls
-    let _userInfo = ref(null)
-    let _token = ref(null)
+    const _userInfo = ref(null)
+    const _token = ref(null)
+    const _refreshToken = ref(null)
 
     const userInfo = computed(()=>{
         _userInfo.value = alterStoreValue(getLsValue($ls.get(USER_INFO)))
@@ -14,6 +15,10 @@ export const useAppStore = defineStore('app', ()=>{
     const token = computed(()=>{
         _token.value = alterStoreValue(getLsValue($ls.get(ACCESS_TOKEN)))
         return _token
+    })
+    const refreshToken = computed(()=>{
+        _refreshToken.value = alterStoreValue(getLsValue($ls.get('refreshToken')))
+        return _refreshToken
     })
     const permission = computed(()=>{
         return alterStoreValue(getLsValue($ls.get(PERMISSION)))
@@ -28,10 +33,14 @@ export const useAppStore = defineStore('app', ()=>{
         _token.value=alterStoreValue(data)
         $ls.set(ACCESS_TOKEN,setLsValue(data))
     }
+    function setRefreshToken(data:string){
+        _refreshToken.value=alterStoreValue(data)
+        $ls.set('refreshToken',setLsValue(data))
+    }
     function setPermission(data:PermissionType[]){
         $ls.set(PERMISSION,setLsValue(data))
     }
-    return { token,userInfo,permission,setUserInfo,setToken,setPermission}
+    return { token,userInfo,permission,refreshToken,setUserInfo,setToken,setPermission,setRefreshToken}
 })
 
 const pinia = createPinia()

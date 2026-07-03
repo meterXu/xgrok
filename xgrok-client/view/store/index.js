@@ -13,6 +13,7 @@ export const useAppStore = defineStore('app', () => {
     const $ss = window.app.config.globalProperties.$ss
     const _userInfo = shallowRef(null)
     const _token = ref(null)
+    const _refreshToken = ref(null)
     const _pid = ref(null)
     const _selectedServer = shallowReactive({})
     const _clientId = ref(null)
@@ -46,6 +47,12 @@ export const useAppStore = defineStore('app', () => {
             _token.value = alterStoreValue(getLsValue($ls.get(ACCESS_TOKEN)))
         }
         return _token
+    })
+    const refreshToken = computed(() => {
+        if ($ls.get('refreshToken')) {
+            _refreshToken.value = alterStoreValue(getLsValue($ls.get('refreshToken')))
+        }
+        return _refreshToken
     })
     const pid = computed(() => {
         return _pid
@@ -147,6 +154,10 @@ export const useAppStore = defineStore('app', () => {
         $ls.set(ACCESS_TOKEN, setLsValue(data ? `Bearer ${data}` : null))
     }
 
+    function setRefreshToken(data) {
+        $ls.set('refreshToken', setLsValue(data))
+    }
+
     function setPid(data) {
         _pid.value = data
     }
@@ -229,6 +240,7 @@ export const useAppStore = defineStore('app', () => {
 
     return {
         token,
+        refreshToken,
         userInfo,
         pid,
         selectedServer,
@@ -247,6 +259,7 @@ export const useAppStore = defineStore('app', () => {
         systemTheme,
         setUserInfo,
         setToken,
+        setRefreshToken,
         setPid,
         setSelectedServer,
         setClientId,

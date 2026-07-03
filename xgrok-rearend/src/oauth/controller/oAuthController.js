@@ -55,14 +55,14 @@ export default class OAuthController{
     @tag
     @body({refresh_token: { type: 'string', required: true }})
     async refreshToken(ctx) {
-        let token = await this.oAuthService.refreshToken(ctx)
+        let token = await this.oAuthService.refreshToken(ctx.validatedBody)
         if(token){
             token.client = undefined
             token.accessTokenExpiresAt = token.accessTokenExpiresAt.valueOf()
             token.refreshTokenExpiresAt = token.refreshTokenExpiresAt.valueOf()
             return ctx.result(new ResultModel(token,null,true))
         }else{
-            return ctx.result(new ResultModel(null,'refresh_token 无效或已过期！',false,401))
+            return ctx.result(new ResultModel(null,'refresh_token 无效或已过期！',false))
         }
     }
 
