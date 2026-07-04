@@ -21,9 +21,23 @@ const axios = createService(window.project.variable.baseApi, config => {
         token: token
     }
 })
-const axiosSSO = createService(window.project.variable.ssoApi, () => {
-    return {}
-}, null, true)
+const axiosSSO = createService(window.project.variable.ssoApi, config => {
+    const token = window.app.config.globalProperties.$ls.get(ACCESS_TOKEN)
+    if (token) {
+        const time = new Date().valueOf()
+        if (process.env.NODE_ENV === 'development') {
+            config.headers['Authorization'] = token
+        } else {
+            config.headers['Authorization'] = token.split(' ')[0] + ' ' + md5([token.split(' ')[1], time, 'isaacxu'].join(' '));
+            config.headers['X-Access-Token'] = token.split(' ')[1];
+            config.headers['X-Access-Time'] = time;
+        }
+    }
+    return {
+        tokenKey: window.project.variable.tokenKey,
+        token: token
+    }
+})
 const axiosNoToken = createService(window.project.variable.baseApi, () => {
     return {}
 }, null, false)
@@ -129,6 +143,14 @@ export function getAction(url, parameter) {
         url: url,
         method: "get",
         params: parameter
+    })
+}
+
+export function postActionSSO(url, parameter) {
+    return axiosSSO({
+        url: url,
+        method: "post",
+        data: parameter
     })
 }
 

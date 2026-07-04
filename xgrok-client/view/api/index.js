@@ -7,7 +7,8 @@ import {
     getActionSSONoToken,
     getActionNoToken,
     getActionWebClient,
-    putActionWebClient
+    putActionWebClient,
+    postActionSSO
 } from "./manage"
 import md5 from "js-md5"
 import qs from "qs"
@@ -116,7 +117,7 @@ export function login(data) {
 }
 
 export function refreshToken(refreshToken) {
-    return postActionSSONoToken(url.oauth.refreshToken,{refresh_token:refreshToken})
+    return postActionSSO(url.oauth.refreshToken,{refresh_token:refreshToken})
 }
 
 export function queryServersConfig(type = serverEnum.ngrok,clientId) {

@@ -55,6 +55,10 @@ export default class OAuthController{
     @tag
     @body({refresh_token: { type: 'string', required: true }})
     async refreshToken(ctx) {
+        const model = new Model(ctx)
+        if(!model.validateToken(ctx.req.headers['authorization'].split(' ')[1],ctx.req.headers['x-access-token'],ctx.req.headers['x-access-time'])){
+            return ctx.result(new ResultModel(null,'无效的token',false))
+        }
         let token = await this.oAuthService.refreshToken(ctx.validatedBody)
         if(token){
             token.client = undefined

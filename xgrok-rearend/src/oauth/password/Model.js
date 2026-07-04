@@ -5,7 +5,7 @@ import {randomUUID} from "../../utils/index.js";
 import config from "../../config.js";
 import {OAuthError} from "oauth2-server";
 import md5 from 'js-md5'
-import {isDelete, status} from "../../utils/enum";
+import {status} from "../../utils/enum";
 
 export default class Model {
     constructor(ctx) {
@@ -20,14 +20,12 @@ export default class Model {
         }
         this.ctx=ctx
     }
-
     static createNewToken(type='accessToken'){
         return {
             value:randomUUID(true),
             expiresTime:new Date(new Date().valueOf()+(type==='accessToken'?config.accessTokenExpiresTime:config.refreshTokenExpiresTime))
         }
     }
-
     async getUser(username, password){
         let res = await this.oauthUsersService.queryOAuthUsers({
             username:username
@@ -130,6 +128,9 @@ export default class Model {
     validateToken(encryptToken,realToken,time){
         if(process.env.NODE_ENV==='development'){
             return true
+        }
+        if(this.ctx.originalUrl==='/oauth/refreshToken'){
+            return md5([realToken,time,'isaacxu'].join(' '))===encryptToken
         }
         if(new Date().valueOf()-parseInt(time)>config.timestampDiff){
             return false
