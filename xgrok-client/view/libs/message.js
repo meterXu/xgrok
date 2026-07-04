@@ -9,6 +9,7 @@ export function showNotification(type, message, title) {
             title,
             message,
             position: 'bottom-right',
+            duration: 800,
             onClose:()=>{
                 globalElNotification = null
             }

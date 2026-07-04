@@ -30,7 +30,7 @@ export default {
         ,'/oauth/checkUserIsExist'
         ,'/oauth/changePwd'
         ,'/api/version/latest'
-        ,'/api/version/list'
+        ,'/api/version/list',
     ],
     logIgnores:['/api/server/checkServerOnline'],
     grants:['password'],

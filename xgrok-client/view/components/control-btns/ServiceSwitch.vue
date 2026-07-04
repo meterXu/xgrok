@@ -126,7 +126,7 @@ defineExpose({
         <div class="switch absolute rounded-2xl bg-(--power-switch-bg) cursor-pointer flex flex-col items-center justify-center font-bold gap-4"
              :class="`power-${status}`"
              v-debounce:click="onSwitchChange">
-          <span class="mt-12">XGROK POWER</span>
+          <span class="mt-12 text-center">XGROK POWER</span>
           <EpLoading v-if="switchLoading" class="rotate text-[24px]"/>
           <MdiPowerStandby v-else class="text-[24px]"/>
         </div>

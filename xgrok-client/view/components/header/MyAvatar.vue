@@ -4,8 +4,8 @@ import {useRouter} from "vue-router";
 import avatar from '@/assets/imgs/avatar.svg'
 import {confirm} from "@/libs/common";
 import {ElMessage} from "element-plus";
-import {closeWebSocket} from "@/api";
-import {useGoTo} from "@/libs/useAction";
+import {closeWebSocket, serviceTurnOff} from "@/api";
+import {useClientTypeExecute, useGoTo} from "@/libs/useAction";
 import {showNotification} from "@/libs/message";
 import {NotificationType} from "@/libs/enums";
 const store = useAppStore()
@@ -20,6 +20,14 @@ function onCommand(command) {
   }
 }
 
+function logoutAction(){
+  store.setToken(null)
+  store.setUserInfo(null)
+  store.setConfigIsLock(false)
+  closeWebSocket()
+  useGoTo('Login', true)
+}
+
 function logout() {
   confirm('确定要退出登录吗？', null, {
     confirmButtonClass: 'el-button--danger is-plain',
@@ -30,21 +38,28 @@ function logout() {
           instance.confirmButtonText = '退出中...'
           instance.cancelButtonClass = instance.cancelButtonClass + ' my-btn-disabled'
           if (pid.value) {
-            const res = await window.electronAPI.turnOff(pid.value)
+            const res = await useClientTypeExecute(()=>{
+              return serviceTurnOff({pid:pid.value})
+            },()=>{
+              return window.electronAPI.turnOff(pid.value)
+            })
             instance.confirmButtonLoading = false
             if (res.success) {
               store.setPid(null)
               store.setConfigIsLock(false)
               store.setAppSetting({autoServer:false})
               done()
+              logoutAction()
             }else{
               showNotification(NotificationType.error,res.message||'退出失败')
             }
           }else{
-            done()
             instance.confirmButtonLoading = false
+            done()
+            logoutAction()
           }
         } else {
+          instance.confirmButtonLoading = false;
           done()
         }
       } catch (err) {
@@ -54,12 +69,6 @@ function logout() {
         ElMessage.error(err.message)
       }
     },
-  }).then(() => {
-    store.setToken(null)
-    store.setUserInfo(null)
-    store.setConfigIsLock(false)
-    closeWebSocket()
-    useGoTo('Login', true)
   })
 }
 </script>

@@ -6,13 +6,14 @@ import {speedAndTraffic} from "@/api";
 const emits = defineEmits(['change'])
 const props = defineProps(['tunnelCount'])
 const store = useAppStore()
-const {selectedServer, clientId,pid} = store
+const {selectedServer, clientId,pid,token} = store
 let timer = 0
 const speed = ref('0')
 const traffic = ref('0')
 
 async function getSpeedAndTraffic(){
   try{
+    if(!token.value) return
     const speedAndTrafficRes = await speedAndTraffic(selectedServer.id, clientId.value)
     speed.value = speedAndTrafficRes.data.speed
     traffic.value = speedAndTrafficRes.data.traffic
