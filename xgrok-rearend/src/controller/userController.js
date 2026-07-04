@@ -164,6 +164,8 @@ export default class UserController {
         const {serverId,clientId} = ctx.validatedQuery
         const queryRes = await this.userService.queryTunnelCount(ctx.token.user.id,serverId,clientId)
         const res = new ResultModel(queryRes,null, true)
+        //兼容老版本代码
+        Object.assign(res,queryRes)
         ctx.result(res)
     }
 

@@ -26,8 +26,8 @@ const status = computed(()=>{
 async function onSwitchChange() {
   queryTunnelCount(selectedServer?.id,clientId.value).then(res=>{
     if(res.success){
-      tunnelCount.web.splice(0,tunnelCount.web.length,...res.data.web||res.web)
-      tunnelCount.service.splice(0,tunnelCount.service.length,...res.data.service||res.service)
+      tunnelCount.web.splice(0,tunnelCount.web.length,...res.data.web)
+      tunnelCount.service.splice(0,tunnelCount.service.length,...res.data.service)
       setTunnelCount(tunnelCount)
     }
   })
