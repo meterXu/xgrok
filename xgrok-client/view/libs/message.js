@@ -29,10 +29,12 @@ export function confirm(confirmText, title, options){
         return new Promise((resolve, reject) => {
             let _options = Object.assign({
                 beforeClose: (action, instance, done) => {
+                    globalMessageBox=null
                     if (action === 'confirm') {
                         instance.confirmButtonLoading = true;
                         resolve({done, instance});
                     } else {
+                        instance.confirmButtonLoading = false;
                         reject(done)
                         done();
                     }

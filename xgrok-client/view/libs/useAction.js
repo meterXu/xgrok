@@ -110,15 +110,16 @@ export function gotoSubscribe(message){
     }).catch(()=>{})
 }
 
-export function operationConfirm(){
+export function operationConfirm(done){
     const {pid} = useAppStore()
     if(pid.value){
+        done&&done()
         return confirm('服务正在运中，是否继续操作？','',{
             confirmButtonText: '继续',
             cancelButtonText: '取消',
         })
     }else{
-        return Promise.resolve()
+        return Promise.resolve({done})
     }
 }
 

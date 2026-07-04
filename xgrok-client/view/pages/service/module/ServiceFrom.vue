@@ -66,7 +66,7 @@ function onSave() {
   ruleFormRef.value.validate(valid=>{
     if (valid) {
       saveLoading.value = true
-      operationConfirm().then(() => {
+      operationConfirm().then(({done}) => {
         const postData = JSON.parse(JSON.stringify(formData))
         if(postData.secret_key){
           postData.secret_key = encryptData(postData.secret_key)
@@ -79,6 +79,7 @@ function onSave() {
               }
             }).finally(() => {
               saveLoading.value = false
+              done()
             })
             : createTunnelService(postData).then(res => {
               if (res.success) {
@@ -90,6 +91,7 @@ function onSave() {
               }
             }).finally(() => {
               saveLoading.value = false
+              done()
             })
       }).catch(() => {
         saveLoading.value = false

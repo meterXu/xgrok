@@ -7,10 +7,9 @@ import {useAppStore} from "@/store";
 import {tipText} from "@/libs/infoText";
 import InfoTip from "@/components/infoTip.vue";
 import {confirm, testName, isLocalHost} from "@/libs/common";
-import {onFormValidate, operationConfirm, resetFormValidate, useGetDisabled, useGetErrorMsg} from "@/libs/useAction";
+import {operationConfirm, resetFormValidate, useGetDisabled, useGetErrorMsg} from "@/libs/useAction";
 import {useRouter} from "vue-router";
 import {showNotification} from "@/libs/message";
-import {$emit} from 'xxweb-util'
 import RefreshButton from "@/components/RefreshButton.vue";
 
 const store = useAppStore()
@@ -97,7 +96,7 @@ function onSave() {
   ruleFormRef.value.validate(valid=>{
     if (valid) {
       saveLoading.value = true
-      operationConfirm().then(()=>{
+      operationConfirm().then(({done})=>{
         formData.id ? updateTunnelWeb(formData).then(res => {
           showNotification(res.success ? NotificationType.success : NotificationType.error, res.success ? `${createOrUpdateText.value}成功` : `${createOrUpdateText.value}失败`)
           if (res.success) {
@@ -106,6 +105,7 @@ function onSave() {
           }
         }).finally(() => {
           saveLoading.value = false
+          done()
         }) : createTunnelWeb(formData).then(res => {
           if (res.success) {
             showNotification(NotificationType.success,  `${createOrUpdateText.value}成功`)
@@ -122,6 +122,7 @@ function onSave() {
           }
         }).finally(() => {
           saveLoading.value = false
+          done()
         })
       }).catch(()=>{
         saveLoading.value = false

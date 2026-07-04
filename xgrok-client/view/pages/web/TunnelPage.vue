@@ -79,8 +79,8 @@ function onDel() {
   if (activeTunnel.value?.id) {
     confirm('确定要删除这条配置吗？', null, {
       confirmButtonClass: 'el-button--danger is-plain'
-    }).then(() => {
-      operationConfirm().then(()=>{
+    }).then(({done}) => {
+      operationConfirm(done).then(({done:done2})=>{
         deleteTunnelWebBatch(activeTunnel.value.id).then(async(res) => {
           if (res.success) {
             showNotification(NotificationType.success, '删除成功')
@@ -89,6 +89,8 @@ function onDel() {
           } else {
             showNotification(NotificationType.error, '删除失败')
           }
+        }).finally(() => {
+          done2()
         })
       })
     })
@@ -122,7 +124,7 @@ function onTest() {
 }
 
 function onToggleStatus(value){
-  operationConfirm().then(()=>{
+  operationConfirm().then(({done})=>{
     updateTunnelWeb({
       id: activeTunnel.value.id,
       status: value
@@ -133,6 +135,8 @@ function onToggleStatus(value){
         activeTunnel.value.status = value
         pid.value&&$emit('restart')
       }
+    }).finally(() => {
+      done()
     })
   })
 }
