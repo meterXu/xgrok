@@ -52,7 +52,7 @@ export const useAppStore = defineStore('app', () => {
         if ($ls.get('refreshToken')) {
             _refreshToken.value = alterStoreValue(getLsValue($ls.get('refreshToken')))
         }
-        return _refreshToken
+        return _refreshToken.value
     })
     const pid = computed(() => {
         return _pid
@@ -155,6 +155,7 @@ export const useAppStore = defineStore('app', () => {
     }
 
     function setRefreshToken(data) {
+        _refreshToken.value = alterStoreValue(data)
         $ls.set('refreshToken', setLsValue(data))
     }
 
@@ -233,8 +234,20 @@ export const useAppStore = defineStore('app', () => {
         $ls.set("tunnelCount", setLsValue(alterStoreValue(_tunnelCount)))
     }
 
+    function setActiveTunnelCountWeb(activeTunnel){
+        const find = _tunnelCount.web.find(c=>c.id===activeTunnel.id)
+        Object.assign(find, activeTunnel)
+        $ls.set("tunnelCount", setLsValue(alterStoreValue(_tunnelCount)))
+    }
+
     function setTunnelCountService(allService){
         _tunnelCount.service=allService
+        $ls.set("tunnelCount", setLsValue(alterStoreValue(_tunnelCount)))
+    }
+
+    function setActiveTunnelCountService(activeTunnel){
+        const find = _tunnelCount.service.find(c=>c.id===activeTunnel.id)
+        Object.assign(find, activeTunnel)
         $ls.set("tunnelCount", setLsValue(alterStoreValue(_tunnelCount)))
     }
 
@@ -275,6 +288,8 @@ export const useAppStore = defineStore('app', () => {
         setSystemTheme,
         setTunnelCountWeb,
         setTunnelCountService,
+        setActiveTunnelCountWeb,
+        setActiveTunnelCountService
     }
 })
 export default createPinia()

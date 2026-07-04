@@ -1,5 +1,5 @@
 <script setup>
-import {isOnline, NotificationType} from "@/libs/enums";
+import {isOnline, NotificationType, statusType} from "@/libs/enums";
 import {useAppStore} from '@/store'
 import {checkTunnelConfig, useClientTypeExecute} from "@/libs/useAction";
 import {isEmpty,$on,$off} from "xxweb-util";
@@ -39,15 +39,15 @@ async function onSwitchChange() {
 }
 
 async function onTurnOn(isRestart = false) {
-  if (checkTunnelConfig(selectedServer,tunnelCount.web,tunnelCount.service)){
+  let data = {
+    pid:pid.value,
+    server: selectedServer,
+    tunnelWebs: toRaw(tunnelCount.web.filter(c=>c.status===statusType.enable)),
+    tunnelServices: toRaw(tunnelCount.service.filter(c=>c.status===statusType.enable))
+  }
+  if (checkTunnelConfig(data.server,data.tunnelWebs,data.tunnelServices)){
     switchLoading.value = true
     store.setConfigIsLock(true)
-    let data = {
-      pid:pid.value,
-      server: selectedServer,
-      tunnelWebs: toRaw(tunnelCount.web),
-      tunnelServices: toRaw(tunnelCount.service)
-    }
     try{
       let res = await useClientTypeExecute(async ()=>{
          return isRestart?serviceTurnRestart(data):serviceTurnOn(data)
@@ -71,6 +71,8 @@ async function onTurnOn(isRestart = false) {
     }finally {
       switchLoading.value = false
     }
+  }else if(isRestart&&pid.value){
+    await onTurnOff()
   }
 }
 

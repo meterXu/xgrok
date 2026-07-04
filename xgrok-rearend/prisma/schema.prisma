@@ -150,7 +150,7 @@ model OAuthTokens {
   id                       String       @id @db.VarChar(32)
   access_token             String       @db.VarChar(300)
   client_id                String       @db.VarChar(50)
-  refresh_token            String       @db.VarChar(300)
+  refresh_token            String       @unique(map: "oauth_tokens_refresh_token_unique") @db.VarChar(300)
   user_id                  String       @db.VarChar(32)
   created_time             BigInt?
   modified_time            BigInt?

@@ -124,7 +124,7 @@ export default class OAuthController{
                 const registerRes = await this.oAuthUsersService.register(userModel,ctx.validatedBody.code)
                 const accessToken = Model.createNewToken('accessToken')
                 const refreshToken = Model.createNewToken('refreshToken')
-                const token = await this.oAuthTokensService.createOrUpdateOAuthToken({
+                const token = await this.oAuthTokensService.createOAuthToken({
                     accessToken:accessToken.value,
                     accessTokenExpiresAt:accessToken.expiresTime,
                     refreshToken:refreshToken.value,

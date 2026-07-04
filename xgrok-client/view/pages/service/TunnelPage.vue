@@ -21,7 +21,7 @@ import TunnelFormWrap from "@/components/tunnel/TunnelFormWrap.vue";
 import PlusScrollbar from "@/components/plus-scrollbar/PlusScrollbar.vue";
 import PlusLoading from "@/components/plus-loading/PlusLoading.vue";
 import {checkPermission, operationConfirm, useClientTypeExecute} from "@/libs/useAction";
-import {isOnline, NotificationType, serviceType, tunnelType} from "@/libs/enums";
+import {isOnline, NotificationType, serviceType, statusType, tunnelType} from "@/libs/enums";
 import {showNotification} from "@/libs/message";
 import ServiceItem from "@/pages/service/module/ServiceItem.vue";
 import ServiceSwitch from "@/components/control-btns/ServiceSwitch.vue";
@@ -29,7 +29,7 @@ import {$emit} from "xxweb-util";
 import AddTunnelBtn from "@/components/control-btns/AddTunnelBtn.vue";
 
 const store = useAppStore()
-const {selectedServer, clientId, configIsLock,pid,setTunnelCountService} = store
+const {selectedServer, clientId, configIsLock,pid,setTunnelCountService,setActiveTunnelCountService} = store
 const tunnelServiceConfigs = reactive([])
 const tunnelLoading = ref(false)
 const activeId = shallowRef(null)
@@ -129,11 +129,12 @@ function onToggleStatus(value){
     updateTunnelService({
       id: activeTunnel.value.id,
       status: value
-    }).then(res=>{
+    }).then(async res=>{
       const operation = value?'启用':'禁用'
       showNotification(res.success?NotificationType.success:NotificationType.error,  res.success?`${operation}成功`:res.message||`${operation}失败`)
       if(res.success){
         activeTunnel.value.status = value
+        setActiveTunnelCountService(activeTunnel.value)
         pid.value&&$emit('restart')
       }
     }).finally(() => {

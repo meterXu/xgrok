@@ -10,7 +10,7 @@ import {checkWeb, checkWebByWebClient, deleteTunnelWebBatch, queryTunnelWebConfi
 import WebForm from "@/pages/web/module/WebForm.vue";
 import {checkPermission, operationConfirm, useClientTypeExecute} from "@/libs/useAction";
 import {getEnumKey, confirm} from "@/libs/common";
-import {isOnline, NotificationType, tunnelType} from "@/libs/enums";
+import {isOnline, NotificationType, statusType, tunnelType} from "@/libs/enums";
 import TunnelFormWrap from '@/components/tunnel/TunnelFormWrap.vue'
 import TunnelControl from '@/components/tunnel/TunnelControl.vue'
 import EpArrowLeft from '~icons/ep/arrow-left';
@@ -24,7 +24,7 @@ import ServiceSwitch from "@/components/control-btns/ServiceSwitch.vue";
 import AddTunnelBtn from "@/components/control-btns/AddTunnelBtn.vue";
 
 const store = useAppStore()
-const {selectedServer, clientId, configIsLock,pid,setTunnelCountWeb} = store
+const {selectedServer, clientId, configIsLock,pid,setTunnelCountWeb,setActiveTunnelCountWeb} = store
 const tunnelWebConfigs = reactive([])
 const tunnelLoading = ref(false)
 const activeId = shallowRef(null)
@@ -128,11 +128,12 @@ function onToggleStatus(value){
     updateTunnelWeb({
       id: activeTunnel.value.id,
       status: value
-    }).then(res=>{
+    }).then(async res=>{
       const operation = value?'启用':'禁用'
       showNotification(res.success?NotificationType.success:NotificationType.error,  res.success?`${operation}成功`:res.message||`${operation}失败`)
       if(res.success){
-        activeTunnel.value.status = value
+        activeTunnel.value.status=value
+        setActiveTunnelCountWeb(activeTunnel.value)
         pid.value&&$emit('restart')
       }
     }).finally(() => {

@@ -40,13 +40,16 @@ export default class OAuthService{
     async refreshToken(body){
         let token = await this.oauthTokensService.queryOAuthToken(body)
         if(token&&token.refreshTokenExpiresAt.valueOf() >= new Date().valueOf()){
+            // 删除旧的 token 行（消耗掉当前 refresh_token）
+            await this.oauthTokensService.delToken(token.id)
+            // 生成新的 token 对并插入新行
             let accessToken = Model.createNewToken()
             let refreshToken  = Model.createNewToken('refreshToken')
             token.accessToken = accessToken.value
             token.refreshToken = refreshToken.value
             token.accessTokenExpiresAt  = accessToken.expiresTime.valueOf()
             token.refreshTokenExpiresAt  = refreshToken.expiresTime.valueOf()
-            await this.oauthTokensService.createOrUpdateOAuthToken(token)
+            await this.oauthTokensService.createOAuthToken(token)
             return token
         }else{
             return null

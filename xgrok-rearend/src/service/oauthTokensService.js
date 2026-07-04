@@ -60,6 +60,21 @@ export default class OAuthTokensService {
             return null
         }
     }
+    async createOAuthToken(oauthTokensModel) {
+        return prisma.OAuthTokens.create({
+            data:{
+                id:oauthTokensModel.id||randomUUID(),
+                access_token:oauthTokensModel.accessToken,
+                access_token_expires_at:typeof oauthTokensModel.accessTokenExpiresAt?.valueOf === 'function'?oauthTokensModel.accessTokenExpiresAt.valueOf():oauthTokensModel.accessTokenExpiresAt,
+                client_id:oauthTokensModel.client.id,
+                refresh_token:oauthTokensModel.refreshToken,
+                refresh_token_expires_at:typeof oauthTokensModel.refreshTokenExpiresAt?.valueOf === 'function'?oauthTokensModel.refreshTokenExpiresAt.valueOf():oauthTokensModel.refreshTokenExpiresAt,
+                user_id:oauthTokensModel.user.id,
+                created_time:new Date().valueOf(),
+            }
+        })
+    }
+
     async createOrUpdateOAuthToken(oauthTokensModel) {
         const _token = await this.queryOAuthToken({
             user_id:oauthTokensModel.user.id,
@@ -114,7 +129,7 @@ export default class OAuthTokensService {
         return [totalRes[0]._all,recordRes]
     }
     async delToken(id){
-        return prisma.oAuthTokens.delete({
+        return prisma.OAuthTokens.delete({
             where: {
                 id: id
             }

@@ -1,8 +1,8 @@
 import {createService, ACCESS_TOKEN, onResponseError} from 'xxweb-util'
 import {dealWithError} from './dealwithError';
 import md5 from "js-md5"
-import {useAppStore} from "@/store";
 import {refreshToken} from "@/api/index";
+import {useAppStore} from "@/store";
 
 const axios = createService(window.project.variable.baseApi, config => {
     const token = window.app.config.globalProperties.$ls.get(ACCESS_TOKEN)
@@ -45,7 +45,8 @@ const axiosSSONoToken = createService(window.project.variable.ssoApi, () => {
     return {}
 }, null, false)
 const axiosWebClient = createService(window.project.variable.webClientApi, config => {
-    const token = window.app.config.globalProperties.$ls.get(ACCESS_TOKEN)
+    const store = useAppStore()
+    const token = store.token.value
     if (token) {
         const time = new Date().valueOf()
         if (process.env.NODE_ENV === 'development') {
@@ -66,8 +67,8 @@ let refreshPromise = null
 
 axios.interceptors.response.use((response) => response, async (error) => {
     if (error.response && error.response.status === 401) {
-        const originalConfig = error.config
         const store = useAppStore()
+        const originalConfig = error.config
         if (!originalConfig._retry) {
             originalConfig._retry = true
             // 如果当前没有正在进行的刷新，则发起一个新的刷新请求

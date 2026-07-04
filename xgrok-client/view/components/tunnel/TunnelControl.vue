@@ -32,7 +32,7 @@ function onToggleStatus(value) {
   >
     <el-button :disabled="props.tunnelStatus === statusType.disable" :loading="status==='start'" :icon="IconParkSolidPlayOne" type="primary" link @click="onTest">测试
     </el-button>
-    <el-button :disabled="isDisabled" type="danger" link :icon="IconParkOutlineDeleteOne" @click="onDel">删除
+    <el-button type="danger" link :icon="IconParkOutlineDeleteOne" @click="onDel">删除
     </el-button>
     <el-tooltip content="启用/禁用隧道">
       <el-switch class="ml-12" size="small" :model-value="tunnelStatus" :active-value="1" :inactive-value="0"
