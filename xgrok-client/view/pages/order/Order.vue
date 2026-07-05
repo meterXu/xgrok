@@ -115,7 +115,7 @@ function closeOrder(){
       confirmButtonText:'不，还想捐赠',
       cancelButtonText:'是的，不捐赠',
       cancelButtonClass:'el-button--danger is-plain'
-    }).then(()=>{}).catch(()=>{
+    }).then(({done})=>{done()}).catch(()=>{
       router.replace({name:'Plan'})
     })
   }

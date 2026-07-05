@@ -116,7 +116,8 @@ function onSave() {
               confirmButtonText: '去捐赠',
               cancelButtonText: '知道了',
               confirmButtonClass: 'el-button--warning is-plain'
-            }).then(() => {
+            }).then(({done}) => {
+              done()
               router.push({name: 'Plan'})
             })
           }

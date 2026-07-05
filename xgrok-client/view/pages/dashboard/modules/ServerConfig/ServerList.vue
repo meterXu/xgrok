@@ -24,7 +24,8 @@ function onSelectConfigItem(_serverConfig) {
           dangerouslyUseHTMLString:true,
           confirmButtonText: '切换',
           cancelButtonText: '否',
-        }).then(()=>{
+        }).then(({done})=>{
+          done()
           _serverConfig.statusClass = 'server-status-checking'
           setSelectedServer(_serverConfig)
           $emit('restart')
@@ -39,7 +40,8 @@ function onSelectConfigItem(_serverConfig) {
       confirmButtonText: '去捐赠',
       cancelButtonText: '知道了',
       confirmButtonClass: 'el-button--warning is-plain'
-    }).then(() => {
+    }).then(({done}) => {
+      done()
       router.push({name: 'Plan'})
     })
   }

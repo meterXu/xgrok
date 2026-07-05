@@ -107,11 +107,12 @@ function onCancel() {
 
 function onChangeType(value) {
   if ([serviceType.UDP,serviceType.STCP_CLIENT,serviceType.STCP_SERVER].indexOf(value)>-1 && plan.value !== payPlan.vip) {
-    confirm('无捐赠用户无法创建非TCP隧道', null, {
+    confirm('未捐赠用户无法创建非TCP隧道', null, {
       confirmButtonText: '去捐赠',
       cancelButtonText: '知道了',
       confirmButtonClass: 'el-button--warning is-plain'
-    }).then(() => {
+    }).then(({done}) => {
+      done()
       router.push({name: 'Plan'})
     }).catch(() => {
       formData.type = serviceType.TCP

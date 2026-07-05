@@ -1,5 +1,5 @@
 import {getErrorText} from "xxweb-util";
-import {ElMessageBox} from 'element-plus'
+import {confirm} from '@/libs/utils/message'
 import {showNotification} from "@/libs/utils/message.ts";
 import {appStore} from "@/store/index.ts";
 import {NotificationTypeEnum} from "@/libs/enum";
@@ -36,9 +36,10 @@ export function dealWithError(error:any){
 }
 
 function showConfirm (){
-  ElMessageBox.confirm("很抱歉，登录已过期，请重新登录","登录已过期").then(()=>{
+  confirm("很抱歉，登录已过期，请重新登录","登录已过期").then(({done})=>{
+    done()
     store.setToken(null)
     store.setUserInfo(null)
     window.location.reload()
-  }).catch(()=>{})
+  })
 }

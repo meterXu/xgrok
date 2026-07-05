@@ -19,7 +19,7 @@ export const message = {
     info:ElMessage.info
 }
 
-export function confirm(confirmText: String, title: string, options: { [key: string]: any }): Promise<{
+export function confirm(confirmText: String, title: string, options: { [key: string]: any }={}): Promise<{
     done: () => void,
     instance: any
 }> {
