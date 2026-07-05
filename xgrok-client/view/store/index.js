@@ -164,7 +164,6 @@ export const useAppStore = defineStore('app', () => {
     }
 
     function setSelectedServer(data) {
-        debugger
         useClientTypeExecute(()=>{
             setXgrokAppCfg({selected_server_id:data.id})
         },()=>{})

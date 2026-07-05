@@ -44,15 +44,12 @@ async function planExpired(data){
                     if(res.success){
                         store.setPid(null)
                         store.setConfigIsLock(false)
-                    }
-                }
-                alert('你的捐赠已失效','',{
-                    callback:()=>{
                         queryServersConfig(window.project.variable.type).then(res => {
                             store.setSelectedServer(res.data.records[0])
                         })
                     }
-                })
+                }
+                alert('你的捐赠已失效','')
             }
         }
     })
