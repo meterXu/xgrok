@@ -28,12 +28,6 @@ async function onSwitchChange() {
     showNotification(NotificationType.warning,'请选择一个服务再启动')
     return false
   }
-  const res = await queryTunnelCount(selectedServer?.id,clientId.value)
-  if(res.success){
-    tunnelCount.web.splice(0,tunnelCount.web.length,...res.data.web)
-    tunnelCount.service.splice(0,tunnelCount.service.length,...res.data.service)
-    setTunnelCount(tunnelCount)
-  }
   if (!pid.value) {
     await onTurnOn()
   } else {
@@ -45,6 +39,12 @@ async function onTurnOn(isRestart = false) {
   if(!selectedServer.id){
     showNotification(NotificationType.warning,'请选择一个服务再启动')
     return false
+  }
+  const res = await queryTunnelCount(selectedServer?.id,clientId.value)
+  if(res.success){
+    tunnelCount.web.splice(0,tunnelCount.web.length,...res.data.web)
+    tunnelCount.service.splice(0,tunnelCount.service.length,...res.data.service)
+    setTunnelCount(tunnelCount)
   }
   let data = {
     pid:pid.value,
