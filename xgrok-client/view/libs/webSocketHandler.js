@@ -1,7 +1,8 @@
 import {useAppStore} from "@/store";
-import {queryPayPlan} from "@/api";
+import {queryPayPlan, queryServersConfig, serviceTurnOff} from "@/api";
 import {alert} from "@/libs/common";
 import {payType} from "@/libs/enums";
+import {useClientTypeExecute} from "@/libs/useAction";
 
 export default async function (data){
     switch (data.type){
@@ -35,10 +36,23 @@ async function planExpired(data){
             store.setPlan(res.data)
             if(res.data.plan.type===payType.free){// 真过期了
                 if(store.pid.value){
-                    await window.electronAPI.turnOff(store.pid.value)
-                    store.setPid(null)
+                    const res = await useClientTypeExecute(()=>{
+                        return serviceTurnOff({pid:store.pid.value})
+                    },()=>{
+                        return  window.electronAPI.turnOff(store.pid.value)
+                    })
+                    if(res.success){
+                        store.setPid(null)
+                        store.setConfigIsLock(false)
+                    }
                 }
-                alert('你的捐赠已失效')
+                alert('你的捐赠已失效','',{
+                    callback:()=>{
+                        queryServersConfig(window.project.variable.type).then(res => {
+                            store.setSelectedServer(res.data.records[0])
+                        })
+                    }
+                })
             }
         }
     })

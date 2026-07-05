@@ -13,22 +13,24 @@ import PlusScrollbar from "@/components/plus-scrollbar/PlusScrollbar.vue";
 import ServerList from "@/pages/dashboard/modules/ServerConfig/ServerList.vue";
 import ServiceSwitch from '@/components/control-btns/ServiceSwitch.vue'
 import {useClientTypeExecute} from "@/libs/useAction";
-import {clientType} from "@/libs/enums";
+import {clientType, payPlan} from "@/libs/enums";
+import {storeToRefs} from 'pinia'
 
 const store = useAppStore()
 const serviceSwitchRef = ref()
-const {selectedServer, clientId, tunnelCount, setTunnelCount, appSetting, pid} = store
+const {selectedServer, clientId, tunnelCount, appSetting, pid,plan} = storeToRefs(store)
+const {setTunnelCount,setSelectedServer,setPid,setPercentage,setClientId,setSystemInfo} = store
 
 useClientTypeExecute(()=>{},()=>{
   window.electronAPI.onAppQuit(() => {
     closeWebSocket()
-    store.setPid(null)
+    setPid(null)
   })
   window.electronAPI.onProcess((_percentage) => {
-    store.setPercentage(_percentage)
+    setPercentage(_percentage)
   })
   window.electronAPI.onRefreshPid((_pid) => {
-    store.setPid(_pid)
+    setPid(_pid)
   })
 })
 
@@ -39,27 +41,37 @@ async function initServerConfigData() {
     if(res.success&&res.data.selected_server_id){
       const res2 = await detailServerConfig(res.data.selected_server_id)
       if(res2.success){
-        store.setSelectedServer(res2.data)
+        if(plan.value.value === payPlan.free&&res2.data.is_vip === payPlan.vip){
+          setSelectedServer({id:null})
+        }else{
+          setSelectedServer(res2.data)
+        }
       }
     }
+    return Promise.resolve()
   },async ()=>{
     //客户端类型为frp模式的则获取selectedServer详情
-    if(selectedServer.type === window.project.variable.type){
-      const res3 = await detailServerConfig(selectedServer.id)
+    if(selectedServer.value.type === window.project.variable.type){
+      const res3 = await detailServerConfig(selectedServer.value.id)
       if (res3.success) {
-        store.setSelectedServer(res3.data)
+        if(plan.value.value === payPlan.free&&res3.data.is_vip === payPlan.vip){
+          setSelectedServer({id:null})
+        } else{
+          setSelectedServer(res3.data)
+        }
       }
     }
+    return Promise.resolve()
   })
   // 没有selectedServer，则取第一个
-  if (!selectedServer.id) {
+  if (!selectedServer.value.id) {
     queryServersConfig(window.project.variable.type).then(res => {
-      store.setSelectedServer(res.data.records[0])
+      setSelectedServer(res.data.records[0])
     })
   }else{
-    //webclient模式下如果配置中不存在selected_server_id，需要首次初始化selectedServer
+    // webclient模式下如果配置中不存在selected_server_id，需要首次初始化selectedServer
     useClientTypeExecute(()=>{
-      !appSetting.selected_server_id&&store.setSelectedServer(selectedServer)
+      !appSetting.value.selected_server_id&&setSelectedServer(selectedServer.value)
     })
   }
 }
@@ -69,7 +81,7 @@ function initClient() {
     if (res.success) {
       queryByHostNameOrDeviceId(res.data.hostname,res.data.device_id).then(res1 => {
         if (res1.data) {
-          store.setClientId(res1.data.id)
+          setClientId(res1.data.id)
           !res1.data.device_id&&updateClient({
             id: res1.data.id,
             device_id: res.data.device_id
@@ -80,13 +92,13 @@ function initClient() {
             hostname: res.data.hostname,
             osVersion: res.data.osVersion
           }).then(res2 => {
-            res2.success && store.setClientId(res2.data)
+            res2.success && setClientId(res2.data)
           })
         }
         const hostname = res1.data?res1.data.hostname:res.data.hostname
         const osVersion = res1.data?res1.data.osVersion:res.data.osVersion
         const device_id = res1.data?res1.data.device_id:res.data.device_id
-        store.setSystemInfo({
+        setSystemInfo({
           hostname,
           osVersion,
           device_id
@@ -97,14 +109,14 @@ function initClient() {
 }
 
 watchEffect(() => {
-  if (selectedServer?.id && clientId.value) {
-    queryTunnelCount(selectedServer?.id, clientId.value).then(res => {
+  if (selectedServer.value?.id && clientId.value) {
+    queryTunnelCount(selectedServer.value?.id, clientId.value).then(res => {
       if(res.success){
-        tunnelCount.web.splice(0, tunnelCount.web.length, ...res.data.web||res.web)
-        tunnelCount.service.splice(0, tunnelCount.service.length, ...res.data.service||res.service)
-        tunnelCount.allWeb = res.data.allWeb||res.allWeb
-        tunnelCount.allService = res.data.allService||res.allService
-        setTunnelCount(tunnelCount)
+        tunnelCount.value.web.splice(0, tunnelCount.value.web.length, ...res.data.web||res.web)
+        tunnelCount.value.service.splice(0, tunnelCount.value.service.length, ...res.data.service||res.service)
+        tunnelCount.value.allWeb = res.data.allWeb||res.allWeb
+        tunnelCount.value.allService = res.data.allService||res.allService
+        setTunnelCount(tunnelCount.value)
         if (!pid.value && appSetting.autoLaunch && appSetting.autoServer) {
           serviceSwitchRef.value.onTurnOn()
         }
