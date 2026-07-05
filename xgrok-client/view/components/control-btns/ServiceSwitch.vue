@@ -49,8 +49,8 @@ async function onTurnOn(isRestart = false) {
   let data = {
     pid:pid.value,
     server: selectedServer,
-    tunnelWebs: toRaw(tunnelCount.web.filter(c=>c.status===statusType.enable)),
-    tunnelServices: toRaw(tunnelCount.service.filter(c=>c.status===statusType.enable))
+    tunnelWebs: toRaw(tunnelCount.web),
+    tunnelServices: toRaw(tunnelCount.service)
   }
   if (checkTunnelConfig(data.server,data.tunnelWebs,data.tunnelServices)){
     switchLoading.value = true
