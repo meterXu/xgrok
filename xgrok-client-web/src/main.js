@@ -10,7 +10,9 @@ import path from "path";
 
 global.project = config
 global.logger = {
-    info:console.log
+  info: console.log,
+  warn: console.warn,
+  error: console.error
 }
 global.proxyLocalhost = '127.0.0.1'
 BigInt.prototype.toJSON = function() {

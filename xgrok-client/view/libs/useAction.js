@@ -119,7 +119,7 @@ export function operationConfirm(done){
             cancelButtonText: '取消',
         })
     }else{
-        return Promise.resolve({done})
+        return Promise.resolve({done:done?done:()=>{}})
     }
 }
 
