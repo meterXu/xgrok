@@ -28,6 +28,7 @@ const emits = defineEmits(['updateSuccess', 'cancel', 'createSuccess'])
 const ruleFormRef = ref('ruleFormRef')
 const portRange = ref(null)
 const saveLoading = ref(false)
+let _tmpHost = ''
 let formData = userServiceForm()
 const validateRes = reactive({
   name: {value: null, valid: true},
@@ -55,6 +56,8 @@ watch(()=>props.tunnelForm,(nv)=>{
   if(!formData.id){
     queryFreePort()
     queryRandomName()
+  }else{
+    _tmpHost = nv.host
   }
 },{immediate:true,deep:true})
 
@@ -123,7 +126,10 @@ function onChangeType(value) {
       queryFreePort()
     }
     if(value === serviceType.STCP_CLIENT){
+      _tmpHost = formData.host
       formData.host=defaultHost
+    }else if(formData.host===defaultHost){
+      formData.host = _tmpHost
     }
     resetFormValidate(ruleFormRef,validateRes)
   }

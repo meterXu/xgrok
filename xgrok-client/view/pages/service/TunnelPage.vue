@@ -57,7 +57,7 @@ async function loadTunnelData() {
   const res = await queryTunnelServiceConfig(selectedServer.id, clientId.value)
   if (res.success) {
     tunnelServiceConfigs.splice(0, tunnelServiceConfigs.length, ...res.data)
-    setTunnelCountService(tunnelServiceConfigs)
+    setTunnelCountService(toRaw(tunnelServiceConfigs))
     activeId.value = null
   }
   tunnelLoading.value = false;
@@ -134,7 +134,7 @@ function onToggleStatus(value){
       showNotification(res.success?NotificationType.success:NotificationType.error,  res.success?`${operation}成功`:res.message||`${operation}失败`)
       if(res.success){
         activeTunnel.value.status = value
-        setActiveTunnelCountService(activeTunnel.value)
+        setActiveTunnelCountService(toRaw(activeTunnel.value))
         pid.value&&$emit('restart')
       }
     }).finally(() => {

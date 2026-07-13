@@ -14,7 +14,7 @@ global.logger = {
   warn: console.warn,
   error: console.error
 }
-global.proxyLocalhost = '127.0.0.1'
+global.proxyLocalhost = '0.0.0.0'
 BigInt.prototype.toJSON = function() {
     return Number(this)
 }

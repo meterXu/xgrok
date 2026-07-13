@@ -53,7 +53,7 @@ async function loadTunnelData() {
   if (res.success) {
     tunnelWebConfigs.splice(0, tunnelWebConfigs.length, ...res.data)
     activeId.value = null
-    setTunnelCountWeb(tunnelWebConfigs)
+    setTunnelCountWeb(toRaw(tunnelWebConfigs))
   }
   tunnelLoading.value = false;
 }
@@ -133,7 +133,7 @@ function onToggleStatus(value){
       showNotification(res.success?NotificationType.success:NotificationType.error,  res.success?`${operation}成功`:res.message||`${operation}失败`)
       if(res.success){
         activeTunnel.value.status=value
-        setActiveTunnelCountWeb(activeTunnel.value)
+        setActiveTunnelCountWeb(toRaw(activeTunnel.value))
         pid.value&&$emit('restart')
       }
     }).finally(() => {
