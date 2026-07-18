@@ -7,13 +7,14 @@ import {useAppStore} from "@/store";
 import {tipText} from "@/libs/infoText";
 import InfoTip from "@/components/infoTip.vue";
 import {confirm, testName, isLocalHost} from "@/libs/common";
-import {operationConfirm, resetFormValidate, useGetDisabled, useGetErrorMsg} from "@/libs/useAction";
+import {operationConfirm, resetFormValidate, useGetDisabled, useGetErrorMsg,onFormValidate} from "@/libs/useAction";
 import {useRouter} from "vue-router";
 import {showNotification} from "@/libs/message";
+import {storeToRefs} from 'pinia'
 import RefreshButton from "@/components/RefreshButton.vue";
 
 const store = useAppStore()
-const {selectedServer, clientId,configIsLock,pid} = store
+const {selectedServer, clientId,configIsLock} = storeToRefs(store)
 const props = defineProps(['tunnelForm'])
 const emits = defineEmits(['updateSuccess', 'cancel', 'createSuccess'])
 const ruleFormRef = ref('ruleFormRef')
@@ -41,7 +42,7 @@ watchEffect(() => {
   formData.type = props.tunnelForm?.type || 0
   formData.host = props.tunnelForm?.host || 'http://localhost'
   formData.is_remote = props.tunnelForm?.is_remote || 0
-  formData.server_id = props.tunnelForm?.server_id || selectedServer.id
+  formData.server_id = props.tunnelForm?.server_id || selectedServer.value.id
   formData.client_id = props.tunnelForm?.client_id || clientId.value
   formData.port = props.tunnelForm?.port || 80
   formData.is_online = isOnline.online
@@ -119,7 +120,7 @@ function onSave() {
             }).then(({done}) => {
               done()
               router.push({name: 'Plan'})
-            })
+            }).catch(()=>{})
           }
         }).finally(() => {
           saveLoading.value = false
@@ -144,7 +145,7 @@ function validateName(rule, value, callback) {
     callback(new Error('名称不符合格式'))
   } else {
     validateNameLoading.value = true
-    checkName.debounce()(selectedServer.domain, tunnelType.web, selectedServer.http_port, value, selectedServer.id, clientId.value, formData.id || '').then(res => {
+    checkName.debounce()(selectedServer.value.domain, tunnelType.web, selectedServer.value.http_port, value, selectedServer.value.id, clientId.value, formData.id || '').then(res => {
       if (res.success) {
         callback(res.data ? undefined : new Error(res.message))
       }
@@ -157,7 +158,7 @@ function validateName(rule, value, callback) {
 }
 
 function queryRandomName(){
-  getRandomSubName(selectedServer.id).then(res => {
+  getRandomSubName(selectedServer.value.id).then(res => {
     if(res.success){
       formData.name = res.data
     }

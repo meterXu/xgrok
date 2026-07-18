@@ -3,20 +3,23 @@ import {defineEmits} from 'vue'
 import ServerConfigItem from "@/components/ServerConfigItem.vue";
 import {useAppStore} from "@/store";
 import {isOnline, payPlan, useStatusClass} from "@/libs/enums";
-import {checkTcpLatency, getXgrokAppCfg, queryServersConfig} from "@/api";
+import {checkTcpLatency, queryServersConfig} from "@/api";
 import {confirm,alert} from "@/libs/common";
 import {$emit} from 'xxweb-util'
-import {useClientTypeExecute} from "@/libs/useAction";
+import {storeToRefs} from "pinia";
 
 const emits = defineEmits(['selectServerConfig','restart'])
-const {selectedServer,setSelectedServer,plan,pid,clientId} = useAppStore()
+const appStore = useAppStore();
+const {setSelectedServer} = appStore
+const {selectedServer,plan,pid,clientId} = storeToRefs(appStore)
+
 const serverConfigs = reactive([])
 
 function onSelectConfigItem(_serverConfig) {
-  if(_serverConfig.id === selectedServer.id)
+  if(_serverConfig.id === selectedServer.value.id)
     return false
-  if (plan.value === payPlan.vip || _serverConfig.is_vip === payPlan.free) {
-    if(pid.value){
+  if (plan.value.value === payPlan.vip || _serverConfig.is_vip === payPlan.free) {
+    if(plan.value.value){
       if(_serverConfig?.is_online === isOnline.offline){
         alert('服务不在线，不可热切换','')
       }else{
@@ -29,7 +32,7 @@ function onSelectConfigItem(_serverConfig) {
           _serverConfig.statusClass = 'server-status-checking'
           setSelectedServer(_serverConfig)
           $emit('restart')
-        })
+        }).catch(()=>{})
       }
     }else{
       _serverConfig.statusClass = 'server-status-checking'
@@ -43,7 +46,7 @@ function onSelectConfigItem(_serverConfig) {
     }).then(({done}) => {
       done()
       router.push({name: 'Plan'})
-    })
+    }).catch(()=>{})
   }
 }
 

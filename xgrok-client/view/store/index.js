@@ -27,10 +27,10 @@ export const useAppStore = defineStore('app', () => {
     const _systemInfo = shallowReactive({})
     const _appSetting = shallowReactive({})
     const _tunnelCount = reactive({
-        web: [],
-        service: [],
-        allWeb:[],
-        allService:[]
+        web: 0,
+        service: 0,
+        allWeb:0,
+        allService:0
 
     })
     const _systemTheme = ref(null)
@@ -40,13 +40,13 @@ export const useAppStore = defineStore('app', () => {
         if ($ls.get(USER_INFO)) {
             _userInfo.value = alterStoreValue(getLsValue($ls.get(USER_INFO)))
         }
-        return _userInfo
+        return _userInfo.value
     })
     const token = computed(() => {
         if ($ls.get(ACCESS_TOKEN)) {
             _token.value = alterStoreValue(getLsValue($ls.get(ACCESS_TOKEN)))
         }
-        return _token
+        return _token.value
     })
     const refreshToken = computed(() => {
         if ($ls.get('refreshToken')) {
@@ -55,7 +55,7 @@ export const useAppStore = defineStore('app', () => {
         return _refreshToken.value
     })
     const pid = computed(() => {
-        return _pid
+        return _pid.value
     })
     const selectedServer = computed(() => {
         if ($ls.get("selectedServer")) {
@@ -67,7 +67,7 @@ export const useAppStore = defineStore('app', () => {
         if ($ls.get("clientId")) {
             _clientId.value = alterStoreValue(getLsValue($ls.get("clientId")))
         }
-        return _clientId
+        return _clientId.value
     })
     const plan = computed(() => {
         if ($ls.get("plan")) {
@@ -89,16 +89,16 @@ export const useAppStore = defineStore('app', () => {
         return _orderStatus
     })
     const tunnelForm = computed(() => {
-        return _tunnelForm
+        return _tunnelForm.value
     })
     const userName = computed(() => {
         if ($ls.get("username")) {
             _userName.value = alterStoreValue(getLsValue($ls.get("username")))
         }
-        return _userName
+        return _userName.value
     })
     const configIsLock = computed(() => {
-        return _configIsLock
+        return _configIsLock.value
     })
     const isCloseEdit = computed(() => {
         return Boolean(pid.value) && configIsLock.value
@@ -107,10 +107,10 @@ export const useAppStore = defineStore('app', () => {
         if ($ss.get("percentage")) {
             _percentage.value = alterStoreValue(getLsValue($ss.get("percentage")))
         }
-        return _percentage
+        return _percentage.value
     })
     const headerBtnLoading = computed(() => {
-        return _headerBtnLoading
+        return _headerBtnLoading.value
     })
     const systemInfo = computed(() => {
         return _systemInfo
@@ -229,28 +229,6 @@ export const useAppStore = defineStore('app', () => {
         _systemTheme.value = data
     }
 
-    function setTunnelCountWeb(allWeb){
-        _tunnelCount.web=allWeb
-        $ls.set("tunnelCount", setLsValue(alterStoreValue(_tunnelCount)))
-    }
-
-    function setActiveTunnelCountWeb(activeTunnel){
-        const find = _tunnelCount.web.find(c=>c.id===activeTunnel.id)
-        Object.assign(find, activeTunnel)
-        $ls.set("tunnelCount", setLsValue(alterStoreValue(_tunnelCount)))
-    }
-
-    function setTunnelCountService(allService){
-        _tunnelCount.service=allService
-        $ls.set("tunnelCount", setLsValue(alterStoreValue(_tunnelCount)))
-    }
-
-    function setActiveTunnelCountService(activeTunnel){
-        const find = _tunnelCount.service.find(c=>c.id===activeTunnel.id)
-        Object.assign(find, activeTunnel)
-        $ls.set("tunnelCount", setLsValue(alterStoreValue(_tunnelCount)))
-    }
-
     return {
         token,
         refreshToken,
@@ -285,11 +263,7 @@ export const useAppStore = defineStore('app', () => {
         setSystemInfo,
         setAppSetting,
         setTunnelCount,
-        setSystemTheme,
-        setTunnelCountWeb,
-        setTunnelCountService,
-        setActiveTunnelCountWeb,
-        setActiveTunnelCountService
+        setSystemTheme
     }
 })
 export default createPinia()

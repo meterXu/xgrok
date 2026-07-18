@@ -38,6 +38,7 @@ const url = {
         tunnelServiceConfig: '/user/tunnelServiceConfig',
         queryPayPlan: '/user/queryPayPlan',
         queryTunnelCount: '/user/queryTunnelCount',
+        queryTunnelStatistics: '/user/queryTunnelStatistics',
         getRandomSubName:'/user/getRandomSubName'
     },
     tunnel: {
@@ -257,7 +258,7 @@ export function initWebSocket(callback) {
         window.ws = new reconnectingWebSocket(()=>{
             const token = window.app.config.globalProperties.$ls.get(ACCESS_TOKEN)
             const store = useAppStore()
-            return window.project.variable.wsUrl+'?token='+token?.split(' ')[1]+`&clientId=${store.clientId.value}`
+            return window.project.variable.wsUrl+'?token='+token?.split(' ')[1]+`&clientId=${store.clientId}`
         },  ['isaacxu',useClientType().value===clientType.electron?'app':'web'], {
             maxReconnectionDelay: 20000, // 断开后最大的重连时间： 20s，每多一次重连，会增加 1.3 倍，5 * 1.3 * 1.3 * 1.3...
             minReconnectionDelay: 5000, // 断开后最短的重连时间： 5s
@@ -323,7 +324,11 @@ export function detailAssets(name) {
     return getAction(url.assets.detail, {name})
 }
 
-export function queryTunnelCount(serverId, clientId) {
+export function queryTunnelStatistics(serverId, clientId) {
+    return getAction(url.user.queryTunnelStatistics, {serverId, clientId})
+}
+
+export function queryActiveTunnel(serverId, clientId) {
     return getAction(url.user.queryTunnelCount, {serverId, clientId})
 }
 

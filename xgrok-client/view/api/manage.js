@@ -1,11 +1,12 @@
-import {createService, ACCESS_TOKEN, onResponseError} from 'xxweb-util'
+import {createService, onResponseError} from 'xxweb-util'
 import {dealWithError} from './dealwithError';
 import md5 from "js-md5"
 import {refreshToken} from "@/api/index";
 import {useAppStore} from "@/store";
 
-const axios = createService(window.project.variable.baseApi, config => {
-    const token = window.app.config.globalProperties.$ls.get(ACCESS_TOKEN)
+function initHeaders(config){
+    const store = useAppStore()
+    const token = store.token
     if (token) {
         const time = new Date().valueOf()
         if (process.env.NODE_ENV === 'development') {
@@ -16,23 +17,18 @@ const axios = createService(window.project.variable.baseApi, config => {
             config.headers['X-Access-Time'] = time;
         }
     }
+    return token
+}
+
+const axios = createService(window.project.variable.baseApi, config => {
+    const token = initHeaders(config)
     return {
         tokenKey: window.project.variable.tokenKey,
         token: token
     }
 })
 const axiosSSO = createService(window.project.variable.ssoApi, config => {
-    const token = window.app.config.globalProperties.$ls.get(ACCESS_TOKEN)
-    if (token) {
-        const time = new Date().valueOf()
-        if (process.env.NODE_ENV === 'development') {
-            config.headers['Authorization'] = token
-        } else {
-            config.headers['Authorization'] = token.split(' ')[0] + ' ' + md5([token.split(' ')[1], time, 'isaacxu'].join(' '));
-            config.headers['X-Access-Token'] = token.split(' ')[1];
-            config.headers['X-Access-Time'] = time;
-        }
-    }
+    const token = initHeaders(config)
     return {
         tokenKey: window.project.variable.tokenKey,
         token: token
@@ -45,18 +41,7 @@ const axiosSSONoToken = createService(window.project.variable.ssoApi, () => {
     return {}
 }, null, false)
 const axiosWebClient = createService(window.project.variable.webClientApi, config => {
-    const store = useAppStore()
-    const token = store.token.value
-    if (token) {
-        const time = new Date().valueOf()
-        if (process.env.NODE_ENV === 'development') {
-            config.headers['Authorization'] = token
-        } else {
-            config.headers['Authorization'] = token.split(' ')[0] + ' ' + md5([token.split(' ')[1], time, 'isaacxu'].join(' '));
-            config.headers['X-Access-Token'] = token.split(' ')[1];
-            config.headers['X-Access-Time'] = time;
-        }
-    }
+    const token = initHeaders(config)
     return {
         tokenKey: window.project.variable.tokenKey,
         token: token
@@ -73,7 +58,7 @@ axios.interceptors.response.use((response) => response, async (error) => {
             originalConfig._retry = true
             // 如果当前没有正在进行的刷新，则发起一个新的刷新请求
             if (!refreshPromise) {
-                refreshPromise = refreshToken(store.refreshToken.value)
+                refreshPromise = refreshToken(store.refreshToken)
                     .then(res => {
                         if (res.success) {
                             store.setUserName(res.data.user.username)

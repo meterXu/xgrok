@@ -277,4 +277,18 @@ export default class UserController {
         const pass = await this.userService.validateServerNameAndSecret(serverId,serverName,secretKey)
         ctx.result(new ResultModel(pass,pass?'隧道名和密钥匹配':'隧道名和密钥不匹配',true))
     }
+
+    @request('get', '/user/queryTunnelStatistics')
+    @summary('查询隧道统计')
+    @tag
+    @query({
+        serverId:{type: "string",required: true,description:"服务器id",nullable:false},
+        clientId:{type: "string",required: true, description: '客户端id',nullable:false},
+    })
+    async queryTunnelStatistics(ctx){
+        const {serverId,clientId} = ctx.validatedQuery
+        const queryRes = await this.userService.queryTunnelStatistics(ctx.token.user.id,serverId,clientId)
+        const res = new ResultModel(queryRes,null, true)
+        ctx.result(res)
+    }
 }

@@ -20,7 +20,7 @@ import TunnelControl from "@/components/tunnel/TunnelControl.vue";
 import TunnelFormWrap from "@/components/tunnel/TunnelFormWrap.vue";
 import PlusScrollbar from "@/components/plus-scrollbar/PlusScrollbar.vue";
 import PlusLoading from "@/components/plus-loading/PlusLoading.vue";
-import {checkPermission, operationConfirm, useClientTypeExecute} from "@/libs/useAction";
+import {checkPermission, operationConfirm, useClientTypeExecute, useGetTunnelStatistics} from "@/libs/useAction";
 import {isOnline, NotificationType, serviceType, statusType, tunnelType} from "@/libs/enums";
 import {showNotification} from "@/libs/message";
 import ServiceItem from "@/pages/service/module/ServiceItem.vue";
@@ -29,7 +29,7 @@ import {$emit} from "xxweb-util";
 import AddTunnelBtn from "@/components/control-btns/AddTunnelBtn.vue";
 
 const store = useAppStore()
-const {selectedServer, clientId, configIsLock,pid,setTunnelCountService,setActiveTunnelCountService} = store
+const {selectedServer, clientId, configIsLock,pid} = store
 const tunnelServiceConfigs = reactive([])
 const tunnelLoading = ref(false)
 const activeId = shallowRef(null)
@@ -57,7 +57,6 @@ async function loadTunnelData() {
   const res = await queryTunnelServiceConfig(selectedServer.id, clientId.value)
   if (res.success) {
     tunnelServiceConfigs.splice(0, tunnelServiceConfigs.length, ...res.data)
-    setTunnelCountService(toRaw(tunnelServiceConfigs))
     activeId.value = null
   }
   tunnelLoading.value = false;
@@ -69,7 +68,7 @@ function onCancel() {
 }
 
 function onAddTunnel() {
-  if (!configIsLock.value && checkPermission(getEnumKey(tunnelType, tunnelType.service), tunnelServiceConfigs)) {
+  if (!configIsLock && checkPermission(getEnumKey(tunnelType, tunnelType.service), tunnelServiceConfigs)) {
     activeId.value = null
     isAdd.value = true
   }
@@ -93,7 +92,7 @@ function onDel() {
           done2()
         })
       })
-    })
+    }).catch(()=>{})
   }
 }
 
@@ -133,8 +132,6 @@ function onToggleStatus(value){
       const operation = value?'启用':'禁用'
       showNotification(res.success?NotificationType.success:NotificationType.error,  res.success?`${operation}成功`:res.message||`${operation}失败`)
       if(res.success){
-        activeTunnel.value.status = value
-        setActiveTunnelCountService(toRaw(activeTunnel.value))
         pid.value&&$emit('restart')
       }
     }).finally(() => {
@@ -147,12 +144,14 @@ function onChange() {
   isAdd.value = false
   testStatus.value = ''
 }
-async function operateSuccess(type){
-  await loadTunnelData()
+function operateSuccess(type){
+  loadTunnelData()
+  useGetTunnelStatistics()
   pid.value&&$emit('restart')
 }
 onMounted(() => {
   loadTunnelData()
+  useGetTunnelStatistics()
 })
 </script>
 

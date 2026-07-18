@@ -4,6 +4,7 @@ import {clientType, NotificationType, payPlan} from "@/libs/enums";
 import {confirm} from "@/libs/common";
 import {useAppStore} from '@/store'
 import {showNotification} from "@/libs/message";
+import {queryTunnelStatistics} from "@/api";
 
 export function useGetValidateRes(form){
     const obj={}
@@ -111,8 +112,8 @@ export function gotoSubscribe(message){
 }
 
 export function operationConfirm(done){
-    const {pid} = useAppStore()
-    if(pid.value){
+    const store = useAppStore()
+    if(store.pid){
         done&&done()
         return confirm('服务正在运中，是否继续操作？','',{
             confirmButtonText: '继续',
@@ -158,5 +159,28 @@ export function userServiceForm(){
         remote_port: null,
         is_remote: null,
         is_online: null
+    })
+}
+
+export function useGetTunnelStatistics(){
+    return new Promise((resolve, reject) => {
+        try{
+            const store = useAppStore()
+            if(!store.selectedServer.id||!store.clientId){
+                reject(new Error('参数错误'))
+            }
+            queryTunnelStatistics(store.selectedServer.id, store.clientId).then(res => {
+                if(res.success){
+                    store.tunnelCount.web = res.data.web
+                    store.tunnelCount.service = res.data.service
+                    store.tunnelCount.allWeb = res.data.allWeb
+                    store.tunnelCount.allService = res.data.allService
+                    store.setTunnelCount(store.tunnelCount)
+                }
+                resolve(res)
+            }).catch(e=>reject(e))
+        }catch(e){
+            reject(e)
+        }
     })
 }

@@ -1,18 +1,20 @@
 <script setup>
-import {isOnline, NotificationType, statusType} from "@/libs/enums";
+import {isOnline, NotificationType} from "@/libs/enums";
 import {useAppStore} from '@/store'
 import {checkTunnelConfig, useClientTypeExecute} from "@/libs/useAction";
 import {isEmpty,$on,$off} from "xxweb-util";
 import {onMounted,onUnmounted} from 'vue';
 import {alert, showNotification} from "@/libs/message";
-import {queryTunnelCount, serviceTurnOff, serviceTurnOn, serviceTurnRestart} from "@/api";
+import {queryActiveTunnel, serviceTurnOff, serviceTurnOn, serviceTurnRestart} from "@/api";
+import {storeToRefs} from 'pinia'
+
 const emits = defineEmits(['serverLoading'])
 const store = useAppStore()
-const {pid, selectedServer,tunnelCount,setTunnelCount,clientId} = store
+const {pid, selectedServer,tunnelCount,clientId} = storeToRefs(store)
 const switchLoading = ref(false)
 
 const serverAvailability=computed(()=>{
-  return selectedServer?.is_online===isOnline.online
+  return selectedServer.value?.is_online===isOnline.online
 })
 
 const status = computed(()=>{
@@ -24,7 +26,7 @@ const status = computed(()=>{
 })
 
 async function onSwitchChange() {
-  if(!selectedServer.id){
+  if(!selectedServer.value.id){
     showNotification(NotificationType.warning,'请选择一个服务再启动')
     return false
   }
@@ -36,15 +38,16 @@ async function onSwitchChange() {
 }
 
 async function onTurnOn(isRestart = false) {
-  if(!selectedServer.id){
+  if(!selectedServer.value.id){
     showNotification(NotificationType.warning,'请选择一个服务再启动')
     return false
   }
+  const res = await queryActiveTunnel(selectedServer.value.id,clientId.value)
   let data = {
     pid:pid.value,
-    server: selectedServer,
-    tunnelWebs: toRaw(tunnelCount.web.filter(c=>c.status)),
-    tunnelServices: toRaw(tunnelCount.service.filter(c=>c.status))
+    server: toRaw(selectedServer.value),
+    tunnelWebs: res.data.web,
+    tunnelServices: res.data.service,
   }
   if (checkTunnelConfig(data.server,data.tunnelWebs,data.tunnelServices)){
     switchLoading.value = true

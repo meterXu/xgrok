@@ -117,7 +117,7 @@ function closeOrder(){
       cancelButtonClass:'el-button--danger is-plain'
     }).then(({done})=>{done()}).catch(()=>{
       router.replace({name:'Plan'})
-    })
+    }).catch(()=>{})
   }
 }
 

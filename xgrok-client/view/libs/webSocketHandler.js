@@ -35,11 +35,11 @@ async function planExpired(data){
         if(res.success){
             store.setPlan(res.data)
             if(res.data.plan.type===payType.free){// 真过期了
-                if(store.pid.value){
+                if(store.pid){
                     const res = await useClientTypeExecute(()=>{
-                        return serviceTurnOff({pid:store.pid.value})
+                        return serviceTurnOff({pid:store.pid})
                     },()=>{
-                        return  window.electronAPI.turnOff(store.pid.value)
+                        return  window.electronAPI.turnOff(store.pid)
                     })
                     if(res.success){
                         store.setPid(null)

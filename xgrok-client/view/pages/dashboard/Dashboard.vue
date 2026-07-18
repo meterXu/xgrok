@@ -2,7 +2,7 @@
 import {
   detailServerConfig,
   queryServersConfig,
-  closeWebSocket, queryTunnelCount, getSystemInfo, createClient, updateClient, queryByHostNameOrDeviceId, getXgrokAppCfg
+  closeWebSocket, getSystemInfo, createClient, updateClient, queryByHostNameOrDeviceId, getXgrokAppCfg
 } from '@/api'
 import {onMounted} from 'vue'
 import {useAppStore} from '@/store';
@@ -12,14 +12,14 @@ import HorizontalHeader from "@/components/header/HorizontalHeader.vue";
 import PlusScrollbar from "@/components/plus-scrollbar/PlusScrollbar.vue";
 import ServerList from "@/pages/dashboard/modules/ServerConfig/ServerList.vue";
 import ServiceSwitch from '@/components/control-btns/ServiceSwitch.vue'
-import {useClientTypeExecute} from "@/libs/useAction";
-import {clientType, payPlan} from "@/libs/enums";
+import {useClientTypeExecute, useGetTunnelStatistics} from "@/libs/useAction";
+import {payPlan} from "@/libs/enums";
 import {storeToRefs} from 'pinia'
 
 const store = useAppStore()
 const serviceSwitchRef = ref()
 const {selectedServer, clientId, tunnelCount, appSetting, pid,plan} = storeToRefs(store)
-const {setTunnelCount,setSelectedServer,setPid,setPercentage,setClientId,setSystemInfo} = store
+const {setSelectedServer,setPid,setPercentage,setClientId,setSystemInfo} = store
 
 useClientTypeExecute(()=>{},()=>{
   window.electronAPI.onAppQuit(() => {
@@ -110,16 +110,9 @@ function initClient() {
 
 watchEffect(() => {
   if (selectedServer.value?.id && clientId.value) {
-    queryTunnelCount(selectedServer.value?.id, clientId.value).then(res => {
-      if(res.success){
-        tunnelCount.value.web.splice(0, tunnelCount.value.web.length, ...res.data.web||res.web)
-        tunnelCount.value.service.splice(0, tunnelCount.value.service.length, ...res.data.service||res.service)
-        tunnelCount.value.allWeb = res.data.allWeb||res.allWeb
-        tunnelCount.value.allService = res.data.allService||res.allService
-        setTunnelCount(tunnelCount.value)
-        if (!pid.value && appSetting.autoLaunch && appSetting.autoServer) {
-          serviceSwitchRef.value.onTurnOn()
-        }
+    useGetTunnelStatistics().then(() => {
+      if (!pid.value && appSetting.value.autoLaunch && appSetting.value.autoServer) {
+        serviceSwitchRef.value.onTurnOn()
       }
     })
   }

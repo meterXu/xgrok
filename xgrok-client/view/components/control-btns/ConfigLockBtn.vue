@@ -3,9 +3,10 @@ import IconParkOutlineLock from '~icons/icon-park-outline/lock';
 import IconParkOutlineUnlock from '~icons/icon-park-outline/unlock';
 import {tipText} from "@/libs/infoText";
 import {useAppStore} from "@/store";
+import {storeToRefs} from 'pinia'
 
 const store = useAppStore()
-const {configIsLock} = store
+const {configIsLock} = storeToRefs(store)
 const lockIcon = computed(()=>{
   return configIsLock.value?IconParkOutlineLock:IconParkOutlineUnlock
 })

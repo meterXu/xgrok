@@ -213,4 +213,56 @@ export default class UserService {
         let totalRes = await prisma.$queryRaw(Prisma.raw(totalSql))
         return totalRes[0]._all>0
     }
+
+    async queryTunnelStatistics(userId, serverId, clientId){
+        let where = [
+            `a.status = ${status.enable}`,
+            `a.is_delete = ${isDelete.false}`,
+            `b.status = ${status.enable}`,
+            `b.is_delete = ${isDelete.false}`,
+            userId && `a.creator = '${userId}'`,
+            serverId && `a.server_id = '${serverId}'`,
+            clientId && `a.client_id = '${clientId}'`
+        ].filter(c => c).join(' and ')
+        let whereAll = [
+            `a.status = ${status.enable}`,
+            `a.is_delete = ${isDelete.false}`,
+            `b.status = ${status.enable}`,
+            `b.is_delete = ${isDelete.false}`,
+            userId && `a.creator = '${userId}'`,
+            serverId && `a.server_id = '${serverId}'`
+        ].filter(c => c).join(' and ')
+        let webQuery = `select count(a.id) as num
+                        from ng_tunnel_web a
+                                 inner join ng_client b on a.client_id = b.id
+                            ${where ? `where ${where}` : ''}
+                        order by b.hostname desc`
+        let webQueryAll = `select count(a.id) as num
+                                 from ng_tunnel_web a
+                                          inner join ng_client b on a.client_id = b.id
+                                     ${whereAll ? `where ${whereAll}` : ''}
+                                 order by b.hostname desc`
+        let serviceQuery = `select count(a.id) as num
+                            from ng_tunnel_service a
+                                     inner join ng_client b on a.client_id = b.id
+                                ${where ? `where ${where}` : ''}
+                            order by b.hostname desc`
+        let serviceQueryAll = `select count(a.id) as num
+                                     from ng_tunnel_service a
+                                              inner join ng_client b on a.client_id = b.id
+                                         ${whereAll ? `where ${whereAll}` : ''}
+                                     order by b.hostname desc`
+        let queryRes = await prisma.$transaction([
+            prisma.$queryRaw(Prisma.raw(webQuery)),
+            prisma.$queryRaw(Prisma.raw(serviceQuery)),
+            prisma.$queryRaw(Prisma.raw(webQueryAll)),
+            prisma.$queryRaw(Prisma.raw(serviceQueryAll)),
+        ])
+        return {
+            web: queryRes[0][0]['num'],
+            service: queryRes[1][0]['num'],
+            allWeb: queryRes[2][0]['num'],
+            allService: queryRes[3][0]['num'],
+        }
+    }
 }

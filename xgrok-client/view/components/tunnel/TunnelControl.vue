@@ -5,12 +5,11 @@ import {useAppStore} from '@/store';
 import {statusType} from "@/libs/enums";
 
 const store = useAppStore();
-const {configIsLock} = store
 const emits = defineEmits(['test', 'del'])
 const props = defineProps(['status', 'tunnelStatus'])
 
 const isDisabled = computed(() => {
-  return configIsLock.value||props.tunnelStatus === statusType.disable
+  return props.tunnelStatus === statusType.disable
 })
 function onTest() {
   emits('test')
@@ -30,7 +29,7 @@ function onToggleStatus(value) {
       class="tunnel-control h-42 flex flex-row items-center p-20 bg-(--primary-bg-3) border-b-1 border-(--border-color)"
       :class="status"
   >
-    <el-button :disabled="props.tunnelStatus === statusType.disable" :loading="status==='start'" :icon="IconParkSolidPlayOne" type="primary" link @click="onTest">测试
+    <el-button :disabled="isDisabled" :loading="status==='start'" :icon="IconParkSolidPlayOne" type="primary" link @click="onTest">测试
     </el-button>
     <el-button type="danger" link :icon="IconParkOutlineDeleteOne" @click="onDel">删除
     </el-button>

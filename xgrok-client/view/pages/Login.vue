@@ -17,7 +17,7 @@ const {userName} = store
 const router = useRouter()
 const ruleForm = ref('ruleForm')
 const form = reactive({
-  username:userName.value,
+  username:userName,
   password:null,
   isReadArticle:null
 })

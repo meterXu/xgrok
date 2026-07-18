@@ -8,9 +8,9 @@ import {onMounted, ref} from "vue";
 import {useAppStore} from "@/store";
 import {checkWeb, checkWebByWebClient, deleteTunnelWebBatch, queryTunnelWebConfig, updateTunnelWeb} from "@/api";
 import WebForm from "@/pages/web/module/WebForm.vue";
-import {checkPermission, operationConfirm, useClientTypeExecute} from "@/libs/useAction";
+import {checkPermission, operationConfirm, useClientTypeExecute, useGetTunnelStatistics} from "@/libs/useAction";
 import {getEnumKey, confirm} from "@/libs/common";
-import {isOnline, NotificationType, statusType, tunnelType} from "@/libs/enums";
+import {isOnline, NotificationType, tunnelType} from "@/libs/enums";
 import TunnelFormWrap from '@/components/tunnel/TunnelFormWrap.vue'
 import TunnelControl from '@/components/tunnel/TunnelControl.vue'
 import EpArrowLeft from '~icons/ep/arrow-left';
@@ -20,11 +20,12 @@ import PlusLoading from "@/components/plus-loading/PlusLoading.vue";
 import {showNotification} from "@/libs/message";
 import WebItem from "@/pages/web/module/WebItem.vue";
 import {$emit} from "xxweb-util";
+import {storeToRefs} from 'pinia'
 import ServiceSwitch from "@/components/control-btns/ServiceSwitch.vue";
 import AddTunnelBtn from "@/components/control-btns/AddTunnelBtn.vue";
 
 const store = useAppStore()
-const {selectedServer, clientId, configIsLock,pid,setTunnelCountWeb,setActiveTunnelCountWeb} = store
+const {selectedServer, clientId, configIsLock,pid} = storeToRefs(store)
 const tunnelWebConfigs = reactive([])
 const tunnelLoading = ref(false)
 const activeId = shallowRef(null)
@@ -45,15 +46,14 @@ const filterTunnelWebConfigs = computed(() => {
 })
 
 async function loadTunnelData() {
-  if (!selectedServer || !clientId.value) {
+  if (!selectedServer.value || !clientId.value) {
     return false
   }
   tunnelLoading.value = true
-  const res = await queryTunnelWebConfig(selectedServer.id, clientId.value)
+  const res = await queryTunnelWebConfig(selectedServer.value.id, clientId.value)
   if (res.success) {
     tunnelWebConfigs.splice(0, tunnelWebConfigs.length, ...res.data)
     activeId.value = null
-    setTunnelCountWeb(toRaw(tunnelWebConfigs))
   }
   tunnelLoading.value = false;
 }
@@ -93,7 +93,7 @@ function onDel() {
           done2()
         })
       })
-    })
+    }).catch(() => {})
   }
 }
 
@@ -101,17 +101,17 @@ function onTest() {
   testStatus.value = 'start'
   useClientTypeExecute(()=>{
     return Promise.all([
-        checkWebByWebClient(activeTunnel.value.name, selectedServer.domain, selectedServer.http_port),
-        checkWeb(activeTunnel.value.name, selectedServer.domain, selectedServer.http_port)
+        checkWebByWebClient(activeTunnel.value.name, selectedServer.value.domain, selectedServer.value.http_port),
+        checkWeb(activeTunnel.value.name, selectedServer.value.domain, selectedServer.value.http_port)
     ])
   },()=>{
     return Promise.all([
       window.electronAPI.checkWeb({
         name: activeTunnel.value.name,
-        domain: selectedServer.domain,
-        port: selectedServer.http_port
+        domain: selectedServer.value.domain,
+        port: selectedServer.value.http_port
       }),
-      checkWeb(activeTunnel.value.name, selectedServer.domain, selectedServer.http_port)
+      checkWeb(activeTunnel.value.name, selectedServer.value.domain, selectedServer.value.http_port)
     ])
   }).then(resArray => {
     activeTunnel.value.is_online = resArray[0].data && resArray[1].data ? isOnline.online : isOnline.offline
@@ -132,8 +132,7 @@ function onToggleStatus(value){
       const operation = value?'启用':'禁用'
       showNotification(res.success?NotificationType.success:NotificationType.error,  res.success?`${operation}成功`:res.message||`${operation}失败`)
       if(res.success){
-        activeTunnel.value.status=value
-        setActiveTunnelCountWeb(toRaw(activeTunnel.value))
+        activeTunnel.value.status = value
         pid.value&&$emit('restart')
       }
     }).finally(() => {
@@ -142,12 +141,14 @@ function onToggleStatus(value){
   })
 }
 
-async function operateSuccess(type){
-  await loadTunnelData()
+function operateSuccess(type){
+  loadTunnelData()
+  useGetTunnelStatistics()
   pid.value&&$emit('restart')
 }
 onMounted(() => {
   loadTunnelData()
+  useGetTunnelStatistics()
 })
 </script>
 

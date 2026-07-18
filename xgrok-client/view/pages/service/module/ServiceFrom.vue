@@ -9,7 +9,7 @@ import {
 } from "@/api";
 import {useAppStore} from "@/store";
 import {hostType, isOnline, NotificationType, payPlan, serviceType} from "@/libs/enums";
-import {confirm, decryptData, defaultHost, encryptData, isLocalHost, resetObj} from "@/libs/common";
+import {confirm, decryptData, defaultHost, encryptData, isLocalHost} from "@/libs/common";
 import {
   gotoSubscribe,
   operationConfirm,
@@ -42,7 +42,7 @@ const validateRes = reactive({
 })
 const {errorMsg,pass} = useGetErrorMsg(validateRes)
 const addBtnDisabled = computed(() => {
-  return useGetDisabled(validateRes).value || configIsLock.value
+  return useGetDisabled(validateRes).value || configIsLock
 })
 
 watch(()=>props.tunnelForm,(nv)=>{
