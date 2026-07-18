@@ -84,14 +84,7 @@ ipcMain.handle('system',async (event,arg)=>{
                 res.data = await getLog(arg.data)
             }break
             case 'checkUpdate':{
-                checkUpdate(app,autoUpdater,dialog,shell).catch(()=>{
-                    dialog.showMessageBox({
-                        type: 'info',
-                        buttons: ['确定'],
-                        title: '提示',
-                        detail: '无可用更新，当前已是最新版本！'
-                    })
-                })
+                res.data = await checkUpdate(app,autoUpdater,dialog,shell)
             }break
             case 'setXgrokAppCfg':{
                 res.data = setXgrokAppCfg(arg.data)

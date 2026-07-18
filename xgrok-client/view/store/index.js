@@ -34,6 +34,7 @@ export const useAppStore = defineStore('app', () => {
 
     })
     const _systemTheme = ref(null)
+    const _checkUpdateLoading = ref(false)
 
     //computed
     const userInfo = computed(() => {
@@ -142,6 +143,7 @@ export const useAppStore = defineStore('app', () => {
         _systemTheme.value = _systemTheme.value || getSystemTheme()
         return _systemTheme
     })
+    const checkUpdateLoading = computed(() => _checkUpdateLoading.value)
 
     //action
     function setUserInfo(data) {
@@ -229,6 +231,10 @@ export const useAppStore = defineStore('app', () => {
         _systemTheme.value = data
     }
 
+    function setCheckUpdateLoading(data) {
+        _checkUpdateLoading.value = data
+    }
+
     return {
         token,
         refreshToken,
@@ -248,6 +254,7 @@ export const useAppStore = defineStore('app', () => {
         appSetting,
         tunnelCount,
         systemTheme,
+        checkUpdateLoading,
         setUserInfo,
         setToken,
         setRefreshToken,
@@ -263,7 +270,8 @@ export const useAppStore = defineStore('app', () => {
         setSystemInfo,
         setAppSetting,
         setTunnelCount,
-        setSystemTheme
+        setSystemTheme,
+        setCheckUpdateLoading
     }
 })
 export default createPinia()

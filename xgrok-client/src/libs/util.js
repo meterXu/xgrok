@@ -9,6 +9,7 @@ const dgram = require('dgram');
 const {serverType, serviceType} = require("./enum");
 const {isFreePort} = require("node-port-check");
 const CryptoJS = require('crypto-js')
+const {dialog} = require("electron");
 
 function randomNumber() {
     const random = (min, max) => {
@@ -279,11 +280,10 @@ function checkUpdate(app, autoUpdater, dialog, shell, manual = false) {
         //监听发现可用更新事件
         autoUpdater.on('update-available', (info) => {
             global.logger.info(`found a new version[${info.version}]`)
-            resolve(info)
         })
         //监听无可用更新事件
         autoUpdater.on('update-not-available', (info) => {
-            reject(info)
+            reject('无可用更新，当前已是最新版本！')
         })
         //监听下载完成事件，mac下没有签名，先特殊处理
         autoUpdater.on('update-downloaded', (info) => {
@@ -294,17 +294,20 @@ function checkUpdate(app, autoUpdater, dialog, shell, manual = false) {
                 title: '应用更新',
                 detail: process.platform === 'darwin' ? '新版本已下载，退出程序并手动更新。' : '新版本已下载，重新启动程序以执行更新。'
             }
-            dialog.showMessageBox(dialogOpts).then((returnValue) => {
-                if (returnValue.response === 0) {
-                    if (process.platform === 'darwin') {
-                        global.logger.info(`autoUpdater exit app,app download path is ${info.downloadedFile}`)
-                        shell.openPath(path.dirname(info.downloadedFile))
-                        app.quit()
-                    } else {
-                        autoUpdater.quitAndInstall()
+            if(process.platform!=='linux'){
+                dialog.showMessageBox(dialogOpts).then((returnValue) => {
+                    if (returnValue.response === 0) {
+                        if (process.platform === 'darwin') {
+                            global.logger.info(`autoUpdater exit app,app download path is ${info.downloadedFile}`)
+                            shell.openPath(path.dirname(info.downloadedFile))
+                            app.quit()
+                        } else {
+                            autoUpdater.quitAndInstall()
+                        }
                     }
-                }
-            })
+                })
+            }
+            resolve(true)
         });
     })
 }

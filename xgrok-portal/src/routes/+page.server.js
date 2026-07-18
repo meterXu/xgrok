@@ -10,7 +10,7 @@ export function load(){
         fetch(`${baseApi}/version/latest`).then(res => res.json()).then((data) => {
            return resolve({
                oss:oss,
-               version:data.name?.replace(/^v/gi,'')
+               version:data.tag_name?.replace(/^v/gi,'')
            })
         }).catch(err=>{
             reject(err)

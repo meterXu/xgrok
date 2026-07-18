@@ -17,6 +17,7 @@ import {clientType, isDeleteType, serverEnum, statusType} from "@/libs/enums";
 import reconnectingWebSocket from 'reconnecting-websocket'
 import {useClientType, useClientTypeExecute} from "@/libs/useAction";
 import {useAppStore} from "@/store";
+import {version} from '../../package.json'
 
 const url = {
     oauth: {
@@ -92,7 +93,8 @@ const url = {
             turnRestart:'/system/turnRestart',
             log:'/system/log',
             checkWeb: '/system/checkWeb',
-            checkService: '/system/checkService'
+            checkService: '/system/checkService',
+            checkUpdate:'/system/checkUpdate'
         }
     },
     system:{
@@ -178,18 +180,22 @@ export function checkName(domain, type, port, name, server_id, client_id, id) {
 export function checkWeb(name, domain, port) {
     return getAction(url.compliance.checkWeb, {name, domain, port})
 }
+
 export function checkWebByWebClient(name, domain, port) {
     return getActionWebClient(url.webClient.system.checkWeb, {name, domain, port})
 }
 export function checkService(domain, port, type) {
     return getAction(url.compliance.checkService, {domain, port, type})
 }
+
 export function validateServerNameAndSecret(serverId, serverName,secretKey) {
     return getAction(url.compliance.validateServerNameAndSecret, {serverId, serverName,secretKey})
 }
+
 export function checkServiceByWebClient(domain, port, type) {
     return getActionWebClient(url.webClient.system.checkService, {domain, port, type})
 }
+
 export function checkPort(domain, port, server_id, id, type) {
     return getAction(url.compliance.checkPort, {domain, port, server_id, id, type})
 }
@@ -317,7 +323,21 @@ export function versionList() {
 }
 
 export function versionLatest() {
-    return getActionNoToken(url.version.latest)
+    return  new Promise((resolve,reject) => {
+        getActionNoToken(url.version.latest).then(res=>{
+            if(res.tag_name?.replace(/^v/gi,'')!==version){
+                resolve({
+                    data:true,
+                    success:true
+                })
+            }else{
+                reject({
+                    success:false,
+                    message:'无可用更新，当前已是最新版本！'
+                })
+            }
+        })
+    })
 }
 
 export function detailAssets(name) {
