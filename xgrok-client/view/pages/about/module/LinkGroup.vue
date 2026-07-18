@@ -36,7 +36,7 @@ function onCheckUpdate() {
 
 <template>
   <div class="flex flex-row gap-24">
-    <LinkButton v-debounce:click="onCheckUpdate">
+    <LinkButton :hasArrow="false" v-debounce:click="onCheckUpdate">
       <template #icon>
         <el-icon v-if="checkUpdateLoading" class="is-loading mr-5">
           <Loading/>
@@ -45,13 +45,13 @@ function onCheckUpdate() {
       </template>
       检查更新
     </LinkButton>
-    <LinkButton href="https://www.xdo.icu">
+    <LinkButton :hasArrow="true" href="https://www.xdo.icu">
       <template #icon>
         <MdiWeb></MdiWeb>
       </template>
       官方网站
     </LinkButton>
-    <LinkButton href="https://github.com/meterXu/xgrok/issues">
+    <LinkButton :hasArrow="true" href="https://github.com/meterXu/xgrok/issues">
       <template #icon>
         <MdiGithub/>
       </template>

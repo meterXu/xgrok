@@ -1,7 +1,7 @@
 <script setup>
 import {useClientTypeExecute} from "@/libs/useAction";
 
-const props = defineProps(['href'])
+const props = defineProps(['href','hasArrow'])
 const emit = defineEmits(['click'])
 function onClick(){
   if(props.href){
@@ -22,7 +22,7 @@ function onClick(){
   </span>
   <span class="text-(--el-color-primary) font-bold inline-flex gap-1 items-end">
     <slot/>
-    <IconParkOutlineArrowRightUp class="text-(--el-color-primary)"/>
+    <IconParkOutlineArrowRightUp v-if="hasArrow" class="text-(--el-color-primary)"/>
   </span>
 </div>
 </template>
