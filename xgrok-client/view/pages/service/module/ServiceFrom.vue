@@ -20,9 +20,10 @@ import {
 } from "@/libs/useAction";
 import {showNotification} from "@/libs/message";
 import StaticFormContent from "@/pages/service/module/StaticFormContent.vue";
+import {storeToRefs} from 'pinia'
 
 const store = useAppStore()
-const {selectedServer, clientId, configIsLock, pid, plan} = store
+const {selectedServer, clientId, configIsLock, pid, plan} = storeToRefs(store)
 const props = defineProps(['tunnelForm'])
 const emits = defineEmits(['updateSuccess', 'cancel', 'createSuccess'])
 const ruleFormRef = ref('ruleFormRef')
@@ -42,13 +43,13 @@ const validateRes = reactive({
 })
 const {errorMsg,pass} = useGetErrorMsg(validateRes)
 const addBtnDisabled = computed(() => {
-  return useGetDisabled(validateRes).value || configIsLock
+  return useGetDisabled(validateRes).value || configIsLock.value
 })
 
 watch(()=>props.tunnelForm,(nv)=>{
   formData = userServiceForm()
   Object.assign(formData,{
-    id: undefined, type:1,host:defaultHost,server_id:selectedServer.id,client_id:clientId.value,is_remote:null,port:null,is_online:isOnline.online
+    id: undefined, type:1,host:'127.0.0.1',server_id:selectedServer.value.id,client_id:clientId.value,is_remote:null,port:null,is_online:isOnline.online
   },nv)
   if(formData.secret_key){
     formData.secret_key = decryptData(formData.secret_key)
@@ -109,7 +110,7 @@ function onCancel() {
 }
 
 function onChangeType(value) {
-  if ([serviceType.UDP,serviceType.STCP_CLIENT,serviceType.STCP_SERVER].indexOf(value)>-1 && plan.value !== payPlan.vip) {
+  if ([serviceType.UDP,serviceType.STCP_CLIENT,serviceType.STCP_SERVER].indexOf(value)>-1 && plan.value.value !== payPlan.vip) {
     confirm('未捐赠用户无法创建非TCP隧道', null, {
       confirmButtonText: '去捐赠',
       cancelButtonText: '知道了',
@@ -136,7 +137,7 @@ function onChangeType(value) {
 }
 
 function queryRangeByType() {
-  queryRange(selectedServer.id, formData.type).then(res => {
+  queryRange(selectedServer.value.id, formData.type).then(res => {
     if (res.success) {
       portRange.value = res.data.records.map(c => {
         return `${c.min_port}-${c.max_port}`
@@ -146,7 +147,7 @@ function queryRangeByType() {
 }
 
 function queryFreePort(){
-  getFreePort(selectedServer.id, formData.type).then(res=>{
+  getFreePort(selectedServer.value.id, formData.type).then(res=>{
     if (res.success) {
       formData.remote_port = res.data
     }
@@ -154,7 +155,7 @@ function queryFreePort(){
 }
 
 function queryRandomName(){
-  getRandomSubName(selectedServer.id).then(res => {
+  getRandomSubName(selectedServer.value.id).then(res => {
     if(res.success){
       formData.name = res.data
       ruleFormRef.value.validateField('name')

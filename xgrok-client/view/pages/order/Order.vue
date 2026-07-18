@@ -8,6 +8,7 @@ import {NotificationType, useSysPayStatusToPayRes} from "@/libs/enums";
 import {confirm} from "@/libs/common";
 import {showNotification} from "@/libs/message";
 import {useDonationAgreementUrl,onOpenLink} from "@/libs/useAction";
+import {storeToRefs} from 'pinia'
 
 const props = defineProps(['productId','payNum'])
 const qrcodeImg = ref(null)
@@ -17,7 +18,7 @@ const _price = ref(null)
 const router = useRouter()
 const payRes = ref(null)
 const store = useAppStore()
-const {orderStatus} = store
+const {orderStatus} = storeToRefs(store)
 const paySuccessTimerNum = ref(5)
 const donationAgreement = ref(true)
 let paySuccessTimer = null
@@ -53,9 +54,9 @@ const closeBtn = computed(()=>{
 })
 
 watchEffect(()=>{
-  if(orderId.value===orderStatus.orderId){
-    payRes.value = orderStatus.isPaySuccess
-    if(orderStatus.isPaySuccess){
+  if(orderId.value===orderStatus.value.orderId){
+    payRes.value = orderStatus.value.isPaySuccess
+    if(orderStatus.value.isPaySuccess){
       clearInterval(paySuccessTimer)
       paySuccessTimer = setInterval(()=>{
         paySuccessTimerNum.value--

@@ -8,9 +8,10 @@ import dayjs from 'dayjs'
 import {payPlan, payType} from "@/libs/enums";
 import HorizontalHeader from '@/components/header/HorizontalHeader.vue'
 import PlusLoading from "@/components/plus-loading/PlusLoading.vue";
+import {storeToRefs} from 'pinia'
 
 const store = useAppStore()
-const {plan} = store
+const {plan} = storeToRefs(store)
 let productList = ref([])
 const router = useRouter()
 const showWillPlan = ref(false)
@@ -40,7 +41,7 @@ function subscribe(productId) {
 }
 
 function onWillPlanEnter(item) {
-  showWillPlan.value = plan.plan.type !== payType.free && item.type !== payType.free;
+  showWillPlan.value = plan.value.plan.type !== payType.free && item.type !== payType.free;
   if (showWillPlan.value)
     onWillPlanExpiredTime(item)
 }
@@ -50,7 +51,7 @@ function onWillPlanLeave() {
 }
 
 function onWillPlanExpiredTime(item) {
-  let expired_time = plan.plan.expired_time
+  let expired_time = plan.value.plan.expired_time
   switch (item.type) {
     case payType.month: {
       willPlanExpiredTime.value = dayjs(expired_time).add(1, 'month').format('YYYY-MM-DD').toString()

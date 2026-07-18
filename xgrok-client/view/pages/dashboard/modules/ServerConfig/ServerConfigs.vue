@@ -2,11 +2,12 @@
 import ServerConfigItem from "@/components/ServerConfigItem.vue";
 import {useAppStore} from "@/store";
 import {speedAndTraffic} from "@/api";
+import {storeToRefs} from 'pinia'
 
 const emits = defineEmits(['change'])
 const props = defineProps(['tunnelCount'])
 const store = useAppStore()
-const {selectedServer, clientId,pid,token} = store
+const {selectedServer, clientId,pid,token} = storeToRefs(store)
 let timer = 0
 const speed = ref('0')
 const traffic = ref('0')
@@ -14,7 +15,7 @@ const traffic = ref('0')
 async function getSpeedAndTraffic(){
   try{
     if(!token.value) return
-    const speedAndTrafficRes = await speedAndTraffic(selectedServer.id, clientId.value)
+    const speedAndTrafficRes = await speedAndTraffic(selectedServer.value.id, clientId.value)
     speed.value = speedAndTrafficRes.data.speed
     traffic.value = speedAndTrafficRes.data.traffic
   }catch (err){}

@@ -221,7 +221,7 @@ export const useAppStore = defineStore('app', () => {
     }
 
     function setTunnelCount(data) {
-        merge(_tunnelCount, data)
+        Object.assign(_tunnelCount, data)
         $ls.set("tunnelCount", setLsValue(alterStoreValue(_tunnelCount)))
     }
 

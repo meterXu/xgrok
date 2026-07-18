@@ -6,15 +6,16 @@ import {useAppStore} from "@/store";
 import {useClientTypeExecute} from "@/libs/useAction";
 import {doCopy} from 'xxweb-util'
 import {showNotification} from "@/libs/message";
+import {storeToRefs} from 'pinia'
 
 const props = defineProps(['item'])
 const store = useAppStore()
-const {selectedServer} = store
+const {selectedServer} = storeToRefs(store)
 
 function httpUrl(tunnelConfig, type) {
-  if (selectedServer) {
-    return type === httpType.https ? `https://${tunnelConfig.name}.${selectedServer.domain}:${selectedServer.https_port}/`
-        : `http://${tunnelConfig.name}.${selectedServer.domain}:${selectedServer.http_port}/`
+  if (selectedServer.value) {
+    return type === httpType.https ? `https://${tunnelConfig.name}.${selectedServer.value.domain}:${selectedServer.value.https_port}/`
+        : `http://${tunnelConfig.name}.${selectedServer.value.domain}:${selectedServer.value.http_port}/`
   } else {
     return ''
   }

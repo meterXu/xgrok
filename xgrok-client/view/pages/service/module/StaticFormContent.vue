@@ -10,10 +10,11 @@ import {serviceType, tunnelType} from "@/libs/enums";
 import {useClientTypeExecute, onFormValidate, userServiceForm} from "@/libs/useAction";
 const {formData} = defineProps(['formData','validateRes','portRange'])
 const ruleFormRef = ref('ruleFormRef')
+import {storeToRefs} from 'pinia'
 
 const tmpFormData = userServiceForm()
 const store = useAppStore()
-const {selectedServer, clientId, pid, plan} = store
+const {selectedServer, clientId, pid, plan} = storeToRefs(store)
 const validateLocalPortLoading = ref(false)
 const validateNameLoading = ref(false)
 const validateRemotePortLoading = ref(false)
@@ -84,7 +85,7 @@ function validateName(rule, value, callback) {
     callback(new Error('名称不符合格式'))
   } else {
     validateNameLoading.value = true
-    checkName.debounce()(selectedServer.domain, tunnelType.service, selectedServer.http_port, value, selectedServer.id, clientId.value, formData.id || '').then(res => {
+    checkName.debounce()(selectedServer.value.domain, tunnelType.service, selectedServer.value.http_port, value, selectedServer.value.id, clientId.value, formData.id || '').then(res => {
       if (res.success) {
         validateNameLoading.value = false
         callback(res.data ? undefined : new Error(res.message))
@@ -99,7 +100,7 @@ function validateServerName(rule, value, callback) {
     callback(new Error('名称不符合格式'))
   } else {
     validateNameLoading.value = true
-    checkName.debounce()(selectedServer.domain, tunnelType.service, selectedServer.http_port, value, selectedServer.id, clientId.value, formData.id || '').then(res => {
+    checkName.debounce()(selectedServer.value.domain, tunnelType.service, selectedServer.value.http_port, value, selectedServer.value.id, clientId.value, formData.id || '').then(res => {
       if (res.success) {
         validateNameLoading.value = false
         callback(res.data ? new Error('该隧道不存在'):undefined)
@@ -112,7 +113,7 @@ function validatePort(rule, value, callback) {
     callback(new Error('请输入名称'))
   } else {
     validateRemotePortLoading.value = true
-    checkPort.debounce()(selectedServer.domain, value, selectedServer.id, formData.id || '', formData.type).then(res => {
+    checkPort.debounce()(selectedServer.value.domain, value, selectedServer.value.id, formData.id || '', formData.type).then(res => {
       if (res.success) {
         callback(res.data ? undefined : new Error(res.message))
       }
@@ -139,7 +140,7 @@ function validateLocalPort(rule, value, callback) {
       })
 }
 function validatePassword(rule, value, callback) {
-  validateServerNameAndSecret(selectedServer.id,formData.server_name,encryptData(value)).then(res=>{
+  validateServerNameAndSecret(selectedServer.value.id,formData.server_name,encryptData(value)).then(res=>{
     callback(res.data? undefined : new Error(res.message))
   })
 }

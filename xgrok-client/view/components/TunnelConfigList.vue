@@ -1,13 +1,13 @@
 <script setup>
 import {defineProps, defineEmits, ref, watch} from 'vue'
-import {Edit} from "@element-plus/icons-vue";
+import {storeToRefs} from 'pinia'
 import {useAppStore} from "@/store";
 
 const props = defineProps(['tunnelList','isDelete','deleteIds'])
 const emits = defineEmits(['delSelectChange','editTunnel'])
 const ids = ref([])
 const store = useAppStore()
-const {pid,isCloseEdit} = store
+const {pid,isCloseEdit} = storeToRefs(store)
 
 watch(()=>props.isDelete,()=>{
   ids.value=[]

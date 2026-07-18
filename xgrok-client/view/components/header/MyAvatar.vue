@@ -8,8 +8,10 @@ import {closeWebSocket, serviceTurnOff} from "@/api";
 import {useClientTypeExecute, useGoTo} from "@/libs/useAction";
 import {showNotification} from "@/libs/message";
 import {NotificationType} from "@/libs/enums";
+import {storeToRefs} from 'pinia'
+
 const store = useAppStore()
-const {userInfo,pid} = store
+const {userInfo,pid} = storeToRefs(store)
 const router = useRouter()
 
 function onCommand(command) {

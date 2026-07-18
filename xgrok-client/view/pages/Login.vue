@@ -6,18 +6,19 @@ import {useAppStore} from "@/store";
 import {
   useGetDisabled,
   useGetValidateRes,
-  useGetTermsOfServiceUrl, usePrivacyAgreementUrl, onOpenLink, onFormValidate
+  useGetTermsOfServiceUrl, usePrivacyAgreementUrl, onOpenLink
 } from "@/libs/useAction";
 import Logo from "@/components/Logo.vue";
 import {showNotification} from "@/libs/message";
 import {NotificationType} from "@/libs/enums";
+import {storeToRefs} from 'pinia'
 
 const store = useAppStore()
-const {userName} = store
+const {userName} = storeToRefs(store)
 const router = useRouter()
 const ruleForm = ref('ruleForm')
 const form = reactive({
-  username:userName,
+  username:userName.value,
   password:null,
   isReadArticle:null
 })

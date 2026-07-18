@@ -34,12 +34,12 @@ queryClientList().then(res => {
       <el-tooltip effect="dark" content="当前设备隧道数/个人所有设备隧道数">
         <div class="text-[12px] inline-flex gap-12">
         <span class="inline-block">
-          网页：<span class="font-bold text-(--el-color-primary)">{{ tunnelCount.web.length }}</span>/
-          <span class="text-(--el-color-orange)">{{ tunnelCount.allWeb.length }}</span>
+          网页：<span class="font-bold text-(--el-color-primary)">{{ tunnelCount.web }}</span>/
+          <span class="text-(--el-color-orange)">{{ tunnelCount.allWeb }}</span>
         </span>
           <span class="inline-block">
-          服务：<span class="font-bold text-(--el-color-primary)">{{ tunnelCount.service.length }}</span>/
-            <span class="text-(--el-color-orange)">{{ tunnelCount.allService.length }}</span>
+          服务：<span class="font-bold text-(--el-color-primary)">{{ tunnelCount.service }}</span>/
+            <span class="text-(--el-color-orange)">{{ tunnelCount.allService }}</span>
         </span>
         </div>
       </el-tooltip>

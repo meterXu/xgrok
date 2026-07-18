@@ -21,15 +21,16 @@ import TunnelFormWrap from "@/components/tunnel/TunnelFormWrap.vue";
 import PlusScrollbar from "@/components/plus-scrollbar/PlusScrollbar.vue";
 import PlusLoading from "@/components/plus-loading/PlusLoading.vue";
 import {checkPermission, operationConfirm, useClientTypeExecute, useGetTunnelStatistics} from "@/libs/useAction";
-import {isOnline, NotificationType, serviceType, statusType, tunnelType} from "@/libs/enums";
+import {isOnline, NotificationType, serviceType, tunnelType} from "@/libs/enums";
 import {showNotification} from "@/libs/message";
 import ServiceItem from "@/pages/service/module/ServiceItem.vue";
 import ServiceSwitch from "@/components/control-btns/ServiceSwitch.vue";
 import {$emit} from "xxweb-util";
 import AddTunnelBtn from "@/components/control-btns/AddTunnelBtn.vue";
+import {storeToRefs} from 'pinia'
 
 const store = useAppStore()
-const {selectedServer, clientId, configIsLock,pid} = store
+const {selectedServer, clientId, configIsLock,pid} = storeToRefs(store)
 const tunnelServiceConfigs = reactive([])
 const tunnelLoading = ref(false)
 const activeId = shallowRef(null)
@@ -50,11 +51,11 @@ const filterTunnelServiceConfigs = computed(() => {
 })
 
 async function loadTunnelData() {
-  if (!selectedServer || !clientId.value) {
+  if (!selectedServer.value || !clientId.value) {
     return false
   }
   tunnelLoading.value = true
-  const res = await queryTunnelServiceConfig(selectedServer.id, clientId.value)
+  const res = await queryTunnelServiceConfig(selectedServer.value.id, clientId.value)
   if (res.success) {
     tunnelServiceConfigs.splice(0, tunnelServiceConfigs.length, ...res.data)
     activeId.value = null
@@ -68,7 +69,7 @@ function onCancel() {
 }
 
 function onAddTunnel() {
-  if (!configIsLock && checkPermission(getEnumKey(tunnelType, tunnelType.service), tunnelServiceConfigs)) {
+  if (!configIsLock.value && checkPermission(getEnumKey(tunnelType, tunnelType.service), tunnelServiceConfigs)) {
     activeId.value = null
     isAdd.value = true
   }
@@ -103,7 +104,7 @@ function onTest() {
       checkServiceByWebClient(activeTunnel.value.host, activeTunnel.value.port,activeTunnel.value.type),
       [serviceType.STCP_CLIENT,serviceType.STCP_SERVER].indexOf(activeTunnel.value.type)>-1?
           {data:true}:
-          checkService(selectedServer.domain, activeTunnel.value.remote_port,activeTunnel.value.type)
+          checkService(selectedServer.value.domain, activeTunnel.value.remote_port,activeTunnel.value.type)
     ])
   },()=>{
     return Promise.all([
@@ -112,7 +113,7 @@ function onTest() {
       }),
       [serviceType.STCP_CLIENT,serviceType.STCP_SERVER].indexOf(activeTunnel.value.type)>-1?
           {data:true}:
-          checkService(selectedServer.domain, activeTunnel.value.remote_port,activeTunnel.value.type)])
+          checkService(selectedServer.value.domain, activeTunnel.value.remote_port,activeTunnel.value.type)])
   }).then(resArray => {
         activeTunnel.value.is_online = !resArray[0].data && resArray[1].data ? isOnline.online : isOnline.offline
         testStatus.value = activeTunnel.value.is_online ? 'success' : 'failed'
@@ -130,6 +131,7 @@ function onToggleStatus(value){
       status: value
     }).then(async res=>{
       const operation = value?'启用':'禁用'
+      activeTunnel.value.status = value
       showNotification(res.success?NotificationType.success:NotificationType.error,  res.success?`${operation}成功`:res.message||`${operation}失败`)
       if(res.success){
         pid.value&&$emit('restart')

@@ -171,11 +171,7 @@ export function useGetTunnelStatistics(){
             }
             queryTunnelStatistics(store.selectedServer.id, store.clientId).then(res => {
                 if(res.success){
-                    store.tunnelCount.web = res.data.web
-                    store.tunnelCount.service = res.data.service
-                    store.tunnelCount.allWeb = res.data.allWeb
-                    store.tunnelCount.allService = res.data.allService
-                    store.setTunnelCount(store.tunnelCount)
+                    store.setTunnelCount(res.data)
                 }
                 resolve(res)
             }).catch(e=>reject(e))
