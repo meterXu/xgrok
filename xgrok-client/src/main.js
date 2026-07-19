@@ -108,13 +108,15 @@ function createWindow () {
                 // 检查更新
                 checkUpdate(app,autoUpdater,dialog,shell,true).then((info)=>{
                     win.webContents.send('view/foundNewVersion',info)
-                }).catch(()=>{
-                    dialog.showMessageBox({
-                        type: 'info',
-                        buttons: ['确定'],
-                        title: '提示',
-                        detail: '无可用更新，当前已是最新版本！'
-                    })
+                }).then(res=>{
+                    if(!res){
+                        dialog.showMessageBox({
+                            type: 'info',
+                            buttons: ['确定'],
+                            title: '提示',
+                            detail: '无可用更新，当前已是最新版本！'
+                        })
+                    }
                 })
             }
         },
