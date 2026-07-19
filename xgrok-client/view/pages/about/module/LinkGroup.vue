@@ -11,6 +11,9 @@ import {confirm,alert} from '@/libs/common'
 const store = useAppStore()
 const {checkUpdateLoading} = storeToRefs(useAppStore())
 function onCheckUpdate() {
+  if(checkUpdateLoading.value){
+    return
+  }
   store.setCheckUpdateLoading(true)
   useClientTypeExecute(()=>{
     return versionLatest()
@@ -32,6 +35,9 @@ function onCheckUpdate() {
     store.setCheckUpdateLoading(false)
   })
 }
+onBeforeUnmount(()=>{
+  store.setCheckUpdateLoading(false)
+})
 </script>
 
 <template>
