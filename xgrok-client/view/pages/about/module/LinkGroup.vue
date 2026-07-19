@@ -28,9 +28,9 @@ function onCheckUpdate() {
         done()
         onOpenLink('https://www.xdo.icu')
       }).catch(()=>{})
+    }else{
+      alert('无可用更新，当前已是最新版本！')
     }
-  }).catch(()=>{
-    alert('无可用更新，当前已是最新版本！')
   }).finally(()=>{
     store.setCheckUpdateLoading(false)
   })

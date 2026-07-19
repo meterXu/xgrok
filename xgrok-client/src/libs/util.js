@@ -282,7 +282,7 @@ function checkUpdate(app, autoUpdater, dialog, shell, manual = false) {
         })
         //监听无可用更新事件
         autoUpdater.on('update-not-available', (info) => {
-            reject('无可用更新，当前已是最新版本！')
+          resolve(false)
         })
         //监听下载完成事件，mac下没有签名，先特殊处理
         autoUpdater.on('update-downloaded', (info) => {

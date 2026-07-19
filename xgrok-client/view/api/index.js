@@ -331,9 +331,9 @@ export function versionLatest() {
                     success:true
                 })
             }else{
-                reject({
-                    success:false,
-                    message:'无可用更新，当前已是最新版本！'
+              resolve({
+                    data:false,
+                    success:false
                 })
             }
         })
