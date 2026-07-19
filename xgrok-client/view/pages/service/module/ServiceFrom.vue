@@ -60,7 +60,10 @@ watch(()=>props.tunnelForm,(nv)=>{
   }else{
     _tmpHost = nv.host
   }
-},{immediate:true,deep:true})
+  nextTick(()=>{
+    resetFormValidate(ruleFormRef,validateRes)
+  })
+},{immediate:true})
 
 watch(() => formData.host, (nv) => {
   formData.is_remote = isLocalHost(nv) ? hostType.local : hostType.remote

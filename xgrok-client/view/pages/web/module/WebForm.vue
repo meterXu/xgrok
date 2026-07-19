@@ -179,6 +179,7 @@ function queryRandomName(){
            :rules="rules" size="default"
            :hide-required-asterisk="true"
            :show-message="false"
+           :disabled="configIsLock"
            @validate="(prop,valid,value)=>{onFormValidate(validateRes,{prop,valid,value})}">
     <el-form-item label="名称" prop="name">
       <div class="w-full flex justify-start items-center gap-4">

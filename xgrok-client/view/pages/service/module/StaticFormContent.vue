@@ -14,7 +14,7 @@ import {storeToRefs} from 'pinia'
 
 const tmpFormData = userServiceForm()
 const store = useAppStore()
-const {selectedServer, clientId, pid, plan} = storeToRefs(store)
+const {selectedServer, clientId, configIsLock} = storeToRefs(store)
 const validateLocalPortLoading = ref(false)
 const validateNameLoading = ref(false)
 const validateRemotePortLoading = ref(false)
@@ -160,6 +160,7 @@ defineExpose({
            :hide-required-asterisk="true"
            :show-message="false"
            :validateOnRuleChange="false"
+           :disabled="configIsLock"
            @validate="(prop,valid,value)=>{onFormValidate(validateRes,{prop,valid,value})}">
     <el-form-item label="名称" prop="name">
       <div class="w-full flex justify-start items-center gap-4">

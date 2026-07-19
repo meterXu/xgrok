@@ -19,7 +19,7 @@ function onSelectConfigItem(_serverConfig) {
   if(_serverConfig.id === selectedServer.value.id)
     return false
   if (plan.value.value === payPlan.vip || _serverConfig.is_vip === payPlan.free) {
-    if(plan.value.value){
+    if(pid.value){
       if(_serverConfig?.is_online === isOnline.offline){
         alert('服务不在线，不可热切换','')
       }else{

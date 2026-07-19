@@ -5,6 +5,7 @@ const path = require("node:path");
 const AutoLaunch = require('auto-launch');
 const net = require('node:net')
 const {serviceType} = require("../enum");
+
 async function getSystemInfo(data){
     return Promise.resolve({
         device_id:machineId.machineIdSync(true),

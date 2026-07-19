@@ -9,7 +9,6 @@ const dgram = require('dgram');
 const {serverType, serviceType} = require("./enum");
 const {isFreePort} = require("node-port-check");
 const CryptoJS = require('crypto-js')
-const {dialog} = require("electron");
 
 function randomNumber() {
     const random = (min, max) => {
