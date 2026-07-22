@@ -17,6 +17,8 @@ out
 
 # Editor directories and files
 .vscode/*
+.proxyai
+.claude
 !.vscode/extensions.json
 .idea
 .DS_Store
