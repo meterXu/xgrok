@@ -119,7 +119,7 @@ export default class OAuthController{
             return ctx.result(new ResultModel('该邮箱已注册',false))
         }
         if(await this._validateCode(userModel.username,ctx.validatedBody.code)){
-            const client = this.oauthClientsService.queryOAuthClients({client_id})
+            const client = await this.oauthClientsService.queryOAuthClients({client_id})
             if(client){
                 const registerRes = await this.oAuthUsersService.register(userModel,ctx.validatedBody.code)
                 const accessToken = Model.createNewToken('accessToken')
