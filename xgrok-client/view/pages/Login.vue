@@ -6,7 +6,7 @@ import {useAppStore} from "@/store";
 import {
   useGetDisabled,
   useGetValidateRes,
-  useGetTermsOfServiceUrl, usePrivacyAgreementUrl, onOpenLink
+  useGetTermsOfServiceUrl, usePrivacyAgreementUrl, onOpenLink,onFormValidate
 } from "@/libs/useAction";
 import Logo from "@/components/Logo.vue";
 import {showNotification} from "@/libs/message";
