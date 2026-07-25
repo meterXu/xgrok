@@ -323,7 +323,14 @@ async function startWebProxy(proxyWebs) {
             secure: false,
         });
         const webServer = http.createServer((req, res) => {
-            proxy.web(req, res, {target: proxyWeb.host, ignorePath: false}, (error) => {
+            if(proxyWeb.isGetVisitor===false){
+                delete req.headers['x-forwarded-for'];
+                delete req.headers['x-real-ip'];
+                delete req.headers['x-client-ip'];
+                delete req.headers['forwarded'];
+                delete req.headers['via'];
+            }
+            proxy.web(req, res, {target: proxyWeb.host, ignorePath: false,xfwd: proxyWeb.isGetVisitor??true}, (error) => {
                 global.logger.error(`web proxy[${proxyWeb.host}] error:`, error);
                 res.writeHead(500, {'Content-Type': 'text/plain'});
                 res.end(`web proxy[${proxyWeb.host}] error:${error.message || 'Internal Server Error'}`);
