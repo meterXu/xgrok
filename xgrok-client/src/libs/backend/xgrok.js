@@ -225,7 +225,10 @@ function generateWebConf(webDetails){
             type: 'http',
             localPort:web.port,
             subdomain: web.name,
-            transport:{
+            transport:Boolean(web.is_real)?{
+                bandwidthLimit:'25MB',
+                proxyProtocolVersion:'v2'
+            }:{
                 bandwidthLimit:'25MB'
             }
         }})
@@ -323,14 +326,14 @@ async function startWebProxy(proxyWebs) {
             secure: false,
         });
         const webServer = http.createServer((req, res) => {
-            if(proxyWeb.isGetVisitor===false){
+            if(!Boolean(proxyWeb.is_real)){
                 delete req.headers['x-forwarded-for'];
                 delete req.headers['x-real-ip'];
                 delete req.headers['x-client-ip'];
                 delete req.headers['forwarded'];
                 delete req.headers['via'];
             }
-            proxy.web(req, res, {target: proxyWeb.host, ignorePath: false,xfwd: proxyWeb.isGetVisitor??true}, (error) => {
+            proxy.web(req, res, {target: proxyWeb.host, ignorePath: false,xfwd: Boolean(proxyWeb.is_real)}, (error) => {
                 global.logger.error(`web proxy[${proxyWeb.host}] error:`, error);
                 res.writeHead(500, {'Content-Type': 'text/plain'});
                 res.end(`web proxy[${proxyWeb.host}] error:${error.message || 'Internal Server Error'}`);

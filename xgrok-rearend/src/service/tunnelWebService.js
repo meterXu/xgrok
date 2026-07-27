@@ -50,6 +50,7 @@ export default class TunnelWebService {
               is_delete:tunnelWebModel.is_delete,
               is_remote:tunnelWebModel.is_remote,
               is_online:tunnelWebModel.is_online,
+              is_real:tunnelWebModel.is_real,
               remark:tunnelWebModel.remark,
             }
         })

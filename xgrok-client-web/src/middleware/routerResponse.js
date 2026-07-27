@@ -22,7 +22,7 @@ export default function (){
             if(!result.message) result.message = '请求成功！'
             ctx.body = result
             if(!config.logIgnores.some(c=>c===ctx.request.path)){
-                console.log(`ctx.body: ${JSON.stringify(ctx.body)}`)
+                global.logger.info(`ctx.body: ${JSON.stringify(ctx.body)}`)
             }
         }
 
@@ -34,7 +34,7 @@ export default function (){
             ctx.body = Object.assign(result)
             ctx.status = result.code;
             if(!config.logIgnores.some(c=>c===ctx.request.path)){
-                console.error(`ctx.body: ${JSON.stringify(ctx.body)}`)
+                global.logger.error(`ctx.body: ${JSON.stringify(ctx.body)}`)
             }
         }
         try{
@@ -43,9 +43,9 @@ export default function (){
             ctx.set('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS')
             ctx.set('Access-Control-Allow-Credentials', true) // 允许带上 cookie
             if(!config.logIgnores.some(c=>c===ctx.request.path)){
-                console.log(`request.originalUrl: ${JSON.stringify(ctx.request.originalUrl)}`)
-                console.log(`request.headers: ${JSON.stringify(JSON.stringify(ctx.request.headers))}`)
-                console.log(`request.query: ${JSON.stringify(ctx.request.query)}, request.body: ${JSON.stringify(ctx.request.body)}`)
+                global.logger.info(`request.originalUrl: ${JSON.stringify(ctx.request.originalUrl, null, null)}`)
+                global.logger.info(`request.headers: ${JSON.stringify(JSON.stringify(ctx.request.headers, null, null))}`)
+                global.logger.info(`request.query: ${JSON.stringify(ctx.request.query, null, null)}, request.body: ${JSON.stringify(ctx.request.body, null, null)}`)
             }
             if(config.authIgnores.some(c=>new RegExp(c).test(ctx.request.path))){
                 await next();
@@ -56,7 +56,7 @@ export default function (){
                 await next();
             }
         }catch (err){
-            console.error(err)
+            global.logger.error(err)
             // 全局服务异常，返回状态码500
             ctx.fail(new ResultModel(
                 null,

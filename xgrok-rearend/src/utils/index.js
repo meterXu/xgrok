@@ -222,8 +222,16 @@ export function getSubjectName(name, pay_num) {
 
 export function initLog() {
     let _log = console.log
+    let _error = console.error
+    let _warn = console.warn
     console.log = function () {
-        _log(`${new Date()} ${[...arguments].join(' ')}`)
+        _log(`${new Date()} ${[...arguments].join(' ')}\r`)
+    }
+    console.warn=function (){
+        _warn(`${new Date()} ${[...arguments].join(' ')}\r`)
+    }
+    console.error=function (){
+        _error(`${new Date()} ${[...arguments].join(' ')}\r`)
     }
 }
 

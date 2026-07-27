@@ -10,9 +10,9 @@ import path from "path";
 
 global.project = config
 global.logger = {
-  info: console.log,
-  warn: console.warn,
-  error: console.error
+  info: function (){console.log(`${new Date()} ${[...arguments].join(' ')}\r`)},
+  warn: function(){console.warn(`${new Date()} ${[...arguments].join(' ')}\r`)},
+  error: function(){console.error(`${new Date()} ${[...arguments].join(' ')}\r`)},
 }
 global.proxyLocalhost = '0.0.0.0'
 BigInt.prototype.toJSON = function() {
@@ -28,18 +28,18 @@ app.use(koaStatic(path.resolve('web')))
 try{
     server = http.createServer(app.callback()).listen(config.port,(err)=>{
         if(!!err){
-            console.error('HTTP server FAIL: ', err, (err && err.stack));
+            global.logger.error('HTTP server FAIL: ', err, (err && err.stack));
         }else{
-            console.log(`service started at ${config.NODE_ENV} http://localhost:${config.port}`);
+            global.logger.info(`service started at ${config.NODE_ENV} http://localhost:${config.port}`);
         }
     });
 }catch (ex) {
-    console.error('Failed to start HTTP server\n', ex, (ex && ex.stack));
+    global.logger.error('Failed to start HTTP server\n', ex, (ex && ex.stack));
 }
 process.on('uncaughtException', ex => {
-    console.error('uncaughtException\n',ex,(ex&&ex.stack));
+    global.logger.error('uncaughtException\n',ex,(ex&&ex.stack));
 })
 process.on('unhandledRejection', ex=> {
-    console.error('unhandledRejection\n',ex,(ex&&ex.stack));
+    global.logger.error('unhandledRejection\n',ex,(ex&&ex.stack));
 })
 

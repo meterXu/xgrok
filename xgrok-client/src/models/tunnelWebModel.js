@@ -4,6 +4,7 @@ const {randomGetPort} = require("../libs/backend/system");
 class TunnelWebModel {
     constructor(body) {
         Object.assign(this, body);
+        this.is_real=body.is_real??1
     }
 
     async exchangePort(){

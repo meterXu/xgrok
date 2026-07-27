@@ -32,19 +32,21 @@ const formData = reactive({
   server_id: null,
   client_id: null,
   port: null,
-  is_online: null
+  is_online: null,
+  is_real:1,
 })
 
 watchEffect(() => {
   formData.id = props.tunnelForm?.id
   formData.name = props.tunnelForm?.name
   formData.remark = props.tunnelForm?.remark
-  formData.type = props.tunnelForm?.type || 0
-  formData.host = props.tunnelForm?.host || 'http://localhost'
-  formData.is_remote = props.tunnelForm?.is_remote || 0
-  formData.server_id = props.tunnelForm?.server_id || selectedServer.value.id
-  formData.client_id = props.tunnelForm?.client_id || clientId.value
-  formData.port = props.tunnelForm?.port || 80
+  formData.type = props.tunnelForm?.type ?? 0
+  formData.host = props.tunnelForm?.host ?? 'http://localhost'
+  formData.is_remote = props.tunnelForm?.is_remote ?? 0
+  formData.server_id = props.tunnelForm?.server_id ?? selectedServer.value.id
+  formData.client_id = props.tunnelForm?.client_id ?? clientId.value
+  formData.port = props.tunnelForm?.port ?? 80
+  formData.is_real = props.tunnelForm?.is_real ?? 1
   formData.is_online = isOnline.online
 })
 watchEffect(() => {
@@ -197,6 +199,9 @@ function queryRandomName(){
           <InfoTip :text="tipText.zh.url"></InfoTip>
         </template>
       </el-input>
+    </el-form-item>
+    <el-form-item label="真实客户" prop="isGetVisitor">
+      <el-switch v-model="formData.is_real" :active-value="1" :inactive-value="0"></el-switch>
     </el-form-item>
     <el-form-item label="描述" prop="remark">
       <el-input type="textarea" v-model="formData.remark" placeholder="请输入描述"></el-input>
