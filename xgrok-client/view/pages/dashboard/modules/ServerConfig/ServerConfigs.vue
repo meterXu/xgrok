@@ -26,7 +26,7 @@ function startTimeOut() {
     timer = setTimeout(async () => {
       await getSpeedAndTraffic()
       startTimeOut()
-    }, 1000)
+    }, 30000)
   }
 }
 
