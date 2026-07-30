@@ -4,7 +4,7 @@ import {useAppStore} from "@/store";
 import CryptoJS from 'crypto-js'
 
 export function useMyTitle(tunnelConfig){
-    return tunnelConfig.remark?`${tunnelConfig.name}：${tunnelConfig.remark}`:tunnelConfig.name
+    return tunnelConfig.remark?`${tunnelConfig.name}-${tunnelConfig.remark}`:tunnelConfig.name
 }
 
 export function testName(value){
@@ -116,7 +116,7 @@ export function systemThemeChangeEvent(callback){
 
 export function getTheme(){
     const store = useAppStore()
-    return store.appSetting.theme==='system'?store.systemTheme.value:store.appSetting.theme;
+    return store.appSetting.theme==='system'?store.systemTheme:store.appSetting.theme;
 }
 
 const key = CryptoJS.enc.Utf8.parse('xgrok00000000000');

@@ -42,9 +42,11 @@ function onCopy(item) {
   <TunnelItem class="status flex flex-col gap-4 mx-8"
               :id="item.id" :status="item.status" :online="item.is_online">
     <span class="w-full flex items-center justify-between gap-2">
-      <span class="truncate">
-        {{ useMyTitle(item) }}
-      </span>
+      <el-tooltip :content="useMyTitle(item)" effect="light">
+        <span class="truncate">
+          {{ useMyTitle(item) }}
+        </span>
+      </el-tooltip>
       <span class="text-[9px]">{{getEnumKey(serviceType,item.type)}}</span>
     </span>
     <span class="w-full flex items-center justify-between gap-2">

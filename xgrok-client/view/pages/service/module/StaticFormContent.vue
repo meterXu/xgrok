@@ -44,7 +44,7 @@ const rules = computed(() => {
   }
   if([serviceType.TCP,serviceType.UDP].includes(formData.type)){
     _rules.port=[
-      {type: 'integer', required: true, message: '请输入本地端口', trigger: 'change'},
+      {type: 'integer', required: true, message: '请输入代理端口', trigger: 'change'},
     ]
     _rules.remote_port = [
       {type: 'integer', required: true, message: '请输入映射端口', trigger: 'change'},
@@ -54,8 +54,8 @@ const rules = computed(() => {
     _rules.secret_key=[]
   }else{
     _rules.port= formData.type===serviceType.STCP_SERVER?
-        [{type: 'integer', required: true, message: '请输入本地端口', trigger: 'change'}] :
-        [{type: 'integer', required: true, message: '请输入本地端口', trigger: 'change'},{validator: validateLocalPort, trigger: 'change'}]
+        [{type: 'integer', required: true, message: '请输入代理端口', trigger: 'change'}] :
+        [{type: 'integer', required: true, message: '请输入代理端口', trigger: 'change'},{validator: validateLocalPort, trigger: 'change'}]
     _rules.remote_port = []
     _rules.server_name=formData.type===serviceType.STCP_SERVER?[]:[
       {required: true, message: '请输入需要连接的隧道名称', trigger: 'blur'},
@@ -193,7 +193,7 @@ defineExpose({
     <el-form-item label="隧道密码" v-if="[serviceType.STCP_CLIENT,serviceType.STCP_SERVER].includes(formData.type)" prop="secret_key">
       <el-input type="password" v-model="formData.secret_key" placeholder="请输入隧道密码" show-password/>
     </el-form-item>
-    <el-form-item label="本地端口" prop="port" v-if="[serviceType.TCP,serviceType.UDP,serviceType.STCP_SERVER,serviceType.STCP_CLIENT].includes(formData.type)">
+    <el-form-item label="代理端口" prop="port" v-if="[serviceType.TCP,serviceType.UDP,serviceType.STCP_SERVER,serviceType.STCP_CLIENT].includes(formData.type)">
       <div class="port-wrap">
         <el-input-number v-model="formData.port" placeholder="端口号"></el-input-number>
         <div class="port-content">

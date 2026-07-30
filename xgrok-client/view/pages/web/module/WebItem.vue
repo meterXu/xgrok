@@ -42,7 +42,11 @@ function onCopy(item, type){
 <template>
   <TunnelItem class="status flex flex-col gap-4 mx-8"
               :id="item.id" :status="item.status" :online="item.is_online">
-    <span class="overflow-hidden text-ellipsis">{{ useMyTitle(item) }}</span>
+    <el-tooltip :content="useMyTitle(item)" effect="light">
+      <span class="truncate">
+        {{ useMyTitle(item) }}
+      </span>
+    </el-tooltip>
     <span class="w-full flex items-center justify-center gap-6">
                 <span class="overflow-hidden text-ellipsis">{{ httpUrl(item, httpType.https) }}</span>
                 <el-tooltip content="点击复制">

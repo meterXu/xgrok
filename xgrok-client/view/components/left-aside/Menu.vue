@@ -64,6 +64,7 @@ const menuList = [
             class="box-item"
             placement="bottom-end"
             :content="item.title"
+            effect="light"
         >
           <component :is="item.icon"></component>
         </el-tooltip>

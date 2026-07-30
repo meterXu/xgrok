@@ -141,7 +141,7 @@ export const useAppStore = defineStore('app', () => {
     })
     const systemTheme = computed(() => {
         _systemTheme.value = _systemTheme.value || getSystemTheme()
-        return _systemTheme
+        return _systemTheme.value
     })
     const checkUpdateLoading = computed(() => _checkUpdateLoading.value)
 
