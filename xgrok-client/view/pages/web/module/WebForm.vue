@@ -88,6 +88,9 @@ watch(() => formData.host, (nv) => {
     formData.port = urlSchema.port
     formData.type = urlSchema.protocol
     formData.is_remote = isLocalHost(nv) ? 0 : 1
+    if(!formData.is_remote){
+      formData.is_real=1
+    }
   }
 })
 
@@ -201,7 +204,7 @@ function queryRandomName(){
       </el-input>
     </el-form-item>
     <el-form-item label="真实客户" prop="isGetVisitor">
-      <el-switch v-model="formData.is_real" :active-value="1" :inactive-value="0"></el-switch>
+      <el-switch :disabled="!formData.is_remote" v-model="formData.is_real" :active-value="1" :inactive-value="0"></el-switch>
     </el-form-item>
     <el-form-item label="描述" prop="remark">
       <el-input type="textarea" v-model="formData.remark" placeholder="请输入描述"></el-input>
