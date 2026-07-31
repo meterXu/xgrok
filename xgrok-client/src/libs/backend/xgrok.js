@@ -225,10 +225,7 @@ function generateWebConf(webDetails){
             type: 'http',
             localPort:web.port,
             subdomain: web.name,
-            transport:Boolean(web.is_real)?{
-                bandwidthLimit:'25MB',
-                proxyProtocolVersion:'v2'
-            }:{
+            transport:{
                 bandwidthLimit:'25MB'
             }
         }})
