@@ -173,7 +173,7 @@ onUnmounted(()=>{
             捐赠不支持7天无理由退款！
           </li>
           <li>
-            若捐赠失败，请带上支付截图发送邮件至<a href="mailto:xgrok@xdo.icu">xgrok@xdo.icu</a>。
+            若捐赠失败，请带上支付截图发送邮件至<a href="mailto:xhgainxq@gmail.com">xgrok@xdo.icu</a>。
           </li>
         </ul>
       </el-alert>
