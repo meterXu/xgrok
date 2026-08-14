@@ -1,4 +1,4 @@
-FROM hub.xdog.icu/node:22-bullseye-slim
+FROM docker.1ms.run/node:22-bullseye-slim
 
 
 RUN mkdir -p /xgrok-client/src && \

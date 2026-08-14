@@ -4,7 +4,7 @@ async function main(){
     const to = ''
     const resend = new Resend('');
     const { data, error } = await resend.emails.send({
-        from: 'xgrok <xgrok@xdog.icu>',
+        from: 'xgrok <xgrok@xdo.icu>',
         to: to,
         subject: '内容安全风险通知',
         html: `尊敬的 ${to}:<br/>` +
