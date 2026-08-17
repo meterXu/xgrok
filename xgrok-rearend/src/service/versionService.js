@@ -5,7 +5,9 @@ export default class VersionService {
     constructor() {
         this.releases = []
         this.defaultReleases = {
-            tag_name:packages.version
+            tag_name:packages.version,
+            created_at:'',
+            body:''
         }
     }
     async latest(){
@@ -32,11 +34,20 @@ export default class VersionService {
 
     async list(){
         return new Promise((resolve, reject)=>{
-            axios.get(config.github_api_url+'/releases').then((res) => {
-                if(res.status === 200&&res.data.length > 0) {
-                    resolve(res.data)
-                }
-            })
+            if(this.releases.length===0){
+                axios.get(config.github_api_url+'/releases').then((res) => {
+                    if(res.status === 200) {
+                        if(res.data.length > 0){
+                            this.releases = res.data
+                        }
+                        resolve(this.releases)
+                    }
+                }).catch(()=>{
+                    resolve(this.releases)
+                })
+            }else{
+                return(this.releases)
+            }
         })
 
     }
