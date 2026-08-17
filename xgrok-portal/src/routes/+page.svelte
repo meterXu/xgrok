@@ -1,7 +1,6 @@
 <title>XGROK</title>
 <meta name="description" content="XGROK是一款开源的内网穿透软件，旨在为普通用户提供简单快捷的网络穿透体验。">
 <script>
-    import '../styles/gh-fork-ribbon.min.css'
     let {data} = $props();
     const {oss} = data
     const repositoryUrl = 'https://github.com/meterXu/xgrok'
@@ -62,8 +61,6 @@
 </script>
 <div class="container-wrap">
     <div class="content">
-        <a class="github-fork-ribbon" href="{repositoryUrl}" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork
-            me on GitHub</a>
         <div class="header">
             <div class="logo-container">
                 <div class="logo-icon"></div>
@@ -98,16 +95,20 @@
 <div class="dialog">
     <div class="dialog-modal" onclick="{hideDialog}"></div>
     <div class="dialog-content-1">
-        <ul class="download-ul">
-            <li class="download_ul_li" onclick="{()=>downloadFile('mac')}">
-                <div class="download-item-icon download-item-icon-macSelect"></div>
-                <div class="download-item-label">Mac Apple版</div>
-            </li>
-            <li class="download_ul_li" onclick="{()=>downloadFile('mac2')}">
-                <div class="download-item-icon download-item-icon-macSelect"></div>
-                <div class="download-item-label">Mac Intel版</div>
-            </li>
-        </ul>
+        {#await data.version}
+        {:then version}
+            <ul class="download-ul">
+                <li class="download_ul_li" onclick="{()=>downloadFile('mac',version)}">
+                    <div class="download-item-icon download-item-icon-macSelect"></div>
+                    <div class="download-item-label">Mac Apple版</div>
+                </li>
+                <li class="download_ul_li" onclick="{()=>downloadFile('mac2',version)}">
+                    <div class="download-item-icon download-item-icon-macSelect"></div>
+                    <div class="download-item-label">Mac Intel版</div>
+                </li>
+            </ul>
+        {:catch error}
+        {/await}
     </div>
     <div class="dialog-content-2">
         <pre class="code">

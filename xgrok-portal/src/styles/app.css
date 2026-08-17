@@ -188,9 +188,6 @@ body{
     filter: saturate(1.2);
     transform: scale(1.05);
 }
-.github-fork-ribbon:before {
-    background-color: #175abd !important;
-}
 
 .privacyAgreement{
     padding: 0 12px;

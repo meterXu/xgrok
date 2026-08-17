@@ -1,32 +1,32 @@
 import config from '../config.js'
 import axios from "axios";
 import packages from '../../package.json';
+let releases = []
+let defaultReleases = {
+    tag_name:packages.version,
+    created_at:'',
+    body:''
+}
 export default class VersionService {
     constructor() {
-        this.releases = []
-        this.defaultReleases = {
-            tag_name:packages.version,
-            created_at:'',
-            body:''
-        }
     }
     async latest(){
         return new Promise((resolve, reject)=>{
-            if(this.releases.length===0) {
+            if(releases.length===0) {
                 axios.get(config.github_api_url+'/releases').then((res) => {
                     if(res.status === 200) {
                         if(res.data.length > 0){
-                            this.releases = res.data
-                            resolve(this.releases[0])
+                            releases = res.data
+                            resolve(releases[0])
                         }else{
-                            resolve(this.defaultReleases)
+                            resolve(defaultReleases)
                         }
                     }
                 }).catch(()=>{
-                    resolve(this.defaultReleases)
+                    resolve(defaultReleases)
                 })
             }else{
-                resolve(this.releases[0])
+                resolve(releases[0])
             }
         })
 
@@ -34,19 +34,19 @@ export default class VersionService {
 
     async list(){
         return new Promise((resolve, reject)=>{
-            if(this.releases.length===0){
+            if(releases.length===0){
                 axios.get(config.github_api_url+'/releases').then((res) => {
                     if(res.status === 200) {
                         if(res.data.length > 0){
-                            this.releases = res.data
+                            releases = res.data
                         }
-                        resolve(this.releases)
+                        resolve(releases)
                     }
                 }).catch(()=>{
-                    resolve(this.releases)
+                    resolve(releases)
                 })
             }else{
-                return(this.releases)
+                return(releases)
             }
         })
 
