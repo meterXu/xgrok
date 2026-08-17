@@ -3,18 +3,23 @@ import path from 'path'
 dotenv.config({
     path: path.resolve(`.env.${(process.env.NODE_ENV||'development').trim()}`)
 })
-export function load(){
-    return new Promise((resolve,reject)=>{
-        const baseApi = process.env.VITE_APP_baseApi
-        const oss = process.env.VITE_APP_oss
-        fetch(`${baseApi}/version/latest`).then(res => res.json()).then((data) => {
-           return resolve({
-               oss:oss,
-               version:data.tag_name?.replace(/^v/gi,'')
-           })
-        }).catch(err=>{
-            reject(err)
-        })
-    })
+const baseApi = process.env.VITE_APP_baseApi
+const oss = process.env.VITE_APP_oss
+let _tmpVersion = null;
+export function load({ fetch }) {
+    const _version = async () => {
+        if(!_tmpVersion){
+            const res = await fetch(`${baseApi}/version/latest`);
+            if (!res.ok) throw new Error('Failed to fetch version');
+            const data = await res.json();
+            _tmpVersion = data.tag_name?.replace(/^v/gi, '');
+        }
+        return _tmpVersion;
+    };
 
+    return {
+        oss: oss,
+        // 不加 await，触发 SvelteKit 服务端流式传输
+        version: _version()
+    };
 }

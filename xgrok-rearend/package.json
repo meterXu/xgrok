@@ -1,6 +1,6 @@
 {
   "name": "xgrok-rearend",
-  "version": "1.0.2",
+  "version": "1.1.9-patch1",
   "description": "xgrok 后端",
   "main": "dist/index.js",
   "license": "GPL-3.0",

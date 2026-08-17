@@ -3,7 +3,7 @@
 <script>
     import '../styles/gh-fork-ribbon.min.css'
     let {data} = $props();
-    let {version,oss} = data
+    const {oss} = data
     const repositoryUrl = 'https://github.com/meterXu/xgrok'
     const downloadItems = [
         {
@@ -20,7 +20,7 @@
         }
     ]
 
-    function downloadFile(type) {
+    function downloadFile(type,version) {
         const urls = {
             windows: {text: `xgrok-Setup-${version}.exe`, url: `${oss}/release/${version}/xgrok-Setup-${version}.exe`},
             mac: {text: `xgrok-${version}-arm64.dmg`, url: `${oss}/release/${version}/xgrok-${version}-arm64.dmg`},
@@ -39,10 +39,10 @@
         document.body.removeChild(a);
     }
 
-    function typeSelect(type){
+    function typeSelect(type,version) {
         switch (type){
             case "windows":{
-                return downloadFile(type)
+                return downloadFile(type,version)
             }
             case 'macSelect':{
                 document.querySelector('.dialog').classList.add('show');
@@ -74,14 +74,18 @@
             <div class="title-1">简单/自由/安全</div>
             <div class="title-2">你的应用，访问<span class="important">无界限</span></div>
         </div>
-        <ul class="download-ul">
-            {#each downloadItems as item }
-                <li class="download_ul_li" onclick="{()=>typeSelect(item.value)}">
-                    <div class="download-item-icon download-item-icon-{item.value}"></div>
-                    <div class="download-item-label">{item.title}</div>
-                </li>
-            {/each}
-        </ul>
+        {#await data.version}
+        {:then version}
+            <ul class="download-ul">
+                {#each downloadItems as item }
+                    <li class="download_ul_li" onclick="{()=>typeSelect(item.value,version)}">
+                        <div class="download-item-icon download-item-icon-{item.value}"></div>
+                        <div class="download-item-label">{item.title}</div>
+                    </li>
+                {/each}
+            </ul>
+        {:catch error}
+        {/await}
     </div>
 </div>
 <div class="footer-copyright">
