@@ -46,7 +46,7 @@ export default class VersionService {
                     resolve(releases)
                 })
             }else{
-                return(releases)
+              resolve(releases)
             }
         })
 
