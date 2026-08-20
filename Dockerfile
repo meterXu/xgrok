@@ -18,7 +18,8 @@ RUN rm -rf src && \
     rm -rf /xgrok-client/node_modules/app-builder-bin  && \
     rm -rf /xgrok-client/node_modules/typescript  && \
     rm -rf /xgrok-client/node_modules/@babel  && \
-    rm -rf /xgrok-client/node_modules/javascript-obfuscator
+    rm -rf /xgrok-client/node_modules/javascript-obfuscator && \
+    rm -rf /xgrok-client-web/execute/darwin
 
 
 EXPOSE 8181

@@ -6,6 +6,15 @@ dotenv.config({
     path: path.resolve(`.env.${(process.env.NODE_ENV||'development').trim()}`)
 })
 
+function getArch() {
+    const archMap = {
+        x64: 'amd64',
+        arm64: 'arm64',
+        mips64: 'mips64'
+    }
+    return archMap[os.arch()] || os.arch()
+}
+
 export default {
     NODE_ENV:process.env.NODE_ENV||'development',
     port:process.env.port||8181,
@@ -24,7 +33,7 @@ export default {
     accessTokenExpiresTime:3600*24*7*1000, //有效期7天
     refreshTokenExpiresTime:3600*24*14*1000, //有效期14天
     timestampDiff:process.env.timestampDiff||86400,//24H
-    clientRootPath:path.resolve(path.join('execute',os.platform())),
+    clientRootPath:path.resolve(path.join('execute',os.platform(),getArch())),
     xgrokCoreCfgPath:path.resolve('.xgrok.cfg'),
     logPath:path.resolve('conf','xgrok-core.log'),
     xgrokAppCfgPath:path.resolve('conf',`xgrokApp.json`),

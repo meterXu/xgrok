@@ -1,4 +1,4 @@
-const {platform} = require("./libs/util");
+const {platform, arch} = require("./libs/util");
 const path = require("path");
 const fs = require("node:fs");
 const rootPath = path.resolve(__dirname, '..');
@@ -21,6 +21,15 @@ function getAppData(){
     }catch (err){
         global.logger.error(err.message)
     }
+}
+
+function getArch() {
+    const archMap = {
+        x64: 'amd64',
+        arm64: 'arm64',
+        mips64: 'mips64'
+    }
+    return archMap[arch()] || arch()
 }
 
 const getProject=function (app,mode){
@@ -55,7 +64,7 @@ const getProject=function (app,mode){
                 user:'xgrok',
                 password:'xgrok'
             },
-            clientRootPath:path.join(appPath,'../execute/',_paltform),
+            clientRootPath:path.join(appPath,'../execute/',_paltform, getArch()),
             appPath:appPath,
             appAbsoluteName:process.execPath,
             appData:getAppData(),
@@ -93,7 +102,7 @@ const getProject=function (app,mode){
                 user:'xgrok',
                 password:'xgrok'
             },
-            clientRootPath:path.join(appPath,'../app.asar.unpacked/execute/',_paltform),
+            clientRootPath:path.join(appPath,'../app.asar.unpacked/execute/',_paltform, getArch()),
             appPath:appPath,
             appAbsoluteName:process.execPath,
             appData:getAppData(),
