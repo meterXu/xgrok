@@ -226,6 +226,7 @@ body{
     }
     .dialog-content-2{
         padding: 12px;
+        max-width: 80vw;
         width: 480px;
         overflow: auto;
         height: max-content;
