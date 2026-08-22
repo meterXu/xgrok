@@ -11,7 +11,7 @@
     "dev:electron": "dotenv -e .env.development electron src/main.js",
     "start:electron": "npm-run-all -n -p dev:web dev:electron",
     "obfuscate": "node obfuscate.js",
-    "build": "npm run build:web && npm run obfuscate && electron-builder"
+    "build": "npm run build:web && npm run obfuscate && node scripts/build.js"
   },
   "build": {
     "appId": "icu.xdo.xgrok",
@@ -55,13 +55,15 @@
         {
           "target": "dmg",
           "arch": [
-            "arm64"
+            "arm64",
+            "x64"
           ]
         },
         {
           "target": "zip",
           "arch": [
-            "arm64"
+            "arm64",
+            "x64"
           ]
         }
       ]
