@@ -13,6 +13,8 @@ import moment from "moment";
 import config from "../config.js";
 import EmailService from "./emailService.js";
 import OAuthUsersService from "./oauthUsersService.js";
+import CouponService from './couponService'
+import CouponOrderModel from '../model/couponOrderModel'
 
 const {PrismaClient} = require("@prisma/client");
 const prisma = new PrismaClient();
@@ -26,6 +28,9 @@ export default class OrderService {
         }
         if(!this.emailService){
             this.emailService = new EmailService()
+        }
+        if(!this.couponService){
+          this.couponService = new CouponService()
         }
     }
 
@@ -82,8 +87,9 @@ export default class OrderService {
 
     async addOrder(orderModel,userId,isManual = false) {
         const productModel = await this.productService.detailProduct({id:orderModel.product_id})
+        const couponModel = orderModel.coupon_code?await this.couponService.detailCouponByCode(orderModel.coupon_code):null
         const out_trade_no = new moment().format('yyyyMMDDHHmmssms').toString()
-        const pay_total_amount = orderModel.pay_total_amount||(parseFloat(productModel.price)*orderModel.pay_num).toString()
+        const pay_total_amount = this.computePayPrice(orderModel,productModel,couponModel).toString()
         const subject = getSubjectName(productModel.name,orderModel.pay_num)
         const nowPlan = await this.queryPayPlan(userId)
         let alipayRes = {}
@@ -121,29 +127,45 @@ export default class OrderService {
                 return null
             }
         }
-        let res = await prisma.ng_order.create({
+        let res = await prisma.$transaction(couponModel?[
+          prisma.ng_order.create({
             data:addData
-        })
+          }),
+          prisma.ng_coupon_order.create({
+            data:new CouponOrderModel({
+              id:randomUUID(),
+              coupon_id:couponModel.id,
+              order_id:addData.id,
+              creator:addData.creator,
+              editor:addData.editor,
+              created_time:addData.created_time,
+              modified_time:addData.modified_time,
+              status:status.enable,
+              is_delete:isDelete.false
+            })
+          })
+        ]:[prisma.ng_order.create({
+          data:addData
+        })])
         if(res){
-            return Object.assign(alipayRes,{id:res.id})
+            return Object.assign(alipayRes,{id:res[0].id})
         }else{
             return null
         }
     }
 
-    async editOrder(orderModel) {
+    editOrder(orderModel) {
         orderModel.modified_time = orderModel.modified_time || new Date().valueOf()
         if(!orderModel.pay_total_amount){
             if(orderModel.pay_price&&orderModel.pay_num){
-                orderModel.pay_total_amount = (parseFloat(orderModel.pay_price)*orderModel.pay_num).toString()
+                orderModel.pay_total_amount = this.computePayPrice(orderModel,{price:orderModel.pay_price},null).toString()
             }
         }
         return prisma.ng_order.update({where: {id: orderModel.id}, data: orderModel});
     }
 
-    async delOrder(ids) {
-        const res = await prisma.ng_order.updateMany({data: {is_delete: isDelete.true,}, where: {id:{in:ids}}})
-        return res
+    delOrder(ids) {
+        return prisma.ng_order.updateMany({data: {is_delete: isDelete.true,}, where: {id:{in:ids}}})
     }
 
     async queryPayPlan(userId){
@@ -257,21 +279,6 @@ export default class OrderService {
         }
     }
 
-    queryAliPayOrder(out_trade_no){
-        return global.alipaySdk.exec("alipay.trade.query", {
-            bizContent: {
-                out_trade_no: out_trade_no,
-            }
-        })
-    }
-    closeAliPayOrder(out_trade_no){
-        return global.alipaySdk.exec("alipay.trade.close", {
-            bizContent: {
-                out_trade_no: out_trade_no,
-            }
-        })
-    }
-
     async queryExpireTaskOrder(){
         const expiresAfterOneDay=`SELECT a.id,a.creator,a.expired_time,c.username FROM ng_order a JOIN (
 SELECT creator, MAX(expired_time) AS max_expired_time FROM ng_order
@@ -337,5 +344,31 @@ left join oauth_users c on a.creator = c.id`
             return false
         }
 
+    }
+
+    queryAliPayOrder(out_trade_no){
+    return global.alipaySdk.exec("alipay.trade.query", {
+      bizContent: {
+        out_trade_no: out_trade_no,
+      }
+    })
+  }
+
+    closeAliPayOrder(out_trade_no){
+      return global.alipaySdk.exec("alipay.trade.close", {
+        bizContent: {
+          out_trade_no: out_trade_no,
+        }
+      })
+    }
+
+    computePayPrice(orderModel,productModel,couponModel){
+      if(orderModel?.pay_total_amount){
+        return orderModel.pay_total_amount
+      }else if(couponModel?.discount){
+        return parseFloat(productModel.price)*orderModel.pay_num*couponModel.discount
+      }else{
+        return parseFloat(productModel.price)*orderModel.pay_num
+      }
     }
 }

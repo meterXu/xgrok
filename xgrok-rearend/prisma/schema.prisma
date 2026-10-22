@@ -84,10 +84,10 @@ model TunnelService {
   name          String    @db.VarChar(50)
   host          String    @db.VarChar(200)
   type          Int
-  server_name   String?   @db.VarChar(50)
-  secret_key    String?   @db.VarChar(100)
   port          Int
   remote_port   Int
+  server_name   String?   @db.VarChar(50)
+  secret_key    String?   @db.VarChar(100)
   remark        String?   @db.VarChar(100)
   sort          Int?
   creator       String?   @db.VarChar(50)
@@ -336,4 +336,39 @@ model ng_permission {
   modified_time DateTime? @db.DateTime(0)
   status        Int?      @default(1)
   is_delete     Int?      @default(0)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model ng_coupon {
+  id            String  @id @db.VarChar(32)
+  name          String  @db.VarChar(100)
+  discount      Float   @db.Float
+  code          String  @db.VarChar(100)
+  end_time      BigInt
+  start_time    BigInt
+  type          Int     @default(1)
+  sort          Int?
+  creator       String? @db.VarChar(50)
+  editor        String? @db.VarChar(50)
+  status        Int?    @default(1)
+  is_delete     Int?    @default(0)
+  created_time  BigInt?
+  modified_time BigInt?
+
+  @@index([code], map: "ng_coupon_code_index")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model ng_coupon_order {
+  id            String  @id @db.VarChar(32)
+  coupon_id     String  @db.VarChar(32)
+  order_id      String  @db.VarChar(32)
+  creator       String? @db.VarChar(50)
+  editor        String? @db.VarChar(50)
+  status        Int?    @default(1)
+  is_delete     Int?    @default(0)
+  created_time  BigInt?
+  modified_time BigInt?
+
+  @@index([coupon_id, order_id], map: "ng_coupon_order_index")
 }
